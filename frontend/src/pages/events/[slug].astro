@@ -1,0 +1,82 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { directus } from '../../lib/directus';
+import { readItems } from '@directus/sdk';
+
+// 1. Slug aus der URL holen
+const { slug } = Astro.params;
+
+let event = null;
+let error = null;
+
+try {
+  // 2. Datenabruf mit Filter (suche das Event mit diesem Slug)
+  const events = await directus.request(readItems('events', {
+    filter: {
+      slug: { _eq: slug }
+    }
+  }));
+  
+  // Nimm das erste Ergebnis (falls vorhanden)
+  if (events && events.length > 0) {
+    event = events[0];
+  }
+} catch (e) {
+  console.error(`❌ Fehler beim Laden des Events "${slug}":`, e);
+  error = e;
+}
+
+// 3. Fallback: Wenn kein Event gefunden wurde -> 404
+if (!event) {
+  return Astro.redirect('/404');
+}
+
+// Bild URL Helper
+const imageUrl = event.image ? `http://localhost:8055/assets/${event.image}` : null;
+---
+
+<Layout>
+  <article class="max-w-4xl mx-auto bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100 mt-8">
+    
+    {imageUrl ? (
+      <img src={imageUrl} alt={event.title} class="w-full h-64 md:h-96 object-cover" />
+    ) : (
+      <div class="w-full h-64 bg-gray-100 flex items-center justify-center text-gray-400">
+        Kein Bild vorhanden
+      </div>
+    )}
+
+    <div class="p-8 md:p-12">
+      <div class="mb-8 border-b pb-8">
+        <h1 class="text-3xl md:text-5xl font-bold text-gray-900 mb-4">{event.title}</h1>
+        
+        <div class="flex flex-wrap gap-4 text-sm font-medium text-gray-500">
+          <span class="flex items-center gap-1 text-blue-600">
+            📅 {new Date(event.start_date).toLocaleDateString('de-DE', { dateStyle: 'full', timeStyle: 'short' })} Uhr
+          </span>
+          
+          {event.location && (
+            <span class="flex items-center gap-1">
+              📍 {event.location}
+            </span>
+          )}
+        </div>
+      </div>
+
+      <div class="prose prose-lg text-gray-700 max-w-none prose-headings:text-blue-900 prose-a:text-blue-600" set:html={event.description}></div>
+
+      <div class="mt-12 pt-8 border-t flex justify-between items-center">
+        <a href="/" class="text-gray-600 hover:text-blue-600 font-medium transition flex items-center gap-2">
+          ← Zurück zur Übersicht
+        </a>
+        
+        {event.pretix_link && (
+          <a href={event.pretix_link} target="_blank" rel="noopener noreferrer" class="px-6 py-3 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition shadow-md">
+            Tickets kaufen
+          </a>
+        )}
+      </div>
+    </div>
+
+  </article>
+</Layout>

@@ -9,9 +9,15 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/node": "^9.5.1",
+    "@directus/sdk": "^20.3.0",
     "@pinegrow/astro-module": "^3.0.70",
     "@tailwindcss/vite": "^4.1.18",
     "astro": "^5.16.5",
     "tailwindcss": "^4.1.18"
+  },
+  "devDependencies": {
+    "@pinegrow/piny-astro": "^1.0.8",
+    "micromorph": "^0.4.5"
   }
 }

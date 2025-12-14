@@ -1,0 +1,20 @@
+{
+    "piny.project_settings": {
+        "open-pages": [
+            "pinyfakepage.html"
+        ],
+        "ai-project-brief": "Web Portal Relaunch für \"Die Brücke - soziokulturelles Zentrum\". https://diebruecke.social",
+        "app-routes": {
+            "routes": [
+                "/"
+            ],
+            "current_route": "/"
+        },
+        "tw-external-config": {
+            "external_config_url": null,
+            "external_source_url": null
+        },
+        "source-folders": null,
+        "preview-url": "http://localhost:4321"
+    }
+}
