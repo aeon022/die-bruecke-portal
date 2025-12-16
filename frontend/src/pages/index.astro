@@ -1,14 +1,20 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import { directus } from '../lib/directus';
-import { readItems } from '@directus/sdk';
+import Layout from '../layouts/layout.astro'; // "l"ayout klein, passend zum Dateinamen
+import { getEvents, getGlobalSettings } from '../lib/api';
 
-const globalSettings = await directus.request(readItems('global_settings'));
-const events = await directus.request(readItems('events'));
+// 1. Daten über unsere saubere API holen
+// Wir nutzen Promise.all für Performance (beides gleichzeitig laden)
+const [globalSettings, events] = await Promise.all([
+  getGlobalSettings(),
+  getEvents()
+]);
 
-// Funktion um die volle Bild-URL zu bauen
-const getImageUrl = (imageId) => {
-  return imageId ? `http://localhost:8055/assets/${imageId}` : null;
+// 2. Helper für Bilder (Zentral definiert für den lokalen Docker-Container)
+// Später tauschen wir das gegen eine ENV-Variable aus.
+const ASSET_URL = 'http://localhost:8055/assets';
+
+const getImageUrl = (imageId: string) => {
+  return imageId ? `${ASSET_URL}/${imageId}` : null;
 };
 ---
 
@@ -17,7 +23,7 @@ const getImageUrl = (imageId) => {
     
     <header class="mb-12 border-b pb-4">
       <h1 class="text-4xl font-bold text-blue-900">
-        {globalSettings.project_name || 'Portal'}
+        {globalSettings?.project_name || 'Die Brücke'}
       </h1>
       <p class="text-gray-600 mt-2">Willkommen auf dem neuen Portal.</p>
     </header>
@@ -25,9 +31,14 @@ const getImageUrl = (imageId) => {
     <section>
       <h2 class="text-2xl font-semibold mb-6">Kommende Veranstaltungen</h2>
       
+      {/* Fallback, falls API leer ist */}
+      {events.length === 0 && (
+        <p class="text-gray-500 italic">Aktuell keine veröffentlichten Veranstaltungen.</p>
+      )}
+
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         
-        {events.map((event: any) => (
+        {events.map((event) => (
           <article class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow border border-gray-100 flex flex-col h-full">
             
             {/* --- BILD LOGIK --- */}
@@ -38,22 +49,29 @@ const getImageUrl = (imageId) => {
                 class="w-full h-48 object-cover"
               />
             ) : (
-              // Platzhalter, wenn kein Bild da ist
               <div class="w-full h-48 bg-gray-200 flex items-center justify-center text-gray-400">
                 Kein Bild vorhanden
               </div>
             )}
 
             <div class="p-6 flex flex-col flex-grow">
-              <h3 class="text-xl font-bold mb-2 text-gray-900">{event.title}</h3>
+              <div class="mb-2">
+                 {/* Kategorie Badge (Optional, da wir es jetzt in den Daten haben) */}
+                 {event.category && typeof event.category !== 'number' && (
+                    <span class="text-xs font-bold px-2 py-1 rounded text-white mb-2 inline-block" 
+                          style={`background-color: ${event.category.color || '#666'}`}>
+                      {event.category.name}
+                    </span>
+                 )}
+                 <h3 class="text-xl font-bold text-gray-900">{event.title}</h3>
+              </div>
               
               <p class="text-sm text-blue-600 font-semibold mb-4">
-                {new Date(event.start_date).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' })}
+                {event.start_date ? new Date(event.start_date).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' }) : 'TBA'}
               </p>
               
-              {/* --- HTML FIX (set:html) --- */}
-              {/* prose-Klasse sorgt dafür, dass Listen/Überschriften im Text gut aussehen */}
-              <div class="prose prose-sm text-gray-600 mb-4 line-clamp-3" set:html={event.description}></div>
+              {/* Teaser oder Description nutzen */}
+              <div class="prose prose-sm text-gray-600 mb-4 line-clamp-3" set:html={event.teaser || event.description}></div>
 
               <div class="mt-auto">
                  <a href={`/events/${event.slug}`} class="inline-block text-blue-600 hover:text-blue-800 font-medium">
