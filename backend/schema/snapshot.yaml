@@ -973,7 +973,7 @@ fields:
       readonly: false
       required: false
       searchable: true
-      sort: 4
+      sort: 7
       special: null
       translations: null
       validation: null
@@ -996,6 +996,127 @@ fields:
       has_auto_increment: false
       foreign_key_table: null
       foreign_key_column: null
+  - collection: global_settings
+    field: hero_headline
+    type: string
+    meta:
+      collection: global_settings
+      conditions: null
+      display: null
+      display_options: null
+      field: hero_headline
+      group: null
+      hidden: false
+      interface: input
+      note: null
+      options: null
+      readonly: false
+      required: false
+      searchable: true
+      sort: 4
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: hero_headline
+      table: global_settings
+      data_type: character varying
+      default_value: null
+      max_length: 255
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: global_settings
+    field: hero_subline
+    type: text
+    meta:
+      collection: global_settings
+      conditions: null
+      display: null
+      display_options: null
+      field: hero_subline
+      group: null
+      hidden: false
+      interface: input-multiline
+      note: null
+      options: null
+      readonly: false
+      required: false
+      searchable: true
+      sort: 5
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: hero_subline
+      table: global_settings
+      data_type: text
+      default_value: null
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: global_settings
+    field: hero_image
+    type: uuid
+    meta:
+      collection: global_settings
+      conditions: null
+      display: null
+      display_options: null
+      field: hero_image
+      group: null
+      hidden: false
+      interface: file-image
+      note: null
+      options: null
+      readonly: false
+      required: false
+      searchable: true
+      sort: 6
+      special:
+        - file
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: hero_image
+      table: global_settings
+      data_type: uuid
+      default_value: null
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: directus_files
+      foreign_key_column: id
   - collection: inbox_memberships
     field: id
     type: integer
@@ -2503,6 +2624,27 @@ relations:
       foreign_key_table: directus_files
       foreign_key_column: id
       constraint_name: global_settings_logo_foreign
+      on_update: NO ACTION
+      on_delete: SET NULL
+  - collection: global_settings
+    field: hero_image
+    related_collection: directus_files
+    meta:
+      junction_field: null
+      many_collection: global_settings
+      many_field: hero_image
+      one_allowed_collections: null
+      one_collection: directus_files
+      one_collection_field: null
+      one_deselect_action: nullify
+      one_field: null
+      sort_field: null
+    schema:
+      table: global_settings
+      column: hero_image
+      foreign_key_table: directus_files
+      foreign_key_column: id
+      constraint_name: global_settings_hero_image_foreign
       on_update: NO ACTION
       on_delete: SET NULL
   - collection: pages
