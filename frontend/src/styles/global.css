@@ -1,1 +1,31 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+/* Hier definieren wir dein Theme direkt in CSS */
+@theme {
+  /* Deine Farbpalette */
+  --color-primary: #006D77;
+  --color-secondary: #83C5bE;
+  --color-tertiary: #F3BFC1;
+  
+  --color-accent: #FFDDD2;
+  --color-accent-strong: #E29578;
+  --color-tangerine: #E29578;
+  
+  --color-surface: #ffffff;
+  --color-surface-muted: #EDf6f9;
+
+  /* Fonts */
+  --font-sans: system-ui, sans-serif;
+}
+
+/* Container Fix für Tailwind 4:
+   Da wir 'center: true' und 'padding' aus der Config entfernt haben,
+   stellen wir sicher, dass 'container' sich so verhält wie erwartet,
+   oder wir verlassen uns auf die Klassen 'mx-auto px-4' in deinem HTML (die du schon hast).
+   
+   Sicherheitshalber definieren wir hier globale Basis-Stile.
+*/
+body {
+  @apply bg-surface-muted text-gray-800;
+}

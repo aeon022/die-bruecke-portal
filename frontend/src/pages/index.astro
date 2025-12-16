@@ -1,89 +1,125 @@
 ---
-import Layout from '../layouts/layout.astro'; // "l"ayout klein, passend zum Dateinamen
+import Layout from '../layouts/layout.astro';
 import { getEvents, getGlobalSettings } from '../lib/api';
 
-// 1. Daten über unsere saubere API holen
-// Wir nutzen Promise.all für Performance (beides gleichzeitig laden)
+// Daten laden
 const [globalSettings, events] = await Promise.all([
   getGlobalSettings(),
   getEvents()
 ]);
 
-// 2. Helper für Bilder (Zentral definiert für den lokalen Docker-Container)
-// Später tauschen wir das gegen eine ENV-Variable aus.
 const ASSET_URL = 'http://localhost:8055/assets';
 
-const getImageUrl = (imageId: string) => {
-  return imageId ? `${ASSET_URL}/${imageId}` : null;
-};
+// Helper für Bild-URL (falls im CMS keins gesetzt ist, nehmen wir null)
+const heroImage = globalSettings?.hero_image 
+  ? `url('${ASSET_URL}/${globalSettings.hero_image}')` 
+  : null;
 ---
 
 <Layout>
-  <div class="container mx-auto p-8">
+  
+  <section class="relative bg-primary text-white py-20 lg:py-32 overflow-hidden">
     
-    <header class="mb-12 border-b pb-4">
-      <h1 class="text-4xl font-bold text-blue-900">
-        {globalSettings?.project_name || 'Die Brücke'}
-      </h1>
-      <p class="text-gray-600 mt-2">Willkommen auf dem neuen Portal.</p>
-    </header>
+    {heroImage && (
+      <div class="absolute inset-0 z-0 opacity-20 bg-cover bg-center" style={`background-image: ${heroImage}`}></div>
+    )}
 
-    <section>
-      <h2 class="text-2xl font-semibold mb-6">Kommende Veranstaltungen</h2>
+    <div class="container mx-auto px-4 relative z-10 text-center">
+      <h1 class="text-4xl md:text-6xl font-bold mb-6 leading-tight tracking-tight">
+        Willkommen in der <br/>
+        <span class="text-secondary">Brücke</span>
+      </h1>
       
-      {/* Fallback, falls API leer ist */}
+      <p class="text-lg md:text-xl text-accent max-w-2xl mx-auto mb-10 leading-relaxed">
+        {globalSettings?.footer_text || 'Kultur, Begegnung und Soziales – alles unter einem Dach.'}
+      </p>
+
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="/events" class="px-8 py-4 bg-tangerine hover:bg-white hover:text-primary text-white font-bold rounded-lg transition-all shadow-lg transform hover:-translate-y-1">
+          Veranstaltungen entdecken
+        </a>
+        <a href="/services" class="px-8 py-4 bg-transparent border-2 border-secondary text-secondary hover:bg-secondary hover:text-primary font-bold rounded-lg transition-all">
+          Unsere Angebote
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-16 bg-surface-muted">
+    <div class="container mx-auto px-4">
+      <div class="flex justify-between items-end mb-8">
+        <div>
+          <h2 class="text-3xl font-bold text-primary mb-2">Kommende Termine</h2>
+          <div class="h-1 w-20 bg-tangerine rounded-full"></div>
+        </div>
+        <a href="/events" class="text-primary hover:text-tangerine font-medium hidden md:block">Alle ansehen &rarr;</a>
+      </div>
+      
       {events.length === 0 && (
-        <p class="text-gray-500 italic">Aktuell keine veröffentlichten Veranstaltungen.</p>
+        <p class="text-gray-500 italic">Aktuell keine Termine veröffentlicht.</p>
       )}
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {events.map((event) => (
-          <article class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow border border-gray-100 flex flex-col h-full">
+          <article class="bg-surface rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-hidden group flex flex-col h-full border border-gray-100">
             
-            {/* --- BILD LOGIK --- */}
-            {event.image ? (
-              <img 
-                src={getImageUrl(event.image)} 
-                alt={event.title} 
-                class="w-full h-48 object-cover"
-              />
-            ) : (
-              <div class="w-full h-48 bg-gray-200 flex items-center justify-center text-gray-400">
-                Kein Bild vorhanden
+            <a href={`/events/${event.slug}`} class="block overflow-hidden h-56 relative">
+              {event.image ? (
+                <img 
+                  src={`${ASSET_URL}/${event.image}`} 
+                  alt={event.title} 
+                  class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+              ) : (
+                <div class="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400">Kein Bild</div>
+              )}
+              
+              {/* Datums-Badge (Overlay) */}
+              <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-md shadow-sm text-center">
+                <span class="block text-xl font-bold text-primary leading-none">
+                  {new Date(event.start_date).getDate()}
+                </span>
+                <span class="block text-xs text-gray-600 uppercase">
+                  {new Date(event.start_date).toLocaleString('de-DE', { month: 'short' })}
+                </span>
               </div>
-            )}
+            </a>
 
             <div class="p-6 flex flex-col flex-grow">
-              <div class="mb-2">
-                 {/* Kategorie Badge (Optional, da wir es jetzt in den Daten haben) */}
+              <div class="mb-3">
                  {event.category && typeof event.category !== 'number' && (
-                    <span class="text-xs font-bold px-2 py-1 rounded text-white mb-2 inline-block" 
-                          style={`background-color: ${event.category.color || '#666'}`}>
+                    <span class="text-xs font-bold px-2 py-1 rounded text-white inline-block tracking-wide uppercase" 
+                          style={`background-color: ${event.category.color || '#006D77'}`}>
                       {event.category.name}
                     </span>
                  )}
-                 <h3 class="text-xl font-bold text-gray-900">{event.title}</h3>
               </div>
-              
-              <p class="text-sm text-blue-600 font-semibold mb-4">
-                {event.start_date ? new Date(event.start_date).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' }) : 'TBA'}
-              </p>
-              
-              {/* Teaser oder Description nutzen */}
-              <div class="prose prose-sm text-gray-600 mb-4 line-clamp-3" set:html={event.teaser || event.description}></div>
 
-              <div class="mt-auto">
-                 <a href={`/events/${event.slug}`} class="inline-block text-blue-600 hover:text-blue-800 font-medium">
-                   Mehr erfahren &rarr;
-                 </a>
+              <h3 class="text-xl font-bold text-gray-900 mb-3 leading-snug">
+                <a href={`/events/${event.slug}`} class="hover:text-tangerine transition-colors">
+                  {event.title}
+                </a>
+              </h3>
+              
+              <div class="mt-auto pt-4 border-t border-gray-100 flex justify-between items-center text-sm text-gray-500">
+                <span class="flex items-center gap-1">
+                  🕒 {new Date(event.start_date).toLocaleTimeString('de-DE', { hour: '2-digit', minute:'2-digit' })}
+                </span>
+                {event.location && (
+                   <span class="flex items-center gap-1 truncate max-w-[50%]">
+                     📍 {event.location}
+                   </span>
+                )}
               </div>
             </div>
           </article>
         ))}
-
       </div>
-    </section>
 
-  </div>
+      <div class="mt-8 text-center md:hidden">
+        <a href="/events" class="inline-block text-primary font-bold border-b-2 border-tangerine pb-1">Alle Termine ansehen</a>
+      </div>
+
+    </div>
+  </section>
 </Layout>

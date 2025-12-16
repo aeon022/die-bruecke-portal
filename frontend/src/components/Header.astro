@@ -7,7 +7,7 @@ const settings = await getGlobalSettings();
 <header class="bg-surface border-b border-surface-muted sticky top-0 z-50">
   <div class="container mx-auto px-4 h-20 flex items-center justify-between">
     
-    <a href="/" class="text-2xl font-bold text-primary tracking-tight hover:text-secondary transition-colors duration-300">
+    <a href="/" class="text-2xl font-bold text-primary tracking-tight hover:text-secondary transition-colors duration-300 z-50 relative">
       {settings?.project_name || 'Die Brücke'}
     </a>
 
@@ -17,12 +17,49 @@ const settings = await getGlobalSettings();
       <a href="/shop" class="text-gray-600 hover:text-tangerine font-medium transition-colors">Shop</a>
     </nav>
 
-    <button class="md:hidden p-2 text-primary">
-      <span class="sr-only">Menü öffnen</span>
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-8">
+    <button id="menu-toggle" class="md:hidden p-2 text-primary z-50 relative focus:outline-none" aria-label="Menü öffnen">
+      <svg id="icon-open" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-8 transition-transform duration-300">
         <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+      </svg>
+      <svg id="icon-close" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-8 hidden transition-transform duration-300 rotate-90">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
       </svg>
     </button>
 
+    <div id="mobile-menu" class="fixed inset-0 bg-surface/95 backdrop-blur-sm transform translate-x-full transition-transform duration-300 ease-in-out md:hidden flex flex-col justify-center items-center gap-8 z-40">
+      <a href="/events" class="text-2xl font-bold text-primary hover:text-tangerine mobile-link">Veranstaltungen</a>
+      <a href="/services" class="text-2xl font-bold text-primary hover:text-tangerine mobile-link">Angebote</a>
+      <a href="/shop" class="text-2xl font-bold text-primary hover:text-tangerine mobile-link">Shop</a>
+    </div>
+
   </div>
 </header>
+
+<script>
+  // Logik für das Mobile Menü
+  const menuToggle = document.getElementById('menu-toggle');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const iconOpen = document.getElementById('icon-open');
+  const iconClose = document.getElementById('icon-close');
+  const mobileLinks = document.querySelectorAll('.mobile-link');
+
+  function toggleMenu() {
+    // Menü rein/raus schieben
+    mobileMenu.classList.toggle('translate-x-full');
+    
+    // Icons tauschen
+    iconOpen.classList.toggle('hidden');
+    iconClose.classList.toggle('hidden');
+    iconClose.classList.toggle('rotate-90'); // Kleine Animation für das X
+    
+    // Body scrollen verhindern wenn Menü offen
+    document.body.classList.toggle('overflow-hidden');
+  }
+
+  menuToggle.addEventListener('click', toggleMenu);
+
+  // Menü schließen, wenn ein Link geklickt wird
+  mobileLinks.forEach(link => {
+    link.addEventListener('click', toggleMenu);
+  });
+</script>
