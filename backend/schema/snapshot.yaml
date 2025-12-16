@@ -785,6 +785,56 @@ fields:
       has_auto_increment: false
       foreign_key_table: event_categories
       foreign_key_column: id
+  - collection: events
+    field: status
+    type: string
+    meta:
+      collection: events
+      conditions: null
+      display: null
+      display_options: null
+      field: status
+      group: null
+      hidden: false
+      interface: select-dropdown
+      note: null
+      options:
+        choices:
+          - color: '#2ECDA7'
+            text: published
+            value: published
+          - color: '#A2B5CD'
+            text: draft
+            value: draft
+          - color: '#FFA439'
+            text: archived
+            value: archived
+      readonly: false
+      required: false
+      searchable: true
+      sort: 11
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: status
+      table: events
+      data_type: character varying
+      default_value: draft
+      max_length: 255
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
   - collection: global_settings
     field: id
     type: integer
