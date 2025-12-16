@@ -2,6 +2,30 @@ version: 1
 directus: 11.14.0
 vendor: postgres
 collections:
+  - collection: event_categories
+    meta:
+      accountability: all
+      archive_app_filter: true
+      archive_field: null
+      archive_value: null
+      collapse: open
+      collection: event_categories
+      color: null
+      display_template: null
+      group: null
+      hidden: false
+      icon: null
+      item_duplication_fields: null
+      note: null
+      preview_url: null
+      singleton: false
+      sort: null
+      sort_field: null
+      translations: null
+      unarchive_value: null
+      versioning: false
+    schema:
+      name: event_categories
   - collection: events
     meta:
       accountability: all
@@ -50,6 +74,30 @@ collections:
       versioning: false
     schema:
       name: global_settings
+  - collection: inbox_memberships
+    meta:
+      accountability: all
+      archive_app_filter: true
+      archive_field: null
+      archive_value: null
+      collapse: open
+      collection: inbox_memberships
+      color: null
+      display_template: null
+      group: null
+      hidden: false
+      icon: null
+      item_duplication_fields: null
+      note: null
+      preview_url: null
+      singleton: false
+      sort: null
+      sort_field: null
+      translations: null
+      unarchive_value: null
+      versioning: false
+    schema:
+      name: inbox_memberships
   - collection: inbox_volunteers
     meta:
       accountability: all
@@ -98,6 +146,30 @@ collections:
       versioning: false
     schema:
       name: pages
+  - collection: services
+    meta:
+      accountability: all
+      archive_app_filter: true
+      archive_field: null
+      archive_value: null
+      collapse: open
+      collection: services
+      color: null
+      display_template: null
+      group: null
+      hidden: false
+      icon: null
+      item_duplication_fields: null
+      note: null
+      preview_url: null
+      singleton: false
+      sort: null
+      sort_field: null
+      translations: null
+      unarchive_value: null
+      versioning: false
+    schema:
+      name: services
   - collection: shop_products
     meta:
       accountability: all
@@ -122,7 +194,192 @@ collections:
       versioning: false
     schema:
       name: shop_products
+  - collection: sponsors
+    meta:
+      accountability: all
+      archive_app_filter: true
+      archive_field: null
+      archive_value: null
+      collapse: open
+      collection: sponsors
+      color: null
+      display_template: null
+      group: null
+      hidden: false
+      icon: null
+      item_duplication_fields: null
+      note: null
+      preview_url: null
+      singleton: false
+      sort: null
+      sort_field: null
+      translations: null
+      unarchive_value: null
+      versioning: false
+    schema:
+      name: sponsors
 fields:
+  - collection: event_categories
+    field: id
+    type: integer
+    meta:
+      collection: event_categories
+      conditions: null
+      display: null
+      display_options: null
+      field: id
+      group: null
+      hidden: true
+      interface: input
+      note: null
+      options: null
+      readonly: true
+      required: false
+      searchable: true
+      sort: 1
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: id
+      table: event_categories
+      data_type: integer
+      default_value: nextval('event_categories_id_seq'::regclass)
+      max_length: null
+      numeric_precision: 32
+      numeric_scale: 0
+      is_nullable: false
+      is_unique: true
+      is_indexed: false
+      is_primary_key: true
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: true
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: event_categories
+    field: name
+    type: string
+    meta:
+      collection: event_categories
+      conditions: null
+      display: null
+      display_options: null
+      field: name
+      group: null
+      hidden: false
+      interface: input
+      note: null
+      options: null
+      readonly: false
+      required: false
+      searchable: true
+      sort: 2
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: name
+      table: event_categories
+      data_type: character varying
+      default_value: null
+      max_length: 255
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: event_categories
+    field: slug
+    type: string
+    meta:
+      collection: event_categories
+      conditions: null
+      display: null
+      display_options: null
+      field: slug
+      group: null
+      hidden: false
+      interface: input
+      note: null
+      options:
+        slug: true
+      readonly: false
+      required: false
+      searchable: true
+      sort: 3
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: slug
+      table: event_categories
+      data_type: character varying
+      default_value: null
+      max_length: 255
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: event_categories
+    field: color
+    type: string
+    meta:
+      collection: event_categories
+      conditions: null
+      display: null
+      display_options: null
+      field: color
+      group: null
+      hidden: false
+      interface: input
+      note: null
+      options: null
+      readonly: false
+      required: false
+      searchable: true
+      sort: 4
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: color
+      table: event_categories
+      data_type: character varying
+      default_value: null
+      max_length: 255
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
   - collection: events
     field: id
     type: integer
@@ -375,7 +632,7 @@ fields:
       field: description
       group: null
       hidden: false
-      interface: input-rich-text-md
+      interface: input-rich-text-html
       note: null
       options:
         customSyntax:
@@ -489,7 +746,7 @@ fields:
       foreign_key_column: null
   - collection: events
     field: category
-    type: string
+    type: integer
     meta:
       collection: events
       conditions: null
@@ -498,14 +755,15 @@ fields:
       field: category
       group: null
       hidden: false
-      interface: select-dropdown
+      interface: select-dropdown-m2o
       note: null
       options: null
       readonly: false
       required: false
       searchable: true
       sort: 10
-      special: null
+      special:
+        - m2o
       translations: null
       validation: null
       validation_message: null
@@ -513,11 +771,11 @@ fields:
     schema:
       name: category
       table: events
-      data_type: character varying
+      data_type: integer
       default_value: null
-      max_length: 255
-      numeric_precision: null
-      numeric_scale: null
+      max_length: null
+      numeric_precision: 32
+      numeric_scale: 0
       is_nullable: true
       is_unique: false
       is_indexed: false
@@ -525,8 +783,8 @@ fields:
       is_generated: false
       generation_expression: null
       has_auto_increment: false
-      foreign_key_table: null
-      foreign_key_column: null
+      foreign_key_table: event_categories
+      foreign_key_column: id
   - collection: global_settings
     field: id
     type: integer
@@ -677,6 +935,255 @@ fields:
       data_type: text
       default_value: null
       max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: inbox_memberships
+    field: id
+    type: integer
+    meta:
+      collection: inbox_memberships
+      conditions: null
+      display: null
+      display_options: null
+      field: id
+      group: null
+      hidden: true
+      interface: input
+      note: null
+      options: null
+      readonly: true
+      required: false
+      searchable: true
+      sort: 1
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: id
+      table: inbox_memberships
+      data_type: integer
+      default_value: nextval('inbox_memberships_id_seq'::regclass)
+      max_length: null
+      numeric_precision: 32
+      numeric_scale: 0
+      is_nullable: false
+      is_unique: true
+      is_indexed: false
+      is_primary_key: true
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: true
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: inbox_memberships
+    field: first_name
+    type: string
+    meta:
+      collection: inbox_memberships
+      conditions: null
+      display: null
+      display_options: null
+      field: first_name
+      group: null
+      hidden: false
+      interface: input
+      note: null
+      options: null
+      readonly: false
+      required: false
+      searchable: true
+      sort: 2
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: first_name
+      table: inbox_memberships
+      data_type: character varying
+      default_value: null
+      max_length: 255
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: inbox_memberships
+    field: last_name
+    type: string
+    meta:
+      collection: inbox_memberships
+      conditions: null
+      display: null
+      display_options: null
+      field: last_name
+      group: null
+      hidden: false
+      interface: input
+      note: null
+      options: null
+      readonly: false
+      required: false
+      searchable: true
+      sort: 3
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: last_name
+      table: inbox_memberships
+      data_type: character varying
+      default_value: null
+      max_length: 255
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: inbox_memberships
+    field: email
+    type: string
+    meta:
+      collection: inbox_memberships
+      conditions: null
+      display: null
+      display_options: null
+      field: email
+      group: null
+      hidden: false
+      interface: input
+      note: null
+      options: null
+      readonly: false
+      required: false
+      searchable: true
+      sort: 4
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: email
+      table: inbox_memberships
+      data_type: character varying
+      default_value: null
+      max_length: 255
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: inbox_memberships
+    field: address
+    type: string
+    meta:
+      collection: inbox_memberships
+      conditions: null
+      display: null
+      display_options: null
+      field: address
+      group: null
+      hidden: false
+      interface: input
+      note: null
+      options: null
+      readonly: false
+      required: false
+      searchable: true
+      sort: 5
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: address
+      table: inbox_memberships
+      data_type: character varying
+      default_value: null
+      max_length: 255
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: inbox_memberships
+    field: membership_type
+    type: string
+    meta:
+      collection: inbox_memberships
+      conditions: null
+      display: null
+      display_options: null
+      field: membership_type
+      group: null
+      hidden: false
+      interface: select-dropdown
+      note: null
+      options:
+        choices:
+          - text: Förderndes Mitglied
+            value: Förderndes Mitglied
+          - text: Jugend Mitglied (bis 18)
+            value: Jugend Mitglied (bis 18)
+          - text: Familienmitgliedschaft
+            value: Familienmitgliedschaft
+          - text: Firmenmitgliedschaft
+            value: Firmenmitgliedschaft
+      readonly: false
+      required: false
+      searchable: true
+      sort: 6
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: membership_type
+      table: inbox_memberships
+      data_type: character varying
+      default_value: null
+      max_length: 255
       numeric_precision: null
       numeric_scale: null
       is_nullable: true
@@ -1063,7 +1570,18 @@ fields:
       hidden: false
       interface: select-dropdown
       note: null
-      options: null
+      options:
+        choices:
+          - text: Live
+            value: Live
+          - text: Draft
+            value: Draft
+          - text: Pending
+            value: Pending
+          - text: Scheduled
+            value: Scheduled
+          - text: Declined
+            value: Declined
       readonly: false
       required: false
       searchable: true
@@ -1076,6 +1594,288 @@ fields:
     schema:
       name: status
       table: pages
+      data_type: character varying
+      default_value: null
+      max_length: 255
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: services
+    field: id
+    type: integer
+    meta:
+      collection: services
+      conditions: null
+      display: null
+      display_options: null
+      field: id
+      group: null
+      hidden: true
+      interface: input
+      note: null
+      options: null
+      readonly: true
+      required: false
+      searchable: true
+      sort: 1
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: id
+      table: services
+      data_type: integer
+      default_value: nextval('services_id_seq'::regclass)
+      max_length: null
+      numeric_precision: 32
+      numeric_scale: 0
+      is_nullable: false
+      is_unique: true
+      is_indexed: false
+      is_primary_key: true
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: true
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: services
+    field: title
+    type: string
+    meta:
+      collection: services
+      conditions: null
+      display: null
+      display_options: null
+      field: title
+      group: null
+      hidden: false
+      interface: input
+      note: null
+      options: null
+      readonly: false
+      required: false
+      searchable: true
+      sort: 2
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: title
+      table: services
+      data_type: character varying
+      default_value: null
+      max_length: 255
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: services
+    field: slug
+    type: string
+    meta:
+      collection: services
+      conditions: null
+      display: null
+      display_options: null
+      field: slug
+      group: null
+      hidden: false
+      interface: input
+      note: null
+      options:
+        slug: true
+      readonly: false
+      required: false
+      searchable: true
+      sort: 3
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: slug
+      table: services
+      data_type: character varying
+      default_value: null
+      max_length: 255
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: services
+    field: teaser
+    type: text
+    meta:
+      collection: services
+      conditions: null
+      display: null
+      display_options: null
+      field: teaser
+      group: null
+      hidden: false
+      interface: input-multiline
+      note: null
+      options: null
+      readonly: false
+      required: false
+      searchable: true
+      sort: 4
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: teaser
+      table: services
+      data_type: text
+      default_value: null
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: services
+    field: description
+    type: text
+    meta:
+      collection: services
+      conditions: null
+      display: null
+      display_options: null
+      field: description
+      group: null
+      hidden: false
+      interface: input-rich-text-html
+      note: null
+      options: null
+      readonly: false
+      required: false
+      searchable: true
+      sort: 5
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: description
+      table: services
+      data_type: text
+      default_value: null
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: services
+    field: icon
+    type: uuid
+    meta:
+      collection: services
+      conditions: null
+      display: null
+      display_options: null
+      field: icon
+      group: null
+      hidden: false
+      interface: file-image
+      note: null
+      options: null
+      readonly: false
+      required: false
+      searchable: true
+      sort: 6
+      special:
+        - file
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: icon
+      table: services
+      data_type: uuid
+      default_value: null
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: directus_files
+      foreign_key_column: id
+  - collection: services
+    field: type
+    type: string
+    meta:
+      collection: services
+      conditions: null
+      display: null
+      display_options: null
+      field: type
+      group: null
+      hidden: false
+      interface: select-dropdown
+      note: null
+      options: null
+      readonly: false
+      required: false
+      searchable: true
+      sort: 7
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: type
+      table: services
       data_type: character varying
       default_value: null
       max_length: 255
@@ -1372,6 +2172,216 @@ fields:
       has_auto_increment: false
       foreign_key_table: null
       foreign_key_column: null
+  - collection: sponsors
+    field: id
+    type: integer
+    meta:
+      collection: sponsors
+      conditions: null
+      display: null
+      display_options: null
+      field: id
+      group: null
+      hidden: true
+      interface: input
+      note: null
+      options: null
+      readonly: true
+      required: false
+      searchable: true
+      sort: 1
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: id
+      table: sponsors
+      data_type: integer
+      default_value: nextval('sponsors_id_seq'::regclass)
+      max_length: null
+      numeric_precision: 32
+      numeric_scale: 0
+      is_nullable: false
+      is_unique: true
+      is_indexed: false
+      is_primary_key: true
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: true
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: sponsors
+    field: name
+    type: string
+    meta:
+      collection: sponsors
+      conditions: null
+      display: null
+      display_options: null
+      field: name
+      group: null
+      hidden: false
+      interface: input
+      note: null
+      options: null
+      readonly: false
+      required: false
+      searchable: true
+      sort: 2
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: name
+      table: sponsors
+      data_type: character varying
+      default_value: null
+      max_length: 255
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: sponsors
+    field: logo
+    type: uuid
+    meta:
+      collection: sponsors
+      conditions: null
+      display: null
+      display_options: null
+      field: logo
+      group: null
+      hidden: false
+      interface: file-image
+      note: null
+      options: null
+      readonly: false
+      required: false
+      searchable: true
+      sort: 3
+      special:
+        - file
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: logo
+      table: sponsors
+      data_type: uuid
+      default_value: null
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: directus_files
+      foreign_key_column: id
+  - collection: sponsors
+    field: website_url
+    type: string
+    meta:
+      collection: sponsors
+      conditions: null
+      display: null
+      display_options: null
+      field: website_url
+      group: null
+      hidden: false
+      interface: input
+      note: null
+      options: null
+      readonly: false
+      required: false
+      searchable: true
+      sort: 4
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: website_url
+      table: sponsors
+      data_type: character varying
+      default_value: null
+      max_length: 255
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: sponsors
+    field: tier
+    type: string
+    meta:
+      collection: sponsors
+      conditions: null
+      display: null
+      display_options: null
+      field: tier
+      group: null
+      hidden: false
+      interface: select-dropdown
+      note: null
+      options:
+        choices:
+          - text: Gold
+            value: Gold
+          - text: Silber
+            value: Silber
+          - text: Bronze
+            value: Bornze
+          - text: Partner
+            value: Partner
+      readonly: false
+      required: false
+      searchable: true
+      sort: 5
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: tier
+      table: sponsors
+      data_type: character varying
+      default_value: null
+      max_length: 255
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
 systemFields:
   - collection: directus_activity
     field: timestamp
@@ -1401,6 +2411,27 @@ relations:
       foreign_key_table: directus_files
       foreign_key_column: id
       constraint_name: events_image_foreign
+      on_update: NO ACTION
+      on_delete: SET NULL
+  - collection: events
+    field: category
+    related_collection: event_categories
+    meta:
+      junction_field: null
+      many_collection: events
+      many_field: category
+      one_allowed_collections: null
+      one_collection: event_categories
+      one_collection_field: null
+      one_deselect_action: nullify
+      one_field: null
+      sort_field: null
+    schema:
+      table: events
+      column: category
+      foreign_key_table: event_categories
+      foreign_key_column: id
+      constraint_name: events_category_foreign
       on_update: NO ACTION
       on_delete: SET NULL
   - collection: global_settings
@@ -1445,6 +2476,27 @@ relations:
       constraint_name: pages_hero_image_foreign
       on_update: NO ACTION
       on_delete: SET NULL
+  - collection: services
+    field: icon
+    related_collection: directus_files
+    meta:
+      junction_field: null
+      many_collection: services
+      many_field: icon
+      one_allowed_collections: null
+      one_collection: directus_files
+      one_collection_field: null
+      one_deselect_action: nullify
+      one_field: null
+      sort_field: null
+    schema:
+      table: services
+      column: icon
+      foreign_key_table: directus_files
+      foreign_key_column: id
+      constraint_name: services_icon_foreign
+      on_update: NO ACTION
+      on_delete: SET NULL
   - collection: shop_products
     field: image
     related_collection: directus_files
@@ -1464,5 +2516,26 @@ relations:
       foreign_key_table: directus_files
       foreign_key_column: id
       constraint_name: shop_products_image_foreign
+      on_update: NO ACTION
+      on_delete: SET NULL
+  - collection: sponsors
+    field: logo
+    related_collection: directus_files
+    meta:
+      junction_field: null
+      many_collection: sponsors
+      many_field: logo
+      one_allowed_collections: null
+      one_collection: directus_files
+      one_collection_field: null
+      one_deselect_action: nullify
+      one_field: null
+      sort_field: null
+    schema:
+      table: sponsors
+      column: logo
+      foreign_key_table: directus_files
+      foreign_key_column: id
+      constraint_name: sponsors_logo_foreign
       on_update: NO ACTION
       on_delete: SET NULL
