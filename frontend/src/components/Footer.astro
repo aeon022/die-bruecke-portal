@@ -1,0 +1,39 @@
+---
+import { getGlobalSettings } from '../lib/api';
+const settings = await getGlobalSettings();
+---
+
+<footer class="bg-primary text-white py-12 mt-auto border-t-4 border-secondary">
+  <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
+    
+    <div>
+      <h3 class="text-xl font-bold mb-4 text-accent">{settings?.project_name}</h3>
+      <p class="text-surface-muted text-sm leading-relaxed opacity-90">
+        {settings?.footer_text || 'Ein Ort der Begegnung und Kultur.'}
+      </p>
+    </div>
+
+    <div>
+      <h3 class="text-lg font-bold mb-4 text-secondary">Wichtige Links</h3>
+      <ul class="space-y-2 text-sm text-surface-muted">
+        <li><a href="/impressum" class="hover:text-accent transition">Impressum</a></li>
+        <li><a href="/datenschutz" class="hover:text-accent transition">Datenschutz</a></li>
+        <li><a href="/kontakt" class="hover:text-accent transition">Kontakt</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 class="text-lg font-bold mb-4 text-secondary">Kontakt</h3>
+      <p class="text-surface-muted text-sm leading-relaxed">
+        Musterstraße 123<br>
+        12345 Musterstadt<br>
+        <a href="mailto:info@diebruecke.social" class="text-accent hover:text-white underline decoration-dotted mt-2 inline-block">info@diebruecke.social</a>
+      </p>
+    </div>
+
+  </div>
+  
+  <div class="container mx-auto px-4 mt-8 pt-8 border-t border-white/10 text-center text-xs text-secondary/80">
+    &copy; {new Date().getFullYear()} Die Brücke - Soziokulturelles Zentrum.
+  </div>
+</footer>

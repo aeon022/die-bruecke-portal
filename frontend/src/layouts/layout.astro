@@ -1,73 +1,35 @@
 ---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
 import '../styles/global.css';
-import { directus } from '../lib/directus';
-import { readSingleton } from '@directus/sdk';
 
-// 1. Standard-Werte definieren (Fallback, falls DB leer oder Fehler)
-let globalData = {
-	project_name: 'Die Brücke Portal',
-	footer_text: '© 2025 Die Brücke',
-	logo: null
-};
-
-// 2. Daten aus Directus holen
-try {
-	// WICHTIG: readSingleton verwenden, da es sich um ein einzelnes Objekt handelt
-	const result = await directus.request(readSingleton('global_settings'));
-	
-	if (result) {
-		globalData = result;
-	}
-	// Erfolg im Terminal anzeigen
-	console.log("✅ Global Settings erfolgreich geladen:", globalData);
-
-} catch (error) {
-	// Fehler im Terminal anzeigen (z.B. 403 Forbidden)
-	console.error("❌ Fehler beim Laden der Global Settings:", error);
+interface Props {
+	title?: string;
+    description?: string;
 }
 
-// 3. Logo-URL zusammenbauen
-const logoUrl = globalData.logo ? `http://localhost:8055/assets/${globalData.logo}` : null;
+const { title = 'Die Brücke', description = 'Soziokulturelles Zentrum' } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="de">
+<html lang="de" class="h-full scroll-smooth">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
-		<title>{globalData.project_name}</title>
+        <meta name="description" content={description} />
+		<title>{title}</title>
 	</head>
-	<body class="bg-gray-50 flex flex-col min-h-screen">
+	<body class="flex flex-col min-h-full bg-surface-muted font-sans text-gray-800 antialiased">
 		
-		<nav class="bg-white shadow-sm sticky top-0 z-50">
-			<div class="container mx-auto px-4 py-3 flex justify-between items-center">
-				<a href="/" class="flex items-center gap-2 font-bold text-xl text-blue-900 hover:opacity-80 transition">
-					{logoUrl ? (
-						<img src={logoUrl} alt="Logo" class="h-8 w-auto object-contain" />
-					) : (
-						/* Fallback Icon, falls kein Logo hochgeladen wurde */
-						<span class="text-2xl" role="img" aria-label="Logo">🌉</span>
-					)}
-					<span>{globalData.project_name}</span>
-				</a>
-				
-				<div class="flex gap-6 text-sm font-medium text-gray-600">
-					<a href="/" class="hover:text-blue-600 transition">Startseite</a>
-					</div>
-			</div>
-		</nav>
+        <Header />
 
 		<main class="flex-grow">
 			<slot />
 		</main>
 
-		<footer class="bg-gray-900 text-white py-8 mt-auto border-t border-gray-800">
-			<div class="container mx-auto px-4 text-center text-sm text-gray-400">
-				<p>{globalData.footer_text}</p>
-			</div>
-		</footer>
+        <Footer />
 
 	</body>
 </html>
