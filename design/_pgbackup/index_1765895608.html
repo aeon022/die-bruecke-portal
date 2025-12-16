@@ -1,0 +1,216 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+    <head> 
+        <meta charset="utf-8"> 
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> 
+        <title>New page</title>
+        <style>
+    /* Custom font definitions for Tailwind utility classes */
+    .font-heading {
+        font-family: 'Sora', sans-serif;
+    }
+    .font-sans {
+        font-family: 'Inter', sans-serif;
+    }
+</style>                  
+        <link href="tailwind_theme/tailwind.css" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+        <link href="https://fonts.googleapis.com/css2?family=Sora:wght@100..800&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    </head>     
+    <body class="min-h-screen font-sans antialiased text-primary"> 
+        <!-- 1. Navigation (Floating & Minimal) -->
+        <header class="fixed top-0 left-0 right-0 z-50 p-4 lg:p-6">
+            <div class="max-w-7xl mx-auto">
+                <nav class="bg-surface/90 backdrop-blur-xl p-3 md:p-4 rounded-full shadow-xl flex justify-between items-center ring-1 ring-primary/10" aria-label="Global">
+                    <!-- Logo --><a href="#" class="text-primary text-xl md:text-2xl font-heading font-black tracking-tight px-2">
+                DIE BRÜCKE </a>
+                    <!-- Menu Button (Burger) -->
+                    <!-- Note: Pinegrow will add the interactivity (click handler, state) to show/hide the menu overlay below. -->
+                    <button id="menu-open-button" type="button" class="group relative flex h-10 w-10 items-center justify-center rounded-full bg-primary text-white transition duration-300 hover:bg-tangerine focus:outline-none focus:ring-2 focus:ring-tangerine focus:ring-offset-2 focus:ring-offset-surface"><span class="sr-only">Open main menu</span>
+                        <svg class="h-6 w-6 transition duration-300 group-hover:rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </nav>
+            </div>
+        </header>
+        <main class="min-h-screen">
+            <!-- 2. Hero Section ("The Statement") - Massive Scale, Centered -->
+            <section class="min-h-screen bg-primary flex flex-col justify-center items-center py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+                <div class="max-w-7xl mx-auto w-full relative z-10 text-center">
+                    <!-- Massive Headline -->
+                    <h1 class="text-accent text-8xl sm:text-9xl lg:text-[12rem] xl:text-[15rem] font-heading font-black tracking-tighter leading-none mx-auto max-w-7xl">
+                    CULTURE, <br>
+                    CONNECTS. </h1>
+                    <!-- Subtext and Scroll CTA -->
+                    <div class="mt-12 md:mt-24 flex flex-col items-center">
+                        <p class="text-secondary text-lg md:text-3xl uppercase font-heading tracking-[0.3em] max-w-4xl mb-10">
+                        A Modern Sociocultural Center. Precision in Design. </p><a href="#content-grid" class="group flex flex-col items-center text-white/70 hover:text-white transition duration-300"> <span class="text-sm uppercase tracking-widest font-medium">Explore the Program</span> <svg class="w-6 h-6 mt-2 group-hover:translate-y-1 transition duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+                            </svg> </a>
+                    </div>
+                </div>
+                <!-- Simple geometric background overlay for depth -->
+                <div class="absolute inset-0 bg-primary/80 [mask-image:radial-gradient(ellipse_at_top,_transparent_50%,_rgba(0,0,0,0.5)_100%)]"></div>
+            </section>
+            <!-- 3. Bento Grid Section (The Content) - Services and Events -->
+            <section id="content-grid" class="bg-surface-muted py-20 md:py-32 lg:py-40 px-4 sm:px-6 lg:px-8">
+                <div class="max-w-7xl mx-auto">
+                    <div class="mb-12 md:mb-20">
+                        <h2 class="text-primary text-4xl md:text-6xl font-heading font-black tracking-tight leading-snug max-w-4xl">
+                        A Curated Program for Cultural Collisions. </h2>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-[280px] lg:auto-rows-[380px]">
+                        <!-- Card 1: Large Feature (Image + Text - lg:col-span-2 lg:row-span-2) -->
+                        <article class="lg:col-span-2 lg:row-span-2 bg-surface rounded-3xl shadow-xl overflow-hidden relative group transition duration-500 hover:shadow-2xl">
+                            <img src="https://images.unsplash.com/photo-1570649160447-ffe37dc6f2f0?ixid=M3wyMDkyMnwwfDF8c2VhcmNofDh8fGFic3RyYWN0JTIwbGluZXN8ZW58MHx8fHwxNzY1ODk0NDI4fDA&ixlib=rb-4.1.0q=85&fm=jpg&crop=faces&cs=srgb&w=1200&h=800&fit=crop" alt="Abstract geometric lines and colors." class="w-full h-full object-cover absolute inset-0 transition duration-500 group-hover:scale-[1.03] opacity-80">
+                            <div class="absolute inset-0 bg-primary/60 transition duration-500 group-hover:bg-primary/75"></div>
+                            <div class="relative p-8 md:p-12 h-full flex flex-col justify-end"><span class="text-tangerine text-sm font-heading font-bold uppercase tracking-widest mb-3">
+                                Feature Event </span>
+                                <h3 class="text-white text-3xl lg:text-5xl font-heading font-black tracking-tight leading-tight max-w-4xl">
+                                The Architecture of Sound: A Generative Workshop. </h3><a href="#" class="mt-6 inline-flex items-center text-tangerine text-lg font-semibold hover:text-white transition duration-300">
+                                Details & Registration &rarr; </a>
+                            </div>
+                        </article>
+                        <!-- Card 2: Typography/Statistic (Full Width on Mobile) -->
+                        <article class="bg-surface text-primary rounded-3xl shadow-xl p-8 md:p-10 flex flex-col justify-center transition duration-300 hover:shadow-2xl hover:bg-surface-muted">
+                            <h4 class="text-tangerine text-lg font-heading font-bold uppercase tracking-widest mb-3">
+                            Impact </h4>
+                            <p class="text-6xl md:text-7xl font-heading font-black tracking-tighter leading-none mb-3">
+                            220+ </p>
+                            <p class="uppercase text-base tracking-wider font-medium text-primary/80">
+                            Events Hosted Last Year. </p>
+                        </article>
+                        <!-- Card 3: Standard Service Card -->
+                        <article class="bg-surface text-primary rounded-3xl shadow-xl p-8 md:p-10 flex flex-col justify-between transition duration-300 hover:shadow-2xl hover:ring-2 ring-tangerine">
+                            <div><span class="inline-block text-tangerine text-4xl mb-4"> <i class="fa-solid fa-shapes"></i> </span>
+                                <h3 class="text-primary text-2xl font-heading font-semibold mb-3 leading-snug">
+                                Design Studio Rentals </h3>
+                                <p class="text-primary/70 text-base">
+                                Flexible access to state-of-the-art facilities and equipment. </p>
+                            </div><a href="#" class="text-sm font-semibold uppercase tracking-wider text-primary border-b border-primary/20 hover:border-primary transition mt-4 self-start">
+                            View Spaces </a>
+                        </article>
+                        <!-- Card 4: Event Teaser Card (Needs to fill the row after the large card) -->
+                        <article class="bg-primary text-white rounded-3xl shadow-xl p-8 md:p-10 flex flex-col justify-between transition duration-300 hover:shadow-2xl">
+                            <div><span class="inline-block text-secondary text-lg font-semibold uppercase tracking-widest mb-2">
+                                Next Week </span>
+                                <h3 class="text-accent text-2xl font-heading font-black mb-3 leading-snug">
+                                Ethics in AI: Panel Discussion </h3>
+                                <p class="text-white/70 text-base">
+                                Exploring the social impact of generative models. </p>
+                            </div>
+                            <div class="text-sm font-medium mt-4"><span class="text-tangerine">Jan 10</span> &middot; <span class="text-white/70">18:30 CET</span>
+                            </div>
+                        </article>
+                        <!-- Card 5: Image Card -->
+                        <article class="rounded-3xl shadow-xl overflow-hidden group relative transition duration-300 hover:shadow-2xl">
+                            <img src="https://images.unsplash.com/photo-1557804506-669a67965ba0?ixid=M3wyMDkyMnwwfDF8c2VhcmNofDExfHxjb2xsYWJvcmF0ZXxlbnwwfHx8fDE3NjU4OTQ0Mjl8MA&ixlib=rb-4.1.0q=85&fm=jpg&crop=faces&cs=srgb&w=1200&h=800&fit=crop" alt="A clean, geometric studio interior." class="w-full h-full object-cover object-center transition duration-300 group-hover:scale-[1.03]">
+                            <div class="absolute inset-0 bg-primary/30"></div>
+                            <div class="absolute bottom-6 left-6 right-6"><span class="inline-block text-white text-2xl font-heading font-bold tracking-tight">
+                                Join Our Network. </span>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </section>
+            <!-- 4. Mission Statement / Quote Section - High Contrast Text on Light Background -->
+            <section class="bg-surface py-20 md:py-32 lg:py-40 px-4 sm:px-6 lg:px-8 relative" id="manifesto">
+                <div class="absolute inset-0 bg-surface-muted/50 [clip-path:polygon(0_0,100%_0%,100%_70%,0%_100%)]"></div>
+                <div class="max-w-7xl mx-auto relative z-10">
+                    <div class="max-w-5xl mx-auto text-center">
+                        <h2 class="text-primary text-2xl md:text-3xl font-heading font-extrabold uppercase tracking-[0.2em] mb-4">
+                        Manifesto </h2>
+                        <p class="text-primary text-4xl md:text-6xl font-heading font-black tracking-tight leading-snug mb-10">
+                        A commitment to fostering innovative artistic expression and facilitating public engagement through structural clarity. </p><a href="#" class="inline-flex items-center px-8 py-3 text-lg font-semibold rounded-full text-white bg-primary hover:bg-tangerine transition duration-300 shadow-xl hover:shadow-2xl">
+                        Discover Our Philosophy </a>
+                    </div>
+                </div>
+            </section>
+        </main>
+        <!-- 5. Footer (The Anchor) -->
+        <footer class="bg-primary text-white pt-20 pb-10 px-4 sm:px-6 lg:px-8">
+            <div class="max-w-7xl mx-auto">
+                <!-- Top: Contact Headline -->
+                <div class="border-b-4 border-tangerine pb-12 mb-12" id="footer-contact">
+                    <h2 class="text-accent text-5xl md:text-7xl lg:text-8xl font-heading font-black tracking-tighter leading-none mb-6 max-w-5xl">
+                    Let's Build Something Monumental. </h2><a href="#" class="inline-flex items-center text-tangerine hover:text-secondary text-xl font-semibold transition duration-300 border-b-2 border-tangerine hover:border-secondary pb-1">
+                    Start a Dialogue &rarr; </a>
+                </div>
+                <!-- Grid: Sitemap -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+                    <div>
+                        <h4 class="text-white text-lg font-heading font-bold mb-4">Program</h4>
+                        <ul class="space-y-3 text-white/70 text-sm">
+                            <li>
+                                <a href="#" class="hover:text-tangerine transition">Exhibitions</a>
+                            </li>
+                            <li>
+                                <a href="#" class="hover:text-tangerine transition">Workshops</a>
+                            </li>
+                            <li>
+                                <a href="#" class="hover:text-tangerine transition">Lectures</a>
+                            </li>
+                            <li>
+                                <a href="#" class="hover:text-tangerine transition">Performances</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-white text-lg font-heading font-bold mb-4">Center</h4>
+                        <ul class="space-y-3 text-white/70 text-sm">
+                            <li>
+                                <a href="#" class="hover:text-tangerine transition">About Us</a>
+                            </li>
+                            <li>
+                                <a href="#" class="hover:text-tangerine transition">Mission</a>
+                            </li>
+                            <li>
+                                <a href="#" class="hover:text-tangerine transition">Team</a>
+                            </li>
+                            <li>
+                                <a href="#" class="hover:text-tangerine transition">Press</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-white text-lg font-heading font-bold mb-4">Legal</h4>
+                        <ul class="space-y-3 text-white/70 text-sm">
+                            <li>
+                                <a href="#" class="hover:text-tangerine transition">Imprint</a>
+                            </li>
+                            <li>
+                                <a href="#" class="hover:text-tangerine transition">Privacy Policy</a>
+                            </li>
+                            <li>
+                                <a href="#" class="hover:text-tangerine transition">Terms of Service</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-white text-lg font-heading font-bold mb-4">Connect</h4>
+                        <ul class="space-y-3 text-white/70 text-sm">
+                            <li>
+                                <a href="#" class="hover:text-tangerine transition">Instagram</a>
+                            </li>
+                            <li>
+                                <a href="#" class="hover:text-tangerine transition">Twitter/X</a>
+                            </li>
+                            <li>
+                                <a href="#" class="hover:text-tangerine transition">LinkedIn</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- Bottom: Copyright -->
+                <div class="pt-6 border-t border-white/10 flex flex-col md:flex-row justify-between items-center text-center">
+                    <p class="text-white/50 text-xs tracking-wider mb-2 md:mb-0">
+                    &copy; 2025 Die Brücke. All rights reserved. </p>
+                    <p class="text-white/50 text-xs tracking-wider">
+                    Built with precision and purpose. </p>
+                </div>
+            </div>
+        </footer>
+    </body>     
+</html>
