@@ -32,7 +32,4 @@
         </dmdesign>
     </dmdesigns>
     <dmlocked tw-colors-red="true" tw-colors-orange="true" tw-colors-amber="true" tw-colors-yellow="true" tw-colors-lime="true" tw-colors-green="true" tw-colors-emerald="true" tw-colors-teal="true" tw-colors-cyan="true" tw-colors-sky="true" tw-colors-blue="true" tw-colors-indigo="true" tw-colors-violet="true" tw-colors-purple="true" tw-colors-fuchsia="true" tw-colors-pink="true" tw-colors-rose="true" tw-colors-slate="true" tw-colors-gray="true" tw-colors-zinc="true" tw-colors-neutral="true" tw-colors-stone="true"></dmlocked>
-    <classstyles>
-        <classstyle name="h1" key="h1" class="text-5xl tracking-tight sm:text-7xl lg:text-8xl font-normal" expanded component></classstyle>
-    </classstyles>
 </project>

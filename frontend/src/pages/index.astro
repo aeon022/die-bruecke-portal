@@ -2,124 +2,204 @@
 import Layout from '../layouts/layout.astro';
 import { getEvents, getGlobalSettings } from '../lib/api';
 
-// Daten laden
-const [globalSettings, events] = await Promise.all([
+// 1. Daten laden
+const [settings, events] = await Promise.all([
   getGlobalSettings(),
   getEvents()
 ]);
 
 const ASSET_URL = 'http://localhost:8055/assets';
 
-// Helper für Bild-URL (falls im CMS keins gesetzt ist, nehmen wir null)
-const heroImage = globalSettings?.hero_image 
-  ? `url('${ASSET_URL}/${globalSettings.hero_image}')` 
-  : null;
+// Text Fallbacks
+const heroHeadline = settings?.hero_headline || "Die Brücke – soziokulturelles Zentrum & Träger für mobile Dienste.";
+const heroSubline = settings?.hero_subline || "Ein Ort der Begegnung, Kultur und sozialen Unterstützung – mitten in der Stadt.";
 ---
 
 <Layout>
-  
-  <section class="relative bg-primary text-white py-20 lg:py-32 overflow-hidden">
-    
-    {heroImage && (
-      <div class="absolute inset-0 z-0 opacity-20 bg-cover bg-center" style={`background-image: ${heroImage}`}></div>
-    )}
-
-    <div class="container mx-auto px-4 relative z-10 text-center">
-      <h1 class="text-4xl md:text-6xl font-bold mb-6 leading-tight tracking-tight">
-        Willkommen in der <br/>
-        <span class="text-secondary">Brücke</span>
-      </h1>
-      
-      <p class="text-lg md:text-xl text-accent max-w-2xl mx-auto mb-10 leading-relaxed">
-        {globalSettings?.footer_text || 'Kultur, Begegnung und Soziales – alles unter einem Dach.'}
-      </p>
-
-      <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <a href="/events" class="px-8 py-4 bg-tangerine hover:bg-white hover:text-primary text-white font-bold rounded-lg transition-all shadow-lg transform hover:-translate-y-1">
-          Veranstaltungen entdecken
-        </a>
-        <a href="/services" class="px-8 py-4 bg-transparent border-2 border-secondary text-secondary hover:bg-secondary hover:text-primary font-bold rounded-lg transition-all">
-          Unsere Angebote
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <section class="py-16 bg-surface-muted">
-    <div class="container mx-auto px-4">
-      <div class="flex justify-between items-end mb-8">
-        <div>
-          <h2 class="text-3xl font-bold text-primary mb-2">Kommende Termine</h2>
-          <div class="h-1 w-20 bg-tangerine rounded-full"></div>
-        </div>
-        <a href="/events" class="text-primary hover:text-tangerine font-medium hidden md:block">Alle ansehen &rarr;</a>
-      </div>
-      
-      {events.length === 0 && (
-        <p class="text-gray-500 italic">Aktuell keine Termine veröffentlicht.</p>
-      )}
-
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {events.map((event) => (
-          <article class="bg-surface rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-hidden group flex flex-col h-full border border-gray-100">
-            
-            <a href={`/events/${event.slug}`} class="block overflow-hidden h-56 relative">
-              {event.image ? (
-                <img 
-                  src={`${ASSET_URL}/${event.image}`} 
-                  alt={event.title} 
-                  class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-              ) : (
-                <div class="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400">Kein Bild</div>
-              )}
-              
-              {/* Datums-Badge (Overlay) */}
-              <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-md shadow-sm text-center">
-                <span class="block text-xl font-bold text-primary leading-none">
-                  {new Date(event.start_date).getDate()}
-                </span>
-                <span class="block text-xs text-gray-600 uppercase">
-                  {new Date(event.start_date).toLocaleString('de-DE', { month: 'short' })}
-                </span>
-              </div>
-            </a>
-
-            <div class="p-6 flex flex-col flex-grow">
-              <div class="mb-3">
-                 {event.category && typeof event.category !== 'number' && (
-                    <span class="text-xs font-bold px-2 py-1 rounded text-white inline-block tracking-wide uppercase" 
-                          style={`background-color: ${event.category.color || '#006D77'}`}>
-                      {event.category.name}
-                    </span>
-                 )}
-              </div>
-
-              <h3 class="text-xl font-bold text-gray-900 mb-3 leading-snug">
-                <a href={`/events/${event.slug}`} class="hover:text-tangerine transition-colors">
-                  {event.title}
-                </a>
-              </h3>
-              
-              <div class="mt-auto pt-4 border-t border-gray-100 flex justify-between items-center text-sm text-gray-500">
-                <span class="flex items-center gap-1">
-                  🕒 {new Date(event.start_date).toLocaleTimeString('de-DE', { hour: '2-digit', minute:'2-digit' })}
-                </span>
-                {event.location && (
-                   <span class="flex items-center gap-1 truncate max-w-[50%]">
-                     📍 {event.location}
-                   </span>
-                )}
-              </div>
+    <div class="relative max-w-[1400px] mx-auto rounded-[40px] md:rounded-[48px] shadow-xl overflow-hidden ring-1 ring-black/10 rounded-canvas bg-white">
+        
+        <div id="navOverlay" class="absolute inset-0 z-50 transition duration-300 ease-out overlay-hidden font-sans" aria-hidden="true">
+            <div class="absolute inset-0 bg-[color:var(--primary)]">
+                <div class="absolute inset-0 bg-black/65"></div>
             </div>
-          </article>
-        ))}
-      </div>
+            <div class="relative h-full overflow-y-auto">
+                <div class="flex items-center justify-between px-6 sm:px-10 py-6">
+                    <a href="#" class="flex items-center gap-3 text-white/90"> 
+                        <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/15"> 
+                            <span class="block h-3 w-3 rounded-sm bg-white/80"></span> 
+                        </span> 
+                        <span class="text-lg font-semibold tracking-tight font-heading">Die Brücke.</span> 
+                    </a>
+                    <div class="flex items-center gap-3">
+                        <a href="#contact" class="rounded-full bg-white text-[color:var(--primary)] px-4 py-2 text-sm font-medium shadow-sm hover:bg-white/90 focus:outline-none focus:ring-2 focus:ring-white/50">
+                        Kontakt </a>
+                        <button id="btnCloseNav" type="button" class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white ring-1 ring-white/20 hover:bg-white/15 focus:outline-none focus:ring-2 focus:ring-white/50" aria-label="Close menu"><i class="fa-solid fa-xmark text-lg"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="px-6 sm:px-10 pt-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 border border-white/10 rounded-[28px] overflow-hidden bg-white/5">
+                        <a class="group p-10 sm:p-12 text-white/90 text-4xl sm:text-6xl font-heading font-extrabold tracking-tight hover:bg-white/5 focus:outline-none focus:ring-2 focus:ring-white/40 transition-colors" href="/events">
+                        Veranstaltungen </a>
+                        <a class="group p-10 sm:p-12 text-white/90 text-4xl sm:text-6xl font-heading font-extrabold tracking-tight hover:bg-white/5 border-t md:border-t-0 md:border-l border-white/10 focus:outline-none focus:ring-2 focus:ring-white/40 transition-colors" href="/services">
+                        Angebote </a>
+                        <a class="group p-10 sm:p-12 text-white/90 text-4xl sm:text-6xl font-heading font-extrabold tracking-tight hover:bg-white/5 border-t border-white/10 focus:outline-none focus:ring-2 focus:ring-white/40 transition-colors" href="/about">
+                        Über uns </a>
+                        <a class="group p-10 sm:p-12 text-white/90 text-4xl sm:text-6xl font-heading font-extrabold tracking-tight hover:bg-white/5 border-t md:border-l border-white/10 focus:outline-none focus:ring-2 focus:ring-white/40 transition-colors" href="/contact">
+                        Kontakt </a>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-      <div class="mt-8 text-center md:hidden">
-        <a href="/events" class="inline-block text-primary font-bold border-b-2 border-tangerine pb-1">Alle Termine ansehen</a>
-      </div>
+        <header class="relative z-10 px-6 sm:px-10 pt-8 bg-[color:var(--surface)]">
+            <div class="flex items-center justify-between"><a href="/" class="flex items-center gap-3 text-[color:var(--primary)]"> <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-white ring-1 ring-black/10"> <span class="block h-3 w-3 rounded-sm bg-[color:var(--tangerine)]"></span> </span> <span class="text-lg font-semibold tracking-tight font-heading">Die Brücke.</span> </a>
+                <div class="flex items-center gap-3"><a href="#contact" class="hidden md:inline-block rounded-full bg-[color:var(--tangerine)] text-white px-4 py-2 text-sm font-medium shadow-md hover:bg-[color:var(--tangerine)]/90 focus:outline-none focus:ring-2 focus:ring-[color:var(--tangerine)]/50 transition">Kontakt</a>
+                    <button id="btnOpenNav" type="button" class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white ring-1 ring-black/10 hover:bg-black/[0.03] focus:outline-none focus:ring-2 focus:ring-[color:var(--primary)]/30 transition" aria-label="Open menu"><i class="fa-solid fa-bars text-[color:var(--primary)]"></i><span class="sr-only">Menu</span>
+                    </button>
+                </div>
+            </div>
+        </header>
 
+        <section id="top" class="relative z-10 px-6 sm:px-10 pt-16 sm:pt-20 pb-14 sm:pb-20 bg-[color:var(--surface)]">
+            <div class="max-w-5xl">
+                <h1 class="text-5xl sm:text-7xl lg:text-8xl font-heading font-extrabold tracking-tight leading-[1.02] text-[color:var(--primary)]" set:html={heroHeadline}>
+                </h1>
+                <p class="mt-8 text-lg sm:text-xl text-[color:var(--secondary)] max-w-2xl">
+                    {heroSubline}
+                </p>
+            </div>
+        </section>
+
+        <section id="services" class="relative z-10 px-6 sm:px-10 py-16 sm:py-20 bg-[color:var(--surface-muted)]">
+            <div class="max-w-3xl">
+                <div class="text-sm font-semibold tracking-wide text-[color:var(--tangerine)]">Angebote</div>
+                <h2 class="mt-4 text-4xl sm:text-5xl font-heading font-bold tracking-tight leading-[1.08] text-[color:var(--primary)]">
+                Hilfe, Kultur und Begegnung unter einem Dach. </h2>
+                <p class="mt-5 text-[color:var(--secondary)] max-w-xl">
+                Wir verbinden strategische soziale Arbeit mit kultureller Offenheit. </p>
+            </div>
+            <div class="mt-12 grid gap-12 lg:grid-cols-2 lg:items-center">
+                <div class="image-mask ring-1 ring-black/10 bg-white shadow-xl">
+                    <img src="https://images.unsplash.com/photo-1484589065579-248aad0d8b13?ixid=M3wyMDkyMnwwfDF8c2VhcmNofDE0fHxhYnN0cmFjdHxlbnwwfHx8fDE3NjU4OTU4NTJ8MA&ixlib=rb-4.1.0q=85&fm=jpg&crop=faces&cs=srgb&w=1200&h=800&fit=crop" alt="Abstract architectural rendering" class="w-full h-full object-cover aspect-[4/3]"/>
+                </div>
+                <div class="divide-y divide-black/10">
+                    <div class="py-8 group transition hover:bg-white/5 cursor-pointer">
+                        <div class="text-[color:var(--primary)] font-heading font-semibold text-xl">
+                            01 / Soziale Beratung<span class="text-[color:var(--tangerine)]">.</span>
+                        </div>
+                        <p class="mt-3 text-[color:var(--secondary)]">
+                        Unterstützung bei Behördengängen, familiären Problemen und Integration. </p>
+                    </div>
+                    <div class="py-8 group transition hover:bg-white/5 cursor-pointer">
+                        <div class="text-[color:var(--primary)] font-heading font-semibold text-xl">
+                            02 / Kultur & Events<span class="text-[color:var(--tangerine)]">.</span>
+                        </div>
+                        <p class="mt-3 text-[color:var(--secondary)]">
+                        Konzerte, Lesungen und Workshops für alle Altersgruppen. </p>
+                    </div>
+                    <div class="py-8 group transition hover:bg-white/5 cursor-pointer">
+                        <div class="text-[color:var(--primary)] font-heading font-semibold text-xl">
+                            03 / Begegnungscafé<span class="text-[color:var(--tangerine)]">.</span>
+                        </div>
+                        <p class="mt-3 text-[color:var(--secondary)]">
+                        Ein offener Raum für Nachbarschaft und Austausch. </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="work" class="relative z-10 px-6 sm:px-10 py-16 sm:py-20 bg-[color:var(--surface-muted)]">
+            <div class="flex justify-between items-end mb-12">
+                <h2 class="text-3xl sm:text-4xl font-heading font-bold text-[color:var(--primary)]">Kommende Termine</h2>
+                <a href="/events" class="text-[color:var(--tangerine)] font-semibold hover:text-[color:var(--primary)] transition">Alle ansehen →</a>
+            </div>
+
+            <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                
+                {events.length === 0 && <p class="text-gray-500">Keine Termine aktuell.</p>}
+
+                {events.map((event) => (
+                    <article class="rounded-[28px] bg-white ring-1 ring-black/10 p-8 hover:shadow-2xl hover:translate-y-[-4px] transition-all duration-300 group cursor-pointer flex flex-col h-full">
+                        <a href={`/events/${event.slug}`} class="flex flex-col h-full">
+                            <div class="h-12 w-12 rounded-full bg-[color:var(--tangerine)]/10 ring-1 ring-[color:var(--tangerine)]/20 flex items-center justify-center text-[color:var(--tangerine)] transition group-hover:bg-[color:var(--tangerine)] group-hover:text-white mb-6">
+                                <i class="fa-solid fa-calendar-day"></i>
+                            </div>
+                            
+                            <div class="text-xs font-semibold tracking-wide text-[color:var(--primary)]/70">
+                                {new Date(event.start_date).toLocaleDateString('de-DE')} 
+                                <span class="mx-2">/</span> 
+                                {event.category?.name || 'Event'}
+                            </div>
+                            
+                            <h3 class="mt-3 text-2xl font-heading font-extrabold tracking-tight text-[color:var(--primary)] group-hover:text-[color:var(--tangerine)] transition line-clamp-2">
+                                {event.title}
+                            </h3>
+                            
+                            <p class="mt-3 text-[color:var(--secondary)] line-clamp-3">
+                                {event.description ? event.description.replace(/<[^>]*>?/gm, '').substring(0, 100) + '...' : ''}
+                            </p>
+                        </a>
+                    </article>
+                ))}
+
+            </div>
+        </section>
+
+        <section id="contact" class="relative z-10 px-6 sm:px-10 pb-16 sm:pb-20">
+            <div class="rounded-[40px] bg-[color:var(--primary)] overflow-hidden">
+                <div class="p-10 sm:p-14">
+                    <h2 class="text-white text-4xl sm:text-5xl font-heading font-extrabold tracking-tight">
+                    Interesse geweckt? </h2>
+                    <div class="mt-8"><a href="mailto:info@diebruecke.social" class="inline-flex items-center rounded-full bg-[color:var(--tangerine)] text-white px-6 py-3 text-lg font-medium shadow-md hover:bg-[color:var(--tangerine)]/90 focus:outline-none focus:ring-2 focus:ring-[color:var(--tangerine)]/50 transition">
+                        Schreib uns → </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="relative z-10 px-6 sm:px-10 pb-10 bg-[color:var(--surface-muted)] pt-16">
+            <div class="mt-10 border-t border-black/10 pt-8 flex items-center justify-between gap-6">
+                <a href="#" class="flex items-center gap-3 text-[color:var(--primary)]"> 
+                    <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-white ring-1 ring-black/10"> 
+                        <span class="block h-3 w-3 rounded-sm bg-[color:var(--tangerine)]"></span> 
+                    </span> 
+                    <span class="text-lg font-semibold tracking-tight font-heading">Die Brücke.</span> 
+                </a>
+                <div class="text-sm text-[color:var(--secondary)]">© Die Brücke {new Date().getFullYear()}</div>
+            </div>
+        </footer>
     </div>
-  </section>
 </Layout>
+
+<script>
+    // Navigation Logic
+    const navOverlay = document.getElementById('navOverlay');
+    const btnOpenNav = document.getElementById('btnOpenNav');
+    const btnCloseNav = document.getElementById('btnCloseNav');
+
+    if (navOverlay && btnOpenNav && btnCloseNav) {
+        const openNav = () => {
+            navOverlay.classList.remove('overlay-hidden');
+            navOverlay.setAttribute('aria-hidden', 'false');
+            setTimeout(() => {
+                btnCloseNav.focus();
+            }, 10);
+        };
+
+        const closeNav = () => {
+            navOverlay.classList.add('overlay-hidden');
+            navOverlay.setAttribute('aria-hidden', 'true');
+            btnOpenNav.focus();
+        };
+
+        btnOpenNav.addEventListener('click', openNav);
+        btnCloseNav.addEventListener('click', closeNav);
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeNav();
+            }
+        });
+    }
+</script>

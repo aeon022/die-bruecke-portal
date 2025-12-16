@@ -4,13 +4,60 @@
         <meta charset="utf-8"> 
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> 
         <title>Die Brücke - Architects of Digital Identity</title>
-        <style>/* Custom CSS Variables for High Fidelity to User Brief */:root { --primary: #0A4D4A;  /* Stormy Teal: Deep Teal Foundation */ --secondary: #A3CCCD;  /* Pearl Aqua: Muted accent */ --surface-muted: #EBF5F6;  /* Light Blue: Page background */ --accent: #F3BFC1;  /* Almond Silk: Secondary text emphasis on dark backgrounds */ --tertiary: #DDE7E8;  /* Soft Gray: borders/dividers */ --tangerine: #BE4B58;  /* Deep Rose: Strong CTA/buttons (Reverted as requested) */ --surface: #FFFFFF;  /* White */ } /* Custom font definitions for Tailwind utility classes */.font-sans { font-family: 'Inter', sans-serif; } /* Custom CSS for Background Pattern on the main container */.rounded-canvas { position: relative; background-color: var(--surface); } .rounded-canvas::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;  /* Subtle geometric tile pattern (using tertiary color with low opacity) */ background-image: repeating-linear-gradient(45deg, rgba(221, 231, 232, 0.3) 0, rgba(221, 231, 232, 0.3) 5px, transparent 5px, transparent 10px); background-size: 20px 20px; z-index: 0; border-radius: inherit; pointer-events: none; } /* Custom CSS for Overlay Navigation (overlay-hidden state for transition) */.overlay-hidden { opacity: 0; pointer-events: none; transform: translateY(-5px); } /* Custom CSS for Services Image Mask to match the geometric reference style */.image-mask { border-radius: 20px 20px 20px 100px; overflow: hidden; }</style>         
+        <style>
+    /* Custom CSS Variables for High Fidelity to User Brief */
+    :root {
+        --primary: #006D77;
+        --secondary: #83C5BE;
+        --surface-muted: #EDF6F9;
+        --accent: #FFDDD2;
+        --tertiary: #F3BFC1;
+        --tangerine: #E29578;
+        --surface: #FFFFFF;
+    }
+    /* Custom font definitions for Tailwind utility classes */
+    .font-heading { font-family: 'Sora', sans-serif; } 
+    .font-sans { font-family: 'Inter', sans-serif; }
+    
+    /* Custom CSS for Background Pattern on the main container */
+    .rounded-canvas {
+        position: relative;
+        background-color: var(--surface);
+    }
+    .rounded-canvas::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        /* Subtle geometric tile pattern (using a subtle linear gradient based on secondary color) */
+        background-image: repeating-linear-gradient(45deg, rgba(131, 197, 190, 0.05) 0, rgba(131, 197, 190, 0.05) 5px, transparent 5px, transparent 10px);
+        background-size: 20px 20px;
+        z-index: 0;
+        border-radius: inherit;
+        pointer-events: none;
+    }
+
+    /* Custom CSS for Overlay Navigation (overlay-hidden state for transition) */
+    .overlay-hidden {
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(-5px);
+    }
+    
+    /* Custom CSS for Services Image Mask to match the geometric reference style */
+    .image-mask {
+        border-radius: 20px 20px 20px 100px;
+        overflow: hidden;
+    }
+</style>         
         <link href="tailwind_theme/tailwind.css" rel="stylesheet" type="text/css">
         <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
         <link href="https://fonts.googleapis.com/css2?family=Sora:wght@100..800&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
     </head>     
-    <body class="min-h-screen font-sans antialiased p-4 md:p-10 lg:p-12">
+    <body class="min-h-screen font-sans antialiased text-[color:var(--primary)] bg-[color:var(--surface-muted)] p-4 md:p-10 lg:p-12">
         <div class="relative max-w-[1400px] mx-auto rounded-[40px] md:rounded-[48px] shadow-xl overflow-hidden ring-1 ring-black/10 rounded-canvas">
             <!-- =========================
              OVERLAY NAV (inside shell)
@@ -22,10 +69,8 @@
                 </div>
                 <div class="relative h-full">
                     <!-- Overlay Topbar -->
-                    <div class="flex items-center justify-between px-6 sm:px-10 py-6">
-                        <a href="#" class="flex items-center gap-3 text-white/90"> <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/15"> <!-- logo mark placeholder --> <span class="block h-3 w-3 rounded-sm bg-white/80"></span> </span> <span class="text-lg font-semibold tracking-tight font-heading">Die Brücke.</span> </a>
-                        <div class="flex items-center gap-3">
-                            <a href="#contact" class="rounded-full bg-white text-[color:var(--primary)] px-4 py-2 text-sm font-medium shadow-sm hover:bg-white/90 focus:outline-none focus:ring-2 focus:ring-white/50">
+                    <div class="flex items-center justify-between px-6 sm:px-10 py-6"><a href="#" class="flex items-center gap-3 text-white/90"> <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/15"> <!-- logo mark placeholder --> <span class="block h-3 w-3 rounded-sm bg-white/80"></span> </span> <span class="text-lg font-semibold tracking-tight font-heading">Die Brücke.</span> </a>
+                        <div class="flex items-center gap-3"><a href="#contact" class="rounded-full bg-white text-[color:var(--primary)] px-4 py-2 text-sm font-medium shadow-sm hover:bg-white/90 focus:outline-none focus:ring-2 focus:ring-white/50">
                             Contact us </a>
                             <button id="btnCloseNav" type="button" class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white ring-1 ring-white/20 hover:bg-white/15 focus:outline-none focus:ring-2 focus:ring-white/50" aria-label="Close menu"><i class="fa-solid fa-xmark text-lg"></i>
                             </button>
@@ -72,11 +117,9 @@
              HEADER
              ========================= -->
             <header class="relative z-10 px-6 sm:px-10 pt-8 bg-[color:var(--surface)]">
-                <div class="flex items-center justify-between">
-                    <a href="#" class="flex items-center gap-3 text-[color:var(--primary)]"> <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-white ring-1 ring-[color:var(--tertiary)]"> <span class="block h-3 w-3 rounded-sm bg-[color:var(--tangerine)]"></span> </span> <span class="text-lg font-semibold tracking-tight font-heading">Die Brücke.</span> </a>
-                    <div class="flex items-center gap-3">
-                        <a href="#contact" class="rounded-full bg-[color:var(--tangerine)] text-white px-4 py-2 text-sm font-medium shadow-md hover:bg-[color:var(--tangerine)]/90 focus:outline-none focus:ring-2 focus:ring-[color:var(--tangerine)]/50 transition">Kontakt</a>
-                        <button id="btnOpenNav" type="button" class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white ring-1 ring-[color:var(--tertiary)] hover:bg-black/[0.03] focus:outline-none focus:ring-2 focus:ring-[color:var(--tangerine)]/50 transition" aria-label="Open menu"><i class="fa-solid fa-bars text-[color:var(--primary)]"></i><span class="sr-only">Menu</span>
+                <div class="flex items-center justify-between"><a href="#" class="flex items-center gap-3 text-[color:var(--primary)]"> <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-white ring-1 ring-black/10"> <span class="block h-3 w-3 rounded-sm bg-[color:var(--tangerine)]"></span> </span> <span class="text-lg font-semibold tracking-tight font-heading">Die Brücke.</span> </a>
+                    <div class="flex items-center gap-3"><a href="#contact" class="rounded-full bg-[color:var(--tangerine)] text-white px-4 py-2 text-sm font-medium shadow-md hover:bg-[color:var(--tangerine)]/90 focus:outline-none focus:ring-2 focus:ring-[color:var(--tangerine)]/50 transition">Kontakt</a>
+                        <button id="btnOpenNav" type="button" class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white ring-1 ring-black/10 hover:bg-black/[0.03] focus:outline-none focus:ring-2 focus:ring-[color:var(--primary)]/30 transition" aria-label="Open menu"><i class="fa-solid fa-bars text-[color:var(--primary)]"></i><span class="sr-only">Menu</span>
                         </button>
                     </div>
                 </div>
@@ -86,7 +129,7 @@
              ========================= -->
             <section id="top" class="relative z-10 px-6 sm:px-10 pt-16 sm:pt-20 pb-14 sm:pb-20 bg-[color:var(--surface)]">
                 <div class="max-w-4xl">
-                    <h1 data-pgc-define>Die Brücke &#8211; soziokulturelles Zentrum&nbsp;<span class="text-[color:var(--tangerine)]">&amp;</span> Träger für mobile Dienste.</h1>
+                    <h1 class="text-5xl sm:text-7xl lg:text-8xl font-heading font-extrabold tracking-tight leading-[1.02] text-[color:var(--primary)]">Die Brücke &#8211; soziokulturelles Zentrum&nbsp;<span class="text-[color:var(--tangerine)]">&amp;</span> Träger für mobile Dienste.</h1>
                     <p class="mt-8 text-lg sm:text-xl text-[color:var(--secondary)] max-w-xl">
                     We are a development studio working at the intersection of geometric design and technology. It’s a busy intersection — but we like it that way. </p>
                 </div>
@@ -97,19 +140,19 @@
             <section id="services" class="relative z-10 px-6 sm:px-10 py-16 sm:py-20 bg-[color:var(--surface-muted)]">
                 <div class="max-w-3xl">
                     <div class="text-sm font-semibold tracking-wide text-[color:var(--tangerine)]">Services</div>
-                    <h2 class="font-bold font-heading leading-[1.08] mt-4 text-4xl tracking-tight sm:text-5xl text-[color:var(--primary)]">
+                    <h2 class="mt-4 text-4xl sm:text-5xl font-heading font-bold tracking-tight leading-[1.08] text-[color:var(--primary)]">
                     We help you identify, explore and respond to new opportunities. </h2>
                     <p class="mt-5 text-[color:var(--secondary)] max-w-xl">
                     We combine strategic thinking with meticulous execution to deliver results that matter. </p>
                 </div>
                 <div class="mt-12 grid gap-12 lg:grid-cols-2 lg:items-center">
                     <!-- masked image -->
-                    <div class="image-mask ring-1 ring-[color:var(--tertiary)] bg-white shadow-xl">
+                    <div class="image-mask ring-1 ring-black/10 bg-white shadow-xl">
                         <!-- Placeholder image: abstract.jpg -->
                         <img src="https://images.unsplash.com/photo-1484589065579-248aad0d8b13?ixid=M3wyMDkyMnwwfDF8c2VhcmNofDE0fHxhYnN0cmFjdHxlbnwwfHx8fDE3NjU4OTU4NTJ8MA&ixlib=rb-4.1.0q=85&fm=jpg&crop=faces&cs=srgb&w=1200&h=800&fit=crop" alt="Abstract architectural rendering" class="w-full h-full object-cover aspect-[4/3]"/>
                     </div>
                     <!-- service list -->
-                    <div class="divide-y divide-[color:var(--tertiary)]">
+                    <div class="divide-y divide-black/10">
                         <div class="py-8 group transition hover:bg-white/5 cursor-pointer">
                             <div class="text-[color:var(--primary)] font-heading font-semibold text-xl">
                                 01 / Digital Strategy<span class="text-[color:var(--tangerine)]">.</span>
@@ -140,7 +183,7 @@
             <section id="work" class="relative z-10 px-6 sm:px-10 py-16 sm:py-20 bg-[color:var(--surface-muted)]">
                 <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                     <!-- card 1 -->
-                    <article class="rounded-[28px] bg-white ring-1 ring-[color:var(--tertiary)] p-8 hover:shadow-2xl hover:translate-y-[-4px] transition-all duration-300 group cursor-pointer">
+                    <article class="rounded-[28px] bg-white ring-1 ring-black/10 p-8 hover:shadow-2xl hover:translate-y-[-4px] transition-all duration-300 group cursor-pointer">
                         <div class="h-10 w-10 rounded-full bg-[color:var(--tangerine)]/10 ring-1 ring-[color:var(--tangerine)]/20 flex items-center justify-center text-[color:var(--tangerine)] transition group-hover:bg-[color:var(--tangerine)] group-hover:text-white">
                             <i class="fa-solid fa-coins"></i>
                         </div>
@@ -150,7 +193,7 @@
                         <p class="mt-3 text-[color:var(--secondary)]">A revolutionary P2P lending platform that leverages trust networks for micro-financing.</p>
                     </article>
                     <!-- card 2 -->
-                    <article class="rounded-[28px] bg-white ring-1 ring-[color:var(--tertiary)] p-8 hover:shadow-2xl hover:translate-y-[-4px] transition-all duration-300 group cursor-pointer">
+                    <article class="rounded-[28px] bg-white ring-1 ring-black/10 p-8 hover:shadow-2xl hover:translate-y-[-4px] transition-all duration-300 group cursor-pointer">
                         <div class="h-10 w-10 rounded-full bg-[color:var(--tangerine)]/10 ring-1 ring-[color:var(--tangerine)]/20 flex items-center justify-center text-[color:var(--tangerine)] transition group-hover:bg-[color:var(--tangerine)] group-hover:text-white">
                             <i class="fa-solid fa-stethoscope"></i>
                         </div>
@@ -160,7 +203,7 @@
                         <p class="mt-3 text-[color:var(--secondary)]">Building an integrated health management dashboard for chronic illness tracking.</p>
                     </article>
                     <!-- card 3 -->
-                    <article class="rounded-[28px] bg-white ring-1 ring-[color:var(--tertiary)] p-8 hover:shadow-2xl hover:translate-y-[-4px] transition-all duration-300 group cursor-pointer">
+                    <article class="rounded-[28px] bg-white ring-1 ring-black/10 p-8 hover:shadow-2xl hover:translate-y-[-4px] transition-all duration-300 group cursor-pointer">
                         <div class="h-10 w-10 rounded-full bg-[color:var(--tangerine)]/10 ring-1 ring-[color:var(--tangerine)]/20 flex items-center justify-center text-[color:var(--tangerine)] transition group-hover:bg-[color:var(--tangerine)] group-hover:text-white">
                             <i class="fa-solid fa-heart"></i>
                         </div>
@@ -352,13 +395,13 @@
                         <p class="mt-3 text-sm text-[color:var(--secondary)]">
                         Subscribe to get the latest design news, articles, resources and inspiration. </p>
                         <form class="mt-6 flex items-center gap-3">
-                            <input type="email" placeholder="Email address" class="w-full rounded-2xl bg-white px-4 py-3 text-sm ring-1 ring-[color:var(--tertiary)] focus:outline-none focus:ring-2 focus:ring-[color:var(--tangerine)]/50 text-[color:var(--primary)]"/>
+                            <input type="email" placeholder="Email address" class="w-full rounded-2xl bg-white px-4 py-3 text-sm ring-1 ring-black/10 focus:outline-none focus:ring-2 focus:ring-[color:var(--tangerine)]/50 text-[color:var(--primary)]"/>
                             <button type="submit" class="shrink-0 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[color:var(--primary)] text-white hover:bg-[color:var(--primary)]/90 focus:outline-none focus:ring-2 focus:ring-[color:var(--primary)]/50 transition" aria-label="Submit"><i class="fa-solid fa-arrow-right"></i>
                             </button>
                         </form>
                     </div>
                 </div>
-                <div class="mt-10 border-t border-[color:var(--tertiary)] pt-8 flex items-center justify-between gap-6"><a href="#" class="flex items-center gap-3 text-[color:var(--primary)]"> <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-white ring-1 ring-[color:var(--tertiary)]"> <span class="block h-3 w-3 rounded-sm bg-[color:var(--tangerine)]"></span> </span> <span class="text-lg font-semibold tracking-tight font-heading">Die Brücke.</span> </a>
+                <div class="mt-10 border-t border-black/10 pt-8 flex items-center justify-between gap-6"><a href="#" class="flex items-center gap-3 text-[color:var(--primary)]"> <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-white ring-1 ring-black/10"> <span class="block h-3 w-3 rounded-sm bg-[color:var(--tangerine)]"></span> </span> <span class="text-lg font-semibold tracking-tight font-heading">Die Brücke.</span> </a>
                     <div class="text-sm text-[color:var(--secondary)]">© Die Brücke Studio. 2025</div>
                 </div>
             </footer>

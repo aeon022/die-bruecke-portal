@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Studio-like Template</title>
+
+    <!-- Your tokens / custom CSS (adjust path if needed) -->
+    <link rel="stylesheet" href="./tailwind_template/tailwind.css" />
+
+    <!-- Tailwind v4 Browser build -->
+    <script type="module" src="https://unpkg.com/@tailwindcss/browser@4"></script>
+  </head>
+
+  <body class="bg-white text-slate-900 antialiased">
+    <!-- Skip link -->
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-white focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-slate-900 focus:shadow"
+    >
+      Skip to content
+    </a>
+
+    <!-- Header -->
+    <header class="fixed left-0 right-0 top-0 z-40 border-b border-slate-200 bg-white/90 backdrop-blur">
+      <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6">
+        <!-- Brand -->
+        <a href="./index.html" class="flex items-center gap-3">
+          <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 bg-white">
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M4 12c4-7 12-7 16 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              <path d="M4 12c4 7 12 7 16 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            </svg>
+          </span>
+          <span class="text-base font-semibold tracking-tight">Studio.</span>
+        </a>
+
+        <!-- Actions -->
+        <div class="flex items-center gap-3">
+          <a
+            href="./contact.html"
+            class="hidden rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-50 sm:inline-flex"
+          >
+            Contact us
+          </a>
+
+          <button
+            id="menuButton"
+            type="button"
+            class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-50"
+            aria-haspopup="dialog"
+            aria-controls="menuOverlay"
+            aria-expanded="false"
+          >
+            Menu
+            <span class="inline-flex h-6 w-6 items-center justify-center rounded-full border border-slate-200">
+              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M6 8h12M6 12h12M6 16h12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              </svg>
+            </span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Fullscreen Menu Overlay -->
+    <div id="menuOverlay" class="fixed inset-0 z-50 hidden" role="dialog" aria-modal="true" aria-label="Site menu">
+      <!-- Backdrop -->
+      <div class="absolute inset-0 bg-white"></div>
+
+      <!-- Top bar inside overlay -->
+      <div class="relative border-b border-slate-200">
+        <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6">
+          <a href="./index.html" class="flex items-center gap-3">
+            <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 bg-white">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M4 12c4-7 12-7 16 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                <path d="M4 12c4 7 12 7 16 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              </svg>
+            </span>
+            <span class="text-base font-semibold tracking-tight">Studio.</span>
+          </a>
+
+          <div class="flex items-center gap-3">
+            <a
+              href="./contact.html"
+              class="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-50"
+            >
+              Contact us
+            </a>
+
+            <button
+              id="menuCloseButton"
+              type="button"
+              class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-900 shadow-sm transition hover:bg-slate-50"
+              aria-label="Close menu"
+            >
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Two-column navigation grid -->
+      <div class="relative mx-auto max-w-7xl px-4 py-10 sm:px-6">
+        <div class="grid grid-cols-1 gap-0 overflow-hidden rounded-3xl border border-slate-200 md:grid-cols-2">
+          <a href="./work.html" class="group flex min-h-[180px] items-center justify-between border-b border-slate-200 bg-white p-10 transition hover:bg-slate-50 md:border-b md:border-r">
+            <div>
+              <p class="text-3xl font-semibold tracking-tight sm:text-4xl">Our Work</p>
+              <p class="mt-2 text-sm text-slate-600">Selected projects and case studies.</p>
+            </div>
+            <span class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white transition group-hover:bg-white">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </span>
+          </a>
+
+          <a href="./about.html" class="group flex min-h-[180px] items-center justify-between border-b border-slate-200 bg-white p-10 transition hover:bg-slate-50 md:border-b">
+            <div>
+              <p class="text-3xl font-semibold tracking-tight sm:text-4xl">About Us</p>
+              <p class="mt-2 text-sm text-slate-600">Who we are and what we value.</p>
+            </div>
+            <span class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white transition">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </span>
+          </a>
+
+          <a href="./process.html" class="group flex min-h-[180px] items-center justify-between border-b border-slate-200 bg-white p-10 transition hover:bg-slate-50 md:border-b-0 md:border-r">
+            <div>
+              <p class="text-3xl font-semibold tracking-tight sm:text-4xl">Our Process</p>
+              <p class="mt-2 text-sm text-slate-600">How we ship high-quality work.</p>
+            </div>
+            <span class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white transition">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </span>
+          </a>
+
+          <a href="./blog.html" class="group flex min-h-[180px] items-center justify-between bg-white p-10 transition hover:bg-slate-50">
+            <div>
+              <p class="text-3xl font-semibold tracking-tight sm:text-4xl">Blog</p>
+              <p class="mt-2 text-sm text-slate-600">Notes, insights, and releases.</p>
+            </div>
+            <span class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white transition">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </span>
+          </a>
+        </div>
+
+        <!-- Overlay footer info -->
+        <div class="mt-10 grid grid-cols-1 gap-8 rounded-3xl border border-slate-200 bg-white p-8 md:grid-cols-2">
+          <div>
+            <p class="text-sm font-semibold text-slate-900">Our offices</p>
+            <div class="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-2">
+              <div>
+                <p class="text-sm font-semibold">Vienna</p>
+                <p class="mt-2 text-sm text-slate-600">Obsidianstraße 12</p>
+                <p class="text-sm text-slate-600">1010 Wien, Austria</p>
+              </div>
+              <div>
+                <p class="text-sm font-semibold">Graz</p>
+                <p class="mt-2 text-sm text-slate-600">Studioallee 5</p>
+                <p class="text-sm text-slate-600">8010 Graz, Austria</p>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <p class="text-sm font-semibold text-slate-900">Follow us</p>
+            <div class="mt-4 flex items-center gap-4">
+              <a href="#" class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-900 hover:bg-slate-50" aria-label="Instagram">
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M7 7h10v10H7V7z" stroke="currentColor" stroke-width="2" />
+                  <path d="M16.5 7.5h.01" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
+                  <path d="M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" stroke="currentColor" stroke-width="2" />
+                </svg>
+              </a>
+              <a href="#" class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-900 hover:bg-slate-50" aria-label="GitHub">
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path
+                    d="M9 19c-4 1-4-2-5-2m10 4v-3.5c0-1 .1-1.4-.5-2 1.7-.2 3.5-.9 3.5-4A3.1 3.1 0 0 0 16 7.5 2.9 2.9 0 0 0 16 5s-.7-.2-2 1a6.8 6.8 0 0 0-4 0C8.7 4.8 8 5 8 5a2.9 2.9 0 0 0 0 2.5A3.1 3.1 0 0 0 7 10.5c0 3.1 1.8 3.8 3.5 4-.4.4-.6.8-.6 1.6V21"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </a>
+              <a href="#" class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-900 hover:bg-slate-50" aria-label="Dribbble">
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z" stroke="currentColor" stroke-width="2" />
+                  <path d="M7 4.5c2.5 2.5 6.5 9 7.5 16.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                  <path d="M21 12c-4.5-1-10.5.5-14.5 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                  <path d="M3.5 9.5c4 1 10 0 14-3" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                </svg>
+              </a>
+            </div>
+
+            <div class="mt-6">
+              <a href="./contact.html" class="inline-flex rounded-full bg-slate-900 px-5 py-3 text-sm font-semibold text-white hover:bg-slate-800">
+                Start a project
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main -->
+    <main id="main" class="pt-20">
+      <!-- Hero -->
+      <section class="border-b border-slate-200">
+        <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20">
+          <div class="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:items-end">
+            <div class="lg:col-span-7">
+              <p class="text-sm font-semibold uppercase tracking-wider text-slate-600">Studio-like • Pinegrow-friendly</p>
+              <h1 class="mt-4 text-4xl font-semibold tracking-tight sm:text-6xl">
+                Modern design systems for fast-moving teams.
+              </h1>
+              <p class="mt-6 max-w-2xl text-lg text-slate-600">
+                Dummy content. This layout is built to feel “Studio-ish” (clean grid, bold typography, menu overlay),
+                while staying original, editable, and easy to maintain.
+              </p>
+
+              <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+                <a href="./work.html" class="inline-flex items-center justify-center rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white hover:bg-slate-800">
+                  Explore work
+                </a>
+                <a href="./process.html" class="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-900 hover:bg-slate-50">
+                  See our process
+                </a>
+              </div>
+
+              <div class="mt-10 grid grid-cols-2 gap-6 sm:grid-cols-4">
+                <div class="rounded-2xl border border-slate-200 bg-white p-4">
+                  <p class="text-sm text-slate-600">Delivery</p>
+                  <p class="mt-2 text-xl font-semibold">2–6 weeks</p>
+                </div>
+                <div class="rounded-2xl border border-slate-200 bg-white p-4">
+                  <p class="text-sm text-slate-600">Focus</p>
+                  <p class="mt-2 text-xl font-semibold">Product UI</p>
+                </div>
+                <div class="rounded-2xl border border-slate-200 bg-white p-4">
+                  <p class="text-sm text-slate-600">Stack</p>
+                  <p class="mt-2 text-xl font-semibold">Tailwind</p>
+                </div>
+                <div class="rounded-2xl border border-slate-200 bg-white p-4">
+                  <p class="text-sm text-slate-600">Mode</p>
+                  <p class="mt-2 text-xl font-semibold">Light</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="lg:col-span-5">
+              <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+                <div class="flex items-center justify-between">
+                  <p class="text-sm font-semibold text-slate-900">Snapshot</p>
+                  <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">Dummy</span>
+                </div>
+
+                <div class="mt-6 space-y-4">
+                  <div>
+                    <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Primary</p>
+                    <p class="mt-1 text-sm text-slate-700">Obsidian Black for text & dark UI</p>
+                  </div>
+                  <div>
+                    <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Pages</p>
+                    <p class="mt-1 text-sm text-slate-700">Index, Work, About, Process, Blog, Contact</p>
+                  </div>
+                  <div>
+                    <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Editing</p>
+                    <p class="mt-1 text-sm text-slate-700">Utility classes only, Pinegrow-friendly</p>
+                  </div>
+                </div>
+
+                <div class="mt-8 grid grid-cols-2 gap-3">
+                  <a href="./contact.html" class="rounded-2xl bg-slate-900 px-4 py-3 text-center text-sm font-semibold text-white hover:bg-slate-800">
+                    Book a call
+                  </a>
+                  <a href="./blog.html" class="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-center text-sm font-semibold text-slate-900 hover:bg-slate-50">
+                    Read updates
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Featured work -->
+      <section class="border-b border-slate-200">
+        <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6">
+          <div class="flex items-end justify-between gap-6">
+            <div>
+              <h2 class="text-2xl font-semibold tracking-tight sm:text-3xl">Featured work</h2>
+              <p class="mt-3 max-w-2xl text-slate-600">Replace these cards later. Duplicate/reorder in Pinegrow.</p>
+            </div>
+            <a href="./work.html" class="hidden rounded-full border border-slate-200 bg-white px-5 py-2 text-sm font-semibold hover:bg-slate-50 sm:inline-flex">
+              View all
+            </a>
+          </div>
+
+          <div class="mt-10 grid grid-cols-1 gap-6 md:grid-cols-3">
+            <article class="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:bg-slate-50">
+              <div class="h-48 bg-slate-100"></div>
+              <div class="p-6">
+                <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Portal redesign</p>
+                <h3 class="mt-2 text-lg font-semibold">A content-driven platform</h3>
+                <p class="mt-2 text-sm text-slate-600">Crisp hierarchy, reusable blocks, and fast iteration.</p>
+                <a href="./work.html" class="mt-4 inline-flex text-sm font-semibold text-slate-900">Open case study</a>
+              </div>
+            </article>
+
+            <article class="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:bg-slate-50">
+              <div class="h-48 bg-slate-100"></div>
+              <div class="p-6">
+                <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Campaign landing</p>
+                <h3 class="mt-2 text-lg font-semibold">Conversion-first layout</h3>
+                <p class="mt-2 text-sm text-slate-600">Strong story flow with structured CTAs and proof.</p>
+                <a href="./work.html" class="mt-4 inline-flex text-sm font-semibold text-slate-900">Open case study</a>
+              </div>
+            </article>
+
+            <article class="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:bg-slate-50">
+              <div class="h-48 bg-slate-100"></div>
+              <div class="p-6">
+                <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Design system</p>
+                <h3 class="mt-2 text-lg font-semibold">Tokens & components</h3>
+                <p class="mt-2 text-sm text-slate-600">A lightweight system that scales across pages.</p>
+                <a href="./work.html" class="mt-4 inline-flex text-sm font-semibold text-slate-900">Open case study</a>
+              </div>
+            </article>
+          </div>
+
+          <div class="mt-8 sm:hidden">
+            <a href="./work.html" class="inline-flex rounded-full border border-slate-200 bg-white px-5 py-2 text-sm font-semibold hover:bg-slate-50">
+              View all work
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Capabilities -->
+      <section class="border-b border-slate-200">
+        <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6">
+          <div class="grid grid-cols-1 gap-10 lg:grid-cols-12">
+            <div class="lg:col-span-4">
+              <h2 class="text-2xl font-semibold tracking-tight sm:text-3xl">Capabilities</h2>
+              <p class="mt-3 text-slate-600">A modern, serious palette. Sharp type. Clean spacing.</p>
+            </div>
+            <div class="lg:col-span-8">
+              <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                <div class="rounded-3xl border border-slate-200 bg-white p-6">
+                  <p class="text-sm font-semibold">UI Design</p>
+                  <p class="mt-2 text-sm text-slate-600">Dashboards, marketing sites, product flows.</p>
+                </div>
+                <div class="rounded-3xl border border-slate-200 bg-white p-6">
+                  <p class="text-sm font-semibold">Design Systems</p>
+                  <p class="mt-2 text-sm text-slate-600">Tokens, components, patterns, documentation.</p>
+                </div>
+                <div class="rounded-3xl border border-slate-200 bg-white p-6">
+                  <p class="text-sm font-semibold">Content Structure</p>
+                  <p class="mt-2 text-sm text-slate-600">Information architecture, page templates, blocks.</p>
+                </div>
+                <div class="rounded-3xl border border-slate-200 bg-white p-6">
+                  <p class="text-sm font-semibold">Performance UX</p>
+                  <p class="mt-2 text-sm text-slate-600">Lean layouts, fast rendering, accessible UI.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Process -->
+      <section class="border-b border-slate-200">
+        <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6">
+          <div class="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
+            <div>
+              <h2 class="text-2xl font-semibold tracking-tight sm:text-3xl">A simple process</h2>
+              <p class="mt-3 max-w-2xl text-slate-600">Clear phases you can present on your site (dummy text).</p>
+            </div>
+            <a href="./process.html" class="inline-flex rounded-full border border-slate-200 bg-white px-5 py-2 text-sm font-semibold hover:bg-slate-50">
+              Full process
+            </a>
+          </div>
+
+          <div class="mt-10 grid grid-cols-1 gap-6 md:grid-cols-3">
+            <div class="rounded-3xl border border-slate-200 bg-white p-8">
+              <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">01</p>
+              <p class="mt-3 text-lg font-semibold">Discover</p>
+              <p class="mt-2 text-sm text-slate-600">Goals, constraints, content inventory, and success metrics.</p>
+            </div>
+            <div class="rounded-3xl border border-slate-200 bg-white p-8">
+              <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">02</p>
+              <p class="mt-3 text-lg font-semibold">Design</p>
+              <p class="mt-2 text-sm text-slate-600">Wireframes, components, and page templates that scale.</p>
+            </div>
+            <div class="rounded-3xl border border-slate-200 bg-white p-8">
+              <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">03</p>
+              <p class="mt-3 text-lg font-semibold">Deliver</p>
+              <p class="mt-2 text-sm text-slate-600">Polish, handoff, and support for fast implementation.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Testimonials -->
+      <section class="border-b border-slate-200">
+        <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6">
+          <h2 class="text-2xl font-semibold tracking-tight sm:text-3xl">What clients say</h2>
+
+          <div class="mt-10 grid grid-cols-1 gap-6 md:grid-cols-3">
+            <figure class="rounded-3xl border border-slate-200 bg-white p-8">
+              <blockquote class="text-sm text-slate-700">
+                “Clean, fast, and surprisingly easy to maintain. The layout feels premium without being heavy.”
+              </blockquote>
+              <figcaption class="mt-6">
+                <p class="text-sm font-semibold">Alex M.</p>
+                <p class="text-sm text-slate-600">Product Lead</p>
+              </figcaption>
+            </figure>
+
+            <figure class="rounded-3xl border border-slate-200 bg-white p-8">
+              <blockquote class="text-sm text-slate-700">
+                “The overlay menu pattern is exactly what we needed. Pinegrow editing is straightforward.”
+              </blockquote>
+              <figcaption class="mt-6">
+                <p class="text-sm font-semibold">Sophie K.</p>
+                <p class="text-sm text-slate-600">Marketing</p>
+              </figcaption>
+            </figure>
+
+            <figure class="rounded-3xl border border-slate-200 bg-white p-8">
+              <blockquote class="text-sm text-slate-700">
+                “Sharp typography, strong hierarchy, and it’s easy to extend for more pages.”
+              </blockquote>
+              <figcaption class="mt-6">
+                <p class="text-sm font-semibold">Daniel R.</p>
+                <p class="text-sm text-slate-600">Founder</p>
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <!-- Blog preview -->
+      <section class="border-b border-slate-200">
+        <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6">
+          <div class="flex items-end justify-between gap-6">
+            <div>
+              <h2 class="text-2xl font-semibold tracking-tight sm:text-3xl">From the blog</h2>
+              <p class="mt-3 max-w-2xl text-slate-600">Dummy entries. Swap with real posts later.</p>
+            </div>
+            <a href="./blog.html" class="hidden rounded-full border border-slate-200 bg-white px-5 py-2 text-sm font-semibold hover:bg-slate-50 sm:inline-flex">
+              All posts
+            </a>
+          </div>
+
+          <div class="mt-10 grid grid-cols-1 gap-6 md:grid-cols-3">
+            <article class="rounded-3xl border border-slate-200 bg-white p-6 hover:bg-slate-50">
+              <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Guides</p>
+              <h3 class="mt-2 text-lg font-semibold">Design tokens that don’t fight your CMS</h3>
+              <p class="mt-2 text-sm text-slate-600">A pragmatic approach to naming and scaling.</p>
+              <p class="mt-4 text-sm font-semibold">Read more</p>
+            </article>
+
+            <article class="rounded-3xl border border-slate-200 bg-white p-6 hover:bg-slate-50">
+              <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Notes</p>
+              <h3 class="mt-2 text-lg font-semibold">Why simple grids feel expensive</h3>
+              <p class="mt-2 text-sm text-slate-600">Spacing, borders, and typography doing the work.</p>
+              <p class="mt-4 text-sm font-semibold">Read more</p>
+            </article>
+
+            <article class="rounded-3xl border border-slate-200 bg-white p-6 hover:bg-slate-50">
+              <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Releases</p>
+              <h3 class="mt-2 text-lg font-semibold">A Pinegrow-friendly component library</h3>
+              <p class="mt-2 text-sm text-slate-600">Utilities only, no magic, easy to edit.</p>
+              <p class="mt-4 text-sm font-semibold">Read more</p>
+            </article>
+          </div>
+
+          <div class="mt-8 sm:hidden">
+            <a href="./blog.html" class="inline-flex rounded-full border border-slate-200 bg-white px-5 py-2 text-sm font-semibold hover:bg-slate-50">
+              All posts
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA -->
+      <section>
+        <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6">
+          <div class="rounded-3xl border border-slate-200 bg-slate-900 p-10 text-white sm:p-14">
+            <div class="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:items-center">
+              <div class="lg:col-span-8">
+                <h2 class="text-3xl font-semibold tracking-tight sm:text-4xl">Ready to build something crisp?</h2>
+                <p class="mt-4 max-w-2xl text-white/80">
+                  Dummy CTA section. Replace with your real offer, timeline, and contact flow.
+                </p>
+              </div>
+              <div class="lg:col-span-4 lg:text-right">
+                <a href="./contact.html" class="inline-flex rounded-full bg-white px-6 py-3 text-sm font-semibold text-slate-900 hover:bg-slate-100">
+                  Get in touch
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-200">
+      <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6">
+        <div class="flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
+          <div>
+            <p class="text-base font-semibold">Studio.</p>
+            <p class="mt-2 max-w-sm text-sm text-slate-600">
+              Dummy footer text. Add your address, legal links, socials, newsletter, etc.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-2 gap-8 sm:grid-cols-3">
+            <div>
+              <p class="text-sm font-semibold">Pages</p>
+              <ul class="mt-3 space-y-2 text-sm text-slate-600">
+                <li><a href="./work.html" class="hover:text-slate-900">Work</a></li>
+                <li><a href="./about.html" class="hover:text-slate-900">About</a></li>
+                <li><a href="./process.html" class="hover:text-slate-900">Process</a></li>
+                <li><a href="./blog.html" class="hover:text-slate-900">Blog</a></li>
+                <li><a href="./contact.html" class="hover:text-slate-900">Contact</a></li>
+              </ul>
+            </div>
+
+            <div>
+              <p class="text-sm font-semibold">Services</p>
+              <ul class="mt-3 space-y-2 text-sm text-slate-600">
+                <li>UI Design</li>
+                <li>Design Systems</li>
+                <li>Content Structure</li>
+                <li>Landing Pages</li>
+              </ul>
+            </div>
+
+            <div>
+              <p class="text-sm font-semibold">Contact</p>
+              <ul class="mt-3 space-y-2 text-sm text-slate-600">
+                <li>hello@example.com</li>
+                <li>+43 000 000 000</li>
+                <li>Vienna, AT</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-10 flex flex-col gap-4 border-t border-slate-200 pt-6 sm:flex-row sm:items-center sm:justify-between">
+          <p class="text-sm text-slate-600">© 2025 Studio. All rights reserved.</p>
+          <div class="flex items-center gap-4 text-sm text-slate-600">
+            <a href="#" class="hover:text-slate-900">Privacy</a>
+            <a href="#" class="hover:text-slate-900">Imprint</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Minimal JS for menu toggle (Pinegrow-safe) -->
+    <script>
+      (function () {
+        var menuOverlay = document.getElementById("menuOverlay");
+        var menuButton = document.getElementById("menuButton");
+        var menuCloseButton = document.getElementById("menuCloseButton");
+
+        function openMenu() {
+          if (!menuOverlay) return;
+          menuOverlay.classList.remove("hidden");
+          document.body.classList.add("overflow-hidden");
+          if (menuButton) menuButton.setAttribute("aria-expanded", "true");
+        }
+
+        function closeMenu() {
+          if (!menuOverlay) return;
+          menuOverlay.classList.add("hidden");
+          document.body.classList.remove("overflow-hidden");
+          if (menuButton) menuButton.setAttribute("aria-expanded", "false");
+        }
+
+        if (menuButton) menuButton.addEventListener("click", openMenu);
+        if (menuCloseButton) menuCloseButton.addEventListener("click", closeMenu);
+
+        document.addEventListener("keydown", function (e) {
+          if (e.key === "Escape") closeMenu();
+        });
+
+        // Close if clicking backdrop area (outside content)
+        if (menuOverlay) {
+          menuOverlay.addEventListener("click", function (e) {
+            if (e.target === menuOverlay) closeMenu();
+          });
+        }
+      })();
+    </script>
+  </body>
+</html>

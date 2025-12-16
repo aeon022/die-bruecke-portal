@@ -10,7 +10,7 @@
         <link href="https://fonts.googleapis.com/css2?family=Sora:wght@100..800&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
     </head>     
-    <body class="min-h-screen font-sans antialiased p-4 md:p-10 lg:p-12">
+    <body class="min-h-screen font-sans antialiased text-[color:var(--primary)] bg-[color:var(--surface-muted)] p-4 md:p-10 lg:p-12">
         <div class="relative max-w-[1400px] mx-auto rounded-[40px] md:rounded-[48px] shadow-xl overflow-hidden ring-1 ring-black/10 rounded-canvas">
             <!-- =========================
              OVERLAY NAV (inside shell)
@@ -27,16 +27,21 @@
                         <div class="flex items-center gap-3">
                             <a href="#contact" class="rounded-full bg-white text-[color:var(--primary)] px-4 py-2 text-sm font-medium shadow-sm hover:bg-white/90 focus:outline-none focus:ring-2 focus:ring-white/50">
                             Contact us </a>
-                            <button id="btnCloseNav" type="button" class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white ring-1 ring-white/20 hover:bg-white/15 focus:outline-none focus:ring-2 focus:ring-white/50" aria-label="Close menu"><i class="fa-solid fa-xmark text-lg"></i>
+                            <button id="btnCloseNav" type="button" class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white ring-1 ring-white/20 hover:bg-white/15 focus:outline-none focus:ring-2 focus:ring-white/50" aria-label="Close menu">
+                                <i class="fa-solid fa-xmark text-lg"></i>
                             </button>
                         </div>
                     </div>
                     <!-- Overlay Main 2x2 grid -->
                     <div class="px-6 sm:px-10 pt-6">
-                        <div class="grid grid-cols-1 md:grid-cols-2 border border-white/10 rounded-[28px] overflow-hidden bg-white/5"><a class="group p-10 sm:p-12 text-white/90 text-4xl sm:text-6xl font-heading font-extrabold tracking-tight hover:bg-white/5 focus:outline-none focus:ring-2 focus:ring-white/40 transition-colors" href="#work">
-                            Our Work </a><a class="group p-10 sm:p-12 text-white/90 text-4xl sm:text-6xl font-heading font-extrabold tracking-tight hover:bg-white/5 border-t md:border-t-0 md:border-l border-white/10 focus:outline-none focus:ring-2 focus:ring-white/40 transition-colors" href="#about">
-                            About Us </a><a class="group p-10 sm:p-12 text-white/90 text-4xl sm:text-6xl font-heading font-extrabold tracking-tight hover:bg-white/5 border-t border-white/10 focus:outline-none focus:ring-2 focus:ring-white/40 transition-colors" href="#process">
-                            Our Process </a><a class="group p-10 sm:p-12 text-white/90 text-4xl sm:text-6xl font-heading font-extrabold tracking-tight hover:bg-white/5 border-t md:border-l border-white/10 focus:outline-none focus:ring-2 focus:ring-white/40 transition-colors" href="#blog">
+                        <div class="grid grid-cols-1 md:grid-cols-2 border border-white/10 rounded-[28px] overflow-hidden bg-white/5">
+                            <a class="group p-10 sm:p-12 text-white/90 text-4xl sm:text-6xl font-heading font-extrabold tracking-tight hover:bg-white/5 focus:outline-none focus:ring-2 focus:ring-white/40 transition-colors" href="#work">
+                            Our Work </a>
+                            <a class="group p-10 sm:p-12 text-white/90 text-4xl sm:text-6xl font-heading font-extrabold tracking-tight hover:bg-white/5 border-t md:border-t-0 md:border-l border-white/10 focus:outline-none focus:ring-2 focus:ring-white/40 transition-colors" href="#about">
+                            About Us </a>
+                            <a class="group p-10 sm:p-12 text-white/90 text-4xl sm:text-6xl font-heading font-extrabold tracking-tight hover:bg-white/5 border-t border-white/10 focus:outline-none focus:ring-2 focus:ring-white/40 transition-colors" href="#process">
+                            Our Process </a>
+                            <a class="group p-10 sm:p-12 text-white/90 text-4xl sm:text-6xl font-heading font-extrabold tracking-tight hover:bg-white/5 border-t md:border-l border-white/10 focus:outline-none focus:ring-2 focus:ring-white/40 transition-colors" href="#blog">
                             Blog </a>
                         </div>
                     </div>
@@ -61,7 +66,11 @@
                             <div class="md:justify-self-end">
                                 <div class="text-white/70 text-sm font-semibold">Follow us</div>
                                 <div class="mt-5 flex items-center gap-4">
-                                    <!-- icon placeholders --><a href="#" class="h-10 w-10 rounded-full bg-white/10 ring-1 ring-white/15 hover:bg-white/15 inline-flex items-center justify-center text-white/80 transition"><i class="fa-brands fa-facebook-f"></i></a><a href="#" class="h-10 w-10 rounded-full bg-white/10 ring-1 ring-white/15 hover:bg-white/15 inline-flex items-center justify-center text-white/80 transition"><i class="fa-brands fa-instagram"></i></a><a href="#" class="h-10 w-10 rounded-full bg-white/10 ring-1 ring-white/15 hover:bg-white/15 inline-flex items-center justify-center text-white/80 transition"><i class="fa-brands fa-github"></i></a><a href="#" class="h-10 w-10 rounded-full bg-white/10 ring-1 ring-white/15 hover:bg-white/15 inline-flex items-center justify-center text-white/80 transition"><i class="fa-brands fa-dribbble"></i></a>
+                                    <!-- icon placeholders -->
+                                    <a href="#" class="h-10 w-10 rounded-full bg-white/10 ring-1 ring-white/15 hover:bg-white/15 inline-flex items-center justify-center text-white/80 transition"><i class="fa-brands fa-facebook-f"></i></a>
+                                    <a href="#" class="h-10 w-10 rounded-full bg-white/10 ring-1 ring-white/15 hover:bg-white/15 inline-flex items-center justify-center text-white/80 transition"><i class="fa-brands fa-instagram"></i></a>
+                                    <a href="#" class="h-10 w-10 rounded-full bg-white/10 ring-1 ring-white/15 hover:bg-white/15 inline-flex items-center justify-center text-white/80 transition"><i class="fa-brands fa-github"></i></a>
+                                    <a href="#" class="h-10 w-10 rounded-full bg-white/10 ring-1 ring-white/15 hover:bg-white/15 inline-flex items-center justify-center text-white/80 transition"><i class="fa-brands fa-dribbble"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -76,7 +85,9 @@
                     <a href="#" class="flex items-center gap-3 text-[color:var(--primary)]"> <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-white ring-1 ring-[color:var(--tertiary)]"> <span class="block h-3 w-3 rounded-sm bg-[color:var(--tangerine)]"></span> </span> <span class="text-lg font-semibold tracking-tight font-heading">Die Brücke.</span> </a>
                     <div class="flex items-center gap-3">
                         <a href="#contact" class="rounded-full bg-[color:var(--tangerine)] text-white px-4 py-2 text-sm font-medium shadow-md hover:bg-[color:var(--tangerine)]/90 focus:outline-none focus:ring-2 focus:ring-[color:var(--tangerine)]/50 transition">Kontakt</a>
-                        <button id="btnOpenNav" type="button" class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white ring-1 ring-[color:var(--tertiary)] hover:bg-black/[0.03] focus:outline-none focus:ring-2 focus:ring-[color:var(--tangerine)]/50 transition" aria-label="Open menu"><i class="fa-solid fa-bars text-[color:var(--primary)]"></i><span class="sr-only">Menu</span>
+                        <button id="btnOpenNav" type="button" class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white ring-1 ring-[color:var(--tertiary)] hover:bg-black/[0.03] focus:outline-none focus:ring-2 focus:ring-[color:var(--tangerine)]/50 transition" aria-label="Open menu">
+                            <i class="fa-solid fa-bars text-[color:var(--primary)]"></i>
+                            <span class="sr-only">Menu</span>
                         </button>
                     </div>
                 </div>
@@ -86,7 +97,7 @@
              ========================= -->
             <section id="top" class="relative z-10 px-6 sm:px-10 pt-16 sm:pt-20 pb-14 sm:pb-20 bg-[color:var(--surface)]">
                 <div class="max-w-4xl">
-                    <h1 data-pgc-define>Die Brücke &#8211; soziokulturelles Zentrum&nbsp;<span class="text-[color:var(--tangerine)]">&amp;</span> Träger für mobile Dienste.</h1>
+                    <h1 data-pgc-define class="font-normal text-5xl tracking-tight sm:text-7xl lg:text-8xl text-[color:var(--primary)]">Die Brücke &#8211; soziokulturelles Zentrum&nbsp;<span class="text-[color:var(--tangerine)]">&amp;</span> Träger für mobile Dienste.</h1>
                     <p class="mt-8 text-lg sm:text-xl text-[color:var(--secondary)] max-w-xl">
                     We are a development studio working at the intersection of geometric design and technology. It’s a busy intersection — but we like it that way. </p>
                 </div>
@@ -141,8 +152,7 @@
                 <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                     <!-- card 1 -->
                     <article class="rounded-[28px] bg-white ring-1 ring-[color:var(--tertiary)] p-8 hover:shadow-2xl hover:translate-y-[-4px] transition-all duration-300 group cursor-pointer">
-                        <div class="h-10 w-10 rounded-full bg-[color:var(--tangerine)]/10 ring-1 ring-[color:var(--tangerine)]/20 flex items-center justify-center text-[color:var(--tangerine)] transition group-hover:bg-[color:var(--tangerine)] group-hover:text-white">
-                            <i class="fa-solid fa-coins"></i>
+                        <div class="h-10 w-10 rounded-full bg-[color:var(--tangerine)]/10 ring-1 ring-[color:var(--tangerine)]/20 flex items-center justify-center text-[color:var(--tangerine)] transition group-hover:bg-[color:var(--tangerine)] group-hover:text-white"><i class="fa-solid fa-coins"></i>
                         </div>
                         <div class="mt-6 text-xs font-semibold tracking-wide text-[color:var(--primary)]/70">2023 <span class="mx-2">/</span> Case study
                         </div>
@@ -151,8 +161,7 @@
                     </article>
                     <!-- card 2 -->
                     <article class="rounded-[28px] bg-white ring-1 ring-[color:var(--tertiary)] p-8 hover:shadow-2xl hover:translate-y-[-4px] transition-all duration-300 group cursor-pointer">
-                        <div class="h-10 w-10 rounded-full bg-[color:var(--tangerine)]/10 ring-1 ring-[color:var(--tangerine)]/20 flex items-center justify-center text-[color:var(--tangerine)] transition group-hover:bg-[color:var(--tangerine)] group-hover:text-white">
-                            <i class="fa-solid fa-stethoscope"></i>
+                        <div class="h-10 w-10 rounded-full bg-[color:var(--tangerine)]/10 ring-1 ring-[color:var(--tangerine)]/20 flex items-center justify-center text-[color:var(--tangerine)] transition group-hover:bg-[color:var(--tangerine)] group-hover:text-white"><i class="fa-solid fa-stethoscope"></i>
                         </div>
                         <div class="mt-6 text-xs font-semibold tracking-wide text-[color:var(--primary)]/70">2022 <span class="mx-2">/</span> Case study
                         </div>
@@ -161,8 +170,7 @@
                     </article>
                     <!-- card 3 -->
                     <article class="rounded-[28px] bg-white ring-1 ring-[color:var(--tertiary)] p-8 hover:shadow-2xl hover:translate-y-[-4px] transition-all duration-300 group cursor-pointer">
-                        <div class="h-10 w-10 rounded-full bg-[color:var(--tangerine)]/10 ring-1 ring-[color:var(--tangerine)]/20 flex items-center justify-center text-[color:var(--tangerine)] transition group-hover:bg-[color:var(--tangerine)] group-hover:text-white">
-                            <i class="fa-solid fa-heart"></i>
+                        <div class="h-10 w-10 rounded-full bg-[color:var(--tangerine)]/10 ring-1 ring-[color:var(--tangerine)]/20 flex items-center justify-center text-[color:var(--tangerine)] transition group-hover:bg-[color:var(--tangerine)] group-hover:text-white"><i class="fa-solid fa-heart"></i>
                         </div>
                         <div class="mt-6 text-xs font-semibold tracking-wide text-[color:var(--primary)]/70">2022 <span class="mx-2">/</span> Case study
                         </div>
@@ -194,50 +202,42 @@
                         <div class="mt-10 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-8">
                             <!-- logo rows placeholders -->
                             <div class="flex items-center gap-3 text-white/85">
-                                <div class="h-9 w-9 rounded-full bg-white/10 ring-1 ring-white/15 inline-flex items-center justify-center text-white/70">
-                                    <i class="fa-solid fa-mountain"></i>
+                                <div class="h-9 w-9 rounded-full bg-white/10 ring-1 ring-white/15 inline-flex items-center justify-center text-white/70"><i class="fa-solid fa-mountain"></i>
                                 </div>
                                 <div class="font-heading font-semibold tracking-tight">Phobia</div>
                             </div>
                             <div class="flex items-center gap-3 text-white/85">
-                                <div class="h-9 w-9 rounded-full bg-white/10 ring-1 ring-white/15 inline-flex items-center justify-center text-white/70">
-                                    <i class="fa-solid fa-hands-holding-child"></i>
+                                <div class="h-9 w-9 rounded-full bg-white/10 ring-1 ring-white/15 inline-flex items-center justify-center text-white/70"><i class="fa-solid fa-hands-holding-child"></i>
                                 </div>
                                 <div class="font-heading font-semibold tracking-tight">Family Fund</div>
                             </div>
                             <div class="flex items-center gap-3 text-white/85">
-                                <div class="h-9 w-9 rounded-full bg-white/10 ring-1 ring-white/15 inline-flex items-center justify-center text-white/70">
-                                    <i class="fa-solid fa-key"></i>
+                                <div class="h-9 w-9 rounded-full bg-white/10 ring-1 ring-white/15 inline-flex items-center justify-center text-white/70"><i class="fa-solid fa-key"></i>
                                 </div>
                                 <div class="font-heading font-semibold tracking-tight">Unseal</div>
                             </div>
                             <div class="flex items-center gap-3 text-white/85">
-                                <div class="h-9 w-9 rounded-full bg-white/10 ring-1 ring-white/15 inline-flex items-center justify-center text-white/70">
-                                    <i class="fa-solid fa-envelope-open-text"></i>
+                                <div class="h-9 w-9 rounded-full bg-white/10 ring-1 ring-white/15 inline-flex items-center justify-center text-white/70"><i class="fa-solid fa-envelope-open-text"></i>
                                 </div>
                                 <div class="font-heading font-semibold tracking-tight">Mailsmirk</div>
                             </div>
                             <div class="flex items-center gap-3 text-white/85">
-                                <div class="h-9 w-9 rounded-full bg-white/10 ring-1 ring-white/15 inline-flex items-center justify-center text-white/70">
-                                    <i class="fa-solid fa-house-chimney"></i>
+                                <div class="h-9 w-9 rounded-full bg-white/10 ring-1 ring-white/15 inline-flex items-center justify-center text-white/70"><i class="fa-solid fa-house-chimney"></i>
                                 </div>
                                 <div class="font-heading font-semibold tracking-tight">Home Work</div>
                             </div>
                             <div class="flex items-center gap-3 text-white/85">
-                                <div class="h-9 w-9 rounded-full bg-white/10 ring-1 ring-white/15 inline-flex items-center justify-center text-white/70">
-                                    <i class="fa-solid fa-seedling"></i>
+                                <div class="h-9 w-9 rounded-full bg-white/10 ring-1 ring-white/15 inline-flex items-center justify-center text-white/70"><i class="fa-solid fa-seedling"></i>
                                 </div>
                                 <div class="font-heading font-semibold tracking-tight">Green Life</div>
                             </div>
                             <div class="flex items-center gap-3 text-white/85">
-                                <div class="h-9 w-9 rounded-full bg-white/10 ring-1 ring-white/15 inline-flex items-center justify-center text-white/70">
-                                    <i class="fa-solid fa-lightbulb"></i>
+                                <div class="h-9 w-9 rounded-full bg-white/10 ring-1 ring-white/15 inline-flex items-center justify-center text-white/70"><i class="fa-solid fa-lightbulb"></i>
                                 </div>
                                 <div class="font-heading font-semibold tracking-tight">BrightPath</div>
                             </div>
                             <div class="flex items-center gap-3 text-white/85">
-                                <div class="h-9 w-9 rounded-full bg-white/10 ring-1 ring-white/15 inline-flex items-center justify-center text-white/70">
-                                    <i class="fa-solid fa-compass"></i>
+                                <div class="h-9 w-9 rounded-full bg-white/10 ring-1 ring-white/15 inline-flex items-center justify-center text-white/70"><i class="fa-solid fa-compass"></i>
                                 </div>
                                 <div class="font-heading font-semibold tracking-tight">North Adventures</div>
                             </div>
@@ -264,7 +264,8 @@
                     <div class="p-10 sm:p-14">
                         <h2 class="text-white text-4xl sm:text-5xl font-heading font-extrabold tracking-tight">
                         Tell us about your project </h2>
-                        <div class="mt-8"><a href="mailto:hello@example.com" class="inline-flex items-center rounded-full bg-[color:var(--tangerine)] text-white px-6 py-3 text-lg font-medium shadow-md hover:bg-[color:var(--tangerine)]/90 focus:outline-none focus:ring-2 focus:ring-[color:var(--tangerine)]/50 transition">
+                        <div class="mt-8">
+                            <a href="mailto:hello@example.com" class="inline-flex items-center rounded-full bg-[color:var(--tangerine)] text-white px-6 py-3 text-lg font-medium shadow-md hover:bg-[color:var(--tangerine)]/90 focus:outline-none focus:ring-2 focus:ring-[color:var(--tangerine)]/50 transition">
                             Say Hej → </a>
                         </div>
                         <div class="mt-12 border-t border-white/10 pt-8 grid gap-8 sm:grid-cols-2">
@@ -298,51 +299,39 @@
                         <div>
                             <div class="text-sm font-semibold text-[color:var(--primary)] font-heading">Work</div>
                             <ul class="mt-4 space-y-3 text-sm text-[color:var(--secondary)]">
-                                <li>
-                                    <a class="hover:text-[color:var(--primary)] transition" href="#work">FamilyFund</a>
+                                <li><a class="hover:text-[color:var(--primary)] transition" href="#work">FamilyFund</a>
                                 </li>
-                                <li>
-                                    <a class="hover:text-[color:var(--primary)] transition" href="#work">Unseal</a>
+                                <li><a class="hover:text-[color:var(--primary)] transition" href="#work">Unseal</a>
                                 </li>
-                                <li>
-                                    <a class="hover:text-[color:var(--primary)] transition" href="#work">Phobia</a>
+                                <li><a class="hover:text-[color:var(--primary)] transition" href="#work">Phobia</a>
                                 </li>
-                                <li>
-                                    <a class="hover:text-[color:var(--primary)] transition" href="#work">See all →</a>
+                                <li><a class="hover:text-[color:var(--primary)] transition" href="#work">See all →</a>
                                 </li>
                             </ul>
                         </div>
                         <div>
                             <div class="text-sm font-semibold text-[color:var(--primary)] font-heading">Company</div>
                             <ul class="mt-4 space-y-3 text-sm text-[color:var(--secondary)]">
-                                <li>
-                                    <a class="hover:text-[color:var(--primary)] transition" href="#about">About</a>
+                                <li><a class="hover:text-[color:var(--primary)] transition" href="#about">About</a>
                                 </li>
-                                <li>
-                                    <a class="hover:text-[color:var(--primary)] transition" href="#process">Process</a>
+                                <li><a class="hover:text-[color:var(--primary)] transition" href="#process">Process</a>
                                 </li>
-                                <li>
-                                    <a class="hover:text-[color:var(--primary)] transition" href="#blog">Blog</a>
+                                <li><a class="hover:text-[color:var(--primary)] transition" href="#blog">Blog</a>
                                 </li>
-                                <li>
-                                    <a class="hover:text-[color:var(--primary)] transition" href="#contact">Contact us</a>
+                                <li><a class="hover:text-[color:var(--primary)] transition" href="#contact">Contact us</a>
                                 </li>
                             </ul>
                         </div>
                         <div>
                             <div class="text-sm font-semibold text-[color:var(--primary)] font-heading">Connect</div>
                             <ul class="mt-4 space-y-3 text-sm text-[color:var(--secondary)]">
-                                <li>
-                                    <a class="hover:text-[color:var(--primary)] transition" href="#"><i class="fa-brands fa-facebook-f w-4 mr-2"></i>Facebook</a>
+                                <li><a class="hover:text-[color:var(--primary)] transition" href="#"><i class="fa-brands fa-facebook-f w-4 mr-2"></i>Facebook</a>
                                 </li>
-                                <li>
-                                    <a class="hover:text-[color:var(--primary)] transition" href="#"><i class="fa-brands fa-instagram w-4 mr-2"></i>Instagram</a>
+                                <li><a class="hover:text-[color:var(--primary)] transition" href="#"><i class="fa-brands fa-instagram w-4 mr-2"></i>Instagram</a>
                                 </li>
-                                <li>
-                                    <a class="hover:text-[color:var(--primary)] transition" href="#"><i class="fa-brands fa-github w-4 mr-2"></i>GitHub</a>
+                                <li><a class="hover:text-[color:var(--primary)] transition" href="#"><i class="fa-brands fa-github w-4 mr-2"></i>GitHub</a>
                                 </li>
-                                <li>
-                                    <a class="hover:text-[color:var(--primary)] transition" href="#"><i class="fa-brands fa-dribbble w-4 mr-2"></i>Dribbble</a>
+                                <li><a class="hover:text-[color:var(--primary)] transition" href="#"><i class="fa-brands fa-dribbble w-4 mr-2"></i>Dribbble</a>
                                 </li>
                             </ul>
                         </div>
@@ -353,12 +342,14 @@
                         Subscribe to get the latest design news, articles, resources and inspiration. </p>
                         <form class="mt-6 flex items-center gap-3">
                             <input type="email" placeholder="Email address" class="w-full rounded-2xl bg-white px-4 py-3 text-sm ring-1 ring-[color:var(--tertiary)] focus:outline-none focus:ring-2 focus:ring-[color:var(--tangerine)]/50 text-[color:var(--primary)]"/>
-                            <button type="submit" class="shrink-0 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[color:var(--primary)] text-white hover:bg-[color:var(--primary)]/90 focus:outline-none focus:ring-2 focus:ring-[color:var(--primary)]/50 transition" aria-label="Submit"><i class="fa-solid fa-arrow-right"></i>
+                            <button type="submit" class="shrink-0 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[color:var(--primary)] text-white hover:bg-[color:var(--primary)]/90 focus:outline-none focus:ring-2 focus:ring-[color:var(--primary)]/50 transition" aria-label="Submit">
+                                <i class="fa-solid fa-arrow-right"></i>
                             </button>
                         </form>
                     </div>
                 </div>
-                <div class="mt-10 border-t border-[color:var(--tertiary)] pt-8 flex items-center justify-between gap-6"><a href="#" class="flex items-center gap-3 text-[color:var(--primary)]"> <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-white ring-1 ring-[color:var(--tertiary)]"> <span class="block h-3 w-3 rounded-sm bg-[color:var(--tangerine)]"></span> </span> <span class="text-lg font-semibold tracking-tight font-heading">Die Brücke.</span> </a>
+                <div class="mt-10 border-t border-[color:var(--tertiary)] pt-8 flex items-center justify-between gap-6">
+                    <a href="#" class="flex items-center gap-3 text-[color:var(--primary)]"> <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-white ring-1 ring-[color:var(--tertiary)]"> <span class="block h-3 w-3 rounded-sm bg-[color:var(--tangerine)]"></span> </span> <span class="text-lg font-semibold tracking-tight font-heading">Die Brücke.</span> </a>
                     <div class="text-sm text-[color:var(--secondary)]">© Die Brücke Studio. 2025</div>
                 </div>
             </footer>

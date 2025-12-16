@@ -6,7 +6,8 @@
         "ai-project-brief": "Web Portal Relaunch für \"Die Brücke - soziokulturelles Zentrum\". https://diebruecke.social",
         "app-routes": {
             "routes": [
-                "/"
+                "/",
+                "/bak-index"
             ],
             "current_route": "/"
         },

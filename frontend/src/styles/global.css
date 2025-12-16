@@ -1,31 +1,79 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
-/* Hier definieren wir dein Theme direkt in CSS */
-@theme {
-  /* Deine Farbpalette */
-  --color-primary: #006D77;
-  --color-secondary: #83C5bE;
-  --color-tertiary: #F3BFC1;
+/* --- MODERN STUDIO THEME: MIDNIGHT & ROSE --- */
+:root {
+  /* PRIMARY: "Obsidian" 
+     Ein fast schwarzes, kühles Dunkelgrau. 
+     Wirkt viel moderner und ernster als das bunte Teal.
+  */
+  --primary: #111827; 
   
-  --color-accent: #FFDDD2;
-  --color-accent-strong: #E29578;
-  --color-tangerine: #E29578;
+  /* SECONDARY: "Cool Slate"
+     Für Sublines. Modernes Grau, nicht zu bläulich.
+  */
+  --secondary: #64748B;
   
-  --color-surface: #ffffff;
-  --color-surface-muted: #EDf6f9;
-
-  /* Fonts */
-  --font-sans: system-ui, sans-serif;
+  /* SURFACE MUTED: "Vapor Gray"
+     Ganz heller Hintergrund, fast weiß, sehr clean.
+  */
+  --surface-muted: #F8FAFC;
+  
+  /* ACCENT: "Cotton Rose" (DEINE FARBE)
+     Nutzen wir für Hintergründe von Badges oder weiche Highlights.
+  */
+  --accent: #F3BFC1; 
+  
+  /* TERTIARY: "Soft Gray"
+     Für feine Linien.
+  */
+  --tertiary: #E2E8F0;
+  
+  /* TANGERINE (Alias für Buttons): "Deep Rose"
+     Da Cotton Rose zu hell für weiße Schrift ist, nutzen wir hier 
+     einen dunkleren, gesättigten Ton derselben Farbfamilie für Buttons.
+     Alternativ: #111827 (Black Buttons) wäre auch sehr cool.
+     Hier: Ein kräftiges Altrosa/Marsala.
+  */
+  --tangerine: #BE4B58;
+  
+  /* Standard Weiß */
+  --surface: #FFFFFF;
 }
 
-/* Container Fix für Tailwind 4:
-   Da wir 'center: true' und 'padding' aus der Config entfernt haben,
-   stellen wir sicher, dass 'container' sich so verhält wie erwartet,
-   oder wir verlassen uns auf die Klassen 'mx-auto px-4' in deinem HTML (die du schon hast).
-   
-   Sicherheitshalber definieren wir hier globale Basis-Stile.
-*/
-body {
-  @apply bg-surface-muted text-gray-800;
+/* Custom Fonts */
+.font-heading { font-family: 'Sora', sans-serif; } 
+.font-sans { font-family: 'Inter', sans-serif; }
+
+/* Custom Background Pattern (angepasst auf Grau) */
+.rounded-canvas {
+    position: relative;
+    background-color: var(--surface);
+}
+.rounded-canvas::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Pattern jetzt in extrem hellem Grau statt Aqua */
+    background-image: repeating-linear-gradient(45deg, #f1f5f9 0, #f1f5f9 5px, transparent 5px, transparent 10px);
+    background-size: 20px 20px;
+    z-index: 0;
+    border-radius: inherit;
+    pointer-events: none;
+}
+
+/* Overlay Navigation State */
+.overlay-hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-5px);
+}
+
+/* Image Mask Style */
+.image-mask {
+    border-radius: 20px 20px 20px 100px;
+    overflow: hidden;
 }
