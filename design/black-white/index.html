@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Die Brücke — Start</title>
+
+    <!-- Deine Tokens/Theme-Datei -->
+    <link rel="stylesheet" href="./tailwind_template/tailwind.css" />
+
+    <!-- Tailwind Browser Build (Pinegrow) -->
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+  </head>
+
+  <body class="bg-white text-gray-900 antialiased">
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-40 bg-white/90 backdrop-blur border-b border-black/10">
+      <div class="mx-auto max-w-7xl px-6">
+        <div class="h-16 flex items-center justify-between">
+          <a href="./index.html" class="inline-flex items-center gap-3">
+            <span class="text-lg font-semibold tracking-tight text-gray-900">Die Brücke</span>
+            <span class="hidden sm:inline text-sm text-gray-600">soziokulturelles Zentrum</span>
+          </a>
+
+          <div class="flex items-center gap-3">
+            <a
+              href="./contact.html"
+              class="hidden sm:inline-flex items-center rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-semibold text-gray-900 hover:bg-black/5 transition"
+            >
+              Kontakt
+            </a>
+
+            <button
+              id="menuOpen"
+              type="button"
+              class="inline-flex items-center rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-semibold text-gray-900 hover:bg-black/5 transition"
+              aria-haspopup="dialog"
+              aria-controls="menuOverlay"
+              aria-expanded="false"
+            >
+              Menü
+              <span class="ml-2 inline-block w-6 text-center" aria-hidden="true">☰</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Fullscreen Overlay Menu (Studio-like) -->
+    <div
+      id="menuOverlay"
+      class="fixed inset-0 z-50 hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Navigation"
+    >
+      <div class="absolute inset-0 bg-gray-950"></div>
+
+      <div class="relative min-h-screen flex flex-col">
+        <!-- Overlay Top Bar -->
+        <div class="border-b border-white/10">
+          <div class="mx-auto max-w-7xl px-6">
+            <div class="h-16 flex items-center justify-between">
+              <a href="./index.html" class="inline-flex items-center gap-3 text-white">
+                <span class="text-lg font-semibold tracking-tight">Die Brücke</span>
+                <span class="hidden sm:inline text-sm text-white/70">Navigation</span>
+              </a>
+
+              <div class="flex items-center gap-3">
+                <a
+                  href="./contact.html"
+                  class="inline-flex items-center rounded-full bg-white text-gray-900 px-4 py-2 text-sm font-semibold hover:bg-white/90 transition"
+                >
+                  Kontakt
+                </a>
+
+                <button
+                  id="menuClose"
+                  type="button"
+                  class="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 text-white w-10 h-10 hover:bg-white/15 transition"
+                  aria-label="Menü schließen"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Overlay Main Grid -->
+        <div class="flex-1">
+          <div class="mx-auto max-w-7xl px-6 py-10">
+            <div class="grid grid-cols-1 md:grid-cols-2 border border-white/10 rounded-3xl overflow-hidden">
+              <a
+                href="./work.html"
+                class="group block p-10 md:p-12 border-b border-white/10 md:border-b-0 md:border-r border-white/10 hover:bg-white/5 transition"
+              >
+                <div class="flex items-start justify-between">
+                  <h2 class="text-4xl sm:text-5xl font-semibold tracking-tight text-white">Projekte</h2>
+                  <span class="text-white/70 group-hover:text-white transition" aria-hidden="true">↗</span>
+                </div>
+                <p class="mt-4 text-white/70 max-w-md">
+                  Urlaubswochen, City Trips, Specials — ein Überblick über Angebote (Dummy).
+                </p>
+                <div class="mt-6 flex flex-wrap gap-2">
+                  <span class="inline-flex items-center rounded-full bg-white/10 px-3 py-1 text-sm text-white/80">Urlaubswochen</span>
+                  <span class="inline-flex items-center rounded-full bg-white/10 px-3 py-1 text-sm text-white/80">City Trips</span>
+                  <span class="inline-flex items-center rounded-full bg-white/10 px-3 py-1 text-sm text-white/80">Specials</span>
+                </div>
+              </a>
+
+              <a
+                href="./about.html"
+                class="group block p-10 md:p-12 border-b border-white/10 md:border-b-0 hover:bg-white/5 transition"
+              >
+                <div class="flex items-start justify-between">
+                  <h2 class="text-4xl sm:text-5xl font-semibold tracking-tight text-white">Über uns</h2>
+                  <span class="text-white/70 group-hover:text-white transition" aria-hidden="true">↗</span>
+                </div>
+                <p class="mt-4 text-white/70 max-w-md">
+                  Leitbild, Team, Verein — kompakt und modern (Dummy).
+                </p>
+                <div class="mt-6 flex flex-wrap gap-2">
+                  <span class="inline-flex items-center rounded-full bg-white/10 px-3 py-1 text-sm text-white/80">Leitbild</span>
+                  <span class="inline-flex items-center rounded-full bg-white/10 px-3 py-1 text-sm text-white/80">Mitmachen</span>
+                  <span class="inline-flex items-center rounded-full bg-white/10 px-3 py-1 text-sm text-white/80">Unterstützen</span>
+                </div>
+              </a>
+
+              <a
+                href="./process.html"
+                class="group block p-10 md:p-12 border-b border-white/10 md:border-b-0 md:border-r border-white/10 hover:bg-white/5 transition"
+              >
+                <div class="flex items-start justify-between">
+                  <h2 class="text-4xl sm:text-5xl font-semibold tracking-tight text-white">Mobile Dienste</h2>
+                  <span class="text-white/70 group-hover:text-white transition" aria-hidden="true">↗</span>
+                </div>
+                <p class="mt-4 text-white/70 max-w-md">
+                  Entlastung, Assistenz, Begleitung — flexibel und verlässlich (Dummy).
+                </p>
+                <div class="mt-6 flex flex-wrap gap-2">
+                  <span class="inline-flex items-center rounded-full bg-white/10 px-3 py-1 text-sm text-white/80">Familienentlastung</span>
+                  <span class="inline-flex items-center rounded-full bg-white/10 px-3 py-1 text-sm text-white/80">Freizeitassistenz</span>
+                  <span class="inline-flex items-center rounded-full bg-white/10 px-3 py-1 text-sm text-white/80">Wohnassistenz</span>
+                </div>
+              </a>
+
+              <a
+                href="./blog.html"
+                class="group block p-10 md:p-12 hover:bg-white/5 transition"
+              >
+                <div class="flex items-start justify-between">
+                  <h2 class="text-4xl sm:text-5xl font-semibold tracking-tight text-white">Aktuelles</h2>
+                  <span class="text-white/70 group-hover:text-white transition" aria-hidden="true">↗</span>
+                </div>
+                <p class="mt-4 text-white/70 max-w-md">
+                  News, Termine, Einblicke — später als Feed/Blog (Dummy).
+                </p>
+                <div class="mt-6 flex flex-wrap gap-2">
+                  <span class="inline-flex items-center rounded-full bg-white/10 px-3 py-1 text-sm text-white/80">Termine</span>
+                  <span class="inline-flex items-center rounded-full bg-white/10 px-3 py-1 text-sm text-white/80">Neuigkeiten</span>
+                  <span class="inline-flex items-center rounded-full bg-white/10 px-3 py-1 text-sm text-white/80">Stories</span>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Overlay Footer -->
+        <div class="border-t border-white/10">
+          <div class="mx-auto max-w-7xl px-6 py-10">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+              <div>
+                <h3 class="text-white font-semibold">Kontakt</h3>
+                <p class="mt-3 text-white/70">
+                  Dummy-Daten — später ersetzen.
+                </p>
+                <div class="mt-4 space-y-2 text-white/80 text-sm">
+                  <p>E-Mail: office@diebruecke.example</p>
+                  <p>Telefon: +43 000 000 000</p>
+                </div>
+              </div>
+
+              <div>
+                <h3 class="text-white font-semibold">Follow</h3>
+                <p class="mt-3 text-white/70">Platzhalter-Links.</p>
+                <div class="mt-4 flex items-center gap-4 text-white/80">
+                  <a href="#" class="hover:text-white transition" aria-label="Facebook">fb</a>
+                  <a href="#" class="hover:text-white transition" aria-label="Instagram">ig</a>
+                  <a href="#" class="hover:text-white transition" aria-label="YouTube">yt</a>
+                  <a href="#" class="hover:text-white transition" aria-label="GitHub">gh</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-10 flex items-center justify-between text-xs text-white/50">
+              <p>© <span id="yearOverlay"></span> Die Brücke</p>
+              <div class="flex items-center gap-4">
+                <a href="#" class="hover:text-white/80 transition">Impressum</a>
+                <a href="#" class="hover:text-white/80 transition">Datenschutz</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Page -->
+    <main class="pt-24">
+      <!-- Hero -->
+      <section class="mx-auto max-w-7xl px-6">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+          <div class="lg:col-span-7">
+            <p class="text-sm font-semibold tracking-widest uppercase text-gray-600">Die Brücke</p>
+            <h1 class="mt-4 text-5xl sm:text-6xl lg:text-7xl font-semibold tracking-tight leading-tight text-gray-900">
+              Räume für Begegnung, Kultur & Unterstützung.
+            </h1>
+            <p class="mt-6 text-lg text-gray-600 max-w-2xl leading-relaxed">
+              Studio-ähnlicher Aufbau: klare Typografie, Grid-Logik, Fullscreen-Menü.
+              Alles als Dummy — perfekt zum visuellen Umbauen in Pinegrow.
+            </p>
+
+            <div class="mt-8 flex flex-col sm:flex-row gap-3">
+              <a
+                href="./work.html"
+                class="inline-flex items-center justify-center rounded-full bg-gray-900 text-white px-6 py-3 text-sm font-semibold hover:bg-gray-900/90 transition"
+              >
+                Projekte entdecken
+              </a>
+              <a
+                href="./contact.html"
+                class="inline-flex items-center justify-center rounded-full border border-black/10 bg-white px-6 py-3 text-sm font-semibold text-gray-900 hover:bg-black/5 transition"
+              >
+                Mitmachen / Anfragen
+              </a>
+            </div>
+
+            <div class="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-6">
+              <div class="rounded-2xl border border-black/10 p-6 bg-white">
+                <p class="text-sm text-gray-600">Fokus</p>
+                <p class="mt-2 text-xl font-semibold text-gray-900">Inklusiv</p>
+                <p class="mt-2 text-sm text-gray-600">Zugängliche Angebote & echte Teilhabe.</p>
+              </div>
+              <div class="rounded-2xl border border-black/10 p-6 bg-white">
+                <p class="text-sm text-gray-600">Formate</p>
+                <p class="mt-2 text-xl font-semibold text-gray-900">Kultur</p>
+                <p class="mt-2 text-sm text-gray-600">Workshops, Bühne, Community.</p>
+              </div>
+              <div class="rounded-2xl border border-black/10 p-6 bg-white">
+                <p class="text-sm text-gray-600">Support</p>
+                <p class="mt-2 text-xl font-semibold text-gray-900">Dienste</p>
+                <p class="mt-2 text-sm text-gray-600">Assistenz & Entlastung im Alltag.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-5">
+            <div class="rounded-3xl border border-black/10 bg-white shadow-sm overflow-hidden">
+              <div class="p-8 border-b border-black/10">
+                <p class="text-sm font-semibold text-gray-900">Aktuell</p>
+                <p class="mt-2 text-sm text-gray-600">
+                  Dummy-Teaser für Neuigkeiten / Termine.
+                </p>
+              </div>
+              <div class="divide-y divide-black/10">
+                <a href="#" class="block p-6 hover:bg-black/5 transition">
+                  <p class="text-xs text-gray-600">Termin • Fr, 19:00</p>
+                  <p class="mt-1 font-semibold text-gray-900">Offener Treff — Kennenlernen & Austausch</p>
+                  <p class="mt-2 text-sm text-gray-600">Kurzer Infoblock, später ersetzen.</p>
+                </a>
+                <a href="#" class="block p-6 hover:bg-black/5 transition">
+                  <p class="text-xs text-gray-600">Special • Sa, 10:00</p>
+                  <p class="mt-1 font-semibold text-gray-900">Kochclub — gemeinsam kochen</p>
+                  <p class="mt-2 text-sm text-gray-600">Platzhalter-Text für Programm-Highlights.</p>
+                </a>
+                <a href="#" class="block p-6 hover:bg-black/5 transition">
+                  <p class="text-xs text-gray-600">Projekt • laufend</p>
+                  <p class="mt-1 font-semibold text-gray-900">Freizeitassistenz — flexible Begleitung</p>
+                  <p class="mt-2 text-sm text-gray-600">Kurzbeschreibung als Dummy.</p>
+                </a>
+              </div>
+            </div>
+
+            <div class="mt-6 rounded-3xl bg-gray-900 text-white p-8">
+              <p class="text-sm font-semibold">Kurz erklärt</p>
+              <p class="mt-3 text-white/80 leading-relaxed">
+                Hell-Modus ist jetzt wirklich invertiert: weißer Background, Text auf #111827-Niveau.
+                Dark-Overlay bleibt Studio-like.
+              </p>
+              <div class="mt-6 flex gap-3 flex-wrap">
+                <span class="rounded-full bg-white/10 px-3 py-1 text-sm text-white/80">Multipage-ready</span>
+                <span class="rounded-full bg-white/10 px-3 py-1 text-sm text-white/80">Pinegrow-friendly</span>
+                <span class="rounded-full bg-white/10 px-3 py-1 text-sm text-white/80">Clean UI</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Mehr Dummy Content -->
+      <section class="mt-16 border-y border-black/10 bg-white">
+        <div class="mx-auto max-w-7xl px-6 py-12">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+              <p class="text-sm font-semibold text-gray-900">Mobile Dienste</p>
+              <p class="mt-2 text-gray-600">Familienentlastung, Freizeitassistenz, Wohnassistenz.</p>
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-gray-900">Projekte</p>
+              <p class="mt-2 text-gray-600">Betreute Reisen, Specials, Gruppenformate.</p>
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-gray-900">Kultur & Community</p>
+              <p class="mt-2 text-gray-600">Treffs, Workshops, Veranstaltungen (Dummy).</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="mx-auto max-w-7xl px-6 py-16">
+        <div class="flex items-end justify-between gap-6">
+          <div>
+            <p class="text-sm font-semibold tracking-widest uppercase text-gray-600">Projekte</p>
+            <h2 class="mt-3 text-3xl sm:text-4xl font-semibold tracking-tight text-gray-900">Ausgewählte Highlights</h2>
+            <p class="mt-3 text-gray-600 max-w-2xl">
+              Dummy-Kacheln im Studio-Feeling: groß, klar, viel Raum.
+            </p>
+          </div>
+          <a href="./work.html" class="hidden sm:inline-flex text-sm font-semibold text-gray-900 hover:opacity-80 transition">
+            Alle Projekte →
+          </a>
+        </div>
+
+        <div class="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <a href="./work.html" class="group rounded-3xl border border-black/10 p-6 hover:shadow-md transition bg-white">
+            <p class="text-xs text-gray-600">Betreute Reisen</p>
+            <h3 class="mt-2 text-xl font-semibold text-gray-900">Urlaubswochen</h3>
+            <p class="mt-3 text-sm text-gray-600">Gemeinsam unterwegs — organisiert, entspannt, inklusiv.</p>
+            <p class="mt-6 text-sm font-semibold text-gray-900">Mehr erfahren →</p>
+          </a>
+
+          <a href="./work.html" class="group rounded-3xl border border-black/10 p-6 hover:shadow-md transition bg-white">
+            <p class="text-xs text-gray-600">Städtetrips</p>
+            <h3 class="mt-2 text-xl font-semibold text-gray-900">City Trips</h3>
+            <p class="mt-3 text-sm text-gray-600">Kurze Auszeiten: Kultur, Essen, Sightseeing.</p>
+            <p class="mt-6 text-sm font-semibold text-gray-900">Mehr erfahren →</p>
+          </a>
+
+          <a href="./work.html" class="group rounded-3xl border border-black/10 p-6 hover:shadow-md transition bg-white">
+            <p class="text-xs text-gray-600">Specials</p>
+            <h3 class="mt-2 text-xl font-semibold text-gray-900">Kochclub</h3>
+            <p class="mt-3 text-sm text-gray-600">Gemeinsam kochen, planen, genießen (Dummy-Format).</p>
+            <p class="mt-6 text-sm font-semibold text-gray-900">Mehr erfahren →</p>
+          </a>
+
+          <a href="./work.html" class="group rounded-3xl border border-black/10 p-6 hover:shadow-md transition bg-white">
+            <p class="text-xs text-gray-600">Specials</p>
+            <h3 class="mt-2 text-xl font-semibold text-gray-900">Kegelclub</h3>
+            <p class="mt-3 text-sm text-gray-600">Bewegung & Spaß in der Gruppe — regelmäßig.</p>
+            <p class="mt-6 text-sm font-semibold text-gray-900">Mehr erfahren →</p>
+          </a>
+        </div>
+      </section>
+
+      <section class="border-t border-black/10">
+        <div class="mx-auto max-w-7xl px-6 py-16">
+          <div class="rounded-3xl bg-black/5 border border-black/10 p-8 md:p-12">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+              <div class="lg:col-span-8">
+                <h2 class="text-3xl sm:text-4xl font-semibold tracking-tight text-gray-900">Kontakt & Teilnahme</h2>
+                <p class="mt-3 text-gray-600 max-w-2xl">
+                  Dummy-CTA: Anfragen, Termine, Mitmachen, Unterstützung. In Pinegrow leicht editierbar.
+                </p>
+              </div>
+              <div class="lg:col-span-4 flex flex-col sm:flex-row lg:flex-col gap-3 lg:items-end">
+                <a href="./contact.html" class="inline-flex items-center justify-center rounded-full bg-gray-900 text-white px-6 py-3 text-sm font-semibold hover:bg-gray-900/90 transition">
+                  Kontakt aufnehmen
+                </a>
+                <a href="./about.html" class="inline-flex items-center justify-center rounded-full border border-black/10 bg-white px-6 py-3 text-sm font-semibold text-gray-900 hover:bg-black/5 transition">
+                  Über den Verein
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-black/10 bg-white">
+      <div class="mx-auto max-w-7xl px-6 py-12">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-8">
+          <div>
+            <p class="text-lg font-semibold text-gray-900">Die Brücke</p>
+            <p class="mt-2 text-sm text-gray-600">Dummy-Footer — Links & Daten später ersetzen.</p>
+          </div>
+
+          <nav class="flex flex-wrap gap-x-6 gap-y-2 text-sm font-semibold text-gray-900">
+            <a href="./work.html" class="hover:opacity-80 transition">Projekte</a>
+            <a href="./about.html" class="hover:opacity-80 transition">Über uns</a>
+            <a href="./process.html" class="hover:opacity-80 transition">Mobile Dienste</a>
+            <a href="./blog.html" class="hover:opacity-80 transition">Aktuelles</a>
+            <a href="./contact.html" class="hover:opacity-80 transition">Kontakt</a>
+          </nav>
+        </div>
+
+        <div class="mt-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 text-xs text-gray-600">
+          <p>© <span id="year"></span> Die Brücke</p>
+          <div class="flex items-center gap-4">
+            <a href="#" class="hover:opacity-80 transition">Impressum</a>
+            <a href="#" class="hover:opacity-80 transition">Datenschutz</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      (function () {
+        var overlay = document.getElementById("menuOverlay");
+        var openBtn = document.getElementById("menuOpen");
+        var closeBtn = document.getElementById("menuClose");
+
+        function openMenu() {
+          overlay.classList.remove("hidden");
+          openBtn.setAttribute("aria-expanded", "true");
+          document.body.classList.add("overflow-hidden");
+        }
+
+        function closeMenu() {
+          overlay.classList.add("hidden");
+          openBtn.setAttribute("aria-expanded", "false");
+          document.body.classList.remove("overflow-hidden");
+        }
+
+        openBtn.addEventListener("click", openMenu);
+        closeBtn.addEventListener("click", closeMenu);
+
+        document.addEventListener("keydown", function (e) {
+          if (e.key === "Escape" && !overlay.classList.contains("hidden")) closeMenu();
+        });
+
+        var y = new Date().getFullYear();
+        var year = document.getElementById("year");
+        var yearOverlay = document.getElementById("yearOverlay");
+        if (year) year.textContent = y;
+        if (yearOverlay) yearOverlay.textContent = y;
+      })();
+    </script>
+  </body>
+</html>
