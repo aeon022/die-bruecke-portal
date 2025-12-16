@@ -6,7 +6,6 @@ dist/
 
 # Backend Specific
 backend/data/
-backend/uploads/
 backend/extensions/
 !backend/extensions/.keep
 backend/database/
