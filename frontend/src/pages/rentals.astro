@@ -11,33 +11,34 @@ const equipment = [
 const useCases = [
     {
         title: "Seminare & Workshops",
-        subtitle: "Vormittags & Tagsüber",
+        subtitle: "Dein Raum am Vormittag",
         desc: "Nutze unsere zentrale Lage für deine Business-Events. Helle Atmosphäre, Bestuhlung nach Wunsch und volle technische Ausstattung.",
         features: ["Flipcharts inklusive", "Kaffee-Catering möglich", "Barrierefreier Zugang"],
         image: "https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=1600&auto=format&fit=crop"
     },
     {
         title: "Private Feiern",
-        subtitle: "Abends & Wochenende",
+        subtitle: "Dein Raum am Abend",
         desc: "Geburtstage, Jubiläen oder Vereinsfeiern. Die Brücke verwandelt sich abends in einen stimmungsvollen Partyraum mit Bar-Infrastruktur.",
         features: ["Bar & Kühlung vorhanden", "Lichttechnik für Stimmung", "Keine Sperrstunde (nach Absprache)"],
-        image: "https://images.unsplash.com/photo-1519671482538-518b5c2bf9c6?q=80&w=1600&auto=format&fit=crop"
+        // Neues, stimmungsvolles Bild (Party/Licht)
+        image: "https://images.unsplash.com/photo-1516997121675-4c2d1684aa3e?q=80&w=1600&auto=format&fit=crop"
     }
 ];
 ---
 
-<MainLayout title="Raumvermietung">
+<MainLayout title="Dein Raum">
     
     <section class="relative px-6 sm:px-10 pt-32 pb-20 bg-slate-900 text-white overflow-hidden">
         <div class="max-w-7xl mx-auto relative z-10">
-            <span class="text-rose-500 font-bold tracking-widest uppercase text-xs mb-6 block">Rent a Space</span>
+            <span class="text-rose-500 font-bold tracking-widest uppercase text-xs mb-6 block">Infrastruktur & Technik</span>
             <h1 class="text-5xl md:text-7xl lg:text-8xl font-display font-extrabold tracking-tighter mb-8 leading-[0.9]">
-                Raum für <br/>
-                <span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-400 to-indigo-400">deine Ideen.</span>
+                Dein Raum für <br/>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-400 to-indigo-400">große Ideen.</span>
             </h1>
             <p class="text-xl text-slate-400 max-w-2xl leading-relaxed font-medium">
                 Ob Business-Seminar am Vormittag oder private Feier am Abend. 
-                Miete die Brücke inklusive modernster Technik und zentraler Lage in Graz.
+                Die Brücke bietet dir Platz, Technik und zentrale Lage in Graz.
             </p>
         </div>
         <div class="absolute right-0 top-0 w-1/2 h-full bg-rose-600/10 blur-3xl rounded-full translate-x-1/2 -translate-y-1/2"></div>
@@ -100,7 +101,7 @@ const useCases = [
 
     <section class="px-6 sm:px-10 py-24 bg-slate-50 border-t border-slate-200">
         <div class="max-w-4xl mx-auto text-center">
-            <h2 class="text-3xl font-display font-bold text-slate-900 mb-6">Interesse geweckt?</h2>
+            <h2 class="text-3xl font-display font-bold text-slate-900 mb-6">Mach es zu deinem Raum.</h2>
             <p class="text-slate-600 text-lg mb-10">
                 Da jede Veranstaltung anders ist, erstellen wir dir gerne ein individuelles Angebot. 
                 Vereine und Sozialinitiativen erhalten bei uns Sonderkonditionen.
