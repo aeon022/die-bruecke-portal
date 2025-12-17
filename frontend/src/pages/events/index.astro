@@ -1,76 +1,184 @@
 ---
-// src/pages/events/index.astro
 import MainLayout from '../../layouts/MainLayout.astro';
-import { getEvents } from '../../lib/api';
+import { getEvents, getEventCategories } from '../../lib/api';
 
-// 1. Daten holen
-const events = await getEvents();
+const allEvents = await getEvents();
+const allCategories = await getEventCategories();
 const ASSET_URL = 'http://localhost:8055/assets';
+
+// Robuste Category-Label-Ermittlung (falls Feld nicht "name" heißt)
+const getCategoryLabel = (obj) => {
+  if (!obj || typeof obj !== 'object') return null;
+  return (
+    obj.name ??
+    obj.title ??
+    obj.label ??
+    obj.bezeichnung ??
+    obj.titel ??
+    obj.slug ??
+    Object.values(obj).find((v) => typeof v === 'string' && v.trim()) ??
+    null
+  );
+};
+
+// Robuste ID-Ermittlung (falls Primary Key nicht "id" heißt)
+const getCategoryId = (obj) => {
+  if (!obj || typeof obj !== 'object') return null;
+
+  const direct = obj.id ?? obj.event_categories_id ?? obj.category_id ?? obj.uuid ?? obj.key ?? obj.slug;
+  if (direct !== undefined && direct !== null && String(direct).trim() !== '') return direct;
+
+  for (const [k, v] of Object.entries(obj)) {
+    if (/(^id$|_id$|Id$|ID$)/.test(k) && (typeof v === 'string' || typeof v === 'number')) {
+      if (String(v).trim() !== '') return v;
+    }
+  }
+
+  const fallback = Object.values(obj).find((v) => typeof v === 'string' || typeof v === 'number');
+  return fallback ?? null;
+};
+
+// Kategorien für Filter: bevorzugt aus der Kategorien-Collection (event_categories) laden,
+// damit Buttons auch dann erscheinen, wenn die Events die Kategorie-Objekte nicht deep liefern.
+// Optional: nur Kategorien anzeigen, die bei mindestens einem Event verwendet werden.
+const usedCategoryIds = new Set();
+for (const e of allEvents) {
+  for (const rel of (e.event_categories ?? [])) {
+    const raw = rel?.event_categories_id;
+    const id = (typeof raw === 'object' && raw !== null) ? getCategoryId(raw) : raw;
+    if (id !== undefined && id !== null && String(id).trim() !== '') usedCategoryIds.add(String(id));
+  }
+}
+
+const categoriesFromCollection = (allCategories ?? [])
+  .map((c) => {
+    const id = (c && typeof c === 'object' && c.__id != null) ? c.__id : getCategoryId(c);
+    const name = (c && typeof c === 'object' && c.__label) ? c.__label : getCategoryLabel(c);
+    return {
+      id: (id !== undefined && id !== null) ? String(id) : '',
+      name: name ? String(name) : ''
+    };
+  })
+  .filter((c) => c.id && c.name)
+  .filter((c) => (usedCategoryIds.size ? usedCategoryIds.has(c.id) : true))
+  .sort((a, b) => a.name.localeCompare(b.name, 'de'));
+
+// Fallback: aus Events (deep loaded) extrahieren
+const categoriesMap = new Map();
+for (const e of allEvents) {
+  for (const rel of (e.event_categories ?? [])) {
+    const raw = rel?.event_categories_id;
+    const id = (typeof raw === 'object' && raw !== null) ? getCategoryId(raw) : raw;
+    const name = (typeof raw === 'object' && raw !== null) ? getCategoryLabel(raw) : null;
+    if (id && name) categoriesMap.set(String(id), String(name));
+  }
+}
+
+const categoriesFromEvents = Array.from(categoriesMap.entries())
+  .map(([id, name]) => ({ id, name }))
+  .sort((a, b) => a.name.localeCompare(b.name, 'de'));
+
+const categories = categoriesFromCollection.length ? categoriesFromCollection : categoriesFromEvents;
 ---
 
-<MainLayout title="Programm">
-    
-    <section class="relative z-10 px-6 sm:px-10 pt-32 pb-16 max-w-6xl">
-        <span class="block text-rose-500 font-bold tracking-widest uppercase text-xs mb-4">Kultur & Begegnung</span>
-        <h1 class="text-5xl sm:text-7xl font-display font-extrabold text-slate-900 tracking-tighter leading-tight mb-6">
-            Unser Programm.
-        </h1>
-        <p class="text-xl text-slate-500 max-w-2xl leading-relaxed font-medium">
-            Konzerte, Workshops und offene Treffs. Hier findest du alle kommenden Veranstaltungen.
-        </p>
-    </section>
-
-    <div class="relative z-10 px-6 sm:px-10 mb-12 overflow-x-auto pb-4">
-        <div class="flex gap-3">
-            <button class="px-6 py-2 rounded-full bg-slate-900 text-white font-bold text-sm whitespace-nowrap hover:bg-rose-600 transition">Alle</button>
-            <button class="px-6 py-2 rounded-full bg-slate-100 text-slate-600 font-bold text-sm hover:bg-slate-200 transition whitespace-nowrap">Musik</button>
-            <button class="px-6 py-2 rounded-full bg-slate-100 text-slate-600 font-bold text-sm hover:bg-slate-200 transition whitespace-nowrap">Workshops</button>
-            <button class="px-6 py-2 rounded-full bg-slate-100 text-slate-600 font-bold text-sm hover:bg-slate-200 transition whitespace-nowrap">Offener Treff</button>
-        </div>
+<MainLayout title="Veranstaltungskalender">
+  <section class="px-6 sm:px-10 pt-32 pb-12 bg-white">
+    <div class="max-w-7xl mx-auto">
+      <h1 class="text-5xl md:text-7xl font-display font-extrabold text-slate-900 tracking-tighter mb-4">Programm</h1>
+      <p class="text-xl text-slate-500 max-w-2xl font-medium">
+        Entdecke alle Termine, Workshops und kulturellen Highlights in der Brücke.
+      </p>
     </div>
+  </section>
 
-    <section class="relative z-10 px-6 sm:px-10 pb-24">
-        <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            
-            {/* Fallback, falls keine Events da sind */}
-            {events.length === 0 && <p class="text-slate-500">Aktuell keine Termine veröffentlicht.</p>}
+  <section class="px-6 sm:px-10 pb-12 sticky top-20 z-30 bg-white/80 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto flex flex-wrap gap-2 py-4 border-y border-slate-100">
+      <button class="filter-btn active bg-slate-900 text-white px-5 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-all" data-category="all">Alle</button>
+      {categories.map(cat => (
+        <button class="filter-btn bg-slate-50 text-slate-500 hover:bg-slate-100 px-5 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-all" data-category={cat.id}>
+          {cat.name}
+        </button>
+      ))}
+    </div>
+  </section>
 
-            {/* Schleife über alle Events */}
-            {events.map((event) => (
-                <a href={`/events/${event.slug}`} class="group relative bg-slate-900 rounded-4xl overflow-hidden shadow-lg hover:shadow-2xl transition duration-500 aspect-[4/5] cursor-pointer block">
-                    
-                    {/* BILD */}
-                    {event.image ? (
-                        <img src={`${ASSET_URL}/${event.image}`} class="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:scale-105 transition duration-700" alt={event.title}>
-                    ) : (
-                        <img src="https://images.unsplash.com/photo-1514525253440-b393452e3383?q=80&w=800&auto=format&fit=crop" class="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:scale-105 transition duration-700" alt="Platzhalter">
-                    )}
-                    
-                    {/* Gradient Overlay für Lesbarkeit */}
-                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/50 to-transparent"></div>
-                    
-                    {/* INHALT */}
-                    <div class="relative z-10 h-full flex flex-col justify-end p-8 text-white">
-                        
-                        {/* Datum Badge */}
-                        <span class="bg-rose-600 self-start px-3 py-1 rounded-full text-xs font-bold mb-4">
-                            {new Date(event.start_date).toLocaleDateString('de-DE', { day: '2-digit', month: 'short' }).toUpperCase()}
-                        </span>
-                        
-                        {/* Titel */}
-                        <h3 class="text-3xl font-display font-bold mb-2 leading-tight group-hover:text-rose-400 transition">
-                            {event.title}
-                        </h3>
-                        
-                        {/* Kurzbeschreibung */}
-                        <p class="text-slate-300 line-clamp-2">
-                            {event.description ? event.description.replace(/<[^>]*>?/gm, '') : ''}
-                        </p>
-                    </div>
-                </a>
-            ))}
+  <section class="px-6 sm:px-10 pb-32 bg-white">
+    <div class="max-w-7xl mx-auto">
+      <div id="events-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {allEvents.map(event => (
+          <div
+            class="event-card group bg-white rounded-[32px] overflow-hidden border border-slate-100 hover:shadow-2xl transition-all duration-500"
+            data-cats={event.event_categories?.map(rel => {
+              const raw = rel?.event_categories_id;
+              const id = (typeof raw === 'object' && raw !== null) ? getCategoryId(raw) : raw;
+              return (id !== undefined && id !== null && String(id).trim() !== '') ? String(id) : null;
+            }).filter(Boolean).join('|')}
+          >
+            <a href={`/events/${event.slug}`} class="block overflow-hidden aspect-[4/3] bg-slate-100 relative">
+              {event.image ? (
+                <img src={`${ASSET_URL}/${event.image}`} class="w-full h-full object-cover group-hover:scale-110 transition duration-700" alt={event.title} />
+              ) : (
+                <div class="w-full h-full flex items-center justify-center text-slate-300 italic font-display uppercase tracking-widest text-[10px]">Kein Bild</div>
+              )}
+              <div class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-bold text-rose-600 uppercase tracking-widest shadow-sm">
+                {new Date(event.start_date).toLocaleDateString('de-DE', { day: '2-digit', month: 'short' })}
+              </div>
+            </a>
 
-        </div>
-    </section>
+            <div class="p-8">
+              <div class="flex gap-1 mb-4 flex-wrap">
+                {event.event_categories?.map(rel => (
+                  <span class="text-[9px] font-bold uppercase tracking-widest text-slate-400 border border-slate-100 px-2 py-0.5 rounded">
+                    {(typeof rel?.event_categories_id === 'object' && rel?.event_categories_id)
+                      ? (getCategoryLabel(rel.event_categories_id) ?? '')
+                      : ''}
+                  </span>
+                ))}
+              </div>
 
+              <h3 class="text-2xl font-display font-bold text-slate-900 group-hover:text-rose-600 transition-colors mb-4 leading-tight tracking-tight">{event.title}</h3>
+
+              <div class="flex items-center justify-between pt-6 border-t border-slate-50">
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Details ansehen</span>
+                <div class="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-rose-600 group-hover:text-white transition-all">
+                  <i class="fa-solid fa-arrow-right text-xs"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
 </MainLayout>
+
+<script>
+  const buttons = document.querySelectorAll('.filter-btn');
+  const cards = document.querySelectorAll('.event-card');
+
+  const setActiveButton = (activeBtn) => {
+    buttons.forEach((b) => {
+      b.classList.remove('bg-slate-900', 'text-white', 'active');
+      b.classList.add('bg-slate-50', 'text-slate-500');
+    });
+
+    activeBtn.classList.add('bg-slate-900', 'text-white', 'active');
+    activeBtn.classList.remove('bg-slate-50', 'text-slate-500');
+  };
+
+  const applyFilter = (categoryId) => {
+    cards.forEach((card) => {
+      const cats = (card.getAttribute('data-cats') || '').split('|').filter(Boolean);
+      const show = categoryId === 'all' || cats.includes(categoryId);
+      card.style.display = show ? '' : 'none';
+    });
+  };
+
+  buttons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const categoryId = btn.getAttribute('data-category');
+      setActiveButton(btn);
+      applyFilter(categoryId);
+    });
+  });
+</script>

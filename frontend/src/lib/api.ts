@@ -62,6 +62,37 @@ export async function getEventBySlug(slug: string) {
     }
 }
 
+/**
+ * Holt alle Event-Kategorien (für Filter-Buttons etc.)
+ */
+export async function getEventCategories() {
+    try {
+        const cats = await directus.request(
+            readItems('event_categories', {
+                // bewusst '*' damit wir nicht von einem konkreten Label-Feld (name/title/label) abhängig sind
+                fields: ['*'],
+                // alle holen (Directus default limit kann sonst greifen)
+                limit: -1
+                // kein sort hier: sort auf nicht-existentem Feld (z.B. keine "id") kann 400 werfen und dann hast du 0 Kategorien
+            })
+        );
+
+        // Optionales Label normalisieren (hilft im Frontend beim Anzeigen)
+        return (cats ?? []).map((c: any) => {
+            const id = c?.id ?? c?.event_categories_id ?? c?.category_id ?? c?.uuid ?? c?.key ?? c?.slug;
+            return {
+                ...c,
+                // einheitlich, damit das Frontend nicht raten muss
+                __id: id,
+                __label: c?.name ?? c?.title ?? c?.label ?? c?.bezeichnung ?? c?.titel ?? c?.slug ?? String(id ?? '')
+            };
+        });
+    } catch (error) {
+        console.error('Fehler beim Laden der Event-Kategorien:', error);
+        return [];
+    }
+}
+
 export async function getServices() {
     try {
         return await directus.request(readItems('services'));

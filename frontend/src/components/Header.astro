@@ -5,7 +5,7 @@ const settings = await getGlobalSettings();
 const projectName = settings?.project_name || 'Die Brücke';
 ---
 
-<div id="navOverlay" class="absolute inset-0 z-50 nav-overlay bg-slate-800 text-white flex flex-col h-fit overflow-hidden rounded-b-4xl" aria-hidden="true">
+<div id="navOverlay" hidden class="absolute inset-0 z-50 nav-overlay bg-slate-800 text-white flex flex-col h-fit overflow-hidden rounded-b-4xl" aria-hidden="true">
     
     <div class="flex items-center justify-between px-6 sm:px-12 py-6 shrink-0 border-b border-white/10 bg-slate-800">
         <div class="flex items-center gap-3">
@@ -109,16 +109,39 @@ const projectName = settings?.project_name || 'Die Brücke';
 
     const toggleMenu = (show) => {
         if (!navOverlay) return;
-        
-        if(show) {
-            navOverlay.classList.add('open');
-            navOverlay.setAttribute('aria-hidden', 'false');
+
+        if (show) {
+            // Wichtig gegen FOUC: Overlay ist per HTML `hidden` versteckt (ohne CSS)
+            navOverlay.hidden = false;
+
+            // In der nächsten Frame-Kante öffnen, damit Transitionen sauber greifen
+            requestAnimationFrame(() => {
+                navOverlay.classList.add('open');
+                navOverlay.setAttribute('aria-hidden', 'false');
+            });
+
             document.body.style.overflow = 'hidden'; // Scrollen verhindern
-        } else {
-            navOverlay.classList.remove('open');
-            navOverlay.setAttribute('aria-hidden', 'true');
-            document.body.style.overflow = ''; // Scrollen erlauben
+            return;
         }
+
+        navOverlay.classList.remove('open');
+        navOverlay.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = ''; // Scrollen erlauben
+
+        // Nach der Close-Transition wieder komplett aus dem Layout nehmen
+        const prefersReduced = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
+        if (prefersReduced) {
+            navOverlay.hidden = true;
+            return;
+        }
+
+        const hide = () => {
+            navOverlay.hidden = true;
+        };
+
+        // Falls Transition fehlt/anders ist, sorgt Timeout als Fallback dafür, dass es trotzdem versteckt wird
+        navOverlay.addEventListener('transitionend', hide, { once: true });
+        setTimeout(hide, 450);
     };
 
     if(btnOpenNav) {
