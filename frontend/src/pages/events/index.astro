@@ -2,183 +2,212 @@
 import MainLayout from '../../layouts/MainLayout.astro';
 import { getEvents, getEventCategories } from '../../lib/api';
 
-const allEvents = await getEvents();
-const allCategories = await getEventCategories();
+const [allEvents, allCategories] = await Promise.all([
+    getEvents(),
+    getEventCategories()
+]);
+
 const ASSET_URL = 'http://localhost:8055/assets';
 
-// Robuste Category-Label-Ermittlung (falls Feld nicht "name" heißt)
-const getCategoryLabel = (obj) => {
-  if (!obj || typeof obj !== 'object') return null;
-  return (
-    obj.name ??
-    obj.title ??
-    obj.label ??
-    obj.bezeichnung ??
-    obj.titel ??
-    obj.slug ??
-    Object.values(obj).find((v) => typeof v === 'string' && v.trim()) ??
-    null
-  );
-};
-
-// Robuste ID-Ermittlung (falls Primary Key nicht "id" heißt)
-const getCategoryId = (obj) => {
-  if (!obj || typeof obj !== 'object') return null;
-
-  const direct = obj.id ?? obj.event_categories_id ?? obj.category_id ?? obj.uuid ?? obj.key ?? obj.slug;
-  if (direct !== undefined && direct !== null && String(direct).trim() !== '') return direct;
-
-  for (const [k, v] of Object.entries(obj)) {
-    if (/(^id$|_id$|Id$|ID$)/.test(k) && (typeof v === 'string' || typeof v === 'number')) {
-      if (String(v).trim() !== '') return v;
+// 1. Lookup Map erstellen (ID -> Name)
+const catLookup = new Map();
+(allCategories || []).forEach(cat => {
+    if (cat.id) {
+        // Fallback für verschiedene Namens-Felder
+        const label = cat.name || cat.title || cat.label || "Kategorie";
+        catLookup.set(String(cat.id), label);
     }
-  }
+});
 
-  const fallback = Object.values(obj).find((v) => typeof v === 'string' || typeof v === 'number');
-  return fallback ?? null;
-};
+const categoryNames = Array.from(catLookup.values()).sort();
 
-// Kategorien für Filter: bevorzugt aus der Kategorien-Collection (event_categories) laden,
-// damit Buttons auch dann erscheinen, wenn die Events die Kategorie-Objekte nicht deep liefern.
-// Optional: nur Kategorien anzeigen, die bei mindestens einem Event verwendet werden.
-const usedCategoryIds = new Set();
-for (const e of allEvents) {
-  for (const rel of (e.event_categories ?? [])) {
-    const raw = rel?.event_categories_id;
-    const id = (typeof raw === 'object' && raw !== null) ? getCategoryId(raw) : raw;
-    if (id !== undefined && id !== null && String(id).trim() !== '') usedCategoryIds.add(String(id));
-  }
-}
+// 2. Events vorbereiten: IDs in Namen umwandeln (Manual Join)
+const eventsWithCats = allEvents.map(event => {
+    const rawCats = event.event_categories || [];
+    
+    // Wir sammeln alle gültigen Kategorienamen für dieses Event
+    const validNames = rawCats.map(rel => {
+        // rel ist die Verknüpfung. Wir brauchen die ID der Zielkategorie.
+        let targetId = null;
+        
+        if (rel.event_categories_id) {
+            if (typeof rel.event_categories_id === 'object') {
+                targetId = rel.event_categories_id.id;
+            } else {
+                targetId = rel.event_categories_id;
+            }
+        }
 
-const categoriesFromCollection = (allCategories ?? [])
-  .map((c) => {
-    const id = (c && typeof c === 'object' && c.__id != null) ? c.__id : getCategoryId(c);
-    const name = (c && typeof c === 'object' && c.__label) ? c.__label : getCategoryLabel(c);
+        if (targetId) {
+            return catLookup.get(String(targetId));
+        }
+        return null;
+    }).filter(Boolean); // Entfernt null/undefined
+
     return {
-      id: (id !== undefined && id !== null) ? String(id) : '',
-      name: name ? String(name) : ''
+        ...event,
+        // Dieser String wird für den Filter genutzt: "Konzert,Stammtisch"
+        _catString: validNames.join(',') 
     };
-  })
-  .filter((c) => c.id && c.name)
-  .filter((c) => (usedCategoryIds.size ? usedCategoryIds.has(c.id) : true))
-  .sort((a, b) => a.name.localeCompare(b.name, 'de'));
-
-// Fallback: aus Events (deep loaded) extrahieren
-const categoriesMap = new Map();
-for (const e of allEvents) {
-  for (const rel of (e.event_categories ?? [])) {
-    const raw = rel?.event_categories_id;
-    const id = (typeof raw === 'object' && raw !== null) ? getCategoryId(raw) : raw;
-    const name = (typeof raw === 'object' && raw !== null) ? getCategoryLabel(raw) : null;
-    if (id && name) categoriesMap.set(String(id), String(name));
-  }
-}
-
-const categoriesFromEvents = Array.from(categoriesMap.entries())
-  .map(([id, name]) => ({ id, name }))
-  .sort((a, b) => a.name.localeCompare(b.name, 'de'));
-
-const categories = categoriesFromCollection.length ? categoriesFromCollection : categoriesFromEvents;
+});
 ---
 
 <MainLayout title="Veranstaltungskalender">
-  <section class="px-6 sm:px-10 pt-32 pb-12 bg-white">
-    <div class="max-w-7xl mx-auto">
-      <h1 class="text-5xl md:text-7xl font-display font-extrabold text-slate-900 tracking-tighter mb-4">Programm</h1>
-      <p class="text-xl text-slate-500 max-w-2xl font-medium">
-        Entdecke alle Termine, Workshops und kulturellen Highlights in der Brücke.
-      </p>
-    </div>
-  </section>
+    
+    <section class="px-6 sm:px-10 pt-32 pb-12 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <h1 class="text-5xl md:text-7xl font-display font-extrabold text-slate-900 tracking-tighter mb-4">Programm</h1>
+            <p class="text-xl text-slate-500 max-w-2xl font-medium leading-relaxed">
+                Entdecke alle Termine, Workshops und kulturellen Highlights in der Brücke. 
+                Von intimen Konzerten bis zu offenen Diskussionsrunden – hier findet Begegnung statt.
+            </p>
+        </div>
+    </section>
 
-  <section class="px-6 sm:px-10 pb-12 sticky top-20 z-30 bg-white/80 backdrop-blur-md">
-    <div class="max-w-7xl mx-auto flex flex-wrap gap-2 py-4 border-y border-slate-100">
-      <button class="filter-btn active bg-slate-900 text-white px-5 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-all" data-category="all">Alle</button>
-      {categories.map(cat => (
-        <button class="filter-btn bg-slate-50 text-slate-500 hover:bg-slate-100 px-5 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-all" data-category={cat.id}>
-          {cat.name}
-        </button>
-      ))}
-    </div>
-  </section>
+    <section class="px-6 sm:px-10 pb-12 sticky top-20 z-30 bg-white/80 backdrop-blur-md transition-all">
+        <div class="max-w-7xl mx-auto flex flex-wrap gap-2 py-4 border-y border-slate-100">
+            <button class="filter-btn active bg-slate-900 text-white px-5 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-all shadow-md hover:shadow-lg transform active:scale-95" 
+                    data-category="all">
+                Alle
+            </button>
+            {categoryNames.map(name => (
+                <button class="filter-btn bg-slate-50 text-slate-500 hover:bg-slate-100 hover:text-slate-900 px-5 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-all" 
+                        data-category={name}>
+                    {name}
+                </button>
+            ))}
+        </div>
+    </section>
 
-  <section class="px-6 sm:px-10 pb-32 bg-white">
-    <div class="max-w-7xl mx-auto">
-      <div id="events-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {allEvents.map(event => (
-          <div
-            class="event-card group bg-white rounded-[32px] overflow-hidden border border-slate-100 hover:shadow-2xl transition-all duration-500"
-            data-cats={event.event_categories?.map(rel => {
-              const raw = rel?.event_categories_id;
-              const id = (typeof raw === 'object' && raw !== null) ? getCategoryId(raw) : raw;
-              return (id !== undefined && id !== null && String(id).trim() !== '') ? String(id) : null;
-            }).filter(Boolean).join('|')}
-          >
-            <a href={`/events/${event.slug}`} class="block overflow-hidden aspect-[4/3] bg-slate-100 relative">
-              {event.image ? (
-                <img src={`${ASSET_URL}/${event.image}`} class="w-full h-full object-cover group-hover:scale-110 transition duration-700" alt={event.title} />
-              ) : (
-                <div class="w-full h-full flex items-center justify-center text-slate-300 italic font-display uppercase tracking-widest text-[10px]">Kein Bild</div>
-              )}
-              <div class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-bold text-rose-600 uppercase tracking-widest shadow-sm">
-                {new Date(event.start_date).toLocaleDateString('de-DE', { day: '2-digit', month: 'short' })}
-              </div>
-            </a>
-
-            <div class="p-8">
-              <div class="flex gap-1 mb-4 flex-wrap">
-                {event.event_categories?.map(rel => (
-                  <span class="text-[9px] font-bold uppercase tracking-widest text-slate-400 border border-slate-100 px-2 py-0.5 rounded">
-                    {(typeof rel?.event_categories_id === 'object' && rel?.event_categories_id)
-                      ? (getCategoryLabel(rel.event_categories_id) ?? '')
-                      : ''}
-                  </span>
-                ))}
-              </div>
-
-              <h3 class="text-2xl font-display font-bold text-slate-900 group-hover:text-rose-600 transition-colors mb-4 leading-tight tracking-tight">{event.title}</h3>
-
-              <div class="flex items-center justify-between pt-6 border-t border-slate-50">
-                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Details ansehen</span>
-                <div class="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-rose-600 group-hover:text-white transition-all">
-                  <i class="fa-solid fa-arrow-right text-xs"></i>
+    <section class="px-6 sm:px-10 pb-24 bg-white">
+        <div class="max-w-7xl mx-auto">
+            
+            {/* Fallback, falls keine Events da sind */}
+            {eventsWithCats.length === 0 && (
+                <div class="text-center py-20 bg-slate-50 rounded-[32px] border border-dashed border-slate-200">
+                    <p class="text-slate-400 font-bold uppercase tracking-widest">Aktuell keine Termine veröffentlicht</p>
                 </div>
-              </div>
+            )}
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {eventsWithCats.map(event => (
+                    <div class="event-card group bg-white rounded-[32px] overflow-hidden border border-slate-100 hover:shadow-2xl transition-all duration-500 flex flex-col h-full" 
+                         data-cats={event._catString}>
+                        
+                        <a href={`/events/${event.slug}`} class="block overflow-hidden aspect-[4/3] bg-slate-100 relative">
+                            {event.image ? (
+                                <img src={`${ASSET_URL}/${event.image}`} class="w-full h-full object-cover group-hover:scale-110 transition duration-700" alt={event.title} />
+                            ) : (
+                                <div class="w-full h-full flex items-center justify-center text-slate-300 italic font-display uppercase tracking-widest text-[10px]">Kein Bild</div>
+                            )}
+                             <div class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-bold text-rose-600 uppercase tracking-widest shadow-sm">
+                                {new Date(event.start_date).toLocaleDateString('de-DE', { day: '2-digit', month: 'short' })}
+                            </div>
+                        </a>
+
+                        <div class="p-8 flex flex-col flex-grow">
+                            <div class="flex gap-1 mb-4 flex-wrap">
+                                {event._catString ? event._catString.split(',').map(catName => (
+                                    <span class="text-[9px] font-bold uppercase tracking-widest text-slate-400 border border-slate-100 px-2 py-0.5 rounded">
+                                        {catName}
+                                    </span>
+                                )) : null}
+                            </div>
+
+                            <h3 class="text-2xl font-display font-bold text-slate-900 group-hover:text-rose-600 transition-colors mb-4 leading-tight tracking-tight">
+                                {event.title}
+                            </h3>
+
+                            <div class="mt-auto flex items-center justify-between pt-6 border-t border-slate-50">
+                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Details ansehen</span>
+                                <div class="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-rose-600 group-hover:text-white transition-all">
+                                    <i class="fa-solid fa-arrow-right text-xs"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                ))}
             </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
+        </div>
+    </section>
+
+    <section class="px-6 sm:px-10 py-24 bg-slate-50 border-t border-slate-200">
+        <div class="max-w-5xl mx-auto">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <span class="text-rose-500 font-bold tracking-widest uppercase text-xs mb-4 block">Kulturraum Graz</span>
+                    <h2 class="text-4xl font-display font-bold text-slate-900 mb-6 tracking-tight">
+                        Vielfalt als Programm.
+                    </h2>
+                    <p class="text-slate-600 leading-relaxed mb-6 font-medium">
+                        Die Brücke ist mehr als nur ein Veranstaltungsort. Wir sind ein lebendiges Labor für soziale Innovation und kulturellen Austausch. Unser Programm entsteht oft direkt aus den Wünschen und Ideen unserer Besucher.
+                    </p>
+                    <p class="text-slate-600 leading-relaxed font-medium">
+                        Egal ob du Unterstützung suchst, dich künstlerisch ausdrücken möchtest oder einfach gute Gesellschaft suchst – unser Kalender spiegelt die Diversität unserer Gemeinschaft wider.
+                    </p>
+                </div>
+                <div class="relative">
+                    <div class="aspect-square rounded-[32px] bg-white border border-slate-200 p-8 shadow-xl rotate-3 hover:rotate-0 transition-transform duration-500 flex flex-col justify-center items-center text-center">
+                         <i class="fa-solid fa-quote-left text-4xl text-rose-200 mb-6"></i>
+                         <p class="text-xl font-display font-bold text-slate-900 mb-4">
+                             "Ein Ort, an dem man Mensch sein darf, ohne Bedingungen."
+                         </p>
+                         <span class="text-xs font-bold uppercase tracking-widest text-slate-400">– Ein Besucher</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="px-6 sm:px-10 py-24 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="bg-slate-900 rounded-[40px] p-12 md:p-20 text-center relative overflow-hidden shadow-2xl">
+                <div class="absolute top-0 left-0 w-64 h-64 bg-rose-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 -translate-x-1/2 -translate-y-1/2"></div>
+                <div class="absolute bottom-0 right-0 w-64 h-64 bg-indigo-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 translate-x-1/2 translate-y-1/2"></div>
+
+                <div class="relative z-10 max-w-2xl mx-auto">
+                    <h2 class="text-3xl md:text-5xl font-display font-bold text-white mb-6 tracking-tight">
+                        Hast du eine Idee?
+                    </h2>
+                    <p class="text-slate-300 text-lg mb-10 font-medium leading-relaxed">
+                        Wir stellen Räume und Ressourcen für deine Initiative zur Verfügung. Egal ob Workshop, Lesung oder Selbsthilfegruppe – werde Teil des Programms.
+                    </p>
+                    <a href="/contact" class="inline-flex items-center gap-2 bg-white text-slate-900 hover:bg-rose-500 hover:text-white px-8 py-4 rounded-full font-bold transition-all shadow-lg hover:shadow-rose-500/25">
+                        Veranstaltung vorschlagen
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
 </MainLayout>
 
 <script>
-  const buttons = document.querySelectorAll('.filter-btn');
-  const cards = document.querySelectorAll('.event-card');
+    const buttons = document.querySelectorAll('.filter-btn');
+    const cards = document.querySelectorAll('.event-card');
 
-  const setActiveButton = (activeBtn) => {
-    buttons.forEach((b) => {
-      b.classList.remove('bg-slate-900', 'text-white', 'active');
-      b.classList.add('bg-slate-50', 'text-slate-500');
+    buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const category = btn.getAttribute('data-category');
+
+            // Button Styles
+            buttons.forEach(b => {
+                b.classList.remove('bg-slate-900', 'text-white', 'shadow-md');
+                b.classList.add('bg-slate-50', 'text-slate-500');
+            });
+            btn.classList.add('bg-slate-900', 'text-white', 'shadow-md');
+            btn.classList.remove('bg-slate-50', 'text-slate-500');
+
+            // Filter Logik
+            cards.forEach(card => {
+                const cardCats = card.getAttribute('data-cats') || '';
+                if (category === 'all' || cardCats.includes(category)) {
+                    (card as HTMLElement).style.display = 'block';
+                } else {
+                    (card as HTMLElement).style.display = 'none';
+                }
+            });
+        });
     });
-
-    activeBtn.classList.add('bg-slate-900', 'text-white', 'active');
-    activeBtn.classList.remove('bg-slate-50', 'text-slate-500');
-  };
-
-  const applyFilter = (categoryId) => {
-    cards.forEach((card) => {
-      const cats = (card.getAttribute('data-cats') || '').split('|').filter(Boolean);
-      const show = categoryId === 'all' || cats.includes(categoryId);
-      card.style.display = show ? '' : 'none';
-    });
-  };
-
-  buttons.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const categoryId = btn.getAttribute('data-category');
-      setActiveButton(btn);
-      applyFilter(categoryId);
-    });
-  });
 </script>
