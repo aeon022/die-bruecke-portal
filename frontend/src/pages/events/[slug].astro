@@ -1,81 +1,80 @@
 ---
-import Layout from '../../layouts/layout.astro'; // Auf Kleinschreibung achten (layout.astro)
-import { getEventBySlug } from '../../lib/api';
+import MainLayout from '../../layouts/MainLayout.astro';
+import { getEventBySlug, getEvents } from '../../lib/api';
 
-// 1. Slug aus der URL holen
 const { slug } = Astro.params;
+const event = await getEventBySlug(slug as string);
 
-let event = null;
-try {
-  // Wir nutzen jetzt unsere saubere API-Funktion
-  event = await getEventBySlug(slug);
-} catch (e) {
-  console.error(`❌ Fehler beim Laden des Events "${slug}":`, e);
-}
-
-// 2. Fallback: Wenn kein Event gefunden wurde -> 404
 if (!event) {
   return Astro.redirect('/404');
 }
 
-// Bild URL Helper
-// TODO: Später in eine zentrale Config/ENV auslagern
 const ASSET_URL = 'http://localhost:8055/assets';
-const imageUrl = event.image ? `${ASSET_URL}/${event.image}` : null;
+
+// Formatierung des Datums
+const eventDate = new Date(event.start_date).toLocaleDateString('de-DE', {
+  weekday: 'long',
+  day: '2-digit',
+  month: 'long',
+  year: 'numeric',
+  hour: '2-digit',
+  minute: '2-digit'
+});
 ---
 
-<Layout>
-  <article class="max-w-4xl mx-auto bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100 mt-8 mb-12">
+<MainLayout title={event.title}>
+  <div class="bg-white min-h-screen">
     
-    {imageUrl ? (
-      <img src={imageUrl} alt={event.title} class="w-full h-64 md:h-96 object-cover" />
-    ) : (
-      <div class="w-full h-64 bg-gray-100 flex items-center justify-center text-gray-400">
-        Kein Bild vorhanden
-      </div>
-    )}
+    <section class="relative h-[60vh] min-h-[400px] overflow-hidden">
+      {event.image ? (
+        <img 
+          src={`${ASSET_URL}/${event.image}`} 
+          alt={event.title} 
+          class="absolute inset-0 w-full h-full object-cover"
+        />
+      ) : (
+        <div class="absolute inset-0 bg-slate-100 flex items-center justify-center">
+          <i class="fa-regular fa-image text-6xl text-slate-200"></i>
+        </div>
+      )}
+      <div class="absolute inset-0 bg-gradient-to-t from-white via-white/20 to-transparent"></div>
+    </section>
 
-    <div class="p-8 md:p-12">
-      <div class="mb-8 border-b pb-8">
-        <h1 class="text-3xl md:text-5xl font-bold text-gray-900 mb-4">{event.title}</h1>
-        
-        <div class="flex flex-wrap gap-4 text-sm font-medium text-gray-500">
+    <article class="relative -mt-32 px-6 sm:px-10 pb-24">
+      <div class="max-w-4xl mx-auto">
+        <div class="bg-white rounded-[40px] shadow-2xl border border-slate-100 p-8 md:p-16">
           
-          {/* FIX: toLocaleString statt toLocaleDateString nutzen! */}
-          <span class="flex items-center gap-1 text-blue-600">
-            📅 {new Date(event.start_date).toLocaleString('de-DE', { dateStyle: 'full', timeStyle: 'short' })} Uhr
-          </span>
-          
-          {event.location && (
-            <span class="flex items-center gap-1">
-              📍 {event.location}
+          <div class="flex flex-wrap items-center gap-4 mb-8">
+            <span class="bg-rose-50 text-rose-600 px-4 py-1.5 rounded-full text-sm font-bold tracking-widest uppercase">
+              {eventDate}
             </span>
-          )}
+            <div class="flex gap-2">
+              {event.event_categories?.map((cat: any) => (
+                <span class="bg-slate-100 text-slate-500 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider">
+                  {cat.event_categories_id?.name}
+                </span>
+              ))}
+            </div>
+          </div>
 
-          {/* Kategorie anzeigen (wenn vorhanden) */}
-          {event.category && typeof event.category !== 'number' && (
-            <span class="flex items-center gap-1 px-2 py-0.5 rounded text-white" 
-                  style={`background-color: ${event.category.color || '#666'}`}>
-              🏷️ {event.category.name}
-            </span>
-          )}
+          <h1 class="text-4xl md:text-6xl font-display font-extrabold text-slate-900 tracking-tighter leading-tight mb-8">
+            {event.title}
+          </h1>
+
+          <div class="prose prose-slate prose-lg max-w-none text-slate-600 font-medium leading-relaxed mb-12" set:html={event.description}>
+          </div>
+
+          <div class="pt-10 border-t border-slate-100 flex flex-col sm:flex-row gap-4 justify-between items-center">
+            <a href="/events" class="flex items-center gap-2 text-slate-400 hover:text-rose-600 font-bold uppercase text-xs tracking-[0.2em] transition-colors">
+              <i class="fa-solid fa-arrow-left-long"></i> Alle Termine
+            </a>
+            <a href="/contact" class="bg-slate-900 text-white px-8 py-4 rounded-full font-bold hover:bg-rose-600 transition-all shadow-lg">
+              Jetzt Anfragen
+            </a>
+          </div>
+
         </div>
       </div>
-
-      {/* Inhalt rendern */}
-      <div class="prose prose-lg text-gray-700 max-w-none prose-headings:text-blue-900 prose-a:text-blue-600" set:html={event.description}></div>
-
-      <div class="mt-12 pt-8 border-t flex justify-between items-center flex-wrap gap-4">
-        <a href="/" class="text-gray-600 hover:text-blue-600 font-medium transition flex items-center gap-2">
-          ← Zurück zur Übersicht
-        </a>
-        
-        {event.pretix_link && (
-          <a href={event.pretix_link} target="_blank" rel="noopener noreferrer" class="px-6 py-3 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition shadow-md">
-            🎟️ Tickets kaufen
-          </a>
-        )}
-      </div>
-    </div>
-  </article>
-</Layout>
+    </article>
+  </div>
+</MainLayout>

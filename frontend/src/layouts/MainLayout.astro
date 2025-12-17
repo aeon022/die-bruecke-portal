@@ -1,0 +1,72 @@
+---
+import Header from '../components/Header.astro';
+
+const { title } = Astro.props;
+---
+
+<!DOCTYPE html> 
+<html lang="de" class="scroll-smooth"> 
+    <head> 
+        <meta charset="utf-8"> 
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> 
+        <title>{title ? `${title} - Die Brücke` : 'Die Brücke - Studio'}</title>         
+        
+        <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+        
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+        <style is:global>
+            /* Falls du eine lokale CSS Datei hast: import '../styles/tailwind.css'; */
+            
+            /* Studio Theme Font Fallbacks */
+            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@400;600;800&family=IBM+Plex+Serif:wght@400;600&display=swap');
+
+            :root {
+                --font-display: 'Sora', sans-serif;
+                --font-body: 'Inter', sans-serif;
+            }
+            
+            body {
+                font-family: var(--font-body);
+            }
+            
+            .font-display {
+                font-family: var(--font-display);
+            }
+
+            /* Pattern Background (Rounded Canvas) */
+            .rounded-canvas {
+                background-color: white;
+            }
+
+            /* Animations */
+            .nav-overlay {
+                transform: translateY(-100%);
+                transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+                visibility: visible;
+            }
+            .nav-overlay.open {
+                transform: translateY(0);
+            }
+            .image-mask {
+                border-radius: 20px 20px 20px 100px;
+                overflow: hidden;
+            }
+        </style>
+
+        <script is:inline>
+            (function(){try{if(!document.documentElement.hasAttribute('data-pg-ia-disabled')) { window.pgia_small_mq=typeof pgia_small_mq=='string'?pgia_small_mq:'(max-width:767px)';window.pgia_large_mq=typeof pgia_large_mq=='string'?pgia_large_mq:'(min-width:768px)';var style = document.createElement('style');var pgcss='html:not(.pg-ia-no-preview) [data-pg-ia-hide=""] {opacity:0;visibility:hidden;}html:not(.pg-ia-no-preview) [data-pg-ia-show=""] {opacity:1;visibility:visible;display:block;}';if(document.documentElement.hasAttribute('data-pg-id') && document.documentElement.hasAttribute('data-pg-mobile')) {pgia_small_mq='(min-width:0)';pgia_large_mq='(min-width:99999px)'} pgcss+='@media ' + pgia_small_mq + '{ html:not(.pg-ia-no-preview) [data-pg-ia-hide="mobile"] {opacity:0;visibility:hidden;}html:not(.pg-ia-no-preview) [data-pg-ia-show="mobile"] {opacity:1;visibility:visible;display:block;}}';pgcss+='@media ' + pgia_large_mq + '{html:not(.pg-ia-no-preview) [data-pg-ia-hide="desktop"] {opacity:0;visibility:hidden;}html:not(.pg-ia-no-preview) [data-pg-ia-show="desktop"] {opacity:1;visibility:visible;display:block;}}';style.innerHTML=pgcss;document.querySelector('head').appendChild(style);}}catch(e){console&&console.log(e);}})()
+        </script>
+    </head>     
+    
+    <body class="bg-slate-100 text-slate-900 font-body antialiased p-4 md:p-8 min-h-screen"> 
+        
+        <div class="relative max-w-[1400px] mx-auto bg-white rounded-4xl shadow-2xl overflow-hidden ring-1 ring-black/5 rounded-canvas isolate">
+
+            <Header />
+
+            <slot />
+
+        </div>
+    </body>     
+</html>

@@ -7,7 +7,9 @@
         "app-routes": {
             "routes": [
                 "/",
-                "/bak-index"
+                "/#backup-index",
+                "/bak-index",
+                "/events"
             ],
             "current_route": "/"
         },

@@ -1,0 +1,114 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+
+// Hier definieren wir die Angebote statisch (leicht zu ändern)
+const services = [
+  {
+    title: "Soziale Beratung",
+    description: "Wir unterstützen bei Behördengängen, Formularen und persönlichen Herausforderungen. Diskret, kostenlos und auf Augenhöhe.",
+    icon: "fa-solid fa-hand-holding-heart",
+    color: "bg-rose-500",
+    features: ["Erstberatung", "Formularhilfe", "Weitervermittlung"]
+  },
+  {
+    title: "Kultur & Events",
+    description: "Konzerte, Lesungen und Ausstellungen. Wir bieten lokalen Künstlern eine Bühne und Graz ein vielfältiges Programm.",
+    icon: "fa-solid fa-music",
+    color: "bg-orange-400",
+    features: ["Live-Konzerte", "Ausstellungen", "Open Stage"]
+  },
+  {
+    title: "Workshops",
+    description: "Lerne Neues oder teile dein Wissen. Von digitaler Kompetenz bis zu handwerklichen Fähigkeiten.",
+    icon: "fa-solid fa-pencil",
+    color: "bg-indigo-500",
+    features: ["Digitale Skills", "Handwerk", "Sprachcafé"]
+  },
+  {
+    title: "Raumvermietung",
+    description: "Du suchst einen Raum für dein Projekt, deinen Verein oder eine private Feier? Unsere Räume sind flexibel nutzbar.",
+    icon: "fa-solid fa-house-user",
+    color: "bg-emerald-500",
+    features: ["Seminarraum", "Veranstaltungssaal", "Equipment"]
+  }
+];
+---
+
+<MainLayout title="Angebote">
+    
+    <section class="relative z-10 px-6 sm:px-10 pt-32 pb-20 bg-white">
+        <div class="max-w-4xl">
+            <span class="inline-block py-1 px-3 rounded-full bg-slate-100 border border-slate-200 text-slate-600 text-xs font-bold tracking-widest uppercase mb-6">
+                Was wir tun
+            </span>
+            <h1 class="text-5xl sm:text-7xl font-display font-extrabold text-slate-900 tracking-tighter leading-tight mb-8">
+                Hilfe zur Selbsthilfe.<br>
+                <span class="text-rose-500">Raum für Kultur.</span>
+            </h1>
+            <p class="text-xl text-slate-500 max-w-2xl leading-relaxed">
+                Die Brücke ist mehr als nur ein Veranstaltungsort. Wir sind ein Ankerpunkt im Viertel. 
+                Unser Angebot reicht von konkreter Sozialarbeit bis zur kulturellen Entfaltung.
+            </p>
+        </div>
+    </section>
+
+    <section class="relative z-10 px-6 sm:px-10 pb-32">
+        <div class="grid md:grid-cols-2 gap-8 max-w-7xl mx-auto">
+            
+            {services.map((item) => (
+                <div class="group relative bg-slate-50 rounded-4xl p-10 hover:bg-slate-900 transition duration-500 hover:shadow-2xl overflow-hidden cursor-default">
+                    
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-slate-200/50 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 group-hover:bg-white/5 transition duration-500"></div>
+
+                    <div class={`w-16 h-16 rounded-2xl ${item.color} flex items-center justify-center text-white text-2xl shadow-lg mb-8 relative z-10 group-hover:scale-110 transition duration-500`}>
+                        <i class={item.icon}></i>
+                    </div>
+
+                    <div class="relative z-10">
+                        <h3 class="text-3xl font-display font-bold text-slate-900 mb-4 group-hover:text-white transition duration-300">
+                            {item.title}
+                        </h3>
+                        <p class="text-slate-500 text-lg mb-8 leading-relaxed group-hover:text-slate-300 transition duration-300">
+                            {item.description}
+                        </p>
+
+                        <ul class="space-y-3">
+                            {item.features.map(feature => (
+                                <li class="flex items-center gap-3 text-slate-600 font-medium group-hover:text-slate-400 transition duration-300">
+                                    <span class={`w-1.5 h-1.5 rounded-full ${item.color}`}></span>
+                                    {feature}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                </div>
+            ))}
+
+        </div>
+    </section>
+
+    <section class="relative z-10 px-6 sm:px-10 pb-24">
+        <div class="bg-rose-600 rounded-4xl p-12 sm:p-20 text-white overflow-hidden relative shadow-2xl">
+            <div class="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+            <div class="absolute bottom-0 left-0 w-64 h-64 bg-black/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
+
+            <div class="relative z-10 max-w-3xl">
+                <h2 class="text-4xl sm:text-6xl font-display font-extrabold tracking-tight mb-6">
+                    Brauchst du Unterstützung?
+                </h2>
+                <p class="text-xl text-rose-100 mb-10 max-w-2xl">
+                    Unsere Sozialberatung ist immer für dich da. Komm einfach vorbei oder vereinbare einen Termin. Wir helfen unbürokratisch.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <a href="/contact" class="inline-flex items-center justify-center px-8 py-4 rounded-full bg-white text-rose-600 text-lg font-bold shadow-lg hover:bg-slate-900 hover:text-white transition">
+                        Termin vereinbaren
+                    </a>
+                    <a href="tel:+43316123456" class="inline-flex items-center justify-center px-8 py-4 rounded-full border border-white/30 text-white text-lg font-bold hover:bg-white/10 transition">
+                        <i class="fa-solid fa-phone mr-2"></i> 0316 / 123 456
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</MainLayout>

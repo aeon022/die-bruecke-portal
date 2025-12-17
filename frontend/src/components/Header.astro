@@ -2,103 +2,147 @@
 import { getGlobalSettings } from '../lib/api';
 
 const settings = await getGlobalSettings();
+const projectName = settings?.project_name || 'Die Brücke';
 ---
 
-<header class="bg-surface border-b border-surface-muted shadow-sm sticky top-0 z-50 transition-all duration-300" id="main-header">
-  <div class="container mx-auto px-4 h-20 flex items-center justify-between">
+<div id="navOverlay" class="absolute inset-0 z-50 nav-overlay bg-slate-800 text-white flex flex-col h-fit overflow-hidden rounded-b-4xl" aria-hidden="true">
     
-    <a href="/" class="text-2xl font-bold text-primary tracking-tight hover:text-secondary transition-colors duration-300 z-50 relative">
-      {settings?.project_name || 'Die Brücke'}
-    </a>
-
-    <button id="menu-toggle" class="p-2 text-primary z-50 relative focus:outline-none group cursor-pointer" aria-label="Menü öffnen">
-      <div class="relative w-8 h-6 flex flex-col justify-between items-end overflow-hidden pointer-events-none">
-         <span id="line-1" class="w-full h-0.5 bg-current rounded-full transition-all duration-300 origin-right"></span>
-         <span id="line-2" class="w-3/4 h-0.5 bg-current rounded-full transition-all duration-300 group-hover:w-full"></span>
-         <span id="line-3" class="w-full h-0.5 bg-current rounded-full transition-all duration-300 origin-right"></span>
-      </div>
-    </button>
-
-    <div id="mobile-menu" class="fixed inset-0 bg-surface/98 backdrop-blur-sm invisible opacity-0 transition-all duration-500 flex flex-col justify-center items-center gap-8 z-40">
-      
-      <div class="absolute top-10 right-10 w-96 h-96 bg-secondary/10 rounded-full blur-3xl pointer-events-none"></div>
-      <div class="absolute bottom-10 left-10 w-96 h-96 bg-tangerine/10 rounded-full blur-3xl pointer-events-none"></div>
-
-      <nav class="flex flex-col gap-8 text-center z-10">
-        <a href="/events" class="mobile-link text-4xl md:text-5xl font-bold text-primary hover:text-tangerine translate-y-8 opacity-0 transition-all duration-500 delay-100">
-          Veranstaltungen
-        </a>
-        <a href="/services" class="mobile-link text-4xl md:text-5xl font-bold text-primary hover:text-tangerine translate-y-8 opacity-0 transition-all duration-500 delay-200">
-          Angebote
-        </a>
-        <a href="/shop" class="mobile-link text-4xl md:text-5xl font-bold text-primary hover:text-tangerine translate-y-8 opacity-0 transition-all duration-500 delay-300">
-          Shop
-        </a>
-      </nav>
-
+    <div class="flex items-center justify-between px-6 sm:px-12 py-6 shrink-0 border-b border-white/10 bg-slate-800">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center border border-white/10">
+                <div class="w-3 h-3 rounded-sm bg-rose-500"></div>
+            </div>
+            <span class="text-xl font-bold font-display tracking-tight">{projectName}</span>
+        </div>
+        <button id="btnCloseNav" class="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center hover:bg-white hover:text-slate-900 transition duration-300 cursor-pointer" aria-label="Menü schließen">
+            <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
     </div>
 
-  </div>
+    <div class="flex-grow flex items-center justify-center w-full bg-slate-800">
+        <nav class="grid grid-cols-1 md:grid-cols-2 w-full border-t border-b border-white/10">
+            
+            <a href="/events" class="group relative p-8 md:p-10 border-b border-white/10 md:border-r hover:bg-white/5 transition duration-300">
+                <span class="block text-rose-500 font-bold mb-2 text-xs tracking-widest uppercase">01</span>
+                <span class="block text-3xl md:text-5xl font-display font-extrabold tracking-tight group-hover:text-rose-500 transition-colors">Veranstaltungen</span>
+                <span class="block mt-2 text-slate-300 text-lg group-hover:text-white transition-colors">Konzerte & Kultur.</span>
+                <i class="fa-solid fa-arrow-right absolute top-8 right-8 text-2xl opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-rose-500"></i>
+            </a>
+
+            <a href="/services" class="group relative p-8 md:p-10 border-b border-white/10 hover:bg-white/5 transition duration-300">
+                <span class="block text-rose-500 font-bold mb-2 text-xs tracking-widest uppercase">02</span>
+                <span class="block text-3xl md:text-5xl font-display font-extrabold tracking-tight group-hover:text-rose-500 transition-colors">Angebote</span>
+                <span class="block mt-2 text-slate-300 text-lg group-hover:text-white transition-colors">Beratung & Hilfe.</span>
+                <i class="fa-solid fa-arrow-right absolute top-8 right-8 text-2xl opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-rose-500"></i>
+            </a>
+
+            <a href="/services#social" class="group relative p-8 md:p-10 border-b border-white/10 md:border-r hover:bg-white/5 transition duration-300">
+                <span class="block text-rose-500 font-bold mb-2 text-xs tracking-widest uppercase">03</span>
+                <span class="block text-3xl md:text-5xl font-display font-extrabold tracking-tight group-hover:text-rose-500 transition-colors">Sozial</span>
+                <span class="block mt-2 text-slate-300 text-lg group-hover:text-white transition-colors">Unsere Mission.</span>
+                <i class="fa-solid fa-arrow-right absolute top-8 right-8 text-2xl opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-rose-500"></i>
+            </a>
+
+            <a href="/events#culture" class="group relative p-8 md:p-10 border-b border-white/10 hover:bg-white/5 transition duration-300">
+                <span class="block text-rose-500 font-bold mb-2 text-xs tracking-widest uppercase">04</span>
+                <span class="block text-3xl md:text-5xl font-display font-extrabold tracking-tight group-hover:text-rose-500 transition-colors">Kultur</span>
+                <span class="block mt-2 text-slate-300 text-lg group-hover:text-white transition-colors">Schreib uns.</span>
+                <i class="fa-solid fa-arrow-right absolute top-8 right-8 text-2xl opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-rose-500"></i>
+            </a>
+
+            <a href="/about" class="group relative p-8 md:p-10 md:border-r border-white/10 hover:bg-white/5 transition duration-300">
+                <span class="block text-rose-500 font-bold mb-2 text-xs tracking-widest uppercase">05</span>
+                <span class="block text-3xl md:text-5xl font-display font-extrabold tracking-tight group-hover:text-rose-500 transition-colors">Über uns</span>
+                <span class="block mt-2 text-slate-300 text-lg group-hover:text-white transition-colors">Unsere Mission.</span>
+                <i class="fa-solid fa-arrow-right absolute top-8 right-8 text-2xl opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-rose-500"></i>
+            </a>
+
+            <a href="/contact" class="group relative p-8 md:p-10 hover:bg-white/5 transition duration-300">
+                <span class="block text-rose-500 font-bold mb-2 text-xs tracking-widest uppercase">06</span>
+                <span class="block text-3xl md:text-5xl font-display font-extrabold tracking-tight group-hover:text-rose-500 transition-colors">Kontakt</span>
+                <span class="block mt-2 text-slate-300 text-lg group-hover:text-white transition-colors">Schreib uns.</span>
+                <i class="fa-solid fa-arrow-right absolute top-8 right-8 text-2xl opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-rose-500"></i>
+            </a>
+
+        </nav>
+    </div>
+
+    <div class="px-6 sm:px-12 py-6 bg-slate-800 border-t border-white/10 shrink-0">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-slate-400 text-sm">
+            <div class="flex items-center gap-3">
+                <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+                <span class="text-white">Brückenstraße 1, 8020 Graz</span>
+            </div>
+            <div class="flex gap-6">
+                <a href="#" class="hover:text-white transition">Instagram</a>
+                <a href="#" class="hover:text-white transition">Facebook</a>
+                <a href="#" class="hover:text-white transition">LinkedIn</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<header class="relative z-40 px-6 sm:px-10 pt-8 pb-6 flex items-center justify-between sticky top-0 bg-white border-b border-slate-100 transition-all duration-300" id="main-header">
+    <a href="/" class="flex items-center gap-3 group">
+        <div class="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center shadow-sm group-hover:border-rose-500 transition">
+            <div class="w-3 h-3 rounded-sm bg-rose-500"></div>
+        </div>
+        <span class="text-xl font-bold font-display tracking-tight text-slate-900">{projectName}</span>
+    </a>
+    
+    <div class="flex items-center gap-4">
+        <a href="/contact" class="hidden md:inline-flex px-6 py-2.5 rounded-full bg-slate-900 text-white font-bold text-sm shadow-lg hover:bg-rose-600 transition hover:-translate-y-0.5">
+            Kontakt
+        </a>
+        <button id="btnOpenNav" class="w-12 h-12 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-900 hover:bg-slate-50 transition cursor-pointer shadow-sm" aria-label="Menü öffnen">
+            <i class="fa-solid fa-bars text-xl"></i>
+        </button>
+    </div>
 </header>
 
 <script>
-  const menuToggle = document.getElementById('menu-toggle');
-  const mobileMenu = document.getElementById('mobile-menu');
-  const line1 = document.getElementById('line-1');
-  const line2 = document.getElementById('line-2');
-  const line3 = document.getElementById('line-3');
-  const mobileLinks = document.querySelectorAll('.mobile-link');
-  
-  let isOpen = false;
+  function initHeader() {
+    const btnOpenNav = document.getElementById('btnOpenNav');
+    const btnCloseNav = document.getElementById('btnCloseNav');
+    const navOverlay = document.getElementById('navOverlay');
+    const navLinks = navOverlay?.querySelectorAll('a');
 
-  function toggleMenu() {
-    isOpen = !isOpen;
+    const toggleMenu = (show) => {
+        if (!navOverlay) return;
+        
+        if(show) {
+            navOverlay.classList.add('open');
+            navOverlay.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden'; // Scrollen verhindern
+        } else {
+            navOverlay.classList.remove('open');
+            navOverlay.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = ''; // Scrollen erlauben
+        }
+    };
 
-    if (isOpen) {
-      // Öffnen
-      mobileMenu.classList.remove('invisible');
-      setTimeout(() => {
-        mobileMenu.classList.remove('opacity-0');
-      }, 10);
-      
-      document.body.style.overflow = 'hidden';
-
-      // Burger -> X Animation
-      line1.classList.add('-rotate-45', 'translate-y-[-1px]');
-      line2.classList.add('opacity-0', 'translate-x-full');
-      line3.classList.add('rotate-45', 'translate-y-[1px]');
-
-      // Links animieren
-      mobileLinks.forEach(link => {
-        link.classList.remove('translate-y-8', 'opacity-0');
-      });
-
-    } else {
-      // Schließen
-      mobileMenu.classList.add('opacity-0');
-      document.body.style.overflow = '';
-
-      // Burger Reset
-      line1.classList.remove('-rotate-45', 'translate-y-[-1px]');
-      line2.classList.remove('opacity-0', 'translate-x-full');
-      line3.classList.remove('rotate-45', 'translate-y-[1px]');
-      
-      mobileLinks.forEach(link => {
-        link.classList.add('translate-y-8', 'opacity-0');
-      });
-
-      // Wait for transition
-      setTimeout(() => {
-        if (!isOpen) mobileMenu.classList.add('invisible');
-      }, 500);
+    if(btnOpenNav) {
+        // Alten Listener entfernen (Cloning Trick), falls Astro neu rendert
+        const newBtn = btnOpenNav.cloneNode(true);
+        btnOpenNav.parentNode.replaceChild(newBtn, btnOpenNav);
+        newBtn.addEventListener('click', () => toggleMenu(true));
     }
+
+    if(btnCloseNav) {
+         // Auch hier sicherheitshalber neu binden
+        const newClose = btnCloseNav.cloneNode(true);
+        btnCloseNav.parentNode.replaceChild(newClose, btnCloseNav);
+        newClose.addEventListener('click', () => toggleMenu(false));
+    }
+    
+    navLinks?.forEach(link => {
+        link.addEventListener('click', () => toggleMenu(false));
+    });
   }
 
-  if (menuToggle) {
-      menuToggle.addEventListener('click', toggleMenu);
-  }
-
-  mobileLinks.forEach(link => {
-    link.addEventListener('click', toggleMenu);
-  });
+  // Initialisieren
+  initHeader();
+  
+  // Neu initialisieren bei Astro View Transitions
+  document.addEventListener('astro:after-swap', initHeader);
 </script>

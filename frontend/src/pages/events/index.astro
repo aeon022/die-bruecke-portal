@@ -1,0 +1,76 @@
+---
+// src/pages/events/index.astro
+import MainLayout from '../../layouts/MainLayout.astro';
+import { getEvents } from '../../lib/api';
+
+// 1. Daten holen
+const events = await getEvents();
+const ASSET_URL = 'http://localhost:8055/assets';
+---
+
+<MainLayout title="Programm">
+    
+    <section class="relative z-10 px-6 sm:px-10 pt-32 pb-16 max-w-6xl">
+        <span class="block text-rose-500 font-bold tracking-widest uppercase text-xs mb-4">Kultur & Begegnung</span>
+        <h1 class="text-5xl sm:text-7xl font-display font-extrabold text-slate-900 tracking-tighter leading-tight mb-6">
+            Unser Programm.
+        </h1>
+        <p class="text-xl text-slate-500 max-w-2xl leading-relaxed font-medium">
+            Konzerte, Workshops und offene Treffs. Hier findest du alle kommenden Veranstaltungen.
+        </p>
+    </section>
+
+    <div class="relative z-10 px-6 sm:px-10 mb-12 overflow-x-auto pb-4">
+        <div class="flex gap-3">
+            <button class="px-6 py-2 rounded-full bg-slate-900 text-white font-bold text-sm whitespace-nowrap hover:bg-rose-600 transition">Alle</button>
+            <button class="px-6 py-2 rounded-full bg-slate-100 text-slate-600 font-bold text-sm hover:bg-slate-200 transition whitespace-nowrap">Musik</button>
+            <button class="px-6 py-2 rounded-full bg-slate-100 text-slate-600 font-bold text-sm hover:bg-slate-200 transition whitespace-nowrap">Workshops</button>
+            <button class="px-6 py-2 rounded-full bg-slate-100 text-slate-600 font-bold text-sm hover:bg-slate-200 transition whitespace-nowrap">Offener Treff</button>
+        </div>
+    </div>
+
+    <section class="relative z-10 px-6 sm:px-10 pb-24">
+        <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            
+            {/* Fallback, falls keine Events da sind */}
+            {events.length === 0 && <p class="text-slate-500">Aktuell keine Termine veröffentlicht.</p>}
+
+            {/* Schleife über alle Events */}
+            {events.map((event) => (
+                <a href={`/events/${event.slug}`} class="group relative bg-slate-900 rounded-4xl overflow-hidden shadow-lg hover:shadow-2xl transition duration-500 aspect-[4/5] cursor-pointer block">
+                    
+                    {/* BILD */}
+                    {event.image ? (
+                        <img src={`${ASSET_URL}/${event.image}`} class="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:scale-105 transition duration-700" alt={event.title}>
+                    ) : (
+                        <img src="https://images.unsplash.com/photo-1514525253440-b393452e3383?q=80&w=800&auto=format&fit=crop" class="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:scale-105 transition duration-700" alt="Platzhalter">
+                    )}
+                    
+                    {/* Gradient Overlay für Lesbarkeit */}
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/50 to-transparent"></div>
+                    
+                    {/* INHALT */}
+                    <div class="relative z-10 h-full flex flex-col justify-end p-8 text-white">
+                        
+                        {/* Datum Badge */}
+                        <span class="bg-rose-600 self-start px-3 py-1 rounded-full text-xs font-bold mb-4">
+                            {new Date(event.start_date).toLocaleDateString('de-DE', { day: '2-digit', month: 'short' }).toUpperCase()}
+                        </span>
+                        
+                        {/* Titel */}
+                        <h3 class="text-3xl font-display font-bold mb-2 leading-tight group-hover:text-rose-400 transition">
+                            {event.title}
+                        </h3>
+                        
+                        {/* Kurzbeschreibung */}
+                        <p class="text-slate-300 line-clamp-2">
+                            {event.description ? event.description.replace(/<[^>]*>?/gm, '') : ''}
+                        </p>
+                    </div>
+                </a>
+            ))}
+
+        </div>
+    </section>
+
+</MainLayout>

@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Die Brücke — Soziokulturelles Zentrum & Mobile Dienste</title>
+
+    <!-- Deine Tokens / dein Tailwind-Theme (liegt bei dir im Projekt) -->
+    <link rel="stylesheet" href="./tailwind_template/tailwind.css" />
+
+    <!-- Pinegrow / Tailwind Browser Build -->
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+  </head>
+
+  <body class="bg-white text-gray-900 antialiased">
+    <!-- Skip link (A11y) -->
+    <a
+      href="#content"
+      class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-white focus:px-3 focus:py-2 focus:text-sm focus:font-semibold focus:text-gray-900 focus:ring-2 focus:ring-gray-900"
+    >
+      Zum Inhalt springen
+    </a>
+
+    <!-- Header -->
+    <header class="sticky top-0 z-40 border-b border-black/10 bg-white/90 backdrop-blur-sm">
+      <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+        <div class="flex items-center gap-3">
+          <a href="#" class="inline-flex items-center gap-3">
+            <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-gray-900 text-white">
+              <span class="text-sm font-black tracking-wide">DB</span>
+            </span>
+            <span class="text-base font-semibold tracking-tight sm:text-lg">Die Brücke</span>
+          </a>
+
+          <span class="hidden text-sm text-gray-600 md:inline-flex">
+            Soziokulturelles Zentrum &amp; Mobile Dienste
+          </span>
+        </div>
+
+        <nav class="hidden items-center gap-6 md:flex" aria-label="Hauptnavigation">
+          <a href="#" class="text-sm font-medium text-gray-700 hover:text-gray-900">Projekte</a>
+          <a href="#" class="text-sm font-medium text-gray-700 hover:text-gray-900">Programm</a>
+          <a href="#" class="text-sm font-medium text-gray-700 hover:text-gray-900">Über uns</a>
+          <a href="#" class="text-sm font-medium text-gray-700 hover:text-gray-900">Jobs</a>
+          <a
+            href="#kontakt"
+            class="inline-flex items-center justify-center rounded-xl bg-gray-900 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
+          >
+            Kontakt
+          </a>
+        </nav>
+
+        <!-- Mobile Menu Button -->
+        <button
+          type="button"
+          class="inline-flex items-center justify-center rounded-xl border border-black/10 bg-white px-3 py-2 text-sm font-semibold hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 md:hidden"
+          aria-controls="menuOverlay"
+          aria-expanded="false"
+          id="menuOpenBtn"
+        >
+          Menü
+        </button>
+      </div>
+    </header>
+
+    <!-- Fullscreen Overlay Menu (2 columns) -->
+    <div id="menuOverlay" class="fixed inset-0 z-50 hidden" role="dialog" aria-modal="true" aria-label="Menü">
+      <!-- Backdrop -->
+      <div class="absolute inset-0 bg-gray-900/30"></div>
+
+      <!-- Panel -->
+      <div class="relative h-full bg-white">
+        <div class="mx-auto flex h-full max-w-7xl flex-col px-4 py-6 sm:px-6 lg:px-8">
+          <!-- Top bar -->
+          <div class="flex items-center justify-between">
+            <a href="#" class="inline-flex items-center gap-3">
+              <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-gray-900 text-white">
+                <span class="text-sm font-black tracking-wide">DB</span>
+              </span>
+              <span class="text-base font-semibold tracking-tight sm:text-lg">Die Brücke</span>
+            </a>
+
+            <button
+              type="button"
+              class="inline-flex items-center justify-center rounded-xl border border-black/10 bg-white px-3 py-2 text-sm font-semibold hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
+              id="menuCloseBtn"
+            >
+              Schließen
+            </button>
+          </div>
+
+          <!-- Content -->
+          <div class="mt-8 grid flex-1 grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12">
+            <!-- Left column: Primary nav -->
+            <div class="flex flex-col">
+              <p class="text-xs font-semibold uppercase tracking-widest text-gray-600">Navigation</p>
+
+              <div class="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <a
+                  href="#projekte"
+                  class="group rounded-2xl border border-black/10 p-4 hover:border-black/20 hover:bg-gray-50"
+                >
+                  <p class="text-base font-semibold">Projekte</p>
+                  <p class="mt-1 text-sm text-gray-600">
+                    Mobile Dienste, Urlaubswochen, City Trips &amp; Specials
+                  </p>
+                </a>
+
+                <a
+                  href="#programm"
+                  class="group rounded-2xl border border-black/10 p-4 hover:border-black/20 hover:bg-gray-50"
+                >
+                  <p class="text-base font-semibold">Programm</p>
+                  <p class="mt-1 text-sm text-gray-600">Veranstaltungen, Termine &amp; Highlights</p>
+                </a>
+
+                <a
+                  href="#ueber"
+                  class="group rounded-2xl border border-black/10 p-4 hover:border-black/20 hover:bg-gray-50"
+                >
+                  <p class="text-base font-semibold">Über uns</p>
+                  <p class="mt-1 text-sm text-gray-600">Leitbild, Geschichte, Verein</p>
+                </a>
+
+                <a
+                  href="#unterstuetzen"
+                  class="group rounded-2xl border border-black/10 p-4 hover:border-black/20 hover:bg-gray-50"
+                >
+                  <p class="text-base font-semibold">Unterstützen</p>
+                  <p class="mt-1 text-sm text-gray-600">Mitglied werden, spenden, mithelfen</p>
+                </a>
+
+                <a
+                  href="#jobs"
+                  class="group rounded-2xl border border-black/10 p-4 hover:border-black/20 hover:bg-gray-50"
+                >
+                  <p class="text-base font-semibold">Jobs</p>
+                  <p class="mt-1 text-sm text-gray-600">Offene Stellen &amp; Initiativbewerbung</p>
+                </a>
+
+                <a
+                  href="#kontakt"
+                  class="group rounded-2xl border border-black/10 p-4 hover:border-black/20 hover:bg-gray-50"
+                >
+                  <p class="text-base font-semibold">Kontakt</p>
+                  <p class="mt-1 text-sm text-gray-600">Schreib uns – wir melden uns schnell</p>
+                </a>
+              </div>
+
+              <div class="mt-8">
+                <p class="text-xs font-semibold uppercase tracking-widest text-gray-600">Schnellzugriff</p>
+                <div class="mt-4 flex flex-wrap gap-2">
+                  <a
+                    href="#"
+                    class="rounded-full border border-black/10 px-3 py-1 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                  >
+                    Freizeitassistenz
+                  </a>
+                  <a
+                    href="#"
+                    class="rounded-full border border-black/10 px-3 py-1 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                  >
+                    Wohnassistenz
+                  </a>
+                  <a
+                    href="#"
+                    class="rounded-full border border-black/10 px-3 py-1 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                  >
+                    Familienentlastung
+                  </a>
+                  <a
+                    href="#"
+                    class="rounded-full border border-black/10 px-3 py-1 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                  >
+                    City Trips
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right column: Context / CTA -->
+            <div class="flex flex-col justify-between rounded-3xl border border-black/10 bg-gray-50 p-6 sm:p-8">
+              <div>
+                <p class="text-xs font-semibold uppercase tracking-widest text-gray-600">Kurz &amp; klar</p>
+                <h2 class="mt-3 text-2xl font-extrabold tracking-tight sm:text-3xl">
+                  Barrieren abbauen. Begegnungen ermöglichen.
+                </h2>
+                <p class="mt-3 text-base text-gray-700">
+                  Die Brücke verbindet Kulturarbeit mit mobilen Unterstützungsangeboten – menschen- und
+                  bedürfnisorientiert, verständlich und nahbar.
+                </p>
+
+                <dl class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div class="rounded-2xl bg-white p-4 ring-1 ring-black/10">
+                    <dt class="text-sm font-semibold">Mobile Dienste</dt>
+                    <dd class="mt-1 text-sm text-gray-600">Assistenz &amp; Entlastung im Alltag</dd>
+                  </div>
+                  <div class="rounded-2xl bg-white p-4 ring-1 ring-black/10">
+                    <dt class="text-sm font-semibold">Kultur</dt>
+                    <dd class="mt-1 text-sm text-gray-600">Programm, Formate, Begegnungen</dd>
+                  </div>
+                </dl>
+              </div>
+
+              <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+                <a
+                  href="#kontakt"
+                  class="inline-flex w-full items-center justify-center rounded-2xl bg-gray-900 px-5 py-3 text-sm font-semibold text-white hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 sm:w-auto"
+                >
+                  Anfrage senden
+                </a>
+                <a
+                  href="#projekte"
+                  class="inline-flex w-full items-center justify-center rounded-2xl border border-black/10 bg-white px-5 py-3 text-sm font-semibold text-gray-900 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 sm:w-auto"
+                >
+                  Projekte ansehen
+                </a>
+              </div>
+
+              <p class="mt-6 text-xs text-gray-600">
+                Tipp: Drücke <span class="font-semibold">ESC</span>, um das Menü zu schließen.
+              </p>
+            </div>
+          </div>
+
+          <!-- Bottom -->
+          <div class="mt-8 flex flex-col items-start justify-between gap-3 border-t border-black/10 pt-6 sm:flex-row sm:items-center">
+            <p class="text-sm text-gray-600">© <span id="year"></span> Die Brücke</p>
+            <div class="flex flex-wrap gap-4">
+              <a href="#" class="text-sm font-medium text-gray-700 hover:text-gray-900">Impressum</a>
+              <a href="#" class="text-sm font-medium text-gray-700 hover:text-gray-900">Datenschutz</a>
+              <a href="#" class="text-sm font-medium text-gray-700 hover:text-gray-900">Cookie-Richtlinie</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <main id="content">
+      <!-- Hero -->
+      <section class="border-b border-black/10">
+        <div class="mx-auto grid max-w-7xl grid-cols-1 gap-10 px-4 py-14 sm:px-6 lg:grid-cols-12 lg:gap-12 lg:px-8 lg:py-20">
+          <div class="lg:col-span-7">
+            <p class="text-xs font-semibold uppercase tracking-widest text-gray-600">Die Brücke</p>
+            <h1 class="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
+              Soziokulturelles Zentrum <span class="text-gray-600">und</span> Träger für mobile Dienste
+            </h1>
+            <p class="mt-6 text-lg leading-relaxed text-gray-700">
+              Ein Ort für Kultur, Austausch und Unterstützung – mit Angeboten, die im Alltag wirklich helfen:
+              Freizeitassistenz, Wohnassistenz und Familienentlastung sowie betreute Reisen und City Trips.
+            </p>
+
+            <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+              <a
+                href="#projekte"
+                class="inline-flex items-center justify-center rounded-2xl bg-gray-900 px-6 py-3 text-sm font-semibold text-white hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
+              >
+                Angebote entdecken
+              </a>
+              <a
+                href="#programm"
+                class="inline-flex items-center justify-center rounded-2xl border border-black/10 bg-white px-6 py-3 text-sm font-semibold text-gray-900 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
+              >
+                Aktuelles Programm
+              </a>
+              <a
+                href="#unterstuetzen"
+                class="inline-flex items-center justify-center rounded-2xl border border-black/10 bg-white px-6 py-3 text-sm font-semibold text-gray-900 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
+              >
+                Unterstützen
+              </a>
+            </div>
+
+            <div class="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-3">
+              <div class="rounded-2xl border border-black/10 p-4">
+                <p class="text-sm font-semibold">Menschenzentriert</p>
+                <p class="mt-1 text-sm text-gray-600">Bedürfnisse verstehen, Lösungen einfach machen.</p>
+              </div>
+              <div class="rounded-2xl border border-black/10 p-4">
+                <p class="text-sm font-semibold">Barrierearm</p>
+                <p class="mt-1 text-sm text-gray-600">A11y-fokussiert – online wie im Alltag.</p>
+              </div>
+              <div class="rounded-2xl border border-black/10 p-4">
+                <p class="text-sm font-semibold">Gemeinschaft</p>
+                <p class="mt-1 text-sm text-gray-600">Begegnung über Grenzen hinweg.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hero side card -->
+          <div class="lg:col-span-5">
+            <div class="rounded-3xl border border-black/10 bg-gray-50 p-6 sm:p-8">
+              <p class="text-xs font-semibold uppercase tracking-widest text-gray-600">Heute im Fokus</p>
+              <h2 class="mt-3 text-2xl font-extrabold tracking-tight">Schnell zur richtigen Hilfe</h2>
+              <p class="mt-3 text-sm leading-relaxed text-gray-700">
+                Wähle das Thema, das gerade passt – wir leiten dich zu den passenden Infos weiter.
+              </p>
+
+              <div class="mt-6 space-y-3">
+                <a href="#" class="flex items-center justify-between rounded-2xl bg-white p-4 ring-1 ring-black/10 hover:bg-gray-50">
+                  <div>
+                    <p class="text-sm font-semibold">Familienentlastungsdienst</p>
+                    <p class="mt-1 text-sm text-gray-600">Entlastung stunden- oder tageweise</p>
+                  </div>
+                  <span class="text-sm font-semibold text-gray-900">→</span>
+                </a>
+
+                <a href="#" class="flex items-center justify-between rounded-2xl bg-white p-4 ring-1 ring-black/10 hover:bg-gray-50">
+                  <div>
+                    <p class="text-sm font-semibold">Freizeitassistenz</p>
+                    <p class="mt-1 text-sm text-gray-600">Gruppenprogramm &amp; Einzelbetreuung</p>
+                  </div>
+                  <span class="text-sm font-semibold text-gray-900">→</span>
+                </a>
+
+                <a href="#" class="flex items-center justify-between rounded-2xl bg-white p-4 ring-1 ring-black/10 hover:bg-gray-50">
+                  <div>
+                    <p class="text-sm font-semibold">Wohnassistenz</p>
+                    <p class="mt-1 text-sm text-gray-600">Alltag organisieren – gemeinsam</p>
+                  </div>
+                  <span class="text-sm font-semibold text-gray-900">→</span>
+                </a>
+              </div>
+
+              <div class="mt-8 rounded-2xl bg-white p-4 ring-1 ring-black/10">
+                <p class="text-sm font-semibold">Kontakt</p>
+                <p class="mt-1 text-sm text-gray-600">office@diebruecke.cc · +43 (0) 316 67 22 48</p>
+                <a
+                  href="#kontakt"
+                  class="mt-4 inline-flex w-full items-center justify-center rounded-2xl bg-gray-900 px-5 py-3 text-sm font-semibold text-white hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
+                >
+                  Nachricht schreiben
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Projects / Offers -->
+      <section id="projekte" class="py-14 sm:py-20">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-widest text-gray-600">Unsere Angebote</p>
+              <h2 class="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">Projekte, die wirken</h2>
+              <p class="mt-4 max-w-2xl text-base leading-relaxed text-gray-700">
+                Ein moderner Überblick über unsere wichtigsten Bereiche – damit man schnell versteht, was wir tun und
+                wie man mitmachen kann.  [oai_citation:1‡diebruecke.social](https://diebruecke.social/cms/?utm_source=chatgpt.com)
+              </p>
+            </div>
+
+            <a
+              href="#"
+              class="inline-flex items-center justify-center rounded-2xl border border-black/10 bg-white px-5 py-3 text-sm font-semibold text-gray-900 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
+            >
+              Alle Projekte
+            </a>
+          </div>
+
+          <div class="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <article class="rounded-3xl border border-black/10 p-6 hover:border-black/20">
+              <p class="text-xs font-semibold uppercase tracking-widest text-gray-600">Mobile Dienste</p>
+              <h3 class="mt-3 text-xl font-bold tracking-tight">Familienentlastungsdienst</h3>
+              <p class="mt-3 text-sm leading-relaxed text-gray-700">
+                Entlastung zuhause – regelmäßig oder nach Bedarf, auch am Wochenende.  [oai_citation:2‡diebruecke.social](https://diebruecke.social/cms/?utm_source=chatgpt.com)
+              </p>
+              <a href="#" class="mt-6 inline-flex text-sm font-semibold text-gray-900 hover:underline">Mehr erfahren</a>
+            </article>
+
+            <article class="rounded-3xl border border-black/10 p-6 hover:border-black/20">
+              <p class="text-xs font-semibold uppercase tracking-widest text-gray-600">Mobile Dienste</p>
+              <h3 class="mt-3 text-xl font-bold tracking-tight">Freizeitassistenz</h3>
+              <p class="mt-3 text-sm leading-relaxed text-gray-700">
+                Abwechslungsreiches Gruppenprogramm – und bei Bedarf auch Einzelbetreuungen.  [oai_citation:3‡diebruecke.social](https://diebruecke.social/cms/?utm_source=chatgpt.com)
+              </p>
+              <a href="#" class="mt-6 inline-flex text-sm font-semibold text-gray-900 hover:underline">Programm ansehen</a>
+            </article>
+
+            <article class="rounded-3xl border border-black/10 p-6 hover:border-black/20">
+              <p class="text-xs font-semibold uppercase tracking-widest text-gray-600">Mobile Dienste</p>
+              <h3 class="mt-3 text-xl font-bold tracking-tight">Wohnassistenz</h3>
+              <p class="mt-3 text-sm leading-relaxed text-gray-700">
+                Unterstützung im Alltag – Zeiten vereinbaren wir gemeinsam nach deinen Bedürfnissen.  [oai_citation:4‡diebruecke.social](https://diebruecke.social/cms/?utm_source=chatgpt.com)
+              </p>
+              <a href="#" class="mt-6 inline-flex text-sm font-semibold text-gray-900 hover:underline">Mehr erfahren</a>
+            </article>
+
+            <article class="rounded-3xl border border-black/10 p-6 hover:border-black/20">
+              <p class="text-xs font-semibold uppercase tracking-widest text-gray-600">Reisen</p>
+              <h3 class="mt-3 text-xl font-bold tracking-tight">Betreute Urlaubswochen</h3>
+              <p class="mt-3 text-sm leading-relaxed text-gray-700">
+                Raus aus dem Alltag – begleitet, sicher und mit viel Raum für echte Erholung.  [oai_citation:5‡diebruecke.social](https://diebruecke.social/cms/?utm_source=chatgpt.com)
+              </p>
+              <a href="#" class="mt-6 inline-flex text-sm font-semibold text-gray-900 hover:underline">Jetzt anfragen</a>
+            </article>
+
+            <article class="rounded-3xl border border-black/10 p-6 hover:border-black/20">
+              <p class="text-xs font-semibold uppercase tracking-widest text-gray-600">Reisen</p>
+              <h3 class="mt-3 text-xl font-bold tracking-tight">City Trips</h3>
+              <p class="mt-3 text-sm leading-relaxed text-gray-700">
+                Kurze Städtetrips – Kultur, Begegnung, neue Perspektiven.  [oai_citation:6‡diebruecke.social](https://diebruecke.social/cms/?utm_source=chatgpt.com)
+              </p>
+              <a href="#" class="mt-6 inline-flex text-sm font-semibold text-gray-900 hover:underline">Ziele entdecken</a>
+            </article>
+
+            <article class="rounded-3xl border border-black/10 p-6 hover:border-black/20">
+              <p class="text-xs font-semibold uppercase tracking-widest text-gray-600">Specials</p>
+              <h3 class="mt-3 text-xl font-bold tracking-tight">Clubs &amp; Workshops</h3>
+              <p class="mt-3 text-sm leading-relaxed text-gray-700">
+                Kochclub, Theaterwerkstatt, Ausflüge – Formate, die Gemeinschaft spürbar machen.  [oai_citation:7‡diebruecke.social](https://diebruecke.social/cms/?utm_source=chatgpt.com)
+              </p>
+              <a href="#" class="mt-6 inline-flex text-sm font-semibold text-gray-900 hover:underline">Alle Specials</a>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- Program preview -->
+      <section id="programm" class="border-y border-black/10 bg-gray-50 py-14 sm:py-20">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div class="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-12">
+            <div class="lg:col-span-5">
+              <p class="text-xs font-semibold uppercase tracking-widest text-gray-600">Programm</p>
+              <h2 class="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">
+                Kultur &amp; Begegnung, die man versteht
+              </h2>
+              <p class="mt-4 text-base leading-relaxed text-gray-700">
+                Minimalistische, klare Darstellung – Termine, Orte, Infos. Alles auf einen Blick. (Dummy-Daten)
+              </p>
+
+              <div class="mt-8 rounded-3xl border border-black/10 bg-white p-6">
+                <p class="text-sm font-semibold">Nächster Termin</p>
+                <p class="mt-2 text-lg font-bold">Offenes Haus: Kennenlernen &amp; Austausch</p>
+                <p class="mt-2 text-sm text-gray-600">Do · 19:00 · Die Brücke · Barrierearm</p>
+                <a
+                  href="#"
+                  class="mt-5 inline-flex items-center justify-center rounded-2xl bg-gray-900 px-5 py-3 text-sm font-semibold text-white hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
+                >
+                  Anmelden
+                </a>
+              </div>
+            </div>
+
+            <div class="lg:col-span-7">
+              <div class="rounded-3xl border border-black/10 bg-white">
+                <div class="border-b border-black/10 p-6">
+                  <p class="text-sm font-semibold">Highlights (Dummy)</p>
+                  <p class="mt-1 text-sm text-gray-600">So könnte ein super klares Listing aussehen.</p>
+                </div>
+
+                <div class="divide-y divide-black/10">
+                  <div class="flex flex-col gap-2 p-6 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                      <p class="text-sm font-semibold">Akustik-Abend</p>
+                      <p class="mt-1 text-sm text-gray-600">Live · klein · nahbar</p>
+                    </div>
+                    <span class="text-sm font-medium text-gray-700">Fr · 20:00</span>
+                  </div>
+
+                  <div class="flex flex-col gap-2 p-6 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                      <p class="text-sm font-semibold">Theaterwerkstatt</p>
+                      <p class="mt-1 text-sm text-gray-600">Workshop · Einstieg jederzeit</p>
+                    </div>
+                    <span class="text-sm font-medium text-gray-700">Sa · 16:00</span>
+                  </div>
+
+                  <div class="flex flex-col gap-2 p-6 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                      <p class="text-sm font-semibold">Kochclub</p>
+                      <p class="mt-1 text-sm text-gray-600">Gemeinsam kochen · gemeinsam essen</p>
+                    </div>
+                    <span class="text-sm font-medium text-gray-700">Mi · 18:00</span>
+                  </div>
+                </div>
+
+                <div class="p-6">
+                  <a href="#" class="inline-flex text-sm font-semibold text-gray-900 hover:underline">
+                    Alle Termine öffnen
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- About / Story -->
+      <section id="ueber" class="py-14 sm:py-20">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div class="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-12">
+            <div class="lg:col-span-6">
+              <p class="text-xs font-semibold uppercase tracking-widest text-gray-600">Über uns</p>
+              <h2 class="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">
+                Ein Verein mit Geschichte — und Zukunft
+              </h2>
+              <p class="mt-4 text-base leading-relaxed text-gray-700">
+                Seit den 80ern entwickelt sich die Brücke weiter: Kulturarbeit, Informationsangebote und mobile Dienste
+                — immer mit dem Fokus auf Teilhabe.  [oai_citation:8‡diebruecke.social](https://diebruecke.social/cms/geschichte/?utm_source=chatgpt.com)
+              </p>
+
+              <div class="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div class="rounded-2xl border border-black/10 p-5">
+                  <p class="text-sm font-semibold">Leitbild</p>
+                  <p class="mt-2 text-sm text-gray-600">Individuelle Bedürfnisse, klare Kommunikation, Respekt.</p>
+                </div>
+                <div class="rounded-2xl border border-black/10 p-5">
+                  <p class="text-sm font-semibold">Barrierefreiheit</p>
+                  <p class="mt-2 text-sm text-gray-600">Digital &amp; analog: so einfach wie möglich.</p>
+                </div>
+              </div>
+
+              <a
+                href="#"
+                class="mt-8 inline-flex items-center justify-center rounded-2xl border border-black/10 bg-white px-6 py-3 text-sm font-semibold text-gray-900 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
+              >
+                Mehr zur Geschichte
+              </a>
+            </div>
+
+            <div class="lg:col-span-6">
+              <div class="rounded-3xl border border-black/10 bg-gray-50 p-6 sm:p-8">
+                <p class="text-xs font-semibold uppercase tracking-widest text-gray-600">So könnte es wirken</p>
+                <h3 class="mt-3 text-2xl font-extrabold tracking-tight">Einfach, modern, verständlich</h3>
+                <p class="mt-3 text-sm leading-relaxed text-gray-700">
+                  Statt Textwüsten: klare Module, kurze Sätze, gute Kontraste, sinnvolle CTAs.
+                </p>
+
+                <div class="mt-8 grid grid-cols-1 gap-4">
+                  <div class="rounded-2xl bg-white p-5 ring-1 ring-black/10">
+                    <p class="text-sm font-semibold">Für wen?</p>
+                    <p class="mt-2 text-sm text-gray-600">
+                      Menschen mit Unterstützungsbedarf, Angehörige, Interessierte, Partner*innen.
+                    </p>
+                  </div>
+
+                  <div class="rounded-2xl bg-white p-5 ring-1 ring-black/10">
+                    <p class="text-sm font-semibold">Wie starten?</p>
+                    <p class="mt-2 text-sm text-gray-600">
+                      1) Angebot wählen · 2) Anfrage senden · 3) Erstgespräch · 4) los geht’s
+                    </p>
+                  </div>
+                </div>
+
+                <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+                  <a
+                    href="#kontakt"
+                    class="inline-flex w-full items-center justify-center rounded-2xl bg-gray-900 px-5 py-3 text-sm font-semibold text-white hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 sm:w-auto"
+                  >
+                    Unverbindlich anfragen
+                  </a>
+                  <a
+                    href="#unterstuetzen"
+                    class="inline-flex w-full items-center justify-center rounded-2xl border border-black/10 bg-white px-5 py-3 text-sm font-semibold text-gray-900 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 sm:w-auto"
+                  >
+                    Unterstützen
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Testimonials -->
+      <section class="border-y border-black/10 bg-gray-50 py-14 sm:py-20">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-widest text-gray-600">Stimmen</p>
+              <h2 class="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">Was Menschen sagen</h2>
+              <p class="mt-4 max-w-2xl text-base leading-relaxed text-gray-700">
+                Dummy-Testimonials (später echte Zitate) – kurz, konkret, glaubwürdig.
+              </p>
+            </div>
+          </div>
+
+          <div class="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-3">
+            <figure class="rounded-3xl border border-black/10 bg-white p-6">
+              <blockquote class="text-sm leading-relaxed text-gray-700">
+                „Endlich eine Seite, wo man sofort findet, was man braucht. Anfrage stellen war in 2 Minuten erledigt.“
+              </blockquote>
+              <figcaption class="mt-5 flex items-center justify-between">
+                <div>
+                  <p class="text-sm font-semibold">Vorname Nachname</p>
+                  <p class="text-sm text-gray-600">Angehörige*r</p>
+                </div>
+                <span class="text-sm font-semibold text-gray-900">★★★★★</span>
+              </figcaption>
+            </figure>
+
+            <figure class="rounded-3xl border border-black/10 bg-white p-6">
+              <blockquote class="text-sm leading-relaxed text-gray-700">
+                „Klarer Überblick über Programme und Trips. Weniger Klicks, mehr Klarheit – so muss das sein.“
+              </blockquote>
+              <figcaption class="mt-5 flex items-center justify-between">
+                <div>
+                  <p class="text-sm font-semibold">Vorname Nachname</p>
+                  <p class="text-sm text-gray-600">Teilnehmer*in</p>
+                </div>
+                <span class="text-sm font-semibold text-gray-900">★★★★★</span>
+              </figcaption>
+            </figure>
+
+            <figure class="rounded-3xl border border-black/10 bg-white p-6">
+              <blockquote class="text-sm leading-relaxed text-gray-700">
+                „Modern, barrierearm, verständlich. Perfekt für Zusammenarbeit – und es fühlt sich nach Zukunft an.“
+              </blockquote>
+              <figcaption class="mt-5 flex items-center justify-between">
+                <div>
+                  <p class="text-sm font-semibold">Vorname Nachname</p>
+                  <p class="text-sm text-gray-600">Partnerorganisation</p>
+                </div>
+                <span class="text-sm font-semibold text-gray-900">★★★★★</span>
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <!-- Support / CTA -->
+      <section id="unterstuetzen" class="py-14 sm:py-20">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div class="rounded-3xl border border-black/10 bg-gray-900 p-8 text-white sm:p-10">
+            <div class="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-12">
+              <div class="lg:col-span-7">
+                <p class="text-xs font-semibold uppercase tracking-widest text-white/70">Unterstützen</p>
+                <h2 class="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">
+                  Gemeinsam Barrieren abbauen
+                </h2>
+                <p class="mt-4 text-base leading-relaxed text-white/80">
+                  Spende, Mitgliedschaft oder ehrenamtliches Engagement: Jede Unterstützung macht Angebote möglich.
+                </p>
+              </div>
+
+              <div class="lg:col-span-5">
+                <div class="rounded-2xl bg-white/10 p-6 ring-1 ring-white/15">
+                  <p class="text-sm font-semibold">Schnellstart (Dummy)</p>
+                  <div class="mt-4 space-y-3">
+                    <a href="#" class="block rounded-xl bg-white/10 px-4 py-3 text-sm font-semibold hover:bg-white/15">
+                      Mitglied werden
+                    </a>
+                    <a href="#" class="block rounded-xl bg-white/10 px-4 py-3 text-sm font-semibold hover:bg-white/15">
+                      Einmalig spenden
+                    </a>
+                    <a href="#" class="block rounded-xl bg-white/10 px-4 py-3 text-sm font-semibold hover:bg-white/15">
+                      Ehrenamtlich helfen
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Jobs -->
+      <section id="jobs" class="border-t border-black/10 py-14 sm:py-20">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-widest text-gray-600">Jobs</p>
+              <h2 class="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">Arbeiten bei Die Brücke</h2>
+              <p class="mt-4 max-w-2xl text-base leading-relaxed text-gray-700">
+                Dummy-Listing – später echte Stellen. Wichtig: klare Anforderungen, klare Bewerbungsschritte.
+              </p>
+            </div>
+            <a
+              href="#kontakt"
+              class="inline-flex items-center justify-center rounded-2xl border border-black/10 bg-white px-5 py-3 text-sm font-semibold text-gray-900 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
+            >
+              Initiativ bewerben
+            </a>
+          </div>
+
+          <div class="mt-10 divide-y divide-black/10 rounded-3xl border border-black/10 bg-white">
+            <div class="flex flex-col gap-3 p-6 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p class="text-sm font-semibold">Assistenz (m/w/d)</p>
+                <p class="mt-1 text-sm text-gray-600">Teilzeit · Mobile Dienste · Graz (Dummy)</p>
+              </div>
+              <a href="#" class="text-sm font-semibold text-gray-900 hover:underline">Details</a>
+            </div>
+
+            <div class="flex flex-col gap-3 p-6 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p class="text-sm font-semibold">Kulturkoordination (m/w/d)</p>
+                <p class="mt-1 text-sm text-gray-600">Teilzeit · Programm · Graz (Dummy)</p>
+              </div>
+              <a href="#" class="text-sm font-semibold text-gray-900 hover:underline">Details</a>
+            </div>
+
+            <div class="flex flex-col gap-3 p-6 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p class="text-sm font-semibold">Verwaltung (m/w/d)</p>
+                <p class="mt-1 text-sm text-gray-600">Geringfügig · Office · Graz (Dummy)</p>
+              </div>
+              <a href="#" class="text-sm font-semibold text-gray-900 hover:underline">Details</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Contact -->
+      <section id="kontakt" class="border-t border-black/10 bg-gray-50 py-14 sm:py-20">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div class="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-12">
+            <div class="lg:col-span-5">
+              <p class="text-xs font-semibold uppercase tracking-widest text-gray-600">Kontakt</p>
+              <h2 class="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">Schreib uns</h2>
+              <p class="mt-4 text-base leading-relaxed text-gray-700">
+                Kurzes Formular, klare Felder, gute A11y. (Dummy – später echte Form-Action)
+              </p>
+
+              <div class="mt-8 space-y-3">
+                <div class="rounded-2xl border border-black/10 bg-white p-5">
+                  <p class="text-sm font-semibold">E-Mail</p>
+                  <p class="mt-1 text-sm text-gray-600">office@diebruecke.cc</p>
+                </div>
+                <div class="rounded-2xl border border-black/10 bg-white p-5">
+                  <p class="text-sm font-semibold">Telefon</p>
+                  <p class="mt-1 text-sm text-gray-600">+43 (0) 316 67 22 48</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="lg:col-span-7">
+              <form class="rounded-3xl border border-black/10 bg-white p-6 sm:p-8">
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div>
+                    <label for="name" class="text-sm font-semibold">Name</label>
+                    <input
+                      id="name"
+                      name="name"
+                      type="text"
+                      autocomplete="name"
+                      class="mt-2 w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-900"
+                      placeholder="Vorname Nachname"
+                    />
+                  </div>
+
+                  <div>
+                    <label for="email" class="text-sm font-semibold">E-Mail</label>
+                    <input
+                      id="email"
+                      name="email"
+                      type="email"
+                      autocomplete="email"
+                      class="mt-2 w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-900"
+                      placeholder="name@example.com"
+                    />
+                  </div>
+
+                  <div class="sm:col-span-2">
+                    <label for="topic" class="text-sm font-semibold">Thema</label>
+                    <select
+                      id="topic"
+                      name="topic"
+                      class="mt-2 w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900"
+                    >
+                      <option>Allgemeine Anfrage</option>
+                      <option>Mobile Dienste</option>
+                      <option>Freizeitassistenz</option>
+                      <option>Wohnassistenz</option>
+                      <option>Familienentlastung</option>
+                      <option>Programm / Kultur</option>
+                      <option>Unterstützen</option>
+                      <option>Jobs</option>
+                    </select>
+                  </div>
+
+                  <div class="sm:col-span-2">
+                    <label for="message" class="text-sm font-semibold">Nachricht</label>
+                    <textarea
+                      id="message"
+                      name="message"
+                      rows="5"
+                      class="mt-2 w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-900"
+                      placeholder="Worum geht’s? Was ist dir wichtig?"
+                    ></textarea>
+                  </div>
+                </div>
+
+                <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <p class="text-xs text-gray-600">
+                    Mit Absenden stimmst du zu, dass wir deine Daten zur Bearbeitung der Anfrage verwenden. (Dummy)
+                  </p>
+                  <button
+                    type="button"
+                    class="inline-flex items-center justify-center rounded-2xl bg-gray-900 px-6 py-3 text-sm font-semibold text-white hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
+                  >
+                    Absenden
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-black/10 bg-white">
+      <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-12">
+          <div class="lg:col-span-5">
+            <a href="#" class="inline-flex items-center gap-3">
+              <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-gray-900 text-white">
+                <span class="text-sm font-black tracking-wide">DB</span>
+              </span>
+              <span class="text-base font-semibold tracking-tight">Die Brücke</span>
+            </a>
+            <p class="mt-4 max-w-md text-sm leading-relaxed text-gray-700">
+              Soziokulturelles Zentrum &amp; Träger für mobile Dienste. Klar, modern und barrierearm gedacht.
+            </p>
+          </div>
+
+          <div class="lg:col-span-7">
+            <div class="grid grid-cols-2 gap-8 sm:grid-cols-4">
+              <div>
+                <p class="text-sm font-semibold">Verein</p>
+                <ul class="mt-4 space-y-2">
+                  <li><a href="#ueber" class="text-sm text-gray-700 hover:text-gray-900">Über uns</a></li>
+                  <li><a href="#" class="text-sm text-gray-700 hover:text-gray-900">Leitbild</a></li>
+                  <li><a href="#" class="text-sm text-gray-700 hover:text-gray-900">Geschichte</a></li>
+                </ul>
+              </div>
+
+              <div>
+                <p class="text-sm font-semibold">Sozial</p>
+                <ul class="mt-4 space-y-2">
+                  <li><a href="#projekte" class="text-sm text-gray-700 hover:text-gray-900">Mobile Dienste</a></li>
+                  <li><a href="#" class="text-sm text-gray-700 hover:text-gray-900">Freizeitassistenz</a></li>
+                  <li><a href="#" class="text-sm text-gray-700 hover:text-gray-900">Wohnassistenz</a></li>
+                </ul>
+              </div>
+
+              <div>
+                <p class="text-sm font-semibold">Kultur</p>
+                <ul class="mt-4 space-y-2">
+                  <li><a href="#programm" class="text-sm text-gray-700 hover:text-gray-900">Programm</a></li>
+                  <li><a href="#" class="text-sm text-gray-700 hover:text-gray-900">Termine</a></li>
+                  <li><a href="#" class="text-sm text-gray-700 hover:text-gray-900">Künstleranfrage</a></li>
+                </ul>
+              </div>
+
+              <div>
+                <p class="text-sm font-semibold">Rechtliches</p>
+                <ul class="mt-4 space-y-2">
+                  <li><a href="#" class="text-sm text-gray-700 hover:text-gray-900">Impressum</a></li>
+                  <li><a href="#" class="text-sm text-gray-700 hover:text-gray-900">Datenschutz</a></li>
+                  <li><a href="#" class="text-sm text-gray-700 hover:text-gray-900">Cookies</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-10 flex flex-col gap-3 border-t border-black/10 pt-6 sm:flex-row sm:items-center sm:justify-between">
+          <p class="text-sm text-gray-600">© <span id="year2"></span> Die Brücke. Alle Rechte vorbehalten.</p>
+          <div class="flex gap-4">
+            <a href="#" class="text-sm font-medium text-gray-700 hover:text-gray-900">Facebook</a>
+            <a href="#" class="text-sm font-medium text-gray-700 hover:text-gray-900">Instagram</a>
+            <a href="#" class="text-sm font-medium text-gray-700 hover:text-gray-900">YouTube</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      (function () {
+        var overlay = document.getElementById("menuOverlay");
+        var openBtn = document.getElementById("menuOpenBtn");
+        var closeBtn = document.getElementById("menuCloseBtn");
+
+        function openMenu() {
+          overlay.classList.remove("hidden");
+          openBtn.setAttribute("aria-expanded", "true");
+          closeBtn.focus();
+        }
+
+        function closeMenu() {
+          overlay.classList.add("hidden");
+          openBtn.setAttribute("aria-expanded", "false");
+          openBtn.focus();
+        }
+
+        openBtn.addEventListener("click", openMenu);
+        closeBtn.addEventListener("click", closeMenu);
+
+        overlay.addEventListener("click", function (e) {
+          if (e.target === overlay) closeMenu();
+        });
+
+        document.addEventListener("keydown", function (e) {
+          if (e.key === "Escape" && !overlay.classList.contains("hidden")) closeMenu();
+        });
+
+        var y = new Date().getFullYear();
+        var year1 = document.getElementById("year");
+        var year2 = document.getElementById("year2");
+        if (year1) year1.textContent = y;
+        if (year2) year2.textContent = y;
+      })();
+    </script>
+  </body>
+</html>

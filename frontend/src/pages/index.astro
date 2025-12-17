@@ -1,205 +1,174 @@
 ---
-import Layout from '../layouts/layout.astro';
+import MainLayout from '../layouts/MainLayout.astro';
 import { getEvents, getGlobalSettings } from '../lib/api';
 
 // 1. Daten laden
-const [settings, events] = await Promise.all([
+const [settings, allEvents] = await Promise.all([
   getGlobalSettings(),
   getEvents()
 ]);
 
-const ASSET_URL = 'http://localhost:8055/assets';
+const ASSET_URL = 'http://localhost:8055/assets'; 
 
-// Text Fallbacks
-const heroHeadline = settings?.hero_headline || "Die Brücke – soziokulturelles Zentrum & Träger für mobile Dienste.";
-const heroSubline = settings?.hero_subline || "Ein Ort der Begegnung, Kultur und sozialen Unterstützung – mitten in der Stadt.";
+/** * DEBUG-LOG (Nur im Terminal sichtbar)
+ * Zeigt an, was Directus wirklich liefert. 
+ * Wenn hier bei allen "false" oder "undefined" steht, 
+ * sind die Access Policies in Directus noch nicht korrekt für das Feld.
+ */
+console.log("--- API CHECK ---");
+allEvents.forEach(e => {
+  console.log(`Event: ${e.title} | Highlight-Feld: ${e.is_highlight}`);
+});
+
+// 2. Highlight Logik - is_highlight wird in api.ts bereits zu boolean normalisiert
+const highlightEvent = allEvents.find(e => e.is_highlight === true);
+
+// 3. Die nächsten 3 Events (Highlight ausschließen)
+const upcomingEvents = allEvents
+  .filter(e => e.id !== highlightEvent?.id)
+  .slice(0, 3);
+
+const heroHeadline = settings?.hero_headline || "Kultur verbindet.<br> <span class=\"bg-clip-text text-transparent bg-gradient-to-r from-rose-600 to-orange-400\">Soziales</span> stärkt.";
 ---
 
-<Layout>
-    <div class="relative max-w-[1400px] mx-auto rounded-[40px] md:rounded-[48px] shadow-xl overflow-hidden ring-1 ring-black/10 rounded-canvas bg-white">
-        
-        <div id="navOverlay" class="absolute inset-0 z-50 transition duration-300 ease-out overlay-hidden font-sans" aria-hidden="true">
-            <div class="absolute inset-0 bg-[color:var(--primary)]">
-                <div class="absolute inset-0 bg-black/65"></div>
+<MainLayout title="Startseite">
+    
+    <section class="relative z-10 px-6 sm:px-10 pt-32 pb-20 bg-white">
+        <div class="max-w-6xl">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-50 border border-slate-200 text-xs font-bold text-rose-500 mb-8 uppercase tracking-widest shadow-sm">
+                <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
+                Seit 1983
             </div>
-            <div class="relative h-full overflow-y-auto">
-                <div class="flex items-center justify-between px-6 sm:px-10 py-6">
-                    <a href="#" class="flex items-center gap-3 text-white/90"> 
-                        <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/15"> 
-                            <span class="block h-3 w-3 rounded-sm bg-white/80"></span> 
-                        </span> 
-                        <span class="text-lg font-semibold tracking-tight font-heading">Die Brücke.</span> 
+            <h1 class="text-5xl sm:text-7xl lg:text-8xl font-display font-extrabold text-slate-900 tracking-tighter leading-[0.9] mb-12" set:html={heroHeadline}></h1>
+            <p class="text-xl text-slate-500 max-w-2xl leading-relaxed border-l-4 border-rose-500 pl-8 font-medium">
+                {settings?.hero_subline || "Ein offener Raum für analoge Begegnung und digitale Identität mitten in Graz."}
+            </p>
+        </div>
+    </section>
+
+    <section class="px-6 sm:px-10 pb-24 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-6 h-auto md:h-[700px]">
+                
+                {highlightEvent ? (
+                    <a href={`/events/${highlightEvent.slug}`} class="md:col-span-2 md:row-span-2 relative group rounded-[32px] overflow-hidden bg-slate-900 shadow-xl">
+                        {highlightEvent.image ? (
+                            <img 
+                                src={`${ASSET_URL}/${highlightEvent.image}`} 
+                                class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition duration-1000" 
+                                alt={highlightEvent.title} 
+                            />
+                        ) : (
+                            <div class="absolute inset-0 flex items-center justify-center bg-slate-800 text-slate-500 italic font-display">Bild folgt</div>
+                        )}
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent"></div>
+                        <div class="absolute bottom-0 left-0 p-8 md:p-12 text-white">
+                            <span class="inline-block px-3 py-1 rounded-full bg-rose-600 text-[10px] font-bold uppercase mb-4 shadow-lg tracking-widest">Highlight</span>
+                            <h2 class="text-3xl md:text-5xl font-display font-bold leading-tight mb-4 tracking-tight">{highlightEvent.title}</h2>
+                            <p class="text-slate-300 line-clamp-2 max-w-md font-medium mb-6">{highlightEvent.description?.replace(/<[^>]*>?/gm, '')}</p>
+                            <span class="font-bold flex items-center gap-2 text-rose-400">Mehr erfahren <i class="fa-solid fa-arrow-right text-xs"></i></span>
+                        </div>
                     </a>
-                    <div class="flex items-center gap-3">
-                        <a href="#contact" class="rounded-full bg-white text-[color:var(--primary)] px-4 py-2 text-sm font-medium shadow-sm hover:bg-white/90 focus:outline-none focus:ring-2 focus:ring-white/50">
-                        Kontakt </a>
-                        <button id="btnCloseNav" type="button" class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white ring-1 ring-white/20 hover:bg-white/15 focus:outline-none focus:ring-2 focus:ring-white/50" aria-label="Close menu"><i class="fa-solid fa-xmark text-lg"></i>
-                        </button>
+                ) : (
+                    <div class="md:col-span-2 md:row-span-2 bg-slate-50 rounded-[32px] flex flex-col items-center justify-center border-2 border-dashed border-slate-200 p-12 text-center transition-colors">
+                        <i class="fa-solid fa-star-half-stroke text-3xl text-slate-200 mb-4"></i>
+                        <p class="text-slate-400 font-bold uppercase tracking-widest text-xs">Kein Event als Highlight markiert</p>
+                        <p class="text-[10px] text-slate-300 mt-2 italic">Prüfe in Directus: Bei einem Event die Checkbox „Highlight“ aktivieren (und Feldrechte für <code>is_highlight</code> erlauben).</p>
                     </div>
+                )}
+
+                {upcomingEvents.map((event, index) => (
+                    <a href={`/events/${event.slug}`} class={`relative group rounded-[32px] overflow-hidden bg-slate-900 border border-slate-900/10 hover:shadow-xl transition-all ${index === 2 ? 'md:col-span-2 md:row-span-1' : 'md:col-span-1 md:row-span-1'}`}>
+                        {event.image ? (
+                            <img 
+                                src={`${ASSET_URL}/${event.image}`} 
+                                class="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:scale-105 transition duration-1000" 
+                                alt={event.title} 
+                            />
+                        ) : (
+                            <div class="absolute inset-0 flex items-center justify-center bg-slate-800 text-slate-500 italic font-display">Bild folgt</div>
+                        )}
+
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/25 to-transparent"></div>
+
+                        <div class="relative z-10 p-6 flex flex-col h-full">
+                            <div class="flex justify-between items-start gap-4">
+                                <span class="text-[10px] font-bold text-rose-200 uppercase tracking-widest bg-slate-900/40 px-2.5 py-1 rounded-full backdrop-blur">
+                                    {new Date(event.start_date).toLocaleDateString('de-DE', { day: '2-digit', month: 'short' })}
+                                </span>
+                                <div class="flex gap-1 flex-wrap justify-end">
+                                    {event.event_categories?.map(cat => (
+                                        <span class="px-2 py-0.5 rounded bg-white/10 text-slate-100 text-[8px] font-bold uppercase backdrop-blur">
+                                            {cat.event_categories_id?.name}
+                                        </span>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div class="mt-auto">
+                                <h3 class="text-lg font-display font-bold text-white group-hover:text-rose-200 transition-colors line-clamp-2 leading-tight tracking-tight">
+                                    {event.title}
+                                </h3>
+                                <div class="mt-4 flex items-center gap-2 text-[10px] font-bold text-slate-200 uppercase tracking-widest">
+                                    Details <i class="fa-solid fa-arrow-right-long text-rose-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                ))}
+                
+                <a href="/events" class="md:col-span-1 md:row-span-1 bg-rose-600 rounded-[32px] p-8 flex flex-col justify-center items-center text-center text-white group hover:bg-slate-900 transition-all shadow-lg">
+                    <i class="fa-solid fa-layer-group text-3xl mb-4 group-hover:rotate-12 transition-transform"></i>
+                    <span class="text-xl font-display font-bold leading-tight tracking-tighter">Alle <br>Veranstaltungen</span>
+                </a>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="px-6 sm:px-10 py-24 bg-slate-50 border-y border-slate-100">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div class="relative rounded-[32px] overflow-hidden shadow-2xl ring-8 ring-white bg-slate-200 aspect-video">
+                    <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=1600&fit=crop" class="w-full h-full object-cover" alt="Community">
                 </div>
-                <div class="px-6 sm:px-10 pt-6">
-                    <div class="grid grid-cols-1 md:grid-cols-2 border border-white/10 rounded-[28px] overflow-hidden bg-white/5">
-                        <a class="group p-10 sm:p-12 text-white/90 text-4xl sm:text-6xl font-heading font-extrabold tracking-tight hover:bg-white/5 focus:outline-none focus:ring-2 focus:ring-white/40 transition-colors" href="/events">
-                        Veranstaltungen </a>
-                        <a class="group p-10 sm:p-12 text-white/90 text-4xl sm:text-6xl font-heading font-extrabold tracking-tight hover:bg-white/5 border-t md:border-t-0 md:border-l border-white/10 focus:outline-none focus:ring-2 focus:ring-white/40 transition-colors" href="/services">
-                        Angebote </a>
-                        <a class="group p-10 sm:p-12 text-white/90 text-4xl sm:text-6xl font-heading font-extrabold tracking-tight hover:bg-white/5 border-t border-white/10 focus:outline-none focus:ring-2 focus:ring-white/40 transition-colors" href="/about">
-                        Über uns </a>
-                        <a class="group p-10 sm:p-12 text-white/90 text-4xl sm:text-6xl font-heading font-extrabold tracking-tight hover:bg-white/5 border-t md:border-l border-white/10 focus:outline-none focus:ring-2 focus:ring-white/40 transition-colors" href="/contact">
-                        Kontakt </a>
+                <div>
+                    <span class="text-rose-500 font-bold tracking-widest uppercase text-xs mb-4 block underline decoration-rose-500 decoration-2 underline-offset-4 tracking-widest">Die Brücke Graz</span>
+                    <h2 class="text-4xl md:text-5xl font-display font-bold mb-8 leading-tight text-slate-900 tracking-tighter">Beratung, Hilfe &<br>offene Kultur.</h2>
+                    <div class="grid gap-6">
+                        <div class="p-6 bg-white rounded-2xl border border-slate-200/60 shadow-sm">
+                            <h3 class="text-xl font-bold text-slate-900 mb-2 font-display">Unbürokratische Sozialarbeit</h3>
+                            <p class="text-slate-500 font-medium leading-relaxed">Wir unterstützen bei Behördenwegen, Formularen und Krisen. Kostenlos und auf Augenhöhe.</p>
+                        </div>
+                        <div class="p-6 bg-white rounded-2xl border border-slate-200/60 shadow-sm">
+                            <h3 class="text-xl font-bold text-slate-900 mb-2 font-display">Subkulturelle Bühne</h3>
+                            <p class="text-slate-500 font-medium leading-relaxed">Ein Ort für Grazer Künstler, Musiker und Denker. Vielfalt ist unsere Stärke.</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+    </section>
 
-        <header class="relative z-10 px-6 sm:px-10 pt-8 bg-[color:var(--surface)]">
-            <div class="flex items-center justify-between"><a href="/" class="flex items-center gap-3 text-[color:var(--primary)]"> <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-white ring-1 ring-black/10"> <span class="block h-3 w-3 rounded-sm bg-[color:var(--tangerine)]"></span> </span> <span class="text-lg font-semibold tracking-tight font-heading">Die Brücke.</span> </a>
-                <div class="flex items-center gap-3"><a href="#contact" class="hidden md:inline-block rounded-full bg-[color:var(--tangerine)] text-white px-4 py-2 text-sm font-medium shadow-md hover:bg-[color:var(--tangerine)]/90 focus:outline-none focus:ring-2 focus:ring-[color:var(--tangerine)]/50 transition">Kontakt</a>
-                    <button id="btnOpenNav" type="button" class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white ring-1 ring-black/10 hover:bg-black/[0.03] focus:outline-none focus:ring-2 focus:ring-[color:var(--primary)]/30 transition" aria-label="Open menu"><i class="fa-solid fa-bars text-[color:var(--primary)]"></i><span class="sr-only">Menu</span>
-                    </button>
+    <section class="px-6 sm:px-10 py-24 bg-white">
+        <div class="bg-slate-900 rounded-[40px] p-12 sm:p-20 text-white text-center relative overflow-hidden shadow-2xl">
+            <div class="relative z-10 max-w-2xl mx-auto">
+                <h2 class="text-4xl sm:text-7xl font-display font-extrabold tracking-tighter mb-8 leading-[0.9]">
+                    Mach mit.<br><span class="text-rose-500">Werde Teil davon.</span>
+                </h2>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <a href="/contact" class="bg-rose-600 hover:bg-white hover:text-slate-900 px-10 py-4 rounded-full font-bold transition-all shadow-lg text-lg">Schreib uns</a>
+                    <a href="/about" class="bg-white/10 hover:bg-white/20 px-10 py-4 rounded-full font-bold transition-all border border-white/10 text-lg">Über den Verein</a>
                 </div>
             </div>
-        </header>
-
-        <section id="top" class="relative z-10 px-6 sm:px-10 pt-16 sm:pt-20 pb-14 sm:pb-20 bg-[color:var(--surface)]">
-            <div class="max-w-5xl">
-                <h1 class="text-5xl sm:text-7xl lg:text-8xl font-heading font-extrabold tracking-tight leading-[1.02] text-[color:var(--primary)]" set:html={heroHeadline}>
-                </h1>
-                <p class="mt-8 text-lg sm:text-xl text-[color:var(--secondary)] max-w-2xl">
-                    {heroSubline}
-                </p>
-            </div>
-        </section>
-
-        <section id="services" class="relative z-10 px-6 sm:px-10 py-16 sm:py-20 bg-[color:var(--surface-muted)]">
-            <div class="max-w-3xl">
-                <div class="text-sm font-semibold tracking-wide text-[color:var(--tangerine)]">Angebote</div>
-                <h2 class="mt-4 text-4xl sm:text-5xl font-heading font-bold tracking-tight leading-[1.08] text-[color:var(--primary)]">
-                Hilfe, Kultur und Begegnung unter einem Dach. </h2>
-                <p class="mt-5 text-[color:var(--secondary)] max-w-xl">
-                Wir verbinden strategische soziale Arbeit mit kultureller Offenheit. </p>
-            </div>
-            <div class="mt-12 grid gap-12 lg:grid-cols-2 lg:items-center">
-                <div class="image-mask ring-1 ring-black/10 bg-white shadow-xl">
-                    <img src="https://images.unsplash.com/photo-1484589065579-248aad0d8b13?ixid=M3wyMDkyMnwwfDF8c2VhcmNofDE0fHxhYnN0cmFjdHxlbnwwfHx8fDE3NjU4OTU4NTJ8MA&ixlib=rb-4.1.0q=85&fm=jpg&crop=faces&cs=srgb&w=1200&h=800&fit=crop" alt="Abstract architectural rendering" class="w-full h-full object-cover aspect-[4/3]"/>
+            <footer class="mt-20 pt-10 border-t border-white/10 flex justify-between items-center text-slate-500 text-xs font-bold uppercase tracking-widest leading-loose">
+                <div>© {new Date().getFullYear()} Die Brücke Portal</div>
+                <div class="flex gap-6">
+                    <a href="/about" class="hover:text-white transition">Datenschutz</a>
+                    <a href="/about" class="hover:text-white transition">Impressum</a>
                 </div>
-                <div class="divide-y divide-black/10">
-                    <div class="py-8 group transition hover:bg-white/5 cursor-pointer">
-                        <div class="text-[color:var(--primary)] font-heading font-semibold text-xl">
-                            01 / Soziale Beratung<span class="text-[color:var(--tangerine)]">.</span>
-                        </div>
-                        <p class="mt-3 text-[color:var(--secondary)]">
-                        Unterstützung bei Behördengängen, familiären Problemen und Integration. </p>
-                    </div>
-                    <div class="py-8 group transition hover:bg-white/5 cursor-pointer">
-                        <div class="text-[color:var(--primary)] font-heading font-semibold text-xl">
-                            02 / Kultur & Events<span class="text-[color:var(--tangerine)]">.</span>
-                        </div>
-                        <p class="mt-3 text-[color:var(--secondary)]">
-                        Konzerte, Lesungen und Workshops für alle Altersgruppen. </p>
-                    </div>
-                    <div class="py-8 group transition hover:bg-white/5 cursor-pointer">
-                        <div class="text-[color:var(--primary)] font-heading font-semibold text-xl">
-                            03 / Begegnungscafé<span class="text-[color:var(--tangerine)]">.</span>
-                        </div>
-                        <p class="mt-3 text-[color:var(--secondary)]">
-                        Ein offener Raum für Nachbarschaft und Austausch. </p>
-                    </div>
-                </div>
-            </div>
-        </section>
+            </footer>
+        </div>
+    </section>
 
-        <section id="work" class="relative z-10 px-6 sm:px-10 py-16 sm:py-20 bg-[color:var(--surface-muted)]">
-            <div class="flex justify-between items-end mb-12">
-                <h2 class="text-3xl sm:text-4xl font-heading font-bold text-[color:var(--primary)]">Kommende Termine</h2>
-                <a href="/events" class="text-[color:var(--tangerine)] font-semibold hover:text-[color:var(--primary)] transition">Alle ansehen →</a>
-            </div>
-
-            <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                
-                {events.length === 0 && <p class="text-gray-500">Keine Termine aktuell.</p>}
-
-                {events.map((event) => (
-                    <article class="rounded-[28px] bg-white ring-1 ring-black/10 p-8 hover:shadow-2xl hover:translate-y-[-4px] transition-all duration-300 group cursor-pointer flex flex-col h-full">
-                        <a href={`/events/${event.slug}`} class="flex flex-col h-full">
-                            <div class="h-12 w-12 rounded-full bg-[color:var(--tangerine)]/10 ring-1 ring-[color:var(--tangerine)]/20 flex items-center justify-center text-[color:var(--tangerine)] transition group-hover:bg-[color:var(--tangerine)] group-hover:text-white mb-6">
-                                <i class="fa-solid fa-calendar-day"></i>
-                            </div>
-                            
-                            <div class="text-xs font-semibold tracking-wide text-[color:var(--primary)]/70">
-                                {new Date(event.start_date).toLocaleDateString('de-DE')} 
-                                <span class="mx-2">/</span> 
-                                {event.category?.name || 'Event'}
-                            </div>
-                            
-                            <h3 class="mt-3 text-2xl font-heading font-extrabold tracking-tight text-[color:var(--primary)] group-hover:text-[color:var(--tangerine)] transition line-clamp-2">
-                                {event.title}
-                            </h3>
-                            
-                            <p class="mt-3 text-[color:var(--secondary)] line-clamp-3">
-                                {event.description ? event.description.replace(/<[^>]*>?/gm, '').substring(0, 100) + '...' : ''}
-                            </p>
-                        </a>
-                    </article>
-                ))}
-
-            </div>
-        </section>
-
-        <section id="contact" class="relative z-10 px-6 sm:px-10 pb-16 sm:pb-20">
-            <div class="rounded-[40px] bg-[color:var(--primary)] overflow-hidden">
-                <div class="p-10 sm:p-14">
-                    <h2 class="text-white text-4xl sm:text-5xl font-heading font-extrabold tracking-tight">
-                    Interesse geweckt? </h2>
-                    <div class="mt-8"><a href="mailto:info@diebruecke.social" class="inline-flex items-center rounded-full bg-[color:var(--tangerine)] text-white px-6 py-3 text-lg font-medium shadow-md hover:bg-[color:var(--tangerine)]/90 focus:outline-none focus:ring-2 focus:ring-[color:var(--tangerine)]/50 transition">
-                        Schreib uns → </a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <footer class="relative z-10 px-6 sm:px-10 pb-10 bg-[color:var(--surface-muted)] pt-16">
-            <div class="mt-10 border-t border-black/10 pt-8 flex items-center justify-between gap-6">
-                <a href="#" class="flex items-center gap-3 text-[color:var(--primary)]"> 
-                    <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-white ring-1 ring-black/10"> 
-                        <span class="block h-3 w-3 rounded-sm bg-[color:var(--tangerine)]"></span> 
-                    </span> 
-                    <span class="text-lg font-semibold tracking-tight font-heading">Die Brücke.</span> 
-                </a>
-                <div class="text-sm text-[color:var(--secondary)]">© Die Brücke {new Date().getFullYear()}</div>
-            </div>
-        </footer>
-    </div>
-</Layout>
-
-<script>
-    // Navigation Logic
-    const navOverlay = document.getElementById('navOverlay');
-    const btnOpenNav = document.getElementById('btnOpenNav');
-    const btnCloseNav = document.getElementById('btnCloseNav');
-
-    if (navOverlay && btnOpenNav && btnCloseNav) {
-        const openNav = () => {
-            navOverlay.classList.remove('overlay-hidden');
-            navOverlay.setAttribute('aria-hidden', 'false');
-            setTimeout(() => {
-                btnCloseNav.focus();
-            }, 10);
-        };
-
-        const closeNav = () => {
-            navOverlay.classList.add('overlay-hidden');
-            navOverlay.setAttribute('aria-hidden', 'true');
-            btnOpenNav.focus();
-        };
-
-        btnOpenNav.addEventListener('click', openNav);
-        btnCloseNav.addEventListener('click', closeNav);
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                closeNav();
-            }
-        });
-    }
-</script>
+</MainLayout>
