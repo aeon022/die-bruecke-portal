@@ -31,10 +31,10 @@ const projectName = settings?.project_name || 'Die Brücke';
             <a href="/services" class="group relative p-8 md:p-12 border-b border-white/10 md:border-r hover:bg-white/5 transition duration-300 flex flex-col justify-center">
                 <span class="block text-rose-500 font-bold mb-3 text-xs tracking-widest uppercase">02</span>
                 <span class="block text-3xl md:text-4xl lg:text-5xl font-display font-extrabold tracking-tight group-hover:text-rose-500 transition-colors">Angebote</span>
-                <span class="block mt-3 text-slate-400 text-sm lg:text-base group-hover:text-white transition-colors font-medium">Mobile Dienste & Beratung.</span>
+                <span class="block mt-3 text-slate-400 text-sm lg:text-base group-hover:text-white transition-colors font-medium">Mobile Dienste, Projekte & Infozentrum.</span>
             </a>
 
-           <a href="/rentals" class="group relative p-8 md:p-12 border-b border-white/10 hover:bg-white/5 transition duration-300 flex flex-col justify-center">
+            <a href="/rentals" class="group relative p-8 md:p-12 border-b border-white/10 hover:bg-white/5 transition duration-300 flex flex-col justify-center">
                 <span class="block text-rose-500 font-bold mb-3 text-xs tracking-widest uppercase">03</span>
                 <span class="block text-3xl md:text-4xl lg:text-5xl font-display font-extrabold tracking-tight group-hover:text-rose-500 transition-colors">Dein Raum</span>
                 <span class="block mt-3 text-slate-400 text-sm lg:text-base group-hover:text-white transition-colors font-medium">Seminare, Feiern & Technik.</span>
@@ -104,30 +104,38 @@ const projectName = settings?.project_name || 'Die Brücke';
         if (!navOverlay) return;
 
         if (show) {
+            // Wichtig gegen FOUC: Overlay ist per HTML `hidden` versteckt (ohne CSS)
             navOverlay.hidden = false;
+            navOverlay.setAttribute('aria-hidden', 'false');
+
+            // Animation starten in der nächsten Frame-Kante
             requestAnimationFrame(() => {
                 navOverlay.classList.add('open');
-                navOverlay.setAttribute('aria-hidden', 'false');
             });
+
             document.body.style.overflow = 'hidden';
             return;
         }
 
+        // Zuklappen
         navOverlay.classList.remove('open');
         navOverlay.setAttribute('aria-hidden', 'true');
         document.body.style.overflow = '';
 
         const prefersReduced = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
-        if (prefersReduced) {
-            navOverlay.hidden = true;
-            return;
-        }
-
+        
+        // Callback nach Animation
         const hide = () => {
             navOverlay.hidden = true;
         };
+
+        if (prefersReduced) {
+            hide();
+            return;
+        }
+
         navOverlay.addEventListener('transitionend', hide, { once: true });
-        setTimeout(hide, 450);
+        setTimeout(hide, 450); // Fallback
     };
 
     if(btnOpenNav) {
