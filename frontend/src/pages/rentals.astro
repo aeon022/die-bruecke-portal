@@ -1,0 +1,115 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+
+const equipment = [
+    { icon: "fa-video", label: "HD Beamer", desc: "Lichtstark für Präsentationen" },
+    { icon: "fa-expand", label: "Große Leinwand", desc: "Motorisiert, 16:9 Format" },
+    { icon: "fa-wifi", label: "Highspeed WLAN", desc: "Glasfaser für alle Gäste" },
+    { icon: "fa-microphone-lines", label: "Profi-Audio", desc: "Mikrofone & PA-Anlage" }
+];
+
+const useCases = [
+    {
+        title: "Seminare & Workshops",
+        subtitle: "Vormittags & Tagsüber",
+        desc: "Nutze unsere zentrale Lage für deine Business-Events. Helle Atmosphäre, Bestuhlung nach Wunsch und volle technische Ausstattung.",
+        features: ["Flipcharts inklusive", "Kaffee-Catering möglich", "Barrierefreier Zugang"],
+        image: "https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=1600&auto=format&fit=crop"
+    },
+    {
+        title: "Private Feiern",
+        subtitle: "Abends & Wochenende",
+        desc: "Geburtstage, Jubiläen oder Vereinsfeiern. Die Brücke verwandelt sich abends in einen stimmungsvollen Partyraum mit Bar-Infrastruktur.",
+        features: ["Bar & Kühlung vorhanden", "Lichttechnik für Stimmung", "Keine Sperrstunde (nach Absprache)"],
+        image: "https://images.unsplash.com/photo-1519671482538-518b5c2bf9c6?q=80&w=1600&auto=format&fit=crop"
+    }
+];
+---
+
+<MainLayout title="Raumvermietung">
+    
+    <section class="relative px-6 sm:px-10 pt-32 pb-20 bg-slate-900 text-white overflow-hidden">
+        <div class="max-w-7xl mx-auto relative z-10">
+            <span class="text-rose-500 font-bold tracking-widest uppercase text-xs mb-6 block">Rent a Space</span>
+            <h1 class="text-5xl md:text-7xl lg:text-8xl font-display font-extrabold tracking-tighter mb-8 leading-[0.9]">
+                Raum für <br/>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-400 to-indigo-400">deine Ideen.</span>
+            </h1>
+            <p class="text-xl text-slate-400 max-w-2xl leading-relaxed font-medium">
+                Ob Business-Seminar am Vormittag oder private Feier am Abend. 
+                Miete die Brücke inklusive modernster Technik und zentraler Lage in Graz.
+            </p>
+        </div>
+        <div class="absolute right-0 top-0 w-1/2 h-full bg-rose-600/10 blur-3xl rounded-full translate-x-1/2 -translate-y-1/2"></div>
+    </section>
+
+    <section class="px-6 sm:px-10 -mt-12 relative z-20">
+        <div class="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4">
+            {equipment.map(item => (
+                <div class="bg-white p-6 rounded-2xl shadow-xl border border-slate-100 text-center hover:-translate-y-1 transition-transform duration-300">
+                    <div class="w-12 h-12 mx-auto bg-slate-50 rounded-full flex items-center justify-center text-rose-600 mb-4">
+                        <i class={`fa-solid ${item.icon} text-xl`}></i>
+                    </div>
+                    <h3 class="font-bold text-slate-900 mb-1">{item.label}</h3>
+                    <p class="text-xs text-slate-500 font-medium uppercase tracking-wide">{item.desc}</p>
+                </div>
+            ))}
+        </div>
+    </section>
+
+    <section class="px-6 sm:px-10 py-24 bg-white">
+        <div class="max-w-7xl mx-auto space-y-24">
+            {useCases.map((useCase, idx) => (
+                <div class={`flex flex-col md:flex-row gap-12 items-center ${idx % 2 === 1 ? 'md:flex-row-reverse' : ''}`}>
+                    <div class="flex-1 w-full">
+                        <div class="relative aspect-[4/3] rounded-[40px] overflow-hidden shadow-2xl group">
+                            <img src={useCase.image} alt={useCase.title} class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-700" />
+                            <div class="absolute inset-0 bg-slate-900/10 group-hover:bg-transparent transition"></div>
+                        </div>
+                    </div>
+                    <div class="flex-1 space-y-6">
+                        <div class="inline-block px-4 py-2 rounded-full bg-slate-50 border border-slate-100 text-rose-600 font-bold text-xs uppercase tracking-widest">
+                            {useCase.subtitle}
+                        </div>
+                        <h2 class="text-4xl md:text-5xl font-display font-bold text-slate-900 leading-tight">
+                            {useCase.title}
+                        </h2>
+                        <p class="text-slate-600 text-lg leading-relaxed">
+                            {useCase.desc}
+                        </p>
+                        <ul class="space-y-3 pt-4">
+                            {useCase.features.map(feat => (
+                                <li class="flex items-center gap-3 text-slate-700 font-medium">
+                                    <div class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-xs">
+                                        <i class="fa-solid fa-check"></i>
+                                    </div>
+                                    {feat}
+                                </li>
+                            ))}
+                        </ul>
+                        <div class="pt-6">
+                            <a href="/contact" class="inline-flex items-center gap-2 text-slate-900 font-bold hover:text-rose-600 transition-colors uppercase tracking-widest text-sm">
+                                Verfügbarkeit anfragen <i class="fa-solid fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            ))}
+        </div>
+    </section>
+
+    <section class="px-6 sm:px-10 py-24 bg-slate-50 border-t border-slate-200">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl font-display font-bold text-slate-900 mb-6">Interesse geweckt?</h2>
+            <p class="text-slate-600 text-lg mb-10">
+                Da jede Veranstaltung anders ist, erstellen wir dir gerne ein individuelles Angebot. 
+                Vereine und Sozialinitiativen erhalten bei uns Sonderkonditionen.
+            </p>
+            <a href="/contact" class="bg-rose-600 text-white px-10 py-4 rounded-full font-bold shadow-xl hover:bg-slate-900 transition-all transform hover:scale-105 inline-flex items-center gap-2">
+                <i class="fa-regular fa-paper-plane"></i>
+                Unverbindliches Angebot holen
+            </a>
+        </div>
+    </section>
+
+</MainLayout>

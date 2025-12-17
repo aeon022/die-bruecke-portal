@@ -20,69 +20,62 @@ const projectName = settings?.project_name || 'Die Brücke';
     </div>
 
     <div class="flex-grow flex items-center justify-center w-full bg-slate-800">
-        <nav class="grid grid-cols-1 md:grid-cols-2 w-full border-t border-b border-white/10">
+        <nav class="grid grid-cols-1 md:grid-cols-3 w-full">
             
-            <a href="/events" class="group relative p-8 md:p-10 border-b border-white/10 md:border-r hover:bg-white/5 transition duration-300">
-                <span class="block text-rose-500 font-bold mb-2 text-xs tracking-widest uppercase">01</span>
-                <span class="block text-3xl md:text-5xl font-display font-extrabold tracking-tight group-hover:text-rose-500 transition-colors">Veranstaltungen</span>
-                <span class="block mt-2 text-slate-300 text-lg group-hover:text-white transition-colors">Konzerte & Kultur.</span>
-                <i class="fa-solid fa-arrow-right absolute top-8 right-8 text-2xl opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-rose-500"></i>
+            <a href="/events" class="group relative p-8 md:p-12 border-b border-white/10 md:border-r hover:bg-white/5 transition duration-300 flex flex-col justify-center">
+                <span class="block text-rose-500 font-bold mb-3 text-xs tracking-widest uppercase">01</span>
+                <span class="block text-3xl md:text-4xl lg:text-5xl font-display font-extrabold tracking-tight group-hover:text-rose-500 transition-colors">Programm</span>
+                <span class="block mt-3 text-slate-400 text-sm lg:text-base group-hover:text-white transition-colors font-medium">Konzerte, Workshops & Bühne.</span>
             </a>
 
-            <a href="/services" class="group relative p-8 md:p-10 border-b border-white/10 hover:bg-white/5 transition duration-300">
-                <span class="block text-rose-500 font-bold mb-2 text-xs tracking-widest uppercase">02</span>
-                <span class="block text-3xl md:text-5xl font-display font-extrabold tracking-tight group-hover:text-rose-500 transition-colors">Angebote</span>
-                <span class="block mt-2 text-slate-300 text-lg group-hover:text-white transition-colors">Beratung & Hilfe.</span>
-                <i class="fa-solid fa-arrow-right absolute top-8 right-8 text-2xl opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-rose-500"></i>
+            <a href="/services" class="group relative p-8 md:p-12 border-b border-white/10 md:border-r hover:bg-white/5 transition duration-300 flex flex-col justify-center">
+                <span class="block text-rose-500 font-bold mb-3 text-xs tracking-widest uppercase">02</span>
+                <span class="block text-3xl md:text-4xl lg:text-5xl font-display font-extrabold tracking-tight group-hover:text-rose-500 transition-colors">Angebote</span>
+                <span class="block mt-3 text-slate-400 text-sm lg:text-base group-hover:text-white transition-colors font-medium">Mobile Dienste & Beratung.</span>
             </a>
 
-            <a href="/services#social" class="group relative p-8 md:p-10 border-b border-white/10 md:border-r hover:bg-white/5 transition duration-300">
-                <span class="block text-rose-500 font-bold mb-2 text-xs tracking-widest uppercase">03</span>
-                <span class="block text-3xl md:text-5xl font-display font-extrabold tracking-tight group-hover:text-rose-500 transition-colors">Sozial</span>
-                <span class="block mt-2 text-slate-300 text-lg group-hover:text-white transition-colors">Unsere Mission.</span>
-                <i class="fa-solid fa-arrow-right absolute top-8 right-8 text-2xl opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-rose-500"></i>
+            <a href="/rentals" class="group relative p-8 md:p-12 border-b border-white/10 hover:bg-white/5 transition duration-300 flex flex-col justify-center">
+                <span class="block text-rose-500 font-bold mb-3 text-xs tracking-widest uppercase">03</span>
+                <span class="block text-3xl md:text-4xl lg:text-5xl font-display font-extrabold tracking-tight group-hover:text-rose-500 transition-colors">Raum & Technik</span>
+                <span class="block mt-3 text-slate-400 text-sm lg:text-base group-hover:text-white transition-colors font-medium">Seminare, Feiern & Beamer.</span>
             </a>
 
-            <a href="/events#culture" class="group relative p-8 md:p-10 border-b border-white/10 hover:bg-white/5 transition duration-300">
-                <span class="block text-rose-500 font-bold mb-2 text-xs tracking-widest uppercase">04</span>
-                <span class="block text-3xl md:text-5xl font-display font-extrabold tracking-tight group-hover:text-rose-500 transition-colors">Kultur</span>
-                <span class="block mt-2 text-slate-300 text-lg group-hover:text-white transition-colors">Schreib uns.</span>
-                <i class="fa-solid fa-arrow-right absolute top-8 right-8 text-2xl opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-rose-500"></i>
+            <a href="/about" class="group relative p-8 md:p-12 border-b md:border-b-0 border-white/10 md:border-r hover:bg-white/5 transition duration-300 flex flex-col justify-center">
+                <span class="block text-rose-500 font-bold mb-3 text-xs tracking-widest uppercase">04</span>
+                <span class="block text-3xl md:text-4xl lg:text-5xl font-display font-extrabold tracking-tight group-hover:text-rose-500 transition-colors">Über uns</span>
+                <span class="block mt-3 text-slate-400 text-sm lg:text-base group-hover:text-white transition-colors font-medium">Das Team & unsere Mission.</span>
             </a>
 
-            <a href="/about" class="group relative p-8 md:p-10 md:border-r border-white/10 hover:bg-white/5 transition duration-300">
-                <span class="block text-rose-500 font-bold mb-2 text-xs tracking-widest uppercase">05</span>
-                <span class="block text-3xl md:text-5xl font-display font-extrabold tracking-tight group-hover:text-rose-500 transition-colors">Über uns</span>
-                <span class="block mt-2 text-slate-300 text-lg group-hover:text-white transition-colors">Unsere Mission.</span>
-                <i class="fa-solid fa-arrow-right absolute top-8 right-8 text-2xl opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-rose-500"></i>
-            </a>
+            <div class="group relative p-8 md:p-12 border-b md:border-b-0 border-white/10 md:border-r flex flex-col justify-center opacity-50 cursor-not-allowed bg-slate-800/50">
+                <span class="block text-slate-600 font-bold mb-3 text-xs tracking-widest uppercase">Coming Soon</span>
+                <span class="block text-3xl md:text-4xl lg:text-5xl font-display font-extrabold tracking-tight text-slate-600">Shop</span>
+                <span class="block mt-3 text-slate-600 text-sm lg:text-base font-medium">Merch & Tickets.</span>
+            </div>
 
-            <a href="/contact" class="group relative p-8 md:p-10 hover:bg-white/5 transition duration-300">
-                <span class="block text-rose-500 font-bold mb-2 text-xs tracking-widest uppercase">06</span>
-                <span class="block text-3xl md:text-5xl font-display font-extrabold tracking-tight group-hover:text-rose-500 transition-colors">Kontakt</span>
-                <span class="block mt-2 text-slate-300 text-lg group-hover:text-white transition-colors">Schreib uns.</span>
-                <i class="fa-solid fa-arrow-right absolute top-8 right-8 text-2xl opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-rose-500"></i>
+            <a href="/contact" class="group relative p-8 md:p-12 hover:bg-white/5 transition duration-300 flex flex-col justify-center">
+                <span class="block text-rose-500 font-bold mb-3 text-xs tracking-widest uppercase">06</span>
+                <span class="block text-3xl md:text-4xl lg:text-5xl font-display font-extrabold tracking-tight group-hover:text-rose-500 transition-colors">Kontakt</span>
+                <span class="block mt-3 text-slate-400 text-sm lg:text-base group-hover:text-white transition-colors font-medium">Anfahrt & Öffnungszeiten.</span>
             </a>
 
         </nav>
     </div>
 
-    <div class="px-6 sm:px-12 py-6 bg-slate-800 border-t border-white/10 shrink-0">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-slate-400 text-sm">
+    <div class="px-6 sm:px-12 py-8 bg-slate-800 border-t border-white/10 shrink-0">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-slate-400 text-sm font-medium">
             <div class="flex items-center gap-3">
-                <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+                <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
                 <span class="text-white">Brückenstraße 1, 8020 Graz</span>
             </div>
-            <div class="flex gap-6">
-                <a href="#" class="hover:text-white transition">Instagram</a>
-                <a href="#" class="hover:text-white transition">Facebook</a>
-                <a href="#" class="hover:text-white transition">LinkedIn</a>
+            <div class="flex gap-8">
+                <a href="#" class="hover:text-white hover:underline decoration-rose-500 underline-offset-4 transition">Instagram</a>
+                <a href="#" class="hover:text-white hover:underline decoration-rose-500 underline-offset-4 transition">Facebook</a>
             </div>
         </div>
     </div>
 </div>
 
-<header class="relative z-40 px-6 sm:px-10 pt-8 pb-6 flex items-center justify-between sticky top-0 bg-white border-b border-slate-100 transition-all duration-300" id="main-header">
+<header class="relative z-40 px-6 sm:px-10 pt-8 pb-6 flex items-center justify-between sticky top-0 bg-white/90 backdrop-blur-md border-b border-slate-100 transition-all duration-300" id="main-header">
     <a href="/" class="flex items-center gap-3 group">
         <div class="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center shadow-sm group-hover:border-rose-500 transition">
             <div class="w-3 h-3 rounded-sm bg-rose-500"></div>
@@ -92,7 +85,7 @@ const projectName = settings?.project_name || 'Die Brücke';
     
     <div class="flex items-center gap-4">
         <a href="/contact" class="hidden md:inline-flex px-6 py-2.5 rounded-full bg-slate-900 text-white font-bold text-sm shadow-lg hover:bg-rose-600 transition hover:-translate-y-0.5">
-            Kontakt
+            Jetzt anfragen
         </a>
         <button id="btnOpenNav" class="w-12 h-12 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-900 hover:bg-slate-50 transition cursor-pointer shadow-sm" aria-label="Menü öffnen">
             <i class="fa-solid fa-bars text-xl"></i>
@@ -111,24 +104,19 @@ const projectName = settings?.project_name || 'Die Brücke';
         if (!navOverlay) return;
 
         if (show) {
-            // Wichtig gegen FOUC: Overlay ist per HTML `hidden` versteckt (ohne CSS)
             navOverlay.hidden = false;
-
-            // In der nächsten Frame-Kante öffnen, damit Transitionen sauber greifen
             requestAnimationFrame(() => {
                 navOverlay.classList.add('open');
                 navOverlay.setAttribute('aria-hidden', 'false');
             });
-
-            document.body.style.overflow = 'hidden'; // Scrollen verhindern
+            document.body.style.overflow = 'hidden';
             return;
         }
 
         navOverlay.classList.remove('open');
         navOverlay.setAttribute('aria-hidden', 'true');
-        document.body.style.overflow = ''; // Scrollen erlauben
+        document.body.style.overflow = '';
 
-        // Nach der Close-Transition wieder komplett aus dem Layout nehmen
         const prefersReduced = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
         if (prefersReduced) {
             navOverlay.hidden = true;
@@ -138,21 +126,17 @@ const projectName = settings?.project_name || 'Die Brücke';
         const hide = () => {
             navOverlay.hidden = true;
         };
-
-        // Falls Transition fehlt/anders ist, sorgt Timeout als Fallback dafür, dass es trotzdem versteckt wird
         navOverlay.addEventListener('transitionend', hide, { once: true });
         setTimeout(hide, 450);
     };
 
     if(btnOpenNav) {
-        // Alten Listener entfernen (Cloning Trick), falls Astro neu rendert
         const newBtn = btnOpenNav.cloneNode(true);
         btnOpenNav.parentNode.replaceChild(newBtn, btnOpenNav);
         newBtn.addEventListener('click', () => toggleMenu(true));
     }
 
     if(btnCloseNav) {
-         // Auch hier sicherheitshalber neu binden
         const newClose = btnCloseNav.cloneNode(true);
         btnCloseNav.parentNode.replaceChild(newClose, btnCloseNav);
         newClose.addEventListener('click', () => toggleMenu(false));
@@ -163,9 +147,6 @@ const projectName = settings?.project_name || 'Die Brücke';
     });
   }
 
-  // Initialisieren
   initHeader();
-  
-  // Neu initialisieren bei Astro View Transitions
   document.addEventListener('astro:after-swap', initHeader);
 </script>
