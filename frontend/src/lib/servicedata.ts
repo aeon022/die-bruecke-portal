@@ -3,6 +3,15 @@ export const services = [
         id: "fass",
         slug: "freizeitassistenz",
         title: "Freizeitassistenz (FASS)",
+        programDownload: "/downloads/freizeitprogramm-dummy.pdf", 
+        buttonText: "Aktuelles Programm (PDF)", // Optionaler Text
+        description: "Die Freizeitassistenz unterstützt Menschen mit Behinderung...",
+        features: [
+            "Begleitung zu Freizeitaktivitäten & Sport",
+            "Aufbau sozialer Kompetenzen",
+            "Teilhabe am gesellschaftlichen Leben",
+            "Abrechnung nach LEVO-StBHG möglich"
+        ],
         subtitle: "Selbstbestimmt unterwegs.",
         icon: "fa-person-walking-luggage",
         color: "from-lime-500 to-green-600",
