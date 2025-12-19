@@ -4,19 +4,19 @@ export const services = [
         slug: "freizeitassistenz",
         title: "Freizeitassistenz (FASS)",
         subtitle: "Selbstbestimmt unterwegs.",
-        icon: "fa-person-walking-luggage", // Symbol für Aktivität/Unterwegs
+        icon: "fa-person-walking-luggage",
         color: "from-lime-500 to-green-600",
-        image: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&q=80&w=1200", // Freunde/Gruppe draußen
-        description: "Wir begleiten dich bei allem, was Spaß macht. Kino, Sport, Konzerte oder einfach Freunde treffen – du entscheidest, wir unterstützen.",
+        image: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&q=80&w=1200",
+        description: "Die Freizeitassistenz unterstützt Menschen mit Behinderung bei Aktivitäten außerhalb ihrer Wohnumgebung – sei es beim Sport, bei kulturellen Veranstaltungen oder im Kontakt mit Freund:innen.",
         features: [
-            "Begleitung zu Freizeitaktivitäten",
-            "1:1 Betreuung oder in der Gruppe",
-            "Förderung sozialer Kompetenzen",
-            "Abrechnung über LEVO möglich"
+            "Begleitung zu Freizeitaktivitäten & Sport",
+            "Aufbau sozialer Kompetenzen",
+            "Teilhabe am gesellschaftlichen Leben",
+            "Abrechnung nach LEVO-StBHG möglich"
         ],
         content: `
-            <p>Die Freizeitassistenz (FASS) unterstützt Menschen mit Behinderung dabei, ihre Freizeit aktiv und selbstbestimmt zu gestalten. Egal ob Kinobesuch, Shoppingtour, Sportverein oder ein Ausflug ins Grüne – unsere Assistent:innen sind dabei.</p>
-            <p>Ziel ist es, die Teilhabe am gesellschaftlichen Leben zu stärken und Isolation entgegenzuwirken. Dabei steht nicht die „Betreuung“ im Vordergrund, sondern das gemeinsame Erleben auf Augenhöhe.</p>
+            <p>Die Freizeitassistenz (FASS) unterstützt Menschen mit Behinderung bei Aktivitäten außerhalb ihrer Wohnumgebung. Ziel ist es, die Selbstbestimmung und gesellschaftliche Teilhabe im Alltag zu fördern.</p>
+            <p>Dabei steht der Aufbau sozialer Kompetenzen und das Erleben von Selbstwirksamkeit im Vordergrund. Ob Kino, Marktbesuch oder Treffen mit Freund:innen – wir begleiten dort, wo das Leben stattfindet.</p>
         `
     },
     {
@@ -24,19 +24,19 @@ export const services = [
         slug: "familienentlastung",
         title: "Familienentlastung (FED)",
         subtitle: "Freiräume für Angehörige.",
-        icon: "fa-hands-holding-child", // Symbol für Fürsorge/Entlastung
+        icon: "fa-hands-holding-child",
         color: "from-sky-500 to-blue-600",
-        image: "https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&q=80&w=1200", // Entspannte Situation / Lesen / Pause
-        description: "Wir verschaffen pflegenden Angehörigen eine Pause. Zeit zum Durchatmen, Erledigungen machen oder Kraft tanken – während wir uns kümmern.",
+        image: "https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&q=80&w=1200",
+        description: "Der Familienentlastungsdienst bietet Angehörigen eine temporäre Entlastung von Betreuungspflichten, während die betreute Person individuelle Zuwendung erhält.",
         features: [
-            "Stundenweise Betreuung zu Hause oder unterwegs",
-            "Entlastung für pflegende Familienmitglieder",
+            "Temporäre Entlastung für Angehörige",
+            "Individuelle Zuwendung für die betreute Person",
             "Flexible Zeiteinteilung",
-            "Individuelle Zuwendung für die betreute Person"
+            "Schafft notwendige Freiräume im Alltag"
         ],
         content: `
-            <p>Pflegende Angehörige leisten Enormes – oft rund um die Uhr. Der Familienentlastungsdienst (FED) schafft notwendige Freiräume. Wir übernehmen stundenweise die Betreuung, damit Eltern oder Partner:innen Zeit für sich selbst, Erledigungen oder andere Familienmitglieder haben.</p>
-            <p>Die Betreuung orientiert sich an den Bedürfnissen der Familie und findet dort statt, wo sie gebraucht wird.</p>
+            <p>Der Familienentlastungsdienst (FED) bietet Angehörigen eine temporäre Entlastung von Betreuungspflichten. Diese Dienste sind besonders wichtig für pflegende Angehörige, die oft über lange Zeiträume intensiv eingebunden sind.</p>
+            <p>Während die Familie Zeit für sich nutzen kann, erhält die betreute Person individuelle Zuwendung und Unterstützung – zu Hause oder unterwegs.</p>
         `
     },
     {
@@ -44,19 +44,20 @@ export const services = [
         slug: "wohnassistenz",
         title: "Wohnassistenz (WASS)",
         subtitle: "Mein Leben. Meine Wohnung.",
-        icon: "fa-house-chimney-user", // Symbol für Wohnen/Selbstständigkeit
+        icon: "fa-house-chimney-user",
         color: "from-orange-500 to-red-500",
-        image: "https://images.unsplash.com/photo-1556910103-1c02745a30bf?auto=format&fit=crop&q=80&w=1200", // Kochen/Haushalt
-        description: "Unterstützung in den eigenen vier Wänden. Wir helfen bei Haushalt, Post, Terminen und allem, was zum selbstständigen Wohnen dazugehört.",
+        image: "https://images.unsplash.com/photo-1556910103-1c02745a30bf?auto=format&fit=crop&q=80&w=1200",
+        description: "Die Wohnassistenz richtet sich an Menschen, die selbstständig leben. Wir unterstützen bei Alltagsorganisation, Haushaltsführung und Behördenwegen.",
         features: [
-            "Hilfe bei Haushaltsführung & Einkauf",
-            "Unterstützung bei Behördenwegen & Finanzen",
-            "Training von Alltagskompetenzen",
-            "Für ein selbstbestimmtes Leben im eigenen Wohnraum"
+            // "Hilfe" -> "Unterstützung"
+            "Unterstützung bei der Haushaltsführung", 
+            "Begleitung bei Behördenwegen & Finanzen",
+            "Organisation des Alltags",
+            "Förderung der Selbstständigkeit"
         ],
         content: `
-            <p>Die Wohnassistenz (WASS) richtet sich an Menschen, die alleine, in einer WG oder mit Partner:in leben (oder dies planen) und dabei Unterstützung benötigen. Wir helfen nicht nur im Haushalt, sondern auch bei der Organisation des Alltags.</p>
-            <p>Ob Post erledigen, Kochen lernen, Finanzen checken oder Konflikte lösen – wir stärken die Kompetenzen, die für ein dauerhaftes, selbstständiges Wohnen notwendig sind.</p>
+            <p>Die Wohnassistenz (WASS) richtet sich an Menschen mit Behinderung, die selbstständig oder in teilbetreuten Wohnformen leben. Die Assistenz umfasst Support bei der Alltagsorganisation, Haushaltsführung und Kommunikation mit Behörden.</p>
+            <p>Ziel ist es, ein selbstbestimmtes Leben im eigenen Wohnraum zu ermöglichen und soziale Kontakte zu fördern.</p>
         `
     }
 ];
