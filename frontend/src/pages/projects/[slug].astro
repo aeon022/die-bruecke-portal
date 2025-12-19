@@ -1,9 +1,16 @@
 ---
-// WICHTIG: SSR fix
+// WICHTIG: SSR fix - Diese Seite wird statisch zur Build-Zeit generiert
 export const prerender = true;
 
 import MainLayout from '../../layouts/MainLayout.astro';
 import { projects } from '../../lib/projectData';
+
+// Wir definieren den Typ für ein Projekt automatisch basierend auf deiner Daten-Datei
+type Project = typeof projects[number];
+
+interface Props {
+  project: Project;
+}
 
 // 1. Statische Pfade für alle Projekte generieren
 export async function getStaticPaths() {
@@ -20,9 +27,10 @@ const { project } = Astro.props;
 const gradientClass = project?.color || "from-slate-700 to-slate-900";
 
 // URL & Text für Sharing generieren
+// Hinweis: Für eine echte Production-URL müsstest du hier import.meta.env.SITE verwenden.
 const shareTitle = encodeURIComponent(`Tolles Projekt bei der Brücke: ${project.title}`);
 const shareText = encodeURIComponent(project.subtitle || project.description);
-// Platzhalter für Instagram Profil
+// Instagram Profil als Fallback, da direktes Teilen dort per Link nicht geht
 const instagramProfile = "https://www.instagram.com/diebruecke_erfurt"; 
 ---
 
@@ -200,7 +208,7 @@ const instagramProfile = "https://www.instagram.com/diebruecke_erfurt";
                                 <i class="fa-brands fa-linkedin-in"></i>
                             </a>
 
-                            {/* Instagram (Link zum Profil, da Web-Share nicht möglich) */}
+                            {/* Instagram (Link zum Profil) */}
                             <a href={instagramProfile} target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:bg-fuchsia-600 hover:text-white hover:border-fuchsia-600 transition-colors" title="Besuch uns auf Instagram">
                                 <i class="fa-brands fa-instagram"></i>
                             </a>

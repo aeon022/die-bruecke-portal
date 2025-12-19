@@ -3,12 +3,13 @@ export const projects = [
         id: "sofakino",
         slug: "sofakino",
         title: "SofaKINO",
-        // Quelle: Dokumente-Kultur.pdf, Seite 2 & 9
+        // Quelle: Dokumente-Kultur.pdf
         subtitle: "Film trifft Begegnung.",
         category: "Kultur & Begegnung",
         color: "from-indigo-500 to-purple-600",
         icon: "fa-film",
-        image: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&q=80&w=1200", 
+        // BILD: Kino-Atmosphäre, Menschen schauen gemeinsam (Begegnung)
+        image: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&q=80&w=1200", 
         video: "dQw4w9WgXcQ", 
         description: "Das SofaKINO ist mehr als eine Filmreihe – es ist ein inklusives, generationenverbindendes Kinokaffee-Format. In gemütlicher Wohnzimmeratmosphäre zeigen wir europäische Filme, Klassiker und Dokus.", 
         features: [
@@ -23,28 +24,6 @@ export const projects = [
         `
     },
     {
-        id: "stagedive",
-        slug: "stagedive",
-        title: "StageDive",
-        // Quelle: Dokumente-Kultur.pdf, Seite 2 & 10
-        subtitle: "Deine Bühne, dein Abend.",
-        category: "Jugend & Musik",
-        color: "from-rose-500 to-orange-500",
-        icon: "fa-microphone-lines",
-        image: "https://images.unsplash.com/photo-1598387993441-a364f854c3e1?auto=format&fit=crop&q=80&w=1200",
-        description: "Wir geben jungen Künstler:innen und Bands die Möglichkeit, selbst Veranstalter:innen zu werden. Von der Planung über die Bewerbung bis zur Durchführung – hier übernehmt ihr die Regie.",
-        features: [
-            "Selbstständige Organisation von A bis Z",
-            "Nutzung von Raum, Technik & Know-how",
-            "Förderung von Selbstwirksamkeit & Eigenverantwortung",
-            "Sicherer, barrierefreier Raum zum Ausprobieren"
-        ],
-        content: `
-            <p>StageDive bietet nicht nur eine Bühne für den Auftritt, sondern eine Plattform für künstlerische Selbstermächtigung. Die Brücke stellt die Infrastruktur (Bühne, Licht, Ton) und beratende Begleitung zur Verfügung – aber gestaltet wird von den jungen Kreativen selbst.</p>
-            <p>Ziel ist es, die nächste Generation an Veranstalter:innen zu fördern und Kompetenzen in Booking, Gagenkalkulation und Promotion zu vermitteln. Nach dem Event gibt es eine gemeinsame Reflexionsrunde, um aus den Erfahrungen zu lernen.</p>
-        `
-    },
-    {
         id: "alltagsakademie",
         slug: "alltagsakademie",
         title: "Alltagsakademie",
@@ -52,7 +31,8 @@ export const projects = [
         category: "Bildung & Inklusion",
         color: "from-emerald-500 to-teal-500",
         icon: "fa-lightbulb",
-        image: "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=1200",
+        // BILD: Gruppe von Menschen, die gemeinsam etwas entdecken/lernen (Workshop-Charakter)
+        image: "https://images.unsplash.com/photo-1544531586-fde5298cdd40?auto=format&fit=crop&q=80&w=1200",
         description: "Wissen für alle Sinne. Ein inklusives Bildungsformat, das alltägliche Phänomene aus Natur, Technik und Kultur niederschwellig und begreifbar macht.",
         features: [
             "Lernen durch Anfassen, Riechen & Hören",
@@ -66,25 +46,26 @@ export const projects = [
         `
     },
     {
-        id: "stadtlandklang",
-        slug: "stadtlandklang",
-        title: "StadtLandKlang",
-        // Quelle: Dokumente-Kultur.pdf, Seite 2 & 3
-        subtitle: "Volksmusik. Aber echt. Laut. Lebendig.",
-        category: "Kultur & Region",
-        color: "from-cyan-500 to-blue-600",
-        icon: "fa-music",
-        image: "https://images.unsplash.com/photo-1573871669414-010dbf73ca84?auto=format&fit=crop&q=80&w=1200",
-        description: "Eine Veranstaltungsreihe für junge, traditionelle Volksmusik – ohne Kitsch, ohne Schlager und ohne Klischees. Dafür mit Tiefgang, Handwerk und kultureller Verwurzelung.",
+        id: "stagedive",
+        slug: "stagedive",
+        title: "StageDive",
+        // Quelle: Dokumente-Kultur.pdf
+        subtitle: "Deine Bühne, dein Abend.",
+        category: "Jugend & Musik",
+        color: "from-rose-500 to-orange-500",
+        icon: "fa-microphone-lines",
+        // BILD: Junge Band, Energie, Scheinwerfer (Self-Empowerment)
+        image: "https://images.unsplash.com/photo-1493225255756-d9584f8606e9?auto=format&fit=crop&q=80&w=1200",
+        description: "Wir geben jungen Künstler:innen und Bands die Möglichkeit, selbst Veranstalter:innen zu werden. Von der Planung über die Bewerbung bis zur Durchführung – hier übernehmt ihr die Regie.",
         features: [
-            "Junge Musiker:innen aus Österreich & Europa",
-            "Auseinandersetzung mit regionalen Wurzeln",
-            "Plattform für gelebte Volkskultur in der Stadt",
-            "Sichtbarer Raum jenseits von Vereinsstrukturen"
+            "Selbstständige Organisation von A bis Z",
+            "Nutzung von Raum, Technik & Know-how",
+            "Förderung von Selbstwirksamkeit & Eigenverantwortung",
+            "Sicherer, barrierefreier Raum zum Ausprobieren"
         ],
         content: `
-            <p>StadtLandKlang widmet sich der jungen Volksmusikszene, die Tradition neu interpretiert. Im Mittelpunkt stehen Bands, die sich bewusst mit ihren musikalischen Wurzeln auseinandersetzen und diese zeitgemäß auf die Bühne bringen.</p>
-            <p>Die Brücke schafft damit eine kontinuierliche Plattform für echte Volkskultur in Graz und bietet jungen Künstler:innen einen sichtbaren Raum jenseits von ländlichen Festen.</p>
+            <p>StageDive bietet nicht nur eine Bühne für den Auftritt, sondern eine Plattform für künstlerische Selbstermächtigung. Die Brücke stellt die Infrastruktur (Bühne, Licht, Ton) und beratende Begleitung zur Verfügung – aber gestaltet wird von den jungen Kreativen selbst.</p>
+            <p>Ziel ist es, die nächste Generation an Veranstalter:innen zu fördern und Kompetenzen in Booking, Gagenkalkulation und Promotion zu vermitteln. Nach dem Event gibt es eine gemeinsame Reflexionsrunde, um aus den Erfahrungen zu lernen.</p>
         `
     },
     {
@@ -95,6 +76,7 @@ export const projects = [
         category: "Literatur & Dialog",
         color: "from-amber-500 to-orange-600",
         icon: "fa-comment-dots",
+        // BILD: Gesprächssituation, zwei Menschen im Dialog, Kaffeehaus-Vibe
         image: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&q=80&w=1200",
         description: "Ein generationenübergreifendes Erzählcafé und Podcast-Projekt. Hier treffen Zeitzeugen auf Jugend, Tradition auf Moderne und Zuhören auf Erzählen.",
         features: [
@@ -106,6 +88,29 @@ export const projects = [
         content: `
             <p>In einer immer schneller werdenden Welt nehmen wir uns Zeit zum Zuhören. 'Erzähl mir was' sammelt, bewahrt und teilt Geschichten aus dem Viertel.</p>
             <p>Vom offenen Erzählcafé bis zur professionellen Podcast-Aufnahme bieten wir Plattformen, um individuelle Erlebnisse kollektiv erfahrbar zu machen.</p>
+        `
+    },
+    {
+        id: "stadtlandklang",
+        slug: "stadtlandklang",
+        title: "StadtLandKlang",
+        // Quelle: Dokumente-Kultur.pdf
+        subtitle: "Volksmusik. Aber echt. Laut. Lebendig.",
+        category: "Kultur & Region",
+        color: "from-cyan-500 to-blue-600",
+        icon: "fa-music",
+        // BILD: Musikgruppe im Freien / Traditionell & Lebendig (kein Solo-Instrument)
+        image: "https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?auto=format&fit=crop&q=80&w=1200",
+        description: "Eine Veranstaltungsreihe für junge, traditionelle Volksmusik – ohne Kitsch, ohne Schlager und ohne Klischees. Dafür mit Tiefgang, Handwerk und kultureller Verwurzelung.",
+        features: [
+            "Junge Musiker:innen aus Österreich & Europa",
+            "Auseinandersetzung mit regionalen Wurzeln",
+            "Plattform für gelebte Volkskultur in der Stadt",
+            "Sichtbarer Raum jenseits von Vereinsstrukturen"
+        ],
+        content: `
+            <p>StadtLandKlang widmet sich der jungen Volksmusikszene, die Tradition neu interpretiert. Im Mittelpunkt stehen Bands, die sich bewusst mit ihren musikalischen Wurzeln auseinandersetzen und diese zeitgemäß auf die Bühne bringen.</p>
+            <p>Die Brücke schafft damit eine kontinuierliche Plattform für echte Volkskultur in Graz und bietet jungen Künstler:innen einen sichtbaren Raum jenseits von ländlichen Festen.</p>
         `
     }
 ];
