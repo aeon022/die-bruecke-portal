@@ -3,43 +3,45 @@ export const projects = [
         id: "sofakino",
         slug: "sofakino",
         title: "SofaKINO",
-        subtitle: "Für jede Perspektive ein Platz.",
+        // Quelle: Dokumente-Kultur.pdf, Seite 2 & 9
+        subtitle: "Film trifft Begegnung.",
         category: "Kultur & Begegnung",
         color: "from-indigo-500 to-purple-600",
         icon: "fa-film",
         image: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&q=80&w=1200", 
         video: "dQw4w9WgXcQ", 
-        description: "Ein inklusives Film- und Begegnungsformat, das Kino neu denkt: als barrierefreien, offenen Kulturraum. In Wohnzimmeratmosphäre mit Sofas, Kaffee und Kuchen erleben wir gemeinsam Filme.", 
+        description: "Das SofaKINO ist mehr als eine Filmreihe – es ist ein inklusives, generationenverbindendes Kinokaffee-Format. In gemütlicher Wohnzimmeratmosphäre zeigen wir europäische Filme, Klassiker und Dokus.", 
         features: [
-            "Wohnzimmer-Atmosphäre ohne Konsumzwang",
-            "Europäische Filme, Klassiker & Dokus",
-            "Barrierefrei (Audiodeskription, Leichte Sprache)",
-            "Niederschwellig (2-4€ Eintritt)"
+            "Kaffeehaus-Atmosphäre statt Kinosaal",
+            "Filme + Gespräch + Small Talk",
+            "Inklusive Formate (Audiodeskription, einfache Sprache)",
+            "Geringer Eintritt (2-4 €), kein Konsumzwang"
         ],
         content: `
-            <p>Das SofaKINO ist mehr als ein Filmabend. Es ist ein Gegenentwurf zu kommerziellen Kinostrukturen. Statt Popcorn und Blockbuster stehen hier Kaffee, Menschlichkeit und vielfältige Perspektiven im Mittelpunkt.</p>
-            <p>Gezeigt werden lokale und europäische Filme, Dokumentationen sowie Wunschfilme des Publikums. Im Anschluss gibt es Raum für Gespräche, Begegnung und Austausch.</p>
+            <p>Das SofaKINO verbindet Filmkunst mit Begegnung in einer niederschwelligen, barrierefreien Atmosphäre. Jede Woche gibt es einen neuen Film, ein neues Thema und ein neues Miteinander.</p>
+            <p>Ziel ist es, lokale und europäische Filmschaffende sichtbar zu machen und Räume für Austausch zu schaffen – jenseits von kommerzieller Verwertungslogik. Im Sommer verlagern wir das Wohnzimmer nach draußen für unser Open-Air-Kino im Brücke-Garten.</p>
         `
     },
     {
         id: "stagedive",
         slug: "stagedive",
         title: "StageDive",
+        // Quelle: Dokumente-Kultur.pdf, Seite 2 & 10
         subtitle: "Deine Bühne, dein Abend.",
         category: "Jugend & Musik",
         color: "from-rose-500 to-orange-500",
         icon: "fa-microphone-lines",
         image: "https://images.unsplash.com/photo-1598387993441-a364f854c3e1?auto=format&fit=crop&q=80&w=1200",
-        description: "Ein partizipatives Konzertformat, das junge Talente ermutigt, Verantwortung zu übernehmen. Von der Idee bis zum Applaus – hier lernst du, wie man Veranstaltungen macht.",
+        description: "Wir geben jungen Künstler:innen und Bands die Möglichkeit, selbst Veranstalter:innen zu werden. Von der Planung über die Bewerbung bis zur Durchführung – hier übernehmt ihr die Regie.",
         features: [
-            "Selbstorganisierte Konzertabende",
-            "Mentoring durch Profis (Technik, Booking)",
-            "Professionelle Bühne ohne finanzielles Risiko",
-            "Empowerment & Selbstwirksamkeit"
+            "Selbstständige Organisation von A bis Z",
+            "Nutzung von Raum, Technik & Know-how",
+            "Förderung von Selbstwirksamkeit & Eigenverantwortung",
+            "Sicherer, barrierefreier Raum zum Ausprobieren"
         ],
         content: `
-            <p>StageDive bietet nicht nur eine Bühne, sondern einen sicheren Raum zum Ausprobieren. Junge Musiker:innen und Kulturschaffende übernehmen die Regie für ihren eigenen Abend.</p>
-            <p>Unter professioneller Begleitung lernen die Teilnehmenden alles über Booking, Technik, Moderation und Bewerbung. Es geht nicht um Perfektion, sondern um das Machen.</p>
+            <p>StageDive bietet nicht nur eine Bühne für den Auftritt, sondern eine Plattform für künstlerische Selbstermächtigung. Die Brücke stellt die Infrastruktur (Bühne, Licht, Ton) und beratende Begleitung zur Verfügung – aber gestaltet wird von den jungen Kreativen selbst.</p>
+            <p>Ziel ist es, die nächste Generation an Veranstalter:innen zu fördern und Kompetenzen in Booking, Gagenkalkulation und Promotion zu vermitteln. Nach dem Event gibt es eine gemeinsame Reflexionsrunde, um aus den Erfahrungen zu lernen.</p>
         `
     },
     {
@@ -50,7 +52,6 @@ export const projects = [
         category: "Bildung & Inklusion",
         color: "from-emerald-500 to-teal-500",
         icon: "fa-lightbulb",
-        // BILD NEU: Workshop / Erklären / Gemeinschaft (Menschen im Fokus)
         image: "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=1200",
         description: "Wissen für alle Sinne. Ein inklusives Bildungsformat, das alltägliche Phänomene aus Natur, Technik und Kultur niederschwellig und begreifbar macht.",
         features: [
@@ -68,22 +69,22 @@ export const projects = [
         id: "stadtlandklang",
         slug: "stadtlandklang",
         title: "StadtLandKlang",
-        subtitle: "Musik an ungewöhnlichen Orten.",
+        // Quelle: Dokumente-Kultur.pdf, Seite 2 & 3
+        subtitle: "Volksmusik. Aber echt. Laut. Lebendig.",
         category: "Kultur & Region",
         color: "from-cyan-500 to-blue-600",
         icon: "fa-music",
-        // BILD NEU: Traditionell / Blasmusik / Draußen (Steirischer Vibe)
         image: "https://images.unsplash.com/photo-1573871669414-010dbf73ca84?auto=format&fit=crop&q=80&w=1200",
-        description: "Wir bringen Kultur dorthin, wo sie niemand erwartet. Konzerte in Scheunen, Klanginstallationen im Park und mobile Jam-Sessions verbinden Stadt und Umland.",
+        description: "Eine Veranstaltungsreihe für junge, traditionelle Volksmusik – ohne Kitsch, ohne Schlager und ohne Klischees. Dafür mit Tiefgang, Handwerk und kultureller Verwurzelung.",
         features: [
-            "Pop-Up Konzerte im öffentlichen Raum",
-            "Verbindung von urbaner & ländlicher Kultur",
-            "Genre-Mix: Jazz, Elektro, Folk",
-            "Kostenlos & Draußen"
+            "Junge Musiker:innen aus Österreich & Europa",
+            "Auseinandersetzung mit regionalen Wurzeln",
+            "Plattform für gelebte Volkskultur in der Stadt",
+            "Sichtbarer Raum jenseits von Vereinsstrukturen"
         ],
         content: `
-            <p>StadtLandKlang bricht aus den festen Mauern des Kulturzentrums aus. Wir bespielen öffentliche Plätze, verlassene Orte und grüne Wiesen.</p>
-            <p>Ziel ist es, Menschen durch Musik zufällig zusammenzubringen und kulturelle Hürden abzubauen. Die Stadt wird zum Klangkörper.</p>
+            <p>StadtLandKlang widmet sich der jungen Volksmusikszene, die Tradition neu interpretiert. Im Mittelpunkt stehen Bands, die sich bewusst mit ihren musikalischen Wurzeln auseinandersetzen und diese zeitgemäß auf die Bühne bringen.</p>
+            <p>Die Brücke schafft damit eine kontinuierliche Plattform für echte Volkskultur in Graz und bietet jungen Künstler:innen einen sichtbaren Raum jenseits von ländlichen Festen.</p>
         `
     },
     {
