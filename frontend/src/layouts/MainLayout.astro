@@ -1,5 +1,6 @@
 ---
 import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro'; // <--- 1. Importieren
 
 const { title } = Astro.props;
 ---
@@ -16,11 +17,12 @@ const { title } = Astro.props;
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
         <style is:global>
-            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@400;600;800&family=IBM+Plex+Serif:wght@400;600&display=swap');
+            /* OPTION 2: CLEAN GEOMETRIC */
+            @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 
             :root {
-                --font-display: 'Sora', sans-serif;
-                --font-body: 'Inter', sans-serif;
+                --font-display: 'Outfit', sans-serif;
+                --font-body: 'Plus Jakarta Sans', sans-serif;
             }
             
             body {
@@ -50,6 +52,7 @@ const { title } = Astro.props;
         </style>
 
         <script is:inline>
+            /* ... Dein PGIA Script ... */
             (function(){try{if(!document.documentElement.hasAttribute('data-pg-ia-disabled')) { window.pgia_small_mq=typeof pgia_small_mq=='string'?pgia_small_mq:'(max-width:767px)';window.pgia_large_mq=typeof pgia_large_mq=='string'?pgia_large_mq:'(min-width:768px)';var style = document.createElement('style');var pgcss='html:not(.pg-ia-no-preview) [data-pg-ia-hide=""] {opacity:0;visibility:hidden;}html:not(.pg-ia-no-preview) [data-pg-ia-show=""] {opacity:1;visibility:visible;display:block;}';if(document.documentElement.hasAttribute('data-pg-id') && document.documentElement.hasAttribute('data-pg-mobile')) {pgia_small_mq='(min-width:0)';pgia_large_mq='(min-width:99999px)'} pgcss+='@media ' + pgia_small_mq + '{ html:not(.pg-ia-no-preview) [data-pg-ia-hide="mobile"] {opacity:0;visibility:hidden;}html:not(.pg-ia-no-preview) [data-pg-ia-show="mobile"] {opacity:1;visibility:visible;display:block;}}';pgcss+='@media ' + pgia_large_mq + '{html:not(.pg-ia-no-preview) [data-pg-ia-hide="desktop"] {opacity:0;visibility:hidden;}html:not(.pg-ia-no-preview) [data-pg-ia-show="desktop"] {opacity:1;visibility:visible;display:block;}}';style.innerHTML=pgcss;document.querySelector('head').appendChild(style);}}catch(e){console&&console.log(e);}})()
         </script>
 
@@ -60,7 +63,6 @@ const { title } = Astro.props;
         
         html {
             font-display: swap;
-            /* Sicherheitshalber auch hier clip erzwingen */
             overflow-x: clip; 
         }
         </style>
@@ -69,12 +71,14 @@ const { title } = Astro.props;
     
     <body class="bg-slate-100 text-slate-900 font-body antialiased p-4 md:p-8 min-h-screen"> 
         
-        <div class="relative max-w-[1400px] mx-auto bg-white rounded-4xl shadow-2xl overflow-x-clip ring-1 ring-black/5 rounded-canvas isolate">
+        <div class="relative max-w-[1400px] mx-auto bg-white rounded-4xl shadow-2xl overflow-x-clip ring-1 ring-black/5 rounded-canvas isolate flex flex-col min-h-[calc(100vh-4rem)]">
 
             <Header />
 
-            <slot />
+            <main class="flex-grow">
+                <slot />
+            </main>
 
-        </div>
+            <Footer /> </div>
     </body>     
 </html>

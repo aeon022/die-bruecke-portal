@@ -5,85 +5,110 @@ const settings = await getGlobalSettings();
 const projectName = settings?.project_name || 'Die Brücke';
 ---
 
-<div id="navOverlay" hidden class="absolute inset-0 z-50 nav-overlay bg-slate-800 text-white flex flex-col h-fit overflow-hidden rounded-b-4xl" aria-hidden="true">
+<div id="navOverlay" 
+     class="fixed inset-0 z-[100] flex flex-col bg-slate-800 text-white rounded-b-[40px] shadow-2xl overflow-y-auto nav-transition md:bottom-4"
+     data-state="closed"
+     aria-hidden="true">
     
-    <div class="flex items-center justify-between px-6 sm:px-12 py-6 shrink-0 border-b border-white/10 bg-slate-800">
+    <div class="flex items-center justify-between px-6 sm:px-10 py-6 shrink-0 border-b border-white/10 bg-slate-800 sticky top-0 z-50">
         <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center border border-white/10">
                 <div class="w-3 h-3 rounded-sm bg-rose-500"></div>
             </div>
-            <span class="text-xl font-bold font-display tracking-tight">{projectName}</span>
+            <span class="text-xl font-bold font-display tracking-tight text-white">{projectName}</span>
         </div>
-        <button id="btnCloseNav" class="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center hover:bg-white hover:text-slate-900 transition duration-300 cursor-pointer" aria-label="Menü schließen">
+        <button id="btnCloseNav" class="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center hover:bg-white hover:text-slate-900 transition duration-300 cursor-pointer pointer-events-auto" aria-label="Menü schließen">
             <i class="fa-solid fa-xmark text-xl"></i>
         </button>
     </div>
 
-    <div class="flex-grow flex items-center justify-center w-full bg-slate-800">
-        <nav class="grid grid-cols-1 md:grid-cols-3 w-full">
+    <div class="flex-grow flex items-center justify-center w-full bg-slate-800 py-12">
+        <nav class="grid grid-cols-1 md:grid-cols-3 w-full max-w-7xl mx-auto">
             
-            <a href="/events" class="group relative p-8 md:p-12 border-b border-white/10 md:border-r hover:bg-white/5 transition duration-300 flex flex-col justify-center">
-                <span class="block text-rose-500 font-bold mb-3 text-xs tracking-widest uppercase">01</span>
-                <span class="block text-3xl md:text-4xl lg:text-5xl font-display font-extrabold tracking-tight group-hover:text-rose-500 transition-colors">Programm</span>
-                <span class="block mt-3 text-slate-400 text-sm lg:text-base group-hover:text-white transition-colors font-medium">Konzerte, Workshops & Bühne.</span>
+            <a href="/events" class="group relative p-8 md:p-10 border-b border-white/10 md:border-r hover:bg-white/5 transition duration-300 flex flex-col justify-center min-h-[200px]">
+                <span class="block text-rose-500 font-bold mb-2 text-xs tracking-widest uppercase">01</span>
+                <span class="block text-3xl md:text-4xl font-display font-extrabold tracking-tight group-hover:text-rose-500 transition-colors">Kalender</span>
+                <span class="block mt-3 text-slate-400 text-sm group-hover:text-white transition-colors font-medium max-w-xs leading-relaxed">
+                    Alle Termine, Konzerte & Workshops im Überblick.
+                </span>
+                <i class="fa-solid fa-arrow-right absolute bottom-8 right-8 text-xl text-white/10 group-hover:text-rose-500 group-hover:-rotate-45 transition-all duration-300"></i>
             </a>
 
-            <a href="/services" class="group relative p-8 md:p-12 border-b border-white/10 md:border-r hover:bg-white/5 transition duration-300 flex flex-col justify-center">
-                <span class="block text-rose-500 font-bold mb-3 text-xs tracking-widest uppercase">02</span>
-                <span class="block text-3xl md:text-4xl lg:text-5xl font-display font-extrabold tracking-tight group-hover:text-rose-500 transition-colors">Angebote</span>
-                <span class="block mt-3 text-slate-400 text-sm lg:text-base group-hover:text-white transition-colors font-medium">Mobile Dienste, Projekte & Infozentrum.</span>
+            <a href="/services" class="group relative p-8 md:p-10 border-b border-white/10 md:border-r hover:bg-white/5 transition duration-300 flex flex-col justify-center min-h-[200px]">
+                <span class="block text-rose-500 font-bold mb-2 text-xs tracking-widest uppercase">02</span>
+                <span class="block text-3xl md:text-4xl font-display font-extrabold tracking-tight group-hover:text-rose-500 transition-colors">Angebote</span>
+                <span class="block mt-3 text-slate-400 text-sm group-hover:text-white transition-colors font-medium max-w-xs leading-relaxed">
+                    Beratung, Unterstützung & mobile Dienste.
+                </span>
+                <i class="fa-solid fa-arrow-right absolute bottom-8 right-8 text-xl text-white/10 group-hover:text-rose-500 group-hover:-rotate-45 transition-all duration-300"></i>
             </a>
 
-            <a href="/rentals" class="group relative p-8 md:p-12 border-b border-white/10 hover:bg-white/5 transition duration-300 flex flex-col justify-center">
-                <span class="block text-rose-500 font-bold mb-3 text-xs tracking-widest uppercase">03</span>
-                <span class="block text-3xl md:text-4xl lg:text-5xl font-display font-extrabold tracking-tight group-hover:text-rose-500 transition-colors">Dein Raum</span>
-                <span class="block mt-3 text-slate-400 text-sm lg:text-base group-hover:text-white transition-colors font-medium">Seminare, Feiern & Technik.</span>
+            <a href="/space" class="group relative p-8 md:p-10 border-b border-white/10 hover:bg-white/5 transition duration-300 flex flex-col justify-center min-h-[200px]">
+                <span class="block text-rose-500 font-bold mb-2 text-xs tracking-widest uppercase">03</span>
+                <span class="block text-3xl md:text-4xl font-display font-extrabold tracking-tight group-hover:text-rose-500 transition-colors">Dein Raum</span>
+                <span class="block mt-3 text-slate-400 text-sm group-hover:text-white transition-colors font-medium max-w-xs leading-relaxed">
+                    Miete unsere Räume für deine Ideen & Feiern.
+                </span>
+                <i class="fa-solid fa-arrow-right absolute bottom-8 right-8 text-xl text-white/10 group-hover:text-rose-500 group-hover:-rotate-45 transition-all duration-300"></i>
             </a>
 
-            <a href="/about" class="group relative p-8 md:p-12 border-b md:border-b-0 border-white/10 md:border-r hover:bg-white/5 transition duration-300 flex flex-col justify-center">
-                <span class="block text-rose-500 font-bold mb-3 text-xs tracking-widest uppercase">04</span>
-                <span class="block text-3xl md:text-4xl lg:text-5xl font-display font-extrabold tracking-tight group-hover:text-rose-500 transition-colors">Über uns</span>
-                <span class="block mt-3 text-slate-400 text-sm lg:text-base group-hover:text-white transition-colors font-medium">Das Team & unsere Mission.</span>
+            <a href="/about" class="group relative p-8 md:p-10 border-b md:border-b-0 border-white/10 md:border-r hover:bg-white/5 transition duration-300 flex flex-col justify-center min-h-[200px]">
+                <span class="block text-rose-500 font-bold mb-2 text-xs tracking-widest uppercase">04</span>
+                <span class="block text-3xl md:text-4xl font-display font-extrabold tracking-tight group-hover:text-rose-500 transition-colors">Über uns</span>
+                <span class="block mt-3 text-slate-400 text-sm group-hover:text-white transition-colors font-medium max-w-xs leading-relaxed">
+                    Das Team, unsere Geschichte & Mission.
+                </span>
+                <i class="fa-solid fa-arrow-right absolute bottom-8 right-8 text-xl text-white/10 group-hover:text-rose-500 group-hover:-rotate-45 transition-all duration-300"></i>
             </a>
 
-            <div class="group relative p-8 md:p-12 border-b md:border-b-0 border-white/10 md:border-r flex flex-col justify-center opacity-50 cursor-not-allowed bg-slate-800/50">
-                <span class="block text-slate-600 font-bold mb-3 text-xs tracking-widest uppercase">Coming Soon</span>
-                <span class="block text-3xl md:text-4xl lg:text-5xl font-display font-extrabold tracking-tight text-slate-600">Shop</span>
-                <span class="block mt-3 text-slate-600 text-sm lg:text-base font-medium">Merch & Tickets.</span>
-            </div>
+            <a href="/projects" class="group relative p-8 md:p-10 border-b md:border-b-0 border-white/10 md:border-r hover:bg-white/5 transition duration-300 flex flex-col justify-center min-h-[200px]">
+                <span class="block text-rose-500 font-bold mb-2 text-xs tracking-widest uppercase">05</span>
+                <span class="block text-3xl md:text-4xl font-display font-extrabold tracking-tight group-hover:text-rose-500 transition-colors">Projekte</span>
+                <span class="block mt-3 text-slate-400 text-sm group-hover:text-white transition-colors font-medium max-w-xs leading-relaxed">
+                    SofaKINO, StageDive & Alltagsakademie.
+                </span>
+                <i class="fa-solid fa-arrow-right absolute bottom-8 right-8 text-xl text-white/10 group-hover:text-rose-500 group-hover:-rotate-45 transition-all duration-300"></i>
+            </a>
 
-            <a href="/contact" class="group relative p-8 md:p-12 hover:bg-white/5 transition duration-300 flex flex-col justify-center">
-                <span class="block text-rose-500 font-bold mb-3 text-xs tracking-widest uppercase">06</span>
-                <span class="block text-3xl md:text-4xl lg:text-5xl font-display font-extrabold tracking-tight group-hover:text-rose-500 transition-colors">Kontakt</span>
-                <span class="block mt-3 text-slate-400 text-sm lg:text-base group-hover:text-white transition-colors font-medium">Anfahrt & Öffnungszeiten.</span>
+            <a href="/contact" class="group relative p-8 md:p-10 hover:bg-white/5 transition duration-300 flex flex-col justify-center min-h-[200px]">
+                <span class="block text-rose-500 font-bold mb-2 text-xs tracking-widest uppercase">06</span>
+                <span class="block text-3xl md:text-4xl font-display font-extrabold tracking-tight group-hover:text-rose-500 transition-colors">Kontakt</span>
+                <span class="block mt-3 text-slate-400 text-sm group-hover:text-white transition-colors font-medium max-w-xs leading-relaxed">
+                    Öffnungszeiten, Anfahrt & Hallo sagen.
+                </span>
+                <i class="fa-solid fa-arrow-right absolute bottom-8 right-8 text-xl text-white/10 group-hover:text-rose-500 group-hover:-rotate-45 transition-all duration-300"></i>
             </a>
 
         </nav>
     </div>
 
-    <div class="px-6 sm:px-12 py-8 bg-slate-800 border-t border-white/10 shrink-0">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-slate-400 text-sm font-medium">
+    <div class="px-6 sm:px-10 py-6 bg-slate-800 border-t border-white/10 shrink-0 rounded-b-[40px] mt-auto">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-slate-400 text-sm font-medium max-w-7xl mx-auto w-full">
             <div class="flex items-center gap-3">
                 <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
-                <span class="text-white">Brückenstraße 1, 8020 Graz</span>
+                <span class="text-white">Grabenstraße 39a, 8010 Graz</span>
             </div>
             <div class="flex gap-8">
-                <a href="#" class="hover:text-white hover:underline decoration-rose-500 underline-offset-4 transition">Instagram</a>
-                <a href="#" class="hover:text-white hover:underline decoration-rose-500 underline-offset-4 transition">Facebook</a>
+                <a href="https://www.instagram.com/die.bruecke.graz" target="_blank" class="hover:text-white hover:underline decoration-rose-500 underline-offset-4 transition">Instagram</a>
+                <a href="https://www.facebook.com/brueckegraz" target="_blank" class="hover:text-white hover:underline decoration-rose-500 underline-offset-4 transition">Facebook</a>
             </div>
         </div>
     </div>
 </div>
 
-<header class="relative z-40 px-6 sm:px-10 pt-8 pb-6 flex items-center justify-between sticky top-0 bg-white/90 backdrop-blur-md border-b border-slate-100 transition-all duration-300" id="main-header">
+<header id="main-header" class="relative z-40 px-6 sm:px-10 pt-8 pb-6 flex items-center justify-between sticky top-0 bg-white/90 backdrop-blur-md border-b border-slate-100 transition-[padding,background-color] duration-300 ease-in-out">
     <a href="/" class="flex items-center gap-3 group">
-        <div class="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center shadow-sm group-hover:border-rose-500 transition">
+        <div id="logo-container" class="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center shadow-sm group-hover:border-rose-500 transition-all duration-300">
             <div class="w-3 h-3 rounded-sm bg-rose-500"></div>
         </div>
         <span class="text-xl font-bold font-display tracking-tight text-slate-900">{projectName}</span>
     </a>
     
     <div class="flex items-center gap-4">
+        <a href="/projects" class="hidden lg:inline-flex px-6 py-2.5 rounded-full bg-slate-100 text-slate-900 font-bold text-sm hover:bg-rose-50 transition border border-slate-200">
+            Zu den Projekten
+        </a>
+
         <a href="/contact" class="hidden md:inline-flex px-6 py-2.5 rounded-full bg-slate-900 text-white font-bold text-sm shadow-lg hover:bg-rose-600 transition hover:-translate-y-0.5">
             Jetzt anfragen
         </a>
@@ -93,51 +118,69 @@ const projectName = settings?.project_name || 'Die Brücke';
     </div>
 </header>
 
+<style is:global>
+    /* 1. SCROLL STOP LOGIK */
+    body.locked {
+        overflow: hidden !important;
+        height: 100vh !important;
+        width: 100%;
+        position: fixed; /* Wichtig für iOS */
+    }
+
+    /* 2. OVERLAY TRANSITIONS */
+    .nav-transition {
+        transition-property: transform, opacity, visibility;
+        transition-duration: 500ms;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ZUSTAND: GESCHLOSSEN */
+    #navOverlay[data-state="closed"] {
+        transform: translateY(-100%);
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+    }
+
+    /* ZUSTAND: OFFEN */
+    #navOverlay[data-state="open"] {
+        transform: translateY(0);
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+    }
+</style>
+
 <script>
-  function initHeader() {
+  function init() {
+    // --- ELEMENTE ---
     const btnOpenNav = document.getElementById('btnOpenNav');
     const btnCloseNav = document.getElementById('btnCloseNav');
     const navOverlay = document.getElementById('navOverlay');
     const navLinks = navOverlay?.querySelectorAll('a');
+    
+    // Header Elemente für Shrink
+    const mainHeader = document.getElementById('main-header');
+    const logoContainer = document.getElementById('logo-container');
 
-    const toggleMenu = (show) => {
+    // --- 1. MENÜ LOGIK (Scroll Lock) ---
+    const toggleMenu = (isOpen) => {
         if (!navOverlay) return;
 
-        if (show) {
-            // Wichtig gegen FOUC: Overlay ist per HTML `hidden` versteckt (ohne CSS)
-            navOverlay.hidden = false;
+        if (isOpen) {
+            navOverlay.setAttribute('data-state', 'open');
             navOverlay.setAttribute('aria-hidden', 'false');
-
-            // Animation starten in der nächsten Frame-Kante
-            requestAnimationFrame(() => {
-                navOverlay.classList.add('open');
-            });
-
-            document.body.style.overflow = 'hidden';
-            return;
+            // RADIKALER SCROLL STOP
+            document.body.classList.add('locked');
+        } else {
+            navOverlay.setAttribute('data-state', 'closed');
+            navOverlay.setAttribute('aria-hidden', 'true');
+            // SCROLL FREIGEBEN
+            document.body.classList.remove('locked');
         }
-
-        // Zuklappen
-        navOverlay.classList.remove('open');
-        navOverlay.setAttribute('aria-hidden', 'true');
-        document.body.style.overflow = '';
-
-        const prefersReduced = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
-        
-        // Callback nach Animation
-        const hide = () => {
-            navOverlay.hidden = true;
-        };
-
-        if (prefersReduced) {
-            hide();
-            return;
-        }
-
-        navOverlay.addEventListener('transitionend', hide, { once: true });
-        setTimeout(hide, 450); // Fallback
     };
 
+    // Event Listener neu setzen (Clean clone)
     if(btnOpenNav) {
         const newBtn = btnOpenNav.cloneNode(true);
         btnOpenNav.parentNode.replaceChild(newBtn, btnOpenNav);
@@ -153,8 +196,40 @@ const projectName = settings?.project_name || 'Die Brücke';
     navLinks?.forEach(link => {
         link.addEventListener('click', () => toggleMenu(false));
     });
+
+    // --- 2. HEADER SHRINK LOGIK ---
+    const handleScroll = () => {
+        if (!mainHeader || !logoContainer) return;
+
+        if (window.scrollY > 20) {
+            // Zustand: GESCROLLT (Kleiner)
+            // Padding reduzieren: pt-8 pb-6 -> py-3
+            mainHeader.classList.remove('pt-8', 'pb-6');
+            mainHeader.classList.add('py-3', 'shadow-md');
+            
+            // Logo verkleinern: w-10 h-10 -> w-8 h-8
+            logoContainer.classList.remove('w-10', 'h-10', 'rounded-xl');
+            logoContainer.classList.add('w-8', 'h-8', 'rounded-lg');
+            
+        } else {
+            // Zustand: OBEN (Groß)
+            // Padding zurücksetzen
+            mainHeader.classList.remove('py-3', 'shadow-md');
+            mainHeader.classList.add('pt-8', 'pb-6');
+            
+            // Logo zurücksetzen
+            logoContainer.classList.remove('w-8', 'h-8', 'rounded-lg');
+            logoContainer.classList.add('w-10', 'h-10', 'rounded-xl');
+        }
+    };
+
+    // Scroll Listener hinzufügen (Debounced oder direkt)
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    // Initial check (falls man neulädt und schon unten ist)
+    handleScroll();
   }
 
-  initHeader();
-  document.addEventListener('astro:after-swap', initHeader);
+  // Init bei Page Load und Navigation
+  init();
+  document.addEventListener('astro:after-swap', init);
 </script>

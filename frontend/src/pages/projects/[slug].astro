@@ -1,0 +1,96 @@
+---
+import MainLayout from '../../layouts/MainLayout.astro';
+import { projects } from '../../lib/projectData';
+
+export async function getStaticPaths() {
+  return projects.map(project => ({
+    params: { slug: project.slug },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+---
+
+<MainLayout title={project.title}>
+    
+    <section class="relative pt-40 pb-24 px-6 sm:px-10 overflow-hidden bg-slate-50">
+        <div class={`absolute top-0 right-0 w-[800px] h-[800px] bg-gradient-to-br ${project.color} rounded-full blur-[120px] opacity-20 pointer-events-none -translate-y-1/2 translate-x-1/3`}></div>
+
+        <div class="max-w-5xl mx-auto relative z-10">
+            <a href="/projects" class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-slate-900 mb-8 transition-colors">
+                <i class="fa-solid fa-arrow-left"></i> Zurück zur Übersicht
+            </a>
+            
+            <div class="flex items-start gap-6 mb-6">
+                <div class={`w-16 h-16 rounded-2xl bg-gradient-to-br ${project.color} flex items-center justify-center text-white text-3xl shadow-xl shrink-0`}>
+                    <i class={`fa-solid ${project.icon}`}></i>
+                </div>
+                <span class="inline-block mt-4 px-3 py-1 rounded-full bg-white border border-slate-200 text-slate-500 text-xs font-bold uppercase tracking-widest">
+                    {project.category}
+                </span>
+            </div>
+
+            <h1 class="text-6xl md:text-8xl font-display font-extrabold text-slate-900 tracking-tighter leading-[0.9] mb-8">
+                {project.title}
+            </h1>
+            <p class="text-2xl md:text-3xl font-medium text-slate-500 max-w-3xl leading-tight">
+                {project.subtitle}
+            </p>
+        </div>
+    </section>
+
+    <section class="px-6 sm:px-10 pb-32">
+        <div class="max-w-5xl mx-auto">
+            
+            <div class="grid md:grid-cols-12 gap-12">
+                
+                <div class="md:col-span-7 lg:col-span-8">
+                    <div class="prose prose-lg prose-slate max-w-none 
+                                prose-headings:font-display prose-headings:font-bold prose-headings:text-slate-900
+                                prose-p:text-slate-600 prose-p:leading-relaxed" 
+                         set:html={project.content}>
+                    </div>
+
+                    <div class={`mt-12 p-8 rounded-3xl bg-gradient-to-br ${project.color} bg-opacity-10 border border-slate-100 relative overflow-hidden`}>
+                        <div class="absolute inset-0 bg-white opacity-90"></div>
+                        <div class="relative z-10">
+                            <i class="fa-solid fa-quote-left text-4xl text-slate-200 mb-4 block"></i>
+                            <p class="text-xl font-display font-bold text-slate-900 italic">
+                                "{project.subtitle}"
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="md:col-span-5 lg:col-span-4 space-y-8">
+                    
+                    <div class="bg-slate-900 text-white p-8 rounded-[32px] shadow-xl">
+                        <h3 class="font-display font-bold text-xl mb-6">Das erwartet dich</h3>
+                        <ul class="space-y-4">
+                            {project.features.map(feature => (
+                                <li class="flex items-start gap-3 text-sm text-slate-300">
+                                    <i class={`fa-solid fa-check mt-1 bg-gradient-to-r ${project.color} bg-clip-text text-transparent`}></i>
+                                    <span>{feature}</span>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+
+                    <div class="bg-white border border-slate-200 p-8 rounded-[32px]">
+                        <h3 class="font-display font-bold text-slate-900 mb-2">Interesse geweckt?</h3>
+                        <p class="text-slate-500 text-sm mb-6">
+                            Melde dich bei uns, wenn du mitmachen oder mehr erfahren willst.
+                        </p>
+                        <a href="/contact" class={`block w-full text-center py-3 rounded-xl font-bold text-white bg-gradient-to-r ${project.color} hover:opacity-90 transition-opacity shadow-md`}>
+                            Kontakt aufnehmen
+                        </a>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+</MainLayout>

@@ -10,17 +10,13 @@ const [settings, allEvents] = await Promise.all([
 
 const ASSET_URL = 'http://localhost:8055/assets'; 
 
-/** * DEBUG-LOG (Nur im Terminal sichtbar)
- * Zeigt an, was Directus wirklich liefert. 
- * Wenn hier bei allen "false" oder "undefined" steht, 
- * sind die Access Policies in Directus noch nicht korrekt für das Feld.
- */
+/** * DEBUG-LOG (Nur im Terminal sichtbar) */
 console.log("--- API CHECK ---");
 allEvents.forEach(e => {
   console.log(`Event: ${e.title} | Highlight-Feld: ${e.is_highlight}`);
 });
 
-// 2. Highlight Logik - is_highlight wird in api.ts bereits zu boolean normalisiert
+// 2. Highlight Logik
 const highlightEvent = allEvents.find(e => e.is_highlight === true);
 
 // 3. Die nächsten 3 Events (Highlight ausschließen)
@@ -33,7 +29,6 @@ const heroHeadline = settings?.hero_headline || "Kultur verbindet.<br> <span cla
 
 <MainLayout title="Startseite">
     
-    <!-- Anti-FOUC: Home-Content erst anzeigen, wenn DOM/CSS bereit ist -->
     <style is:inline>
         .home-content { visibility: hidden; }
         html.home-ready .home-content { visibility: visible; }
@@ -46,7 +41,6 @@ const heroHeadline = settings?.hero_headline || "Kultur verbindet.<br> <span cla
                 return;
             }
             window.addEventListener('DOMContentLoaded', reveal, { once: true });
-            // Fallback: falls DOMContentLoaded aus irgendeinem Grund nicht feuert
             setTimeout(reveal, 1500);
         })();
     </script>
@@ -94,7 +88,6 @@ const heroHeadline = settings?.hero_headline || "Kultur verbindet.<br> <span cla
                     <div class="md:col-span-2 md:row-span-2 bg-slate-50 rounded-[32px] flex flex-col items-center justify-center border-2 border-dashed border-slate-200 p-12 text-center transition-colors">
                         <i class="fa-solid fa-star-half-stroke text-3xl text-slate-200 mb-4"></i>
                         <p class="text-slate-400 font-bold uppercase tracking-widest text-xs">Kein Event als Highlight markiert</p>
-                        <p class="text-[10px] text-slate-300 mt-2 italic">Prüfe in Directus: Bei einem Event die Checkbox „Highlight“ aktivieren (und Feldrechte für <code>is_highlight</code> erlauben).</p>
                     </div>
                 )}
 
@@ -173,22 +166,17 @@ const heroHeadline = settings?.hero_headline || "Kultur verbindet.<br> <span cla
 
     <section class="px-6 sm:px-10 py-24 bg-white">
         <div class="bg-slate-900 rounded-[40px] p-12 sm:p-20 text-white text-center relative overflow-hidden shadow-2xl">
+            <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-rose-900/20 rounded-full blur-3xl opacity-50 pointer-events-none -translate-y-1/2 translate-x-1/2"></div>
+
             <div class="relative z-10 max-w-2xl mx-auto">
                 <h2 class="text-4xl sm:text-7xl font-display font-extrabold tracking-tighter mb-8 leading-[0.9]">
                     Mach mit.<br><span class="text-rose-500">Werde Teil davon.</span>
                 </h2>
                 <div class="flex flex-wrap justify-center gap-4">
-                    <a href="/contact" class="bg-rose-600 hover:bg-white hover:text-slate-900 px-10 py-4 rounded-full font-bold transition-all shadow-lg text-lg">Schreib uns</a>
+                    <a href="/contact" class="bg-rose-600 hover:bg-white hover:text-slate-900 px-10 py-4 rounded-full font-bold transition-all shadow-lg text-lg transform hover:-translate-y-1">Schreib uns</a>
                     <a href="/about" class="bg-white/10 hover:bg-white/20 px-10 py-4 rounded-full font-bold transition-all border border-white/10 text-lg">Über den Verein</a>
                 </div>
             </div>
-            <footer class="mt-20 pt-10 border-t border-white/10 flex justify-between items-center text-slate-500 text-xs font-bold uppercase tracking-widest leading-loose">
-                <div>© {new Date().getFullYear()} Die Brücke Portal</div>
-                <div class="flex gap-6">
-                    <a href="/about" class="hover:text-white transition">Datenschutz</a>
-                    <a href="/about" class="hover:text-white transition">Impressum</a>
-                </div>
-            </footer>
         </div>
     </section>
 
