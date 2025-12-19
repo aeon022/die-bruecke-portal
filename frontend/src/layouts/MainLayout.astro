@@ -16,9 +16,6 @@ const { title } = Astro.props;
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
         <style is:global>
-            /* Falls du eine lokale CSS Datei hast: import '../styles/tailwind.css'; */
-            
-            /* Studio Theme Font Fallbacks */
             @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@400;600;800&family=IBM+Plex+Serif:wght@400;600&display=swap');
 
             :root {
@@ -34,12 +31,10 @@ const { title } = Astro.props;
                 font-family: var(--font-display);
             }
 
-            /* Pattern Background (Rounded Canvas) */
             .rounded-canvas {
                 background-color: white;
             }
 
-            /* Animations */
             .nav-overlay {
                 transform: translateY(-100%);
                 transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
@@ -59,16 +54,14 @@ const { title } = Astro.props;
         </script>
 
         <style is:global>
-        /* Zwingt den Browser, Elemente mit dem 'hidden' Attribut wirklich zu verstecken.
-            Das '!important' überschreibt den Konflikt mit Tailwind 'flex' oder 'grid'.
-        */
         [hidden] {
             display: none !important;
         }
         
-        /* Optional: Verhindert Layout-Springen beim Laden von Schriften */
         html {
             font-display: swap;
+            /* Sicherheitshalber auch hier clip erzwingen */
+            overflow-x: clip; 
         }
         </style>
 
@@ -76,7 +69,7 @@ const { title } = Astro.props;
     
     <body class="bg-slate-100 text-slate-900 font-body antialiased p-4 md:p-8 min-h-screen"> 
         
-        <div class="relative max-w-[1400px] mx-auto bg-white rounded-4xl shadow-2xl overflow-hidden ring-1 ring-black/5 rounded-canvas isolate">
+        <div class="relative max-w-[1400px] mx-auto bg-white rounded-4xl shadow-2xl overflow-x-clip ring-1 ring-black/5 rounded-canvas isolate">
 
             <Header />
 
