@@ -1,5 +1,3 @@
-// frontend/src/lib/projectData.ts
-
 export const projects = [
     {
         id: "sofakino",
@@ -9,6 +7,8 @@ export const projects = [
         category: "Kultur & Begegnung",
         color: "from-indigo-500 to-purple-600",
         icon: "fa-film",
+        image: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&q=80&w=1200", 
+        video: "dQw4w9WgXcQ", 
         description: "Ein inklusives Film- und Begegnungsformat, das Kino neu denkt: als barrierefreien, offenen Kulturraum. In Wohnzimmeratmosphäre mit Sofas, Kaffee und Kuchen erleben wir gemeinsam Filme.", 
         features: [
             "Wohnzimmer-Atmosphäre ohne Konsumzwang",
@@ -29,6 +29,7 @@ export const projects = [
         category: "Jugend & Musik",
         color: "from-rose-500 to-orange-500",
         icon: "fa-microphone-lines",
+        image: "https://images.unsplash.com/photo-1598387993441-a364f854c3e1?auto=format&fit=crop&q=80&w=1200",
         description: "Ein partizipatives Konzertformat, das junge Talente ermutigt, Verantwortung zu übernehmen. Von der Idee bis zum Applaus – hier lernst du, wie man Veranstaltungen macht.",
         features: [
             "Selbstorganisierte Konzertabende",
@@ -49,6 +50,8 @@ export const projects = [
         category: "Bildung & Inklusion",
         color: "from-emerald-500 to-teal-500",
         icon: "fa-lightbulb",
+        // BILD NEU: Workshop / Erklären / Gemeinschaft (Menschen im Fokus)
+        image: "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=1200",
         description: "Wissen für alle Sinne. Ein inklusives Bildungsformat, das alltägliche Phänomene aus Natur, Technik und Kultur niederschwellig und begreifbar macht.",
         features: [
             "Lernen durch Anfassen, Riechen & Hören",
@@ -67,8 +70,10 @@ export const projects = [
         title: "StadtLandKlang",
         subtitle: "Musik an ungewöhnlichen Orten.",
         category: "Kultur & Region",
-        color: "from-cyan-500 to-blue-600", // Frischer Outdoor Vibe
+        color: "from-cyan-500 to-blue-600",
         icon: "fa-music",
+        // BILD NEU: Traditionell / Blasmusik / Draußen (Steirischer Vibe)
+        image: "https://images.unsplash.com/photo-1573871669414-010dbf73ca84?auto=format&fit=crop&q=80&w=1200",
         description: "Wir bringen Kultur dorthin, wo sie niemand erwartet. Konzerte in Scheunen, Klanginstallationen im Park und mobile Jam-Sessions verbinden Stadt und Umland.",
         features: [
             "Pop-Up Konzerte im öffentlichen Raum",
@@ -87,8 +92,9 @@ export const projects = [
         title: "Erzähl mir was",
         subtitle: "Geschichte(n) lebendig machen.",
         category: "Literatur & Dialog",
-        color: "from-amber-500 to-orange-600", // Warmer Storytelling Vibe
+        color: "from-amber-500 to-orange-600",
         icon: "fa-comment-dots",
+        image: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&q=80&w=1200",
         description: "Ein generationenübergreifendes Erzählcafé und Podcast-Projekt. Hier treffen Zeitzeugen auf Jugend, Tradition auf Moderne und Zuhören auf Erzählen.",
         features: [
             "Erzählcafé & Storytelling-Workshops",

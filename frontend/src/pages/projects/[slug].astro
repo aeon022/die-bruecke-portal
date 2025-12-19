@@ -1,5 +1,5 @@
 ---
-// WICHTIG: Sagt Astro, dass diese Seite statisch gebaut werden soll (trotz output: 'server')
+// WICHTIG: SSR fix
 export const prerender = true;
 
 import MainLayout from '../../layouts/MainLayout.astro';
@@ -16,8 +16,14 @@ export async function getStaticPaths() {
 // 2. Props für das aktuelle Projekt abrufen
 const { project } = Astro.props;
 
-// Hilfskonstanten für Styles (jetzt sicher, da project existiert)
+// Hilfskonstanten für Styles
 const gradientClass = project?.color || "from-slate-700 to-slate-900";
+
+// URL & Text für Sharing generieren
+const shareTitle = encodeURIComponent(`Tolles Projekt bei der Brücke: ${project.title}`);
+const shareText = encodeURIComponent(project.subtitle || project.description);
+// Platzhalter für Instagram Profil
+const instagramProfile = "https://www.instagram.com/diebruecke_erfurt"; 
 ---
 
 <MainLayout title={`${project.title} – Projekte`}>
@@ -61,6 +67,18 @@ const gradientClass = project?.color || "from-slate-700 to-slate-900";
             
             {/* Main Content (Left) */}
             <div class="lg:col-span-7">
+                
+                {/* 1. PROJECT IMAGE (Optional) */}
+                {project.image && (
+                    <div class="mb-12 rounded-[32px] overflow-hidden shadow-2xl border border-slate-100">
+                        <img 
+                            src={project.image} 
+                            alt={`Bild zum Projekt ${project.title}`} 
+                            class="w-full h-auto object-cover hover:scale-105 transition-transform duration-700"
+                        />
+                    </div>
+                )}
+
                 <div class="prose prose-lg prose-slate prose-headings:font-display prose-headings:font-bold prose-a:text-rose-600 hover:prose-a:text-rose-700">
                     <p class="lead text-xl text-slate-600 font-medium mb-8">
                         {project.description}
@@ -69,7 +87,25 @@ const gradientClass = project?.color || "from-slate-700 to-slate-900";
                     <div set:html={project.content} />
                 </div>
 
-                {/* CTA Box (optional) */}
+                {/* 2. PROJECT VIDEO (Optional) */}
+                {project.video && (
+                    <div class="mt-16">
+                        <h3 class="text-2xl font-display font-bold text-slate-900 mb-6">Einblick ins Projekt</h3>
+                        <div class="aspect-video rounded-[32px] overflow-hidden shadow-xl border border-slate-100 bg-slate-900">
+                            <iframe 
+                                width="100%" 
+                                height="100%" 
+                                src={`https://www.youtube-nocookie.com/embed/${project.video}`} 
+                                title="YouTube video player" 
+                                frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                allowfullscreen
+                            ></iframe>
+                        </div>
+                    </div>
+                )}
+
+                {/* CTA Box */}
                 <div class="mt-16 p-8 bg-slate-50 rounded-3xl border border-slate-100 flex flex-col sm:flex-row items-center gap-6">
                     <div class={`w-12 h-12 rounded-full bg-gradient-to-br ${gradientClass} flex items-center justify-center text-white shrink-0`}>
                         <i class="fa-solid fa-envelope"></i>
@@ -87,7 +123,7 @@ const gradientClass = project?.color || "from-slate-700 to-slate-900";
             {/* Sidebar (Right) */}
             <div class="lg:col-span-5 space-y-8">
                 
-                {/* Features Card */}
+                {/* 1. Features Card */}
                 <div class="bg-slate-900 text-white p-8 rounded-[40px] relative overflow-hidden">
                     <div class={`absolute inset-0 bg-gradient-to-br ${gradientClass} opacity-20`}></div>
                     <div class="relative z-10">
@@ -100,6 +136,75 @@ const gradientClass = project?.color || "from-slate-700 to-slate-900";
                                 </li>
                             ))}
                         </ul>
+                    </div>
+                </div>
+
+                {/* 2. STICKY SHARE SIDEBAR */}
+                <div class="sticky top-32 bg-slate-50 p-8 rounded-[40px] border border-slate-100 shadow-sm">
+                    <h3 class="font-display font-bold text-slate-900 text-lg mb-6 flex items-center gap-2">
+                        <i class="fa-solid fa-share-nodes text-slate-400"></i>
+                        Teilen & Sagen
+                    </h3>
+
+                    <div class="space-y-3">
+                        {/* WhatsApp */}
+                        <a 
+                            href={`whatsapp://send?text=${shareTitle}%20-%20Mehr%20infos:%20https://diebruecke.social/projects/${project.slug}`} 
+                            class="flex items-center gap-4 p-3 bg-white rounded-2xl border border-slate-100 text-slate-600 hover:text-green-600 hover:border-green-200 hover:shadow-md transition-all group"
+                        >
+                            <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center group-hover:bg-green-100 transition-colors">
+                                <i class="fa-brands fa-whatsapp text-lg"></i>
+                            </div>
+                            <span class="font-bold text-sm">Via WhatsApp</span>
+                        </a>
+
+                        {/* Email */}
+                        <a 
+                            href={`mailto:?subject=${shareTitle}&body=Hey,%20schau%20dir%20mal%20dieses%20Projekt%20an:%20${shareText}%0A%0Ahttps://diebruecke.social/projects/${project.slug}`} 
+                            class="flex items-center gap-4 p-3 bg-white rounded-2xl border border-slate-100 text-slate-600 hover:text-blue-600 hover:border-blue-200 hover:shadow-md transition-all group"
+                        >
+                            <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center group-hover:bg-blue-100 transition-colors">
+                                <i class="fa-solid fa-envelope text-lg"></i>
+                            </div>
+                            <span class="font-bold text-sm">Per E-Mail senden</span>
+                        </a>
+
+                         {/* Copy Link */}
+                         <button 
+                            onclick={`navigator.clipboard.writeText('https://diebruecke.social/projects/${project.slug}').then(() => alert('Link kopiert!'))`}
+                            class="w-full flex items-center gap-4 p-3 bg-white rounded-2xl border border-slate-100 text-slate-600 hover:text-slate-900 hover:border-slate-300 hover:shadow-md transition-all group text-left cursor-pointer"
+                        >
+                            <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center group-hover:bg-slate-200 transition-colors">
+                                <i class="fa-solid fa-link text-lg"></i>
+                            </div>
+                            <span class="font-bold text-sm">Link kopieren</span>
+                        </button>
+                    </div>
+
+                    {/* Social Media Row */}
+                    <div class="mt-8 pt-8 border-t border-slate-200">
+                         <p class="text-xs text-slate-400 font-bold uppercase tracking-widest mb-4">Social Media</p>
+                         <div class="flex gap-2">
+                            {/* Facebook */}
+                            <a href={`https://www.facebook.com/sharer/sharer.php?u=https://diebruecke.social/projects/${project.slug}`} target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-colors" title="Auf Facebook teilen">
+                                <i class="fa-brands fa-facebook-f"></i>
+                            </a>
+                            
+                            {/* X (formerly Twitter) */}
+                            <a href={`https://twitter.com/intent/tweet?text=${shareTitle}&url=https://diebruecke.social/projects/${project.slug}`} target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:bg-black hover:text-white hover:border-black transition-colors" title="Auf X posten">
+                                <i class="fa-brands fa-x-twitter"></i>
+                            </a>
+                            
+                            {/* LinkedIn */}
+                            <a href={`https://www.linkedin.com/shareArticle?mini=true&url=https://diebruecke.social/projects/${project.slug}&title=${shareTitle}`} target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:bg-blue-700 hover:text-white hover:border-blue-700 transition-colors" title="Auf LinkedIn teilen">
+                                <i class="fa-brands fa-linkedin-in"></i>
+                            </a>
+
+                            {/* Instagram (Link zum Profil, da Web-Share nicht möglich) */}
+                            <a href={instagramProfile} target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:bg-fuchsia-600 hover:text-white hover:border-fuchsia-600 transition-colors" title="Besuch uns auf Instagram">
+                                <i class="fa-brands fa-instagram"></i>
+                            </a>
+                         </div>
                     </div>
                 </div>
 
