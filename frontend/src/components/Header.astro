@@ -5,231 +5,380 @@ const settings = await getGlobalSettings();
 const projectName = settings?.project_name || 'Die Brücke';
 ---
 
-<div id="navOverlay" 
-     class="fixed inset-0 z-[100] flex flex-col bg-slate-800 text-white rounded-b-[40px] shadow-2xl overflow-y-auto nav-transition md:bottom-4"
-     data-state="closed"
-     aria-hidden="true">
-    
-    <div class="flex items-center justify-between px-6 sm:px-10 py-6 shrink-0 border-b border-white/10 bg-slate-800 sticky top-0 z-50">
-        <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center border border-white/10">
-                <div class="w-3 h-3 rounded-sm bg-rose-500"></div>
-            </div>
-            <span class="text-xl font-bold font-display tracking-tight text-white">{projectName}</span>
+<!-- Backdrop (click to close) -->
+<div
+  id="navBackdrop"
+  class="fixed inset-0 z-[80] bg-slate-950/40 backdrop-blur-[2px] nav-backdrop"
+  data-state="closed"
+  aria-hidden="true"
+></div>
+
+<!-- Sticky header shell (header + in-flow nav panel) -->
+<div id="header-shell" class="sticky top-0 z-[90] header-shell">
+  <!-- Main header (full-width bar) -->
+  <header
+    id="main-header"
+    class="relative flex items-center justify-between px-6 sm:px-10 pt-8 pb-6 bg-white/90 backdrop-blur-md border border-slate-100 shadow-sm
+      rounded-t-3xl rounded-b-none transition-[padding,background-color,box-shadow,transform,border-radius] duration-300 ease-in-out"
+  >
+    <a href="/" class="flex items-center gap-3 group">
+      <div
+        id="logo-container"
+        class="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center shadow-sm group-hover:border-rose-500 transition-all duration-300"
+      >
+        <div class="w-3 h-3 rounded-sm bg-rose-500"></div>
+      </div>
+      <span class="text-xl font-bold font-display tracking-tight text-slate-900">{projectName}</span>
+    </a>
+
+    <div class="flex items-center gap-4">
+      <a
+        href="/projects"
+        class="hidden lg:inline-flex px-6 py-2.5 rounded-full bg-slate-100 text-slate-900 font-bold text-sm hover:bg-rose-50 transition border border-slate-200"
+      >
+        Zu den Projekten
+      </a>
+
+      <a
+        href="/contact"
+        class="hidden md:inline-flex px-6 py-2.5 rounded-full bg-slate-900 text-white font-bold text-sm shadow-lg hover:bg-rose-600 transition hover:-translate-y-0.5"
+      >
+        Jetzt anfragen
+      </a>
+
+      <button
+        id="btnOpenNav"
+        class="w-12 h-12 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-900 hover:bg-slate-50 transition cursor-pointer shadow-sm relative"
+        aria-label="Menü öffnen"
+        aria-expanded="false"
+        aria-controls="navOverlay"
+      >
+        <span class="icon-bars pointer-events-none">
+          <i class="fa-solid fa-bars text-xl"></i>
+        </span>
+        <span class="icon-x pointer-events-none absolute inset-0 flex items-center justify-center">
+          <i class="fa-solid fa-xmark text-xl"></i>
+        </span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Nav panel (opens FROM the header; pushes content down; not fullscreen) -->
+  <div
+    id="navOverlay"
+    class="w-full bg-slate-800 text-white border-x border-b border-white/10 rounded-b-[40px] overflow-hidden nav-panel nav-transition"
+    data-state="closed"
+    aria-hidden="true"
+  >
+    <div class="max-w-7xl mx-auto w-full px-6 sm:px-10 py-5 flex items-center justify-between border-b border-white/10">
+      <div class="flex items-center gap-2">
+        <span class="inline-block w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
+        <span class="text-[11px] font-bold uppercase tracking-widest text-white/80">Menü</span>
+      </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto w-full px-6 sm:px-10 py-8">
+      <nav class="grid grid-cols-1 md:grid-cols-3 w-full gap-2 md:gap-0">
+        <a href="/events" class="group relative p-7 md:p-10 border border-transparent md:border-b md:border-white/10 md:border-r hover:bg-white/5 rounded-3xl md:rounded-none transition duration-300 flex flex-col justify-center min-h-[180px]">
+          <span class="block text-rose-500 font-bold mb-2 text-xs tracking-widest uppercase">01</span>
+          <span class="block text-3xl md:text-4xl font-display font-extrabold tracking-tight group-hover:text-rose-500 transition-colors">Kalender</span>
+          <span class="block mt-3 text-slate-400 text-sm group-hover:text-white transition-colors font-medium max-w-xs leading-relaxed">
+            Alle Termine, Konzerte & Workshops im Überblick.
+          </span>
+          <i class="fa-solid fa-arrow-right absolute bottom-8 right-8 text-xl text-white/10 group-hover:text-rose-500 group-hover:-rotate-45 transition-all duration-300"></i>
+        </a>
+
+        <a href="/services" class="group relative p-7 md:p-10 border border-transparent md:border-b md:border-white/10 md:border-r hover:bg-white/5 rounded-3xl md:rounded-none transition duration-300 flex flex-col justify-center min-h-[180px]">
+          <span class="block text-rose-500 font-bold mb-2 text-xs tracking-widest uppercase">02</span>
+          <span class="block text-3xl md:text-4xl font-display font-extrabold tracking-tight group-hover:text-rose-500 transition-colors">Angebote</span>
+          <span class="block mt-3 text-slate-400 text-sm group-hover:text-white transition-colors font-medium max-w-xs leading-relaxed">
+            Beratung, Unterstützung & mobile Dienste.
+          </span>
+          <i class="fa-solid fa-arrow-right absolute bottom-8 right-8 text-xl text-white/10 group-hover:text-rose-500 group-hover:-rotate-45 transition-all duration-300"></i>
+        </a>
+
+        <a href="/space" class="group relative p-7 md:p-10 border border-transparent md:border-b md:border-white/10 hover:bg-white/5 rounded-3xl md:rounded-none transition duration-300 flex flex-col justify-center min-h-[180px]">
+          <span class="block text-rose-500 font-bold mb-2 text-xs tracking-widest uppercase">03</span>
+          <span class="block text-3xl md:text-4xl font-display font-extrabold tracking-tight group-hover:text-rose-500 transition-colors">Dein Raum</span>
+          <span class="block mt-3 text-slate-400 text-sm group-hover:text-white transition-colors font-medium max-w-xs leading-relaxed">
+            Miete unsere Räume für deine Ideen & Feiern.
+          </span>
+          <i class="fa-solid fa-arrow-right absolute bottom-8 right-8 text-xl text-white/10 group-hover:text-rose-500 group-hover:-rotate-45 transition-all duration-300"></i>
+        </a>
+
+        <a href="/about" class="group relative p-7 md:p-10 border border-transparent md:border-white/10 md:border-r hover:bg-white/5 rounded-3xl md:rounded-none transition duration-300 flex flex-col justify-center min-h-[180px]">
+          <span class="block text-rose-500 font-bold mb-2 text-xs tracking-widest uppercase">04</span>
+          <span class="block text-3xl md:text-4xl font-display font-extrabold tracking-tight group-hover:text-rose-500 transition-colors">Über uns</span>
+          <span class="block mt-3 text-slate-400 text-sm group-hover:text-white transition-colors font-medium max-w-xs leading-relaxed">
+            Das Team, unsere Geschichte & Mission.
+          </span>
+          <i class="fa-solid fa-arrow-right absolute bottom-8 right-8 text-xl text-white/10 group-hover:text-rose-500 group-hover:-rotate-45 transition-all duration-300"></i>
+        </a>
+
+        <a href="/projects" class="group relative p-7 md:p-10 border border-transparent md:border-white/10 md:border-r hover:bg-white/5 rounded-3xl md:rounded-none transition duration-300 flex flex-col justify-center min-h-[180px]">
+          <span class="block text-rose-500 font-bold mb-2 text-xs tracking-widest uppercase">05</span>
+          <span class="block text-3xl md:text-4xl font-display font-extrabold tracking-tight group-hover:text-rose-500 transition-colors">Projekte</span>
+          <span class="block mt-3 text-slate-400 text-sm group-hover:text-white transition-colors font-medium max-w-xs leading-relaxed">
+            SofaKINO, StageDive & Alltagsakademie.
+          </span>
+          <i class="fa-solid fa-arrow-right absolute bottom-8 right-8 text-xl text-white/10 group-hover:text-rose-500 group-hover:-rotate-45 transition-all duration-300"></i>
+        </a>
+
+        <a href="/contact" class="group relative p-7 md:p-10 border border-transparent md:border-white/10 hover:bg-white/5 rounded-3xl md:rounded-none transition duration-300 flex flex-col justify-center min-h-[180px]">
+          <span class="block text-rose-500 font-bold mb-2 text-xs tracking-widest uppercase">06</span>
+          <span class="block text-3xl md:text-4xl font-display font-extrabold tracking-tight group-hover:text-rose-500 transition-colors">Kontakt</span>
+          <span class="block mt-3 text-slate-400 text-sm group-hover:text-white transition-colors font-medium max-w-xs leading-relaxed">
+            Öffnungszeiten, Anfahrt & Hallo sagen.
+          </span>
+          <i class="fa-solid fa-arrow-right absolute bottom-8 right-8 text-xl text-white/10 group-hover:text-rose-500 group-hover:-rotate-45 transition-all duration-300"></i>
+        </a>
+      </nav>
+    </div>
+
+    <div class="px-6 sm:px-10 py-6 border-t border-white/10">
+      <div class="max-w-7xl mx-auto w-full flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-slate-300/80 text-sm font-medium">
+        <span>Grabenstraße 39a, 8010 Graz</span>
+        <div class="flex gap-8">
+          <a href="https://www.instagram.com/die.bruecke.graz" target="_blank" class="hover:text-white hover:underline decoration-rose-500 underline-offset-4 transition">Instagram</a>
+          <a href="https://www.facebook.com/brueckegraz" target="_blank" class="hover:text-white hover:underline decoration-rose-500 underline-offset-4 transition">Facebook</a>
         </div>
-        <button id="btnCloseNav" class="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center hover:bg-white hover:text-slate-900 transition duration-300 cursor-pointer pointer-events-auto" aria-label="Menü schließen">
-            <i class="fa-solid fa-xmark text-xl"></i>
-        </button>
+      </div>
     </div>
-
-    <div class="flex-grow flex items-center justify-center w-full bg-slate-800 py-12">
-        <nav class="grid grid-cols-1 md:grid-cols-3 w-full max-w-7xl mx-auto">
-            
-            <a href="/events" class="group relative p-8 md:p-10 border-b border-white/10 md:border-r hover:bg-white/5 transition duration-300 flex flex-col justify-center min-h-[200px]">
-                <span class="block text-rose-500 font-bold mb-2 text-xs tracking-widest uppercase">01</span>
-                <span class="block text-3xl md:text-4xl font-display font-extrabold tracking-tight group-hover:text-rose-500 transition-colors">Kalender</span>
-                <span class="block mt-3 text-slate-400 text-sm group-hover:text-white transition-colors font-medium max-w-xs leading-relaxed">
-                    Alle Termine, Konzerte & Workshops im Überblick.
-                </span>
-                <i class="fa-solid fa-arrow-right absolute bottom-8 right-8 text-xl text-white/10 group-hover:text-rose-500 group-hover:-rotate-45 transition-all duration-300"></i>
-            </a>
-
-            <a href="/services" class="group relative p-8 md:p-10 border-b border-white/10 md:border-r hover:bg-white/5 transition duration-300 flex flex-col justify-center min-h-[200px]">
-                <span class="block text-rose-500 font-bold mb-2 text-xs tracking-widest uppercase">02</span>
-                <span class="block text-3xl md:text-4xl font-display font-extrabold tracking-tight group-hover:text-rose-500 transition-colors">Angebote</span>
-                <span class="block mt-3 text-slate-400 text-sm group-hover:text-white transition-colors font-medium max-w-xs leading-relaxed">
-                    Beratung, Unterstützung & mobile Dienste.
-                </span>
-                <i class="fa-solid fa-arrow-right absolute bottom-8 right-8 text-xl text-white/10 group-hover:text-rose-500 group-hover:-rotate-45 transition-all duration-300"></i>
-            </a>
-
-            <a href="/space" class="group relative p-8 md:p-10 border-b border-white/10 hover:bg-white/5 transition duration-300 flex flex-col justify-center min-h-[200px]">
-                <span class="block text-rose-500 font-bold mb-2 text-xs tracking-widest uppercase">03</span>
-                <span class="block text-3xl md:text-4xl font-display font-extrabold tracking-tight group-hover:text-rose-500 transition-colors">Dein Raum</span>
-                <span class="block mt-3 text-slate-400 text-sm group-hover:text-white transition-colors font-medium max-w-xs leading-relaxed">
-                    Miete unsere Räume für deine Ideen & Feiern.
-                </span>
-                <i class="fa-solid fa-arrow-right absolute bottom-8 right-8 text-xl text-white/10 group-hover:text-rose-500 group-hover:-rotate-45 transition-all duration-300"></i>
-            </a>
-
-            <a href="/about" class="group relative p-8 md:p-10 border-b md:border-b-0 border-white/10 md:border-r hover:bg-white/5 transition duration-300 flex flex-col justify-center min-h-[200px]">
-                <span class="block text-rose-500 font-bold mb-2 text-xs tracking-widest uppercase">04</span>
-                <span class="block text-3xl md:text-4xl font-display font-extrabold tracking-tight group-hover:text-rose-500 transition-colors">Über uns</span>
-                <span class="block mt-3 text-slate-400 text-sm group-hover:text-white transition-colors font-medium max-w-xs leading-relaxed">
-                    Das Team, unsere Geschichte & Mission.
-                </span>
-                <i class="fa-solid fa-arrow-right absolute bottom-8 right-8 text-xl text-white/10 group-hover:text-rose-500 group-hover:-rotate-45 transition-all duration-300"></i>
-            </a>
-
-            <a href="/projects" class="group relative p-8 md:p-10 border-b md:border-b-0 border-white/10 md:border-r hover:bg-white/5 transition duration-300 flex flex-col justify-center min-h-[200px]">
-                <span class="block text-rose-500 font-bold mb-2 text-xs tracking-widest uppercase">05</span>
-                <span class="block text-3xl md:text-4xl font-display font-extrabold tracking-tight group-hover:text-rose-500 transition-colors">Projekte</span>
-                <span class="block mt-3 text-slate-400 text-sm group-hover:text-white transition-colors font-medium max-w-xs leading-relaxed">
-                    SofaKINO, StageDive & Alltagsakademie.
-                </span>
-                <i class="fa-solid fa-arrow-right absolute bottom-8 right-8 text-xl text-white/10 group-hover:text-rose-500 group-hover:-rotate-45 transition-all duration-300"></i>
-            </a>
-
-            <a href="/contact" class="group relative p-8 md:p-10 hover:bg-white/5 transition duration-300 flex flex-col justify-center min-h-[200px]">
-                <span class="block text-rose-500 font-bold mb-2 text-xs tracking-widest uppercase">06</span>
-                <span class="block text-3xl md:text-4xl font-display font-extrabold tracking-tight group-hover:text-rose-500 transition-colors">Kontakt</span>
-                <span class="block mt-3 text-slate-400 text-sm group-hover:text-white transition-colors font-medium max-w-xs leading-relaxed">
-                    Öffnungszeiten, Anfahrt & Hallo sagen.
-                </span>
-                <i class="fa-solid fa-arrow-right absolute bottom-8 right-8 text-xl text-white/10 group-hover:text-rose-500 group-hover:-rotate-45 transition-all duration-300"></i>
-            </a>
-
-        </nav>
-    </div>
-
-    <div class="px-6 sm:px-10 py-6 bg-slate-800 border-t border-white/10 shrink-0 rounded-b-[40px] mt-auto">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-slate-400 text-sm font-medium max-w-7xl mx-auto w-full">
-            <div class="flex items-center gap-3">
-                <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
-                <span class="text-white">Grabenstraße 39a, 8010 Graz</span>
-            </div>
-            <div class="flex gap-8">
-                <a href="https://www.instagram.com/die.bruecke.graz" target="_blank" class="hover:text-white hover:underline decoration-rose-500 underline-offset-4 transition">Instagram</a>
-                <a href="https://www.facebook.com/brueckegraz" target="_blank" class="hover:text-white hover:underline decoration-rose-500 underline-offset-4 transition">Facebook</a>
-            </div>
-        </div>
-    </div>
+  </div>
 </div>
 
-<header id="main-header" class="relative z-40 px-6 sm:px-10 pt-8 pb-6 flex items-center justify-between sticky top-0 bg-white/90 backdrop-blur-md border-b border-slate-100 transition-[padding,background-color] duration-300 ease-in-out">
-    <a href="/" class="flex items-center gap-3 group">
-        <div id="logo-container" class="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center shadow-sm group-hover:border-rose-500 transition-all duration-300">
-            <div class="w-3 h-3 rounded-sm bg-rose-500"></div>
-        </div>
-        <span class="text-xl font-bold font-display tracking-tight text-slate-900">{projectName}</span>
-    </a>
-    
-    <div class="flex items-center gap-4">
-        <a href="/projects" class="hidden lg:inline-flex px-6 py-2.5 rounded-full bg-slate-100 text-slate-900 font-bold text-sm hover:bg-rose-50 transition border border-slate-200">
-            Zu den Projekten
-        </a>
-
-        <a href="/contact" class="hidden md:inline-flex px-6 py-2.5 rounded-full bg-slate-900 text-white font-bold text-sm shadow-lg hover:bg-rose-600 transition hover:-translate-y-0.5">
-            Jetzt anfragen
-        </a>
-        <button id="btnOpenNav" class="w-12 h-12 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-900 hover:bg-slate-50 transition cursor-pointer shadow-sm" aria-label="Menü öffnen">
-            <i class="fa-solid fa-bars text-xl"></i>
-        </button>
-    </div>
-</header>
-
 <style is:global>
-    /* 1. SCROLL STOP LOGIK */
-    body.locked {
-        overflow: hidden !important;
-        height: 100vh !important;
-        width: 100%;
-        position: fixed; /* Wichtig für iOS */
-    }
+  /* Backdrop */
+  .nav-backdrop {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 650ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 650ms;
+  }
+  #navBackdrop[data-state='open'] {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transition: opacity 650ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
 
-    /* 2. OVERLAY TRANSITIONS */
+  /* Nav panel transitions (in-flow) */
+  .nav-transition {
+    transition-property: max-height, opacity, transform;
+    transition-duration: 650ms;
+    transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  #navOverlay[data-state='closed'] {
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(-10px);
+    pointer-events: none;
+  }
+
+  #navOverlay[data-state='open'] {
+    /* Not fullscreen: still large enough for the grid; scroll inside if needed */
+    max-height: calc(100vh - 64px);
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  /* Header float + shrink (scroll) */
+  #header-shell.header-shell {
+    padding: 0;
+    transition: padding 300ms ease;
+  }
+
+  /* floating wrapper padding is allowed; header itself stays square on scroll */
+  #header-shell.header-shell.is-float {
+    padding: 0.75rem 1rem 0;
+  }
+
+  /* Sticky/float: nav overlay should look like a card (rounded top+bottom) */
+  #header-shell.is-float #navOverlay {
+    border-radius: 28px !important;
+  }
+  #header-shell.is-float #navOverlay[data-state='open'] {
+    margin-top: 0.75rem;
+    box-shadow: 0 18px 45px rgba(15, 23, 42, 0.18);
+  }
+
+  /* Burger → Close morph (crossfade + rotate) */
+  #btnOpenNav .icon-bars,
+  #btnOpenNav .icon-x {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition:
+      transform 420ms cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 220ms ease;
+    will-change: transform, opacity;
+  }
+
+  #btnOpenNav .icon-x {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.75);
+  }
+
+  #btnOpenNav.is-open .icon-bars {
+    opacity: 0;
+    transform: rotate(90deg) scale(0.75);
+  }
+
+  #btnOpenNav.is-open .icon-x {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+  }
+
+  @media (min-width: 768px) {
+    #header-shell.header-shell.is-float {
+      padding-left: 2rem;
+      padding-right: 2rem;
+    }
+  }
+
+  /* On scroll: header may float/shrink, but stays rounded */
+  #header-shell.is-float #main-header {
+    border-radius: 28px !important;
+    background-color: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 18px 45px rgba(15, 23, 42, 0.10);
+  }
+
+  #main-header.is-shrink {
+    padding-top: 0.85rem !important;
+    padding-bottom: 0.85rem !important;
+  }
+
+  #main-header.is-shrink #logo-container {
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 0.75rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nav-backdrop,
     .nav-transition {
-        transition-property: transform, opacity, visibility;
-        transition-duration: 500ms;
-        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+      transition: none !important;
     }
-
-    /* ZUSTAND: GESCHLOSSEN */
-    #navOverlay[data-state="closed"] {
-        transform: translateY(-100%);
-        opacity: 0;
-        visibility: hidden;
-        pointer-events: none;
-    }
-
-    /* ZUSTAND: OFFEN */
-    #navOverlay[data-state="open"] {
-        transform: translateY(0);
-        opacity: 1;
-        visibility: visible;
-        pointer-events: auto;
-    }
+  }
 </style>
 
 <script>
   function init() {
-    // --- ELEMENTE ---
     const btnOpenNav = document.getElementById('btnOpenNav');
-    const btnCloseNav = document.getElementById('btnCloseNav');
+    // const btnCloseNav = document.getElementById('btnCloseNav');
     const navOverlay = document.getElementById('navOverlay');
+    const navBackdrop = document.getElementById('navBackdrop');
     const navLinks = navOverlay?.querySelectorAll('a');
-    
-    // Header Elemente für Shrink
+
+    const headerShell = document.getElementById('header-shell');
     const mainHeader = document.getElementById('main-header');
     const logoContainer = document.getElementById('logo-container');
+    // removed: const navToggleIcon = document.getElementById('navToggleIcon');
 
-    // --- 1. MENÜ LOGIK (Scroll Lock) ---
-    const toggleMenu = (isOpen) => {
-        if (!navOverlay) return;
+    const prefersReduced = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
 
+    const setToggleVisual = (isOpen) => {
+      const openBtn = document.getElementById('btnOpenNav');
+      if (!openBtn) return;
+
+      openBtn.classList.toggle('is-open', !!isOpen);
+      openBtn.setAttribute('aria-label', isOpen ? 'Menü schließen' : 'Menü öffnen');
+    };
+
+    const setExpanded = (expanded) => {
+      if (!btnOpenNav) return;
+      btnOpenNav.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+    };
+
+    const openMenu = () => {
+      if (!navOverlay || !navBackdrop) return;
+      navOverlay.setAttribute('data-state', 'open');
+      navOverlay.setAttribute('aria-hidden', 'false');
+      navBackdrop.setAttribute('data-state', 'open');
+      navBackdrop.setAttribute('aria-hidden', 'false');
+      setExpanded(true);
+      setToggleVisual(true);
+    };
+
+    const closeMenu = () => {
+      if (!navOverlay || !navBackdrop) return;
+      navOverlay.setAttribute('data-state', 'closed');
+      navOverlay.setAttribute('aria-hidden', 'true');
+      navBackdrop.setAttribute('data-state', 'closed');
+      navBackdrop.setAttribute('aria-hidden', 'true');
+      setExpanded(false);
+      setToggleVisual(false);
+    };
+
+    // Rebind (Astro swaps)
+    if (btnOpenNav) {
+      const newBtn = btnOpenNav.cloneNode(true);
+      btnOpenNav.parentNode.replaceChild(newBtn, btnOpenNav);
+      newBtn.addEventListener('click', () => {
+        const overlay = document.getElementById('navOverlay');
+        const isOpen = overlay?.getAttribute('data-state') === 'open';
         if (isOpen) {
-            navOverlay.setAttribute('data-state', 'open');
-            navOverlay.setAttribute('aria-hidden', 'false');
-            // RADIKALER SCROLL STOP
-            document.body.classList.add('locked');
+          closeMenu();
         } else {
-            navOverlay.setAttribute('data-state', 'closed');
-            navOverlay.setAttribute('aria-hidden', 'true');
-            // SCROLL FREIGEBEN
-            document.body.classList.remove('locked');
+          openMenu();
         }
-    };
-
-    // Event Listener neu setzen (Clean clone)
-    if(btnOpenNav) {
-        const newBtn = btnOpenNav.cloneNode(true);
-        btnOpenNav.parentNode.replaceChild(newBtn, btnOpenNav);
-        newBtn.addEventListener('click', () => toggleMenu(true));
+      });
     }
 
-    if(btnCloseNav) {
-        const newClose = btnCloseNav.cloneNode(true);
-        btnCloseNav.parentNode.replaceChild(newClose, btnCloseNav);
-        newClose.addEventListener('click', () => toggleMenu(false));
-    }
-    
-    navLinks?.forEach(link => {
-        link.addEventListener('click', () => toggleMenu(false));
-    });
+    // Removed btnCloseNav logic (button no longer exists)
 
-    // --- 2. HEADER SHRINK LOGIK ---
+    if (navBackdrop) {
+      const newBackdrop = navBackdrop.cloneNode(true);
+      navBackdrop.parentNode.replaceChild(newBackdrop, navBackdrop);
+      newBackdrop.addEventListener('click', closeMenu);
+    }
+
+    navLinks?.forEach((link) => link.addEventListener('click', closeMenu));
+
+    // ESC closes
+    if (!document.documentElement.dataset.headerEscBound) {
+      document.documentElement.dataset.headerEscBound = '1';
+      document.addEventListener('keydown', (e) => {
+        if (e.key !== 'Escape') return;
+        const overlay = document.getElementById('navOverlay');
+        if (overlay?.getAttribute('data-state') === 'open') closeMenu();
+      });
+    }
+
+    // Scroll: float + shrink (but keep header square)
     const handleScroll = () => {
-        if (!mainHeader || !logoContainer) return;
+      const y = window.scrollY || 0;
+      const scrolled = y > 18;
+      headerShell?.classList.toggle('is-float', scrolled);
+      mainHeader?.classList.toggle('is-shrink', scrolled);
 
-        if (window.scrollY > 20) {
-            // Zustand: GESCROLLT (Kleiner)
-            // Padding reduzieren: pt-8 pb-6 -> py-3
-            mainHeader.classList.remove('pt-8', 'pb-6');
-            mainHeader.classList.add('py-3', 'shadow-md');
-            
-            // Logo verkleinern: w-10 h-10 -> w-8 h-8
-            logoContainer.classList.remove('w-10', 'h-10', 'rounded-xl');
-            logoContainer.classList.add('w-8', 'h-8', 'rounded-lg');
-            
-        } else {
-            // Zustand: OBEN (Groß)
-            // Padding zurücksetzen
-            mainHeader.classList.remove('py-3', 'shadow-md');
-            mainHeader.classList.add('pt-8', 'pb-6');
-            
-            // Logo zurücksetzen
-            logoContainer.classList.remove('w-8', 'h-8', 'rounded-lg');
-            logoContainer.classList.add('w-10', 'h-10', 'rounded-xl');
-        }
+      if (!logoContainer) return;
+      if (scrolled) {
+        logoContainer.classList.remove('w-10', 'h-10', 'rounded-xl');
+        logoContainer.classList.add('w-8', 'h-8', 'rounded-lg');
+      } else {
+        logoContainer.classList.remove('w-8', 'h-8', 'rounded-lg');
+        logoContainer.classList.add('w-10', 'h-10', 'rounded-xl');
+      }
     };
 
-    // Scroll Listener hinzufügen (Debounced oder direkt)
+    if (window.__brueckeHeaderScrollHandler) {
+      window.removeEventListener('scroll', window.__brueckeHeaderScrollHandler);
+    }
+    window.__brueckeHeaderScrollHandler = handleScroll;
     window.addEventListener('scroll', handleScroll, { passive: true });
-    // Initial check (falls man neulädt und schon unten ist)
     handleScroll();
+
+    // If we hot-swap, ensure menu is closed to avoid stuck state
+    if (!prefersReduced) {
+      closeMenu();
+      setToggleVisual(false);
+    }
   }
 
-  // Init bei Page Load und Navigation
   init();
   document.addEventListener('astro:after-swap', init);
 </script>
