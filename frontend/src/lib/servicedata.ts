@@ -3,19 +3,13 @@ export const services = [
         id: "fass",
         slug: "freizeitassistenz",
         title: "Freizeitassistenz (FASS)",
-        programDownload: "/downloads/freizeitprogramm-dummy.pdf", 
-        buttonText: "Aktuelles Programm (PDF)", // Optionaler Text
-        description: "Die Freizeitassistenz unterstützt Menschen mit Behinderung...",
-        features: [
-            "Begleitung zu Freizeitaktivitäten & Sport",
-            "Aufbau sozialer Kompetenzen",
-            "Teilhabe am gesellschaftlichen Leben",
-            "Abrechnung nach LEVO-StBHG möglich"
-        ],
         subtitle: "Selbstbestimmt unterwegs.",
         icon: "fa-person-walking-luggage",
         color: "from-lime-500 to-green-600",
-        image: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&q=80&w=1200",
+        // BILD: Junge Freundesgruppe in der Stadt (Unsplash: 2VkUdNANwdA / Vitaly Gariev)
+        image: "https://images.unsplash.com/photo-1758979107810-817db9b3c419?auto=format&fit=crop&q=80&w=1600",
+        programDownload: "/downloads/freizeitprogramm-dummy.pdf", 
+        buttonText: "Aktuelles Programm (PDF)",
         description: "Die Freizeitassistenz unterstützt Menschen mit Behinderung bei Aktivitäten außerhalb ihrer Wohnumgebung – sei es beim Sport, bei kulturellen Veranstaltungen oder im Kontakt mit Freund:innen.",
         features: [
             "Begleitung zu Freizeitaktivitäten & Sport",
@@ -35,7 +29,8 @@ export const services = [
         subtitle: "Freiräume für Angehörige.",
         icon: "fa-hands-holding-child",
         color: "from-sky-500 to-blue-600",
-        image: "https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&q=80&w=1200",
+        // BILD: Unterstützung in der Familie zu Hause (Unsplash: 75xbITy2szk / Raj Tuladhar)
+        image: "https://images.unsplash.com/photo-1732194438396-394d2b7c2436?auto=format&fit=crop&q=80&w=1600",
         description: "Der Familienentlastungsdienst bietet Angehörigen eine temporäre Entlastung von Betreuungspflichten, während die betreute Person individuelle Zuwendung erhält.",
         features: [
             "Temporäre Entlastung für Angehörige",
@@ -55,11 +50,11 @@ export const services = [
         subtitle: "Mein Leben. Meine Wohnung.",
         icon: "fa-house-chimney-user",
         color: "from-orange-500 to-red-500",
-        image: "https://images.unsplash.com/photo-1556910103-1c02745a30bf?auto=format&fit=crop&q=80&w=1200",
+        // BILD: Selbstständigkeit zu Hause (Unsplash: D2CxpwtgSgQ / Centre for Ageing Better)
+        image: "https://images.unsplash.com/photo-1756312178806-448bbb981d7e?auto=format&fit=crop&q=80&w=1600",
         description: "Die Wohnassistenz richtet sich an Menschen, die selbstständig leben. Wir unterstützen bei Alltagsorganisation, Haushaltsführung und Behördenwegen.",
         features: [
-            // "Hilfe" -> "Unterstützung"
-            "Unterstützung bei der Haushaltsführung", 
+            "Unterstützung bei der Haushaltsführung",
             "Begleitung bei Behördenwegen & Finanzen",
             "Organisation des Alltags",
             "Förderung der Selbstständigkeit"

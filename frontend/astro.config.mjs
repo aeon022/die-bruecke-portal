@@ -6,10 +6,16 @@ import node from '@astrojs/node'; // Wir brauchen einen Adapter für SSR
 
 // https://astro.build/config
 export default defineConfig({
+  
   output: 'server', // <--- WICHTIG: Server Side Rendering aktivieren
   adapter: node({
     mode: 'standalone',
   }),
+
+  // Remote Images (z.B. für astro:assets <Image />)
+  image: {
+    domains: ['images.unsplash.com', 'source.unsplash.com', 'unsplash.com'],
+  },
   
   integrations: [
     PinyAstro()

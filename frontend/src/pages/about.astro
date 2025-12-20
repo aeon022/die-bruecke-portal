@@ -1,237 +1,268 @@
 ---
 import MainLayout from '../layouts/MainLayout.astro';
+import { teamData } from '../lib/teamData';
 
-// --- DATEN: VORSTAND (6 Personen) ---
-const board = [
-    { name: "Dr. Peter H.", role: "Obmann", img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop" },
-    { name: "Mag. Julia Muster", role: "Stellv. Obfrau", img: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=800&auto=format&fit=crop" },
-    { name: "Gerhard F.", role: "Kassier", img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=800&auto=format&fit=crop" },
-    { name: "Susanne W.", role: "Schriftführerin", img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=800&auto=format&fit=crop" },
-    { name: "Dipl. Ing. Markus K.", role: "Beirat Technik", img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=800&auto=format&fit=crop" },
-    { name: "Elena S.", role: "Beirätin Inklusion", img: "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=800&auto=format&fit=crop" },
-];
+// Filter für die Sektionen basierend auf den echten Daten
+const boardMembers = teamData.filter(m => m.type === 'board');
+const leadership = teamData.filter(m => m.type === 'operative');
 
-// --- DATEN: HELFER & SUPPORT (4 Personen) ---
-const team = [
-    { name: "Sarah Kofler", role: "Kulturmanagement", img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=800&auto=format&fit=crop" },
-    { name: "Thomas B.", role: "Fahrtendienst", img: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=800&auto=format&fit=crop" },
-    { name: "Lisa M.", role: "Assistenz", img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=800&auto=format&fit=crop" },
-    { name: "Kevin J.", role: "Zivildiener", img: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=800&auto=format&fit=crop" },
-];
-
-// --- DATEN: TIMELINE (Mehr Details) ---
+// --- DATEN: TIMELINE ---
 const history = [
-    { year: "1986", title: "Der Anfang", desc: "Eine Gruppe engagierter Eltern gründet den Verein in einem kleinen Wohnzimmer. Das Ziel: Raus aus der Isolation." },
-    { year: "1990", title: "Erste Räume", desc: "Anmietung des ersten kleinen Vereinslokals in der Griesgasse. Der erste 'Offene Treff' entsteht." },
-    { year: "1995", title: "Mobile Dienste", desc: "Meilenstein: Wir erhalten die Zulassung als Träger der Behindertenhilfe. Start der mobilen Begleitung." },
-    { year: "2003", title: "Der erste Bus", desc: "Dank Spenden können wir einen barrierefreien Bus kaufen. Ausflüge sind nun für alle möglich." },
-    { year: "2010", title: "Umzug Brückenstraße", desc: "Wir beziehen unser heutiges Zuhause. Endlich Platz für eine Bühne, Gastro und Büros." },
-    { year: "2015", title: "Kulturpreis", desc: "Die Stadt Graz verleiht uns den Menschenrechtspreis für unser inklusives Theaterprojekt." },
-    { year: "2020", title: "Digitalisierung", desc: "Trotz Pandemie bleiben wir verbunden. Start unserer Online-Beratung und Streaming-Events." },
-    { year: "Heute", title: "Volles Programm", desc: "Mit über 300 Events im Jahr und 45 Mitarbeiter:innen sind wir eine feste Institution in Graz." }
+    { 
+        year: "1983", 
+        title: "Die Geburtsstunde", 
+        desc: "Gegründet als 'Kommunikationszentrum für Menschen mit und ohne Behinderung'. Waltraud Klasnic und Partner legen den Grundstein für Österreichs erstes inklusives Haus." 
+    },
+    { 
+        year: "1988", 
+        title: "Kultur als Brücke", 
+        desc: "Die Brücke etabliert sich als Grazer Top-Adresse für akustische Musik und Kleinkunst. Inklusion wird durch gemeinsame Kulturerlebnisse lebendig." 
+    },
+    { 
+        year: "1992", 
+        title: "Das Infozentrum", 
+        desc: "Eröffnung des Informationszentrums für Behindertenfragen. Wir werden zur zentralen Anlaufstelle für unbürokratische Hilfe in der Steiermark." 
+    },
+    { 
+        year: "2004", 
+        title: "Anerkannter Träger", 
+        desc: "Ein Meilenstein: Das Land Steiermark erkennt uns als Träger für mobile Dienste an (FASS, WASS, FED). Professionalisierung auf höchstem Niveau." 
+    },
+    { 
+        year: "2007", 
+        title: "Neuer Glanz", 
+        desc: "Nach umfassender Renovierung und Zubau erstrahlt die Brücke barrierefrei und modern – bereit für die nächsten Jahrzehnte." 
+    },
+    { 
+        year: "Heute", 
+        title: "42 Jahre Pionierarbeit", 
+        desc: "Vom Visionär zum Fels in der Brandung. Mit Urlaubsaktionen, mobilen Diensten und über 300 Events pro Jahr sind wir Graz' Herz für Inklusion." 
+    }
 ];
 ---
 
-<MainLayout title="Über uns">
+<MainLayout title="Über uns | Die Brücke">
     
+    {/* --- HERO --- */}
     <section class="relative px-6 sm:px-10 pt-40 pb-32 bg-white overflow-hidden">
         <div class="max-w-7xl mx-auto relative z-10">
-            <span class="inline-block px-4 py-1.5 rounded-full bg-rose-50 border border-rose-100 text-rose-600 text-xs font-bold uppercase tracking-widest mb-8">
-                Seit 1986
-            </span>
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-50 border border-slate-200 text-xs font-bold text-rose-500 mb-8 uppercase tracking-widest shadow-sm">
+                <span class="text-[10px] mb-0.5">●</span> Das Original seit 1983
+            </div>
+            
             <h1 class="text-6xl md:text-8xl lg:text-9xl font-display font-extrabold text-slate-900 tracking-tighter mb-10 leading-[0.9]">
                 Wir bauen <br>
-                <span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-indigo-600">Brücken.</span>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 via-indigo-500 to-indigo-600">Brücken.</span>
             </h1>
-            <div class="grid md:grid-cols-2 gap-12 items-start">
-                <p class="text-2xl text-slate-900 leading-relaxed font-medium">
-                    Die Brücke ist mehr als ein Verein. Wir sind ein lebendiger Organismus mitten in Graz, der Inklusion nicht nur fordert, sondern täglich lebt.
-                </p>
-                <p class="text-lg text-slate-500 leading-relaxed">
-                    Wir verbinden professionelle Sozialarbeit nach LEVO-Gesetz mit freier Kulturarbeit. Unser Ziel ist eine Gesellschaft, in der Barrieren in den Köpfen genauso verschwinden wie die auf der Straße.
-                </p>
-            </div>
-        </div>
-        <div class="absolute right-0 top-0 w-[800px] h-[800px] bg-slate-50 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 -z-10"></div>
-    </section>
 
-    <section class="px-4 sm:px-6 md:px-10 pb-32">
-        <div class="max-w-[1600px] mx-auto">
-            <div class="aspect-[21/9] rounded-[48px] overflow-hidden shadow-2xl relative group">
-                <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=2200&auto=format&fit=crop" 
-                     alt="Gemeinschaft" 
-                     class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition duration-[1.5s] scale-105 group-hover:scale-100" />
-                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-end p-8 md:p-20">
-                    <blockquote class="max-w-4xl text-white">
-                        <p class="font-display font-bold text-3xl md:text-5xl leading-tight mb-6">
-                            "Inklusion bedeutet nicht, dass wir alle gleich sind. Es bedeutet, dass Unterschiede normal sind."
-                        </p>
-                        <cite class="text-rose-400 font-bold tracking-widest uppercase not-italic">– Aus unserem Leitbild</cite>
-                    </blockquote>
+            <div class="grid md:grid-cols-2 gap-16 items-center">
+                <div class="space-y-6">
+                    <p class="text-3xl text-slate-900 leading-[1.1] font-bold tracking-tight">
+                        Wir sind das Backup für deine Unabhängigkeit.
+                    </p>
+                    <p class="text-xl text-slate-500 leading-relaxed font-medium">
+                        Wo andere über Inklusion reden, schaffen wir seit 42 Jahren den Raum, in dem sie einfach passiert – unbürokratisch und radikal menschlich.
+                    </p>
+                </div>
+
+                <div class="relative flex justify-center md:justify-end">
+                    <div class="relative group">
+                        <div class="w-64 h-64 rounded-full bg-slate-50 border-2 border-dashed border-slate-200 flex items-center justify-center p-8 text-center rotate-12 group-hover:rotate-0 transition-transform duration-700 shadow-sm">
+                            <p class="text-slate-400 font-display font-bold leading-tight uppercase text-sm">
+                                <span class="text-rose-500 text-xl block mb-2">⚠ Achtung</span>
+                                Enthält Spuren von <br>
+                                <span class="text-slate-900 line-through opacity-30 decoration-rose-500">Mitleid</span><br>
+                                <span class="text-slate-900 font-black text-lg">Echtem Leben</span>
+                            </p>
+                        </div>
+                        <div class="absolute -bottom-4 -right-2 bg-yellow-200 text-slate-800 px-6 py-3 shadow-xl -rotate-6 font-bold text-sm border-l-4 border-yellow-400">
+                            Grabenstraße 39a. <br>
+                            Einfach reinkommen. 👋
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
+        
+    {/* --- WERTE --- */}
+    <section class="px-6 sm:px-10 py-32 bg-white">
+        <div class="max-w-7xl mx-auto text-center">
+            <h2 class="text-4xl md:text-6xl font-display font-extrabold text-slate-900 tracking-tighter mb-20">
+                Worauf wir <span class="text-rose-600">bauen.</span>
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
+                {[
+                    { title: "Menschlichkeit", icon: "fa-heart", color: "bg-rose-500", text: "Wir sehen dich. Immer auf Augenhöhe. Seit 1983 ist Empathie unser wichtigstes Werkzeug." },
+                    { title: "Selbstbestimmung", icon: "fa-hand-fist", color: "bg-indigo-600", text: "Dein Weg. Unser Backup. Wir bevormunden nicht, wir begleiten professionell." },
+                    { title: "Kultur & Begegnung", icon: "fa-music", color: "bg-lime-500", text: "Kunst zum Anfassen. Wir schaffen den Raum, in dem Unterschiede verschwinden." }
+                ].map(card => (
+                    <div class="group h-[400px] [perspective:1000px]">
+                        <div class="relative h-full w-full rounded-[48px] shadow-xl transition-all duration-500 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)] cursor-pointer">
+                            <div class="absolute inset-0 h-full w-full rounded-[48px] bg-slate-50 flex flex-col items-center justify-center p-10 [backface-visibility:hidden]">
+                                <div class={`w-20 h-20 ${card.color} text-white rounded-3xl flex items-center justify-center text-3xl mb-6 shadow-lg`}>
+                                    <i class={`fa-solid ${card.icon}`}></i>
+                                </div>
+                                <h3 class="text-2xl font-display font-bold text-slate-900">{card.title}</h3>
+                                <p class="text-slate-400 mt-4 font-bold uppercase text-[10px] tracking-widest">Mehr erfahren</p>
+                            </div>
+                            <div class="absolute inset-0 h-full w-full rounded-[48px] bg-slate-900 p-10 text-white [transform:rotateY(180deg)] [backface-visibility:hidden] flex flex-col items-center justify-center text-center">
+                                <h3 class="text-2xl font-display font-bold mb-4">{card.title}</h3>
+                                <p class="text-slate-300 leading-relaxed font-medium">{card.text}</p>
+                            </div>
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+    </section>
 
+    {/* --- TIMELINE --- */}
     <section class="px-6 sm:px-10 py-32 bg-slate-50 relative overflow-hidden">
         <div class="max-w-4xl mx-auto relative">
             <div class="text-center mb-24">
-                <span class="text-rose-500 font-bold tracking-widest uppercase text-xs mb-4 block">Unsere Reise</span>
-                <h2 class="text-4xl md:text-6xl font-display font-bold text-slate-900">Vom Wohnzimmer <br>zum Kulturzentrum.</h2>
+                <span class="text-rose-500 font-bold tracking-widest uppercase text-xs mb-4 block underline decoration-rose-500 decoration-2 underline-offset-8">Unsere Geschichte</span>
+                <h2 class="text-4xl md:text-6xl font-display font-bold text-slate-900 tracking-tighter">Vom Visionär <br>zum Fels in der Brandung.</h2>
             </div>
-
             <div class="relative pl-8 md:pl-0" id="timelineContainer">
-                
                 <div class="absolute left-8 md:left-1/2 top-0 bottom-0 w-0.5 bg-slate-200 -translate-x-1/2"></div>
-                
-                <div id="timelineProgress" class="absolute left-8 md:left-1/2 top-0 w-0.5 bg-rose-600 -translate-x-1/2 transition-all duration-100 ease-out" style="height: 0%;"></div>
-
-                <div class="space-y-24 md:space-y-32 relative z-10">
+                <div id="timelineProgress" class="absolute left-8 md:left-1/2 top-0 w-1 bg-rose-600 -translate-x-1/2 transition-all duration-100 ease-out" style="height: 0%;"></div>
+                <div class="space-y-24 md:space-y-40 relative z-10">
                     {history.map((item, idx) => (
-                        <div class={`flex flex-col md:flex-row items-center gap-8 md:gap-16 timeline-item opacity-20 transition-opacity duration-700 ${idx % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'}`}>
-                            
+                        <div class={`flex flex-col md:flex-row items-center gap-8 md:gap-16 timeline-item opacity-20 transition-all duration-700 transform translate-y-8 ${idx % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'}`}>
                             <div class={`flex-1 ${idx % 2 === 0 ? 'md:text-right' : 'md:text-left'} text-left`}>
-                                <span class="text-6xl font-display font-extrabold text-slate-200 block mb-2">{item.year}</span>
+                                <span class="text-7xl font-display font-black text-slate-200 block mb-2">{item.year}</span>
                                 <h3 class="text-2xl font-bold text-slate-900 mb-4">{item.title}</h3>
                                 <p class="text-slate-500 leading-relaxed font-medium">{item.desc}</p>
                             </div>
-
-                            <div class="absolute left-8 md:left-1/2 w-4 h-4 rounded-full bg-white border-4 border-rose-600 -translate-x-1/2 shadow-[0_0_0_8px_rgba(255,255,255,1)]"></div>
-
+                            <div class="absolute left-8 md:left-1/2 w-5 h-5 rounded-full bg-white border-4 border-rose-600 -translate-x-1/2 shadow-[0_0_0_8px_rgba(255,255,255,1)]"></div>
                             <div class="flex-1 hidden md:block"></div>
                         </div>
                     ))}
                 </div>
-
-                <div class="absolute bottom-0 left-8 md:left-1/2 w-8 h-8 rounded-full bg-rose-600 -translate-x-1/2 text-white flex items-center justify-center text-xs mt-12 shadow-xl z-20">
-                    <i class="fa-solid fa-arrow-down"></i>
-                </div>
             </div>
         </div>
     </section>
 
-    <section class="px-6 sm:px-10 py-32 bg-slate-900 text-white">
-        <div class="max-w-7xl mx-auto">
+    {/* --- STATS: 42 JAHRE MUT (MIT FANCY TEXTEN) --- */}
+    <section class="px-6 sm:px-10 py-32 bg-slate-900 text-white relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-1/2 h-full bg-rose-600/5 skew-x-12 translate-x-1/4"></div>
+        <div class="max-w-7xl mx-auto relative z-10">
             <div class="grid lg:grid-cols-2 gap-20 items-center">
                 <div>
-                    <h2 class="text-4xl md:text-6xl font-display font-bold mb-8">Was uns antreibt.</h2>
-                    <div class="space-y-12">
-                        <div class="flex gap-6">
-                            <div class="w-12 h-12 rounded-full bg-rose-600 flex-shrink-0 flex items-center justify-center text-xl">
-                                <i class="fa-solid fa-heart"></i>
-                            </div>
-                            <div>
-                                <h3 class="text-xl font-bold mb-2">Menschlichkeit</h3>
-                                <p class="text-slate-400 leading-relaxed">Wir begegnen jedem Menschen auf Augenhöhe. Empathie ist keine Floskel, sondern unser Werkzeug.</p>
-                            </div>
-                        </div>
-                        <div class="flex gap-6">
-                            <div class="w-12 h-12 rounded-full bg-indigo-600 flex-shrink-0 flex items-center justify-center text-xl">
-                                <i class="fa-solid fa-hand-fist"></i>
-                            </div>
-                            <div>
-                                <h3 class="text-xl font-bold mb-2">Selbstbestimmung</h3>
-                                <p class="text-slate-400 leading-relaxed">Wir bevormunden nicht. Wir geben Hilfe zur Selbsthilfe, damit jeder sein Leben selbst gestalten kann.</p>
-                            </div>
-                        </div>
-                    </div>
+                    <h2 class="text-5xl md:text-7xl font-display font-black mb-8 tracking-tighter">
+                        42 Jahre <br><span class="text-rose-500">Eigensinn & Mut.</span>
+                    </h2>
+                    <p class="text-xl text-slate-400 leading-relaxed mb-10 max-w-xl">
+                        Wir sind kein Standard-Dienstleister. Wir sind eine Gemeinschaft, die zeigt, dass Inklusion dann am besten funktioniert, wenn man sie gemeinsam feiert – auf der Bühne genauso wie im echten Leben.
+                    </p>
                 </div>
-
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="bg-white/5 p-8 rounded-3xl border border-white/10 text-center">
-                        <span class="block text-5xl font-display font-bold text-rose-500 mb-2">45+</span>
-                        <span class="text-xs font-bold uppercase tracking-widest text-slate-400">Mitarbeiter:innen</span>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    {/* Stat 1: Die Leute */}
+                    <div class="bg-white/5 p-10 rounded-[40px] border border-white/10 group hover:border-rose-500/50 transition-all">
+                        <span class="block text-5xl font-display font-black text-white mb-2 group-hover:scale-110 transition-transform">Unzählige</span>
+                        <span class="text-[11px] font-bold uppercase text-rose-500 underline decoration-rose-500/30 underline-offset-4 tracking-widest">Brückenbauer:innen</span>
+                        <p class="text-slate-400 text-sm mt-4 font-medium leading-relaxed">Menschen, die seit 1983 in der Grabenstraße Barrieren einreißen.</p>
                     </div>
-                    <div class="bg-white/5 p-8 rounded-3xl border border-white/10 text-center">
-                        <span class="block text-5xl font-display font-bold text-indigo-500 mb-2">300</span>
-                        <span class="text-xs font-bold uppercase tracking-widest text-slate-400">Events / Jahr</span>
+                    {/* Stat 2: Die Kultur */}
+                    <div class="bg-white/5 p-10 rounded-[40px] border border-white/10 group hover:border-indigo-500/50 transition-all">
+                        <span class="block text-6xl font-display font-black text-white mb-2 group-hover:scale-110 transition-transform">80</span>
+                        <span class="text-[11px] font-bold uppercase text-indigo-400 tracking-widest">Kultur-Highlights</span>
+                        <p class="text-slate-400 text-sm mt-4 font-medium leading-relaxed">Konzerte, Impro, Kabarett und mehr – jedes Jahr live bei uns.</p>
                     </div>
-                    <div class="bg-white/5 p-8 rounded-3xl border border-white/10 text-center col-span-2">
-                        <span class="block text-5xl font-display font-bold text-white mb-2">100%</span>
-                        <span class="text-xs font-bold uppercase tracking-widest text-slate-400">Leidenschaft</span>
+                    {/* Stat 3: Die Freizeit (Full-Span) */}
+                    <div class="bg-rose-600 p-10 rounded-[40px] shadow-2xl col-span-1 sm:col-span-2 flex flex-col md:flex-row items-center gap-8 group hover:scale-[1.02] transition-transform">
+                        <div class="text-6xl font-display font-black text-white">5x</div>
+                        <div class="text-center md:text-left">
+                            <span class="text-[11px] font-bold uppercase text-rose-200 block mb-1 tracking-widest">Wöchentliche Action</span>
+                            <p class="text-white font-bold text-lg leading-tight">So oft sind wir im Schnitt mit der Freizeitassistenz unterwegs. Graz ist unser Spielplatz.</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
+
+    {/* --- DIE KÖPFE HINTER DER BRÜCKE (TEAM SECTION) --- */}
     <section class="px-6 sm:px-10 py-32 bg-white">
         <div class="max-w-7xl mx-auto">
             
-            <div class="text-center max-w-3xl mx-auto mb-20">
-                <h2 class="text-4xl md:text-6xl font-display font-bold text-slate-900 mb-6">Die Menschen dahinter.</h2>
-                <p class="text-xl text-slate-500">
-                    Ein starker Verein braucht starke Persönlichkeiten. Unser Vorstand lenkt die Geschicke strategisch, unser operatives Team sorgt dafür, dass der Alltag läuft.
-                </p>
-            </div>
-
+            {/* Sektions-Header */}
             <div class="mb-24">
-                <div class="flex items-center gap-4 mb-10">
-                    <div class="h-px bg-slate-200 flex-1"></div>
-                    <h3 class="text-sm font-bold uppercase tracking-widest text-slate-400">Der Vorstand (Ehrenamtlich)</h3>
-                    <div class="h-px bg-slate-200 flex-1"></div>
+                <span class="text-rose-500 font-bold tracking-widest uppercase text-xs mb-4 block underline decoration-rose-500 decoration-2 underline-offset-8">Struktur & Köpfe</span>
+                <h2 class="text-4xl md:text-6xl font-display font-extrabold text-slate-900 tracking-tighter leading-tight">
+                    Menschen mit <br>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 via-indigo-500 to-indigo-600">
+                        Haltung & Herz.
+                    </span>
+                </h2>
+            </div>
+
+            {/* 1. VORSTAND */}
+            <div class="mb-32">
+                <div class="flex items-center gap-6 mb-12">
+                    <h3 class="text-2xl font-display font-bold text-slate-900 shrink-0">Der Vorstand</h3>
+                    <div class="h-px bg-slate-100 flex-1"></div>
+                    <span class="text-slate-400 text-[10px] font-bold uppercase tracking-[0.2em]">Strategische Führung</span>
                 </div>
-                
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {board.map(member => (
-                        <div class="group bg-slate-50 rounded-[32px] p-2 hover:bg-white hover:shadow-xl transition-all duration-300 border border-slate-100">
-                            <div class="aspect-square rounded-[24px] overflow-hidden mb-4 relative">
-                                <img src={member.img} alt={member.name} class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition duration-500" />
+
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+                    {boardMembers.map(member => (
+                        <div class="group">
+                            <div class="aspect-square rounded-[32px] overflow-hidden bg-slate-100 mb-4 border border-slate-200 shadow-sm group-hover:shadow-xl transition-all duration-500 flex items-center justify-center relative">
+                                <span class="text-2xl font-display font-black text-slate-300 group-hover:text-rose-500 transition-colors uppercase">
+                                    {member.name.split(' ').map(n => n[0]).join('')}
+                                </span>
                             </div>
-                            <div class="px-4 pb-4">
-                                <h4 class="text-lg font-bold text-slate-900">{member.name}</h4>
-                                <p class="text-rose-600 text-xs font-bold uppercase tracking-wider">{member.role}</p>
-                            </div>
+                            <h4 class="text-sm font-bold text-slate-900 leading-tight mb-1">{member.name}</h4>
+                            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-tighter leading-none">{member.role}</p>
                         </div>
                     ))}
                 </div>
             </div>
 
+            {/* 2. TEAM */}
             <div>
-                <div class="flex items-center gap-4 mb-10">
-                    <div class="h-px bg-slate-200 flex-1"></div>
-                    <h3 class="text-sm font-bold uppercase tracking-widest text-slate-400">Operatives Team & Support</h3>
-                    <div class="h-px bg-slate-200 flex-1"></div>
+                <div class="flex items-center gap-6 mb-12">
+                    <h3 class="text-2xl font-display font-bold text-slate-900 shrink-0">Das Team</h3>
+                    <div class="h-px bg-slate-100 flex-1"></div>
                 </div>
 
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                    {team.map(member => (
-                        <div class="text-center group">
-                            <div class="w-24 h-24 md:w-32 md:h-32 rounded-full mx-auto overflow-hidden mb-4 border-2 border-slate-100 group-hover:border-rose-500 transition-colors">
-                                <img src={member.img} alt={member.name} class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition duration-500" />
+                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-10">
+                    {leadership.map(member => (
+                        <div class="group text-center">
+                            <div class="relative w-32 h-32 md:w-40 md:h-40 mx-auto mb-6">
+                                <div class="absolute inset-0 rounded-full bg-gradient-to-tr from-rose-500 to-indigo-600 animate-spin-slow opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                                <div class="absolute inset-1 rounded-full overflow-hidden border-4 border-white bg-slate-50 flex items-center justify-center">
+                                    <span class="text-3xl font-display font-black text-slate-200 group-hover:text-slate-400 transition-colors uppercase">
+                                        {member.name.split(' ').map(n => n[0]).join('')}
+                                    </span>
+                                </div>
                             </div>
-                            <h4 class="font-bold text-slate-900 text-sm">{member.name}</h4>
-                            <p class="text-slate-500 text-xs">{member.role}</p>
+                            <h4 class="text-lg font-bold text-slate-900 mb-1 leading-tight">{member.name}</h4>
+                            <p class="text-slate-500 text-[10px] font-bold uppercase tracking-widest">{member.role}</p>
                         </div>
                     ))}
-                </div>
-            </div>
 
-        </div>
-    </section>
-
-    <section class="px-6 sm:px-10 py-24 bg-slate-50 border-t border-slate-200">
-        <div class="max-w-5xl mx-auto bg-white rounded-[40px] p-8 md:p-16 shadow-xl border border-slate-100">
-            <div class="grid md:grid-cols-2 gap-12">
-                <div>
-                    <h3 class="text-2xl font-display font-bold mb-4">Transparenz</h3>
-                    <p class="text-slate-500 mb-6 leading-relaxed">
-                        Wir finanzieren uns durch öffentliche Mittel (Land Steiermark), Mitgliedsbeiträge und Spenden. Wir legen Wert auf maximale Transparenz.
-                    </p>
-                    <a href="#" class="text-rose-600 font-bold hover:underline">Jahresbericht 2024 laden</a>
-                </div>
-                <div>
-                    <h3 class="text-2xl font-display font-bold mb-4">Mitglied werden</h3>
-                    <p class="text-slate-500 mb-6 leading-relaxed">
-                        Unterstütze unsere Arbeit als förderndes Mitglied. Schon ab 30€ im Jahr hilfst du uns, Brücken zu bauen.
-                    </p>
-                    <a href="/contact" class="inline-block px-6 py-3 bg-slate-900 text-white rounded-full text-sm font-bold hover:bg-rose-600 transition">
-                        Beitrittserklärung anfordern
-                    </a>
+                    {/* Platzhalter weitere Mitglieder */}
+                    <div class="flex flex-col items-center justify-center group cursor-pointer border-2 border-dashed border-slate-100 rounded-full aspect-square w-32 h-32 md:w-40 md:h-40 mx-auto hover:border-rose-500 transition-all">
+                         <i class="fa-solid fa-plus text-slate-200 group-hover:text-rose-500 text-xl"></i>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
+
+    <style>
+        @keyframes spin-slow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .animate-spin-slow {
+            animation: spin-slow 8s linear infinite;
+        }
+    </style>
 
 </MainLayout>
 
@@ -240,46 +271,27 @@ const history = [
         const container = document.getElementById('timelineContainer');
         const fillLine = document.getElementById('timelineProgress');
         const items = document.querySelectorAll('.timeline-item');
-
         if (!container || !fillLine) return;
-
         const handleScroll = () => {
             const rect = container.getBoundingClientRect();
             const viewportHeight = window.innerHeight;
-            
-            // Startpunkt: Wenn der Container das untere Drittel des Bildschirms erreicht
-            const startOffset = viewportHeight * 0.8; 
-            
-            // Berechnung, wie viel Prozent des Containers wir "durchscrollt" haben
-            // Wir wollen, dass die Linie quasi "mitläuft" bis zur Mitte des Screens
             let progress = (viewportHeight / 2 - rect.top) / rect.height;
-            
-            // Begrenzen auf 0 bis 100%
             progress = Math.max(0, Math.min(1, progress));
-            
             fillLine.style.height = `${progress * 100}%`;
-
-            // Items einblenden, wenn die Linie sie erreicht
-            items.forEach((item, index) => {
+            items.forEach((item) => {
                 const itemRect = item.getBoundingClientRect();
-                const itemCenter = itemRect.top + itemRect.height / 2;
-                // Wenn die Mitte des Screens unterhalb des Items ist -> aktiv
-                if (itemCenter < viewportHeight * 0.75) {
-                    item.classList.remove('opacity-20');
-                    item.classList.add('opacity-100');
+                if (itemRect.top < viewportHeight * 0.7) {
+                    item.classList.remove('opacity-20', 'translate-y-8');
+                    item.classList.add('opacity-100', 'translate-y-0');
                 } else {
-                    item.classList.remove('opacity-100');
-                    item.classList.add('opacity-20');
+                    item.classList.remove('opacity-100', 'translate-y-0');
+                    item.classList.add('opacity-20', 'translate-y-8');
                 }
             });
         };
-
         window.addEventListener('scroll', handleScroll);
-        // Einmal initial aufrufen
         handleScroll();
     }
-
-    // Init bei Load und View Transitions
     initTimeline();
     document.addEventListener('astro:after-swap', initTimeline);
 </script>
