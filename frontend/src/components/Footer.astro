@@ -17,86 +17,87 @@ const legals = [
 ];
 ---
 
-<footer class="bg-slate-900 border-t border-slate-800 mt-auto relative overflow-hidden">
-    
-    <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-rose-900/20 rounded-full blur-[100px] pointer-events-none -translate-y-1/2 translate-x-1/2"></div>
+<footer class="mt-auto relative">
+    <div class="bg-slate-900 border-t border-slate-800 rounded-t-[32px] rounded-b-[32px] overflow-hidden ring-1 ring-slate-950/10 shadow-2xl shadow-slate-950/15 relative">
+        <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-rose-900/20 rounded-full blur-[100px] pointer-events-none -translate-y-1/2 translate-x-1/2"></div>
 
-    <div class="max-w-7xl mx-auto px-6 sm:px-10 py-16 relative z-10">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
-            
-            <div class="space-y-6">
-                <a href="/" class="block text-2xl font-display font-bold text-white tracking-tight">
-                    Die Brücke<span class="text-rose-500">.</span>
-                </a>
-                <p class="text-slate-400 text-sm leading-relaxed max-w-xs">
-                    Ein Ort für Kultur, Soziales und Begegnung. Wir verbinden Menschen, schaffen Räume und fördern Inklusion mitten in Graz.
-                </p>
-                <div class="flex gap-4">
-                    <a href="https://www.facebook.com/brueckegraz" target="_blank" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:bg-rose-600 hover:text-white transition-all duration-300">
-                        <i class="fa-brands fa-facebook-f"></i>
+        <div class="max-w-7xl mx-auto px-6 sm:px-10 py-16 relative z-10">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
+                
+                <div class="space-y-6">
+                    <a href="/" class="block text-2xl font-display font-bold text-white tracking-tight">
+                        Die Brücke<span class="text-rose-500">.</span>
                     </a>
-                    <a href="https://www.instagram.com/die.bruecke.graz" target="_blank" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:bg-rose-600 hover:text-white transition-all duration-300">
-                        <i class="fa-brands fa-instagram"></i>
+                    <p class="text-slate-400 text-sm leading-relaxed max-w-xs">
+                        Ein Ort für Kultur, Soziales und Begegnung. Wir verbinden Menschen, schaffen Räume und fördern Inklusion mitten in Graz.
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="https://www.facebook.com/brueckegraz" target="_blank" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:bg-rose-600 hover:text-white transition-all duration-300">
+                            <i class="fa-brands fa-facebook-f"></i>
+                        </a>
+                        <a href="https://www.instagram.com/die.bruecke.graz" target="_blank" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:bg-rose-600 hover:text-white transition-all duration-300">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="font-display font-bold text-white mb-6">Menü</h3>
+                    <ul class="space-y-3">
+                        {links.map((link) => (
+                            <li>
+                                <a href={link.href} class="text-slate-400 hover:text-rose-500 transition-colors text-sm font-medium">
+                                    {link.name}
+                                </a>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-display font-bold text-white mb-6">Kontakt</h3>
+                    <ul class="space-y-4 text-sm text-slate-400">
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-location-dot mt-1 text-rose-500"></i>
+                            <span>
+                                Grabenstraße 39a<br>
+                                8010 Graz, Österreich
+                            </span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fa-solid fa-envelope text-rose-500"></i>
+                            <a href="mailto:office@diebruecke.cc" class="hover:text-white transition-colors">office@diebruecke.cc</a>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fa-solid fa-phone text-rose-500"></i>
+                            <a href="tel:+43316672248" class="hover:text-white transition-colors">+43 316 67 22 48</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-display font-bold text-white mb-6">Mitmachen</h3>
+                    <p class="text-slate-400 text-sm mb-4">
+                        Möchtest du uns unterstützen oder hast du eine Idee für ein Event?
+                    </p>
+                    <a href="/contact" class="inline-flex items-center justify-center w-full bg-slate-800 hover:bg-rose-600 text-white font-bold py-3 rounded-xl transition-all duration-300 text-sm">
+                        Schreib uns <i class="fa-solid fa-arrow-right ml-2"></i>
                     </a>
                 </div>
+
             </div>
 
-            <div>
-                <h3 class="font-display font-bold text-white mb-6">Menü</h3>
-                <ul class="space-y-3">
-                    {links.map((link) => (
-                        <li>
-                            <a href={link.href} class="text-slate-400 hover:text-rose-500 transition-colors text-sm font-medium">
-                                {link.name}
-                            </a>
-                        </li>
-                    ))}
-                </ul>
-            </div>
-
-            <div>
-                <h3 class="font-display font-bold text-white mb-6">Kontakt</h3>
-                <ul class="space-y-4 text-sm text-slate-400">
-                    <li class="flex items-start gap-3">
-                        <i class="fa-solid fa-location-dot mt-1 text-rose-500"></i>
-                        <span>
-                            Grabenstraße 39a<br>
-                            8010 Graz, Österreich
-                        </span>
-                    </li>
-                    <li class="flex items-center gap-3">
-                        <i class="fa-solid fa-envelope text-rose-500"></i>
-                        <a href="mailto:office@diebruecke.cc" class="hover:text-white transition-colors">office@diebruecke.cc</a>
-                    </li>
-                    <li class="flex items-center gap-3">
-                        <i class="fa-solid fa-phone text-rose-500"></i>
-                        <a href="tel:+43316672248" class="hover:text-white transition-colors">+43 316 67 22 48</a>
-                    </li>
-                </ul>
-            </div>
-
-            <div>
-                <h3 class="font-display font-bold text-white mb-6">Mitmachen</h3>
-                <p class="text-slate-400 text-sm mb-4">
-                    Möchtest du uns unterstützen oder hast du eine Idee für ein Event?
+            <div class="mt-16 pt-8 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-slate-500 text-xs">
+                    &copy; {currentYear} Die Brücke. ZVR: 747612623.
                 </p>
-                <a href="/contact" class="inline-flex items-center justify-center w-full bg-slate-800 hover:bg-rose-600 text-white font-bold py-3 rounded-xl transition-all duration-300 text-sm">
-                    Schreib uns <i class="fa-solid fa-arrow-right ml-2"></i>
-                </a>
-            </div>
-
-        </div>
-
-        <div class="mt-16 pt-8 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p class="text-slate-500 text-xs">
-                &copy; {currentYear} Die Brücke. ZVR: 747612623.
-            </p>
-            <div class="flex gap-6">
-                {legals.map((legal) => (
-                    <a href={legal.href} class="text-slate-500 hover:text-white text-xs font-bold uppercase tracking-wider transition-colors">
-                        {legal.name}
-                    </a>
-                ))}
+                <div class="flex gap-6">
+                    {legals.map((legal) => (
+                        <a href={legal.href} class="text-slate-500 hover:text-white text-xs font-bold uppercase tracking-wider transition-colors">
+                            {legal.name}
+                        </a>
+                    ))}
+                </div>
             </div>
         </div>
     </div>

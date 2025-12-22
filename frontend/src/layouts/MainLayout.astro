@@ -1,84 +1,108 @@
 ---
 import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro'; // <--- 1. Importieren
+import Footer from '../components/Footer.astro'; 
 
 const { title } = Astro.props;
 ---
 
 <!DOCTYPE html> 
 <html lang="de" class="scroll-smooth"> 
-    <head> 
-        <meta charset="utf-8"> 
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> 
-        <title>{title ? `${title} - Die Brücke` : 'Die Brücke - Studio'}</title>         
-        
-        <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
-        
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <head> 
+    <meta charset="utf-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> 
+    <title>{title ? `${title} - Die Brücke` : 'Die Brücke - Studio'}</title>         
 
-        <style is:global>
-            /* OPTION 2: CLEAN GEOMETRIC */
-            @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+    <!-- Dark mode (no FOUC): set html.dark before Tailwind loads -->
+    <script is:inline>
+      (() => {
+        const KEY = 'theme'; // 'light' | 'dark'
+        try {
+          const saved = localStorage.getItem(KEY);
+          // Default to LIGHT unless the user explicitly chose dark
+          const useDark = saved ? saved === 'dark' : false;
+          document.documentElement.classList.toggle('dark', useDark);
+          document.documentElement.style.colorScheme = useDark ? 'dark' : 'light';
+        } catch {}
+      })();
+    </script>
 
-            :root {
-                --font-display: 'Outfit', sans-serif;
-                --font-body: 'Plus Jakarta Sans', sans-serif;
-            }
-            
-            body {
-                font-family: var(--font-body);
-            }
-            
-            .font-display {
-                font-family: var(--font-display);
-            }
+    <!-- Tailwind v4 browser: make `dark:` react to .dark on <html> -->
+    <style type="text/tailwindcss">
+      @custom-variant dark (&:where(.dark, .dark *));
+    </style>
 
-            .rounded-canvas {
-                background-color: white;
-            }
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-            .nav-overlay {
-                transform: translateY(-100%);
-                transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-                visibility: visible;
-            }
-            .nav-overlay.open {
-                transform: translateY(0);
-            }
-            .image-mask {
-                border-radius: 20px 20px 20px 100px;
-                overflow: hidden;
-            }
-        </style>
+    <style is:global>
+      /* OPTION 2: CLEAN GEOMETRIC */
+      @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 
-        <script is:inline>
-            /* ... Dein PGIA Script ... */
-            (function(){try{if(!document.documentElement.hasAttribute('data-pg-ia-disabled')) { window.pgia_small_mq=typeof pgia_small_mq=='string'?pgia_small_mq:'(max-width:767px)';window.pgia_large_mq=typeof pgia_large_mq=='string'?pgia_large_mq:'(min-width:768px)';var style = document.createElement('style');var pgcss='html:not(.pg-ia-no-preview) [data-pg-ia-hide=""] {opacity:0;visibility:hidden;}html:not(.pg-ia-no-preview) [data-pg-ia-show=""] {opacity:1;visibility:visible;display:block;}';if(document.documentElement.hasAttribute('data-pg-id') && document.documentElement.hasAttribute('data-pg-mobile')) {pgia_small_mq='(min-width:0)';pgia_large_mq='(min-width:99999px)'} pgcss+='@media ' + pgia_small_mq + '{ html:not(.pg-ia-no-preview) [data-pg-ia-hide="mobile"] {opacity:0;visibility:hidden;}html:not(.pg-ia-no-preview) [data-pg-ia-show="mobile"] {opacity:1;visibility:visible;display:block;}}';pgcss+='@media ' + pgia_large_mq + '{html:not(.pg-ia-no-preview) [data-pg-ia-hide="desktop"] {opacity:0;visibility:hidden;}html:not(.pg-ia-no-preview) [data-pg-ia-show="desktop"] {opacity:1;visibility:visible;display:block;}}';style.innerHTML=pgcss;document.querySelector('head').appendChild(style);}}catch(e){console&&console.log(e);}})()
-        </script>
+      :root {
+        --font-display: 'Outfit', sans-serif;
+        --font-body: 'Plus Jakarta Sans', sans-serif;
+      }
+      
+      body {
+        font-family: var(--font-body);
+      }
+      
+      .font-display {
+        font-family: var(--font-display);
+      }
 
-        <style is:global>
-        [hidden] {
-            display: none !important;
-        }
-        
-        html {
-            font-display: swap;
-            overflow-x: clip; 
-        }
-        </style>
+      /* Canvas rounding: match Startseite (32px mobile, 64px md+) */
+      .rounded-canvas {
+        background-color: white;
+        border-radius: 32px;
+      }
+      @media (min-width: 768px) {
+        .rounded-canvas { border-radius: 64px; }
+      }
+      html.dark .rounded-canvas {
+        background-color: rgb(15 23 42); /* slate-900 */
+      }
 
-    </head>     
+      .nav-overlay {
+        transform: translateY(-100%);
+        transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        visibility: visible;
+      }
+      .nav-overlay.open {
+        transform: translateY(0);
+      }
+      .image-mask {
+        border-radius: 20px 20px 20px 100px;
+        overflow: hidden;
+      }
+    </style>
+
+    <script is:inline>
+      /* ... Dein PGIA Script ... */
+      (function(){try{if(!document.documentElement.hasAttribute('data-pg-ia-disabled')) { window.pgia_small_mq=typeof pgia_small_mq=='string'?pgia_small_mq:'(max-width:767px)';window.pgia_large_mq=typeof pgia_large_mq=='string'?pgia_large_mq:'(min-width:768px)';var style = document.createElement('style');var pgcss='html:not(.pg-ia-no-preview) [data-pg-ia-hide=""] {opacity:0;visibility:hidden;}html:not(.pg-ia-no-preview) [data-pg-ia-show=""] {opacity:1;visibility:visible;display:block;}';if(document.documentElement.hasAttribute('data-pg-id') && document.documentElement.hasAttribute('data-pg-mobile')) {pgia_small_mq='(min-width:0)';pgia_large_mq='(min-width:99999px)'} pgcss+='@media ' + pgia_small_mq + '{ html:not(.pg-ia-no-preview) [data-pg-ia-hide="mobile"] {opacity:0;visibility:hidden;}html:not(.pg-ia-no-preview) [data-pg-ia-show="mobile"] {opacity:1;visibility:visible;display:block;}}';pgcss+='@media ' + pgia_large_mq + '{html:not(.pg-ia-no-preview) [data-pg-ia-hide="desktop"] {opacity:0;visibility:hidden;}html:not(.pg-ia-no-preview) [data-pg-ia-show="desktop"] {opacity:1;visibility:visible;display:block;}}';style.innerHTML=pgcss;document.querySelector('head').appendChild(style);}}catch(e){console&&console.log(e);}})()
+    </script>
+
+    <style is:global>
+      [hidden] {
+        display: none !important;
+      }
+      
+      html {
+        font-display: swap;
+        overflow-x: clip; 
+      }
+    </style>
+  </head>     
     
-    <body class="bg-slate-100 text-slate-900 font-body antialiased p-4 md:p-8 min-h-screen"> 
-        
-        <div class="relative max-w-[1400px] mx-auto bg-white rounded-4xl shadow-2xl overflow-x-clip ring-1 ring-black/5 rounded-canvas isolate flex flex-col min-h-[calc(100vh-4rem)]">
+  <body class="bg-slate-100 text-slate-900 dark:bg-slate-950 dark:text-slate-50 font-body antialiased p-4 md:p-8 min-h-screen"> 
+    <div class="relative max-w-[1400px] mx-auto bg-white dark:bg-slate-900 rounded-[32px] md:rounded-[64px] shadow-2xl overflow-x-clip ring-1 ring-black/5 dark:ring-white/10 rounded-canvas isolate flex flex-col min-h-[calc(100vh-4rem)]">
+      <Header />
 
-            <Header />
+      <main class="flex-grow">
+        <slot />
+      </main>
 
-            <main class="flex-grow">
-                <slot />
-            </main>
-
-            <Footer /> </div>
-    </body>     
+      <Footer />
+    </div>
+  </body>     
 </html>

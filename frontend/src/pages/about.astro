@@ -144,7 +144,7 @@ const history = [
         </div>
     </section>
 
-    {/* --- STATS: 42 JAHRE MUT (MIT FANCY TEXTEN) --- */}
+    {/* --- STATS: 42 JAHRE MUT --- */}
     <section class="px-6 sm:px-10 py-32 bg-slate-900 text-white relative overflow-hidden">
         <div class="absolute top-0 right-0 w-1/2 h-full bg-rose-600/5 skew-x-12 translate-x-1/4"></div>
         <div class="max-w-7xl mx-auto relative z-10">
@@ -158,19 +158,16 @@ const history = [
                     </p>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    {/* Stat 1: Die Leute */}
                     <div class="bg-white/5 p-10 rounded-[40px] border border-white/10 group hover:border-rose-500/50 transition-all">
                         <span class="block text-5xl font-display font-black text-white mb-2 group-hover:scale-110 transition-transform">Unzählige</span>
                         <span class="text-[11px] font-bold uppercase text-rose-500 underline decoration-rose-500/30 underline-offset-4 tracking-widest">Brückenbauer:innen</span>
                         <p class="text-slate-400 text-sm mt-4 font-medium leading-relaxed">Menschen, die seit 1983 in der Grabenstraße Barrieren einreißen.</p>
                     </div>
-                    {/* Stat 2: Die Kultur */}
                     <div class="bg-white/5 p-10 rounded-[40px] border border-white/10 group hover:border-indigo-500/50 transition-all">
                         <span class="block text-6xl font-display font-black text-white mb-2 group-hover:scale-110 transition-transform">80</span>
                         <span class="text-[11px] font-bold uppercase text-indigo-400 tracking-widest">Kultur-Highlights</span>
                         <p class="text-slate-400 text-sm mt-4 font-medium leading-relaxed">Konzerte, Impro, Kabarett und mehr – jedes Jahr live bei uns.</p>
                     </div>
-                    {/* Stat 3: Die Freizeit (Full-Span) */}
                     <div class="bg-rose-600 p-10 rounded-[40px] shadow-2xl col-span-1 sm:col-span-2 flex flex-col md:flex-row items-center gap-8 group hover:scale-[1.02] transition-transform">
                         <div class="text-6xl font-display font-black text-white">5x</div>
                         <div class="text-center md:text-left">
@@ -184,11 +181,10 @@ const history = [
     </section>
 
 
-    {/* --- DIE KÖPFE HINTER DER BRÜCKE (TEAM SECTION) --- */}
+    {/* --- TEAM SECTION --- */}
     <section class="px-6 sm:px-10 py-32 bg-white">
         <div class="max-w-7xl mx-auto">
             
-            {/* Sektions-Header */}
             <div class="mb-24">
                 <span class="text-rose-500 font-bold tracking-widest uppercase text-xs mb-4 block underline decoration-rose-500 decoration-2 underline-offset-8">Struktur & Köpfe</span>
                 <h2 class="text-4xl md:text-6xl font-display font-extrabold text-slate-900 tracking-tighter leading-tight">
@@ -199,7 +195,6 @@ const history = [
                 </h2>
             </div>
 
-            {/* 1. VORSTAND */}
             <div class="mb-32">
                 <div class="flex items-center gap-6 mb-12">
                     <h3 class="text-2xl font-display font-bold text-slate-900 shrink-0">Der Vorstand</h3>
@@ -222,7 +217,6 @@ const history = [
                 </div>
             </div>
 
-            {/* 2. TEAM */}
             <div>
                 <div class="flex items-center gap-6 mb-12">
                     <h3 class="text-2xl font-display font-bold text-slate-900 shrink-0">Das Team</h3>
@@ -245,11 +239,45 @@ const history = [
                         </div>
                     ))}
 
-                    {/* Platzhalter weitere Mitglieder */}
                     <div class="flex flex-col items-center justify-center group cursor-pointer border-2 border-dashed border-slate-100 rounded-full aspect-square w-32 h-32 md:w-40 md:h-40 mx-auto hover:border-rose-500 transition-all">
                          <i class="fa-solid fa-plus text-slate-200 group-hover:text-rose-500 text-xl"></i>
                     </div>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    {/* --- NEU: JOIN US / BRÜCKENPFEILER SECTION --- */}
+    <section class="px-6 sm:px-10 py-24 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <a href="/join" class="group relative bg-indigo-600 rounded-[48px] p-10 md:p-14 overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-10 shadow-xl hover:shadow-indigo-200 transition-all duration-500">
+                <div class="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(255,255,255,0.1),transparent)] pointer-events-none"></div>
+                <div class="relative z-10 flex flex-col lg:flex-row items-center gap-10 text-center lg:text-left">
+                    <div class="w-20 h-20 rounded-3xl bg-white/10 flex items-center justify-center text-white text-3xl border border-white/20 group-hover:rotate-6 transition-transform">
+                        <i class="fa-solid fa-rocket"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-3xl md:text-4xl font-display font-bold text-white mb-3 tracking-tight">Werde ein Brückenpfeiler.</h2>
+                        <p class="text-indigo-100 max-w-xl font-medium text-lg leading-relaxed">
+                            Inklusion braucht Menschen, die mit anpacken. Ob Ehrenamt, Praktikum oder Zivildienst – dein Engagement stärkt unser gemeinsames Fundament.
+                        </p>
+                    </div>
+                </div>
+                <div class="relative z-10 shrink-0">
+                    <span class="px-10 py-5 bg-white text-indigo-600 rounded-full font-bold group-hover:bg-slate-900 group-hover:text-white transition-all inline-flex items-center gap-3 shadow-lg">
+                        Mitmachen & Bewegen <i class="fa-solid fa-arrow-right"></i>
+                    </span>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    {/* --- EXIT SECTION --- */}
+    <section class="bg-white pb-32 text-center">
+        <div class="max-w-4xl mx-auto px-6">
+            <div class="flex flex-col items-center">
+                <div class="w-2 h-2 rounded-full bg-rose-500 mb-2"></div>
+                <div class="w-0.5 h-24 bg-gradient-to-b from-rose-500 via-slate-200 to-transparent"></div>
             </div>
         </div>
     </section>
