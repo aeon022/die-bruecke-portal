@@ -3,9 +3,77 @@ import { getGlobalSettings } from '../lib/api';
 
 const settings = await getGlobalSettings();
 const projectName = settings?.project_name || 'Die Brücke';
+
+// SOCIAL MEDIA CONFIG (Synchron mit Footer)
+const socials = [
+  { icon: 'fa-facebook-f', href: 'https://www.facebook.com/brueckegraz', label: 'Facebook' },
+  { icon: 'fa-instagram', href: 'https://www.instagram.com/die.bruecke.graz', label: 'Instagram' },
+  { icon: 'fa-linkedin-in', href: '#', label: 'LinkedIn' },
+  { icon: 'fa-youtube', href: '#', label: 'YouTube' },
+  { icon: 'fa-x-twitter', href: '#', label: 'X' },
+];
+
+// MENÜ-KONFIGURATION (3x3 Grid = 9 Items)
+// Update: Partner raus, Kontakt rein, Reihenfolge angepasst.
+const menuItems = [
+  { 
+    number: '01', 
+    title: 'Kalender', 
+    href: '/events', 
+    desc: 'Alle Termine, Konzerte & Workshops.' 
+  },
+  { 
+    number: '02', 
+    title: 'Angebote', 
+    href: '/services', 
+    desc: 'Alltagsbegleitung & Assistenz.' 
+  },
+  { 
+    number: '03', 
+    title: 'Camps', 
+    href: '/camps', 
+    desc: 'Urlaub, Reisen & Abenteuer.' 
+  },
+  { 
+    number: '04', 
+    title: 'Info-Point', 
+    href: '/info', 
+    desc: 'Beratung, Rechte & Offenes Haus.' 
+  },
+  { 
+    number: '05', 
+    title: 'Dein Raum', 
+    href: '/space', 
+    desc: 'Mieten für Feiern & Seminare.' 
+  },
+  { 
+    number: '06', 
+    title: 'Projekte', 
+    href: '/projects', 
+    desc: 'SofaKINO, StageDive & Co.' 
+  },
+  // --- NEUE REIHENFOLGE 7, 8, 9 ---
+  { 
+    number: '07', 
+    title: 'Über uns', 
+    href: '/about', 
+    desc: 'Das Team, Geschichte & Mission.' 
+  },
+  { 
+    number: '08', 
+    title: 'Mitmachen', 
+    href: '/join', 
+    desc: 'Ehrenamt, Spenden & Zivildienst.' 
+  },
+  { 
+    number: '09', 
+    title: 'Kontakt', 
+    href: '/contact', 
+    desc: 'Öffnungszeiten, Anfahrt & Hallo.' 
+  },
+];
 ---
 
-<!-- Backdrop (click to close) -->
 <div
   id="navBackdrop"
   class="fixed inset-0 z-[80] bg-slate-950/40 backdrop-blur-[2px] nav-backdrop"
@@ -13,9 +81,7 @@ const projectName = settings?.project_name || 'Die Brücke';
   aria-hidden="true"
 ></div>
 
-<!-- Sticky header shell (header + in-flow nav panel) -->
 <div id="header-shell" class="sticky top-0 z-[90] header-shell">
-  <!-- Main header (full-width bar) -->
   <header
     id="main-header"
     class="relative flex items-center justify-between px-6 sm:px-10 pt-8 pb-6 dark:bg-slate-900 border-b border-slate-100 dark:border-white/10 transition-[padding,background-color,box-shadow,transform,border-radius] duration-300 ease-in-out"
@@ -31,6 +97,7 @@ const projectName = settings?.project_name || 'Die Brücke';
     </a>
 
     <div class="flex items-center gap-4">
+      {/* Button 1: Highlight Projekt */}
       <a
         href="/projects"
         class="hidden lg:inline-flex px-6 py-2.5 rounded-full bg-slate-100 dark:bg-white/10 text-slate-900 dark:text-slate-50 font-bold text-sm hover:bg-rose-50 dark:hover:bg-white/15 transition border border-slate-200 dark:border-white/10"
@@ -38,6 +105,7 @@ const projectName = settings?.project_name || 'Die Brücke';
         Zu den Projekten
       </a>
 
+      {/* Button 2: Primary CTA (Kontakt) */}
       <a
         href="/contact"
         class="hidden md:inline-flex px-6 py-2.5 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-sm shadow-lg hover:bg-rose-600 dark:hover:bg-rose-500 transition hover:-translate-y-0.5"
@@ -45,6 +113,7 @@ const projectName = settings?.project_name || 'Die Brücke';
         Jetzt anfragen
       </a>
 
+      {/* Theme Toggle */}
       <button
         id="themeToggle"
         class="w-12 h-12 rounded-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-white/10 flex items-center justify-center text-slate-900 dark:text-slate-50 hover:bg-slate-50 dark:hover:bg-slate-900 transition cursor-pointer shadow-sm relative"
@@ -59,6 +128,7 @@ const projectName = settings?.project_name || 'Die Brücke';
         </span>
       </button>
 
+      {/* Menu Toggle */}
       <button
         id="btnOpenNav"
         class="w-12 h-12 rounded-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-white/10 flex items-center justify-center text-slate-900 dark:text-slate-50 hover:bg-slate-50 dark:hover:bg-slate-900 transition cursor-pointer shadow-sm relative"
@@ -76,7 +146,6 @@ const projectName = settings?.project_name || 'Die Brücke';
     </div>
   </header>
 
-  <!-- Nav panel (opens FROM the header; pushes content down; not fullscreen) -->
   <div
     id="navOverlay"
     class="-mt-px w-full bg-slate-800 dark:bg-slate-950/95 text-white border-x border-b border-white/10 dark:border-white/10 rounded-b-[40px] overflow-hidden nav-panel nav-transition"
@@ -88,120 +157,80 @@ const projectName = settings?.project_name || 'Die Brücke';
         <span class="inline-block w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
         <span class="text-[11px] font-bold uppercase tracking-widest text-white/80">Menü</span>
       </div>
+      {/* Mobile CTA */}
+      <a href="/contact" class="md:hidden text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-white transition">Kontakt</a>
     </div>
 
     <div class="max-w-7xl mx-auto w-full px-6 sm:px-10 py-8">
       <nav class="grid grid-cols-1 md:grid-cols-3 w-full gap-2 md:gap-0">
-        <a href="/events" class="group relative p-7 md:p-10 border border-transparent md:border-b md:border-white/10 md:border-r hover:bg-white/5 rounded-3xl md:rounded-none transition duration-300 flex flex-col justify-center min-h-[180px]">
-          <span class="block text-rose-500 font-bold mb-2 text-xs tracking-widest uppercase">01</span>
-          <span class="block text-3xl md:text-4xl font-display font-extrabold tracking-tight group-hover:text-rose-500 transition-colors">Kalender</span>
-          <span class="block mt-3 text-slate-400 text-sm group-hover:text-white transition-colors font-medium max-w-xs leading-relaxed">
-            Alle Termine, Konzerte & Workshops im Überblick.
-          </span>
-          <i class="fa-solid fa-arrow-right absolute bottom-8 right-8 text-xl text-white/10 group-hover:text-rose-500 group-hover:-rotate-45 transition-all duration-300"></i>
-        </a>
+        
+        {menuItems.map((item) => (
+          <a 
+            href={item.href} 
+            class="group relative p-7 md:p-10 border border-transparent hover:bg-white/5 rounded-3xl md:rounded-none transition duration-300 flex flex-col justify-center min-h-[160px] md:min-h-[180px] md:border-b md:border-r md:[&:nth-child(3n)]:border-r-0 md:[&:nth-child(n+7)]:border-b-0 md:border-white/10"
+          >
+            <span class="block text-rose-500 font-bold mb-2 text-xs tracking-widest uppercase">{item.number}</span>
+            <span class="block text-3xl md:text-4xl font-display font-extrabold tracking-tight group-hover:text-rose-500 transition-colors">
+              {item.title}
+            </span>
+            <span class="block mt-3 text-slate-400 text-sm group-hover:text-white transition-colors font-medium max-w-xs leading-relaxed">
+              {item.desc}
+            </span>
+            <i class="fa-solid fa-arrow-right absolute bottom-8 right-8 text-xl text-white/10 group-hover:text-rose-500 group-hover:-rotate-45 transition-all duration-300"></i>
+          </a>
+        ))}
 
-        <a href="/services" class="group relative p-7 md:p-10 border border-transparent md:border-b md:border-white/10 md:border-r hover:bg-white/5 rounded-3xl md:rounded-none transition duration-300 flex flex-col justify-center min-h-[180px]">
-          <span class="block text-rose-500 font-bold mb-2 text-xs tracking-widest uppercase">02</span>
-          <span class="block text-3xl md:text-4xl font-display font-extrabold tracking-tight group-hover:text-rose-500 transition-colors">Angebote</span>
-          <span class="block mt-3 text-slate-400 text-sm group-hover:text-white transition-colors font-medium max-w-xs leading-relaxed">
-            Infozentrum, Beratung & mobile Dienste.
-          </span>
-          <i class="fa-solid fa-arrow-right absolute bottom-8 right-8 text-xl text-white/10 group-hover:text-rose-500 group-hover:-rotate-45 transition-all duration-300"></i>
-        </a>
-
-        <a href="/space" class="group relative p-7 md:p-10 border border-transparent md:border-b md:border-white/10 hover:bg-white/5 rounded-3xl md:rounded-none transition duration-300 flex flex-col justify-center min-h-[180px]">
-          <span class="block text-rose-500 font-bold mb-2 text-xs tracking-widest uppercase">03</span>
-          <span class="block text-3xl md:text-4xl font-display font-extrabold tracking-tight group-hover:text-rose-500 transition-colors">Dein Raum</span>
-          <span class="block mt-3 text-slate-400 text-sm group-hover:text-white transition-colors font-medium max-w-xs leading-relaxed">
-            Miete unsere Räume für deine Ideen & Feiern.
-          </span>
-          <i class="fa-solid fa-arrow-right absolute bottom-8 right-8 text-xl text-white/10 group-hover:text-rose-500 group-hover:-rotate-45 transition-all duration-300"></i>
-        </a>
-
-        <a href="/about" class="group relative p-7 md:p-10 border border-transparent md:border-white/10 md:border-r hover:bg-white/5 rounded-3xl md:rounded-none transition duration-300 flex flex-col justify-center min-h-[180px]">
-          <span class="block text-rose-500 font-bold mb-2 text-xs tracking-widest uppercase">04</span>
-          <span class="block text-3xl md:text-4xl font-display font-extrabold tracking-tight group-hover:text-rose-500 transition-colors">Über uns</span>
-          <span class="block mt-3 text-slate-400 text-sm group-hover:text-white transition-colors font-medium max-w-xs leading-relaxed">
-            Das Team, unsere Geschichte & Mission.
-          </span>
-          <i class="fa-solid fa-arrow-right absolute bottom-8 right-8 text-xl text-white/10 group-hover:text-rose-500 group-hover:-rotate-45 transition-all duration-300"></i>
-        </a>
-
-        <a href="/projects" class="group relative p-7 md:p-10 border border-transparent md:border-white/10 md:border-r hover:bg-white/5 rounded-3xl md:rounded-none transition duration-300 flex flex-col justify-center min-h-[180px]">
-          <span class="block text-rose-500 font-bold mb-2 text-xs tracking-widest uppercase">05</span>
-          <span class="block text-3xl md:text-4xl font-display font-extrabold tracking-tight group-hover:text-rose-500 transition-colors">Projekte</span>
-          <span class="block mt-3 text-slate-400 text-sm group-hover:text-white transition-colors font-medium max-w-xs leading-relaxed">
-            SofaKINO, StageDive & Alltagsakademie.
-          </span>
-          <i class="fa-solid fa-arrow-right absolute bottom-8 right-8 text-xl text-white/10 group-hover:text-rose-500 group-hover:-rotate-45 transition-all duration-300"></i>
-        </a>
-
-        <a href="/contact" class="group relative p-7 md:p-10 border border-transparent md:border-white/10 hover:bg-white/5 rounded-3xl md:rounded-none transition duration-300 flex flex-col justify-center min-h-[180px]">
-          <span class="block text-rose-500 font-bold mb-2 text-xs tracking-widest uppercase">06</span>
-          <span class="block text-3xl md:text-4xl font-display font-extrabold tracking-tight group-hover:text-rose-500 transition-colors">Kontakt</span>
-          <span class="block mt-3 text-slate-400 text-sm group-hover:text-white transition-colors font-medium max-w-xs leading-relaxed">
-            Öffnungszeiten, Anfahrt & Hallo sagen.
-          </span>
-          <i class="fa-solid fa-arrow-right absolute bottom-8 right-8 text-xl text-white/10 group-hover:text-rose-500 group-hover:-rotate-45 transition-all duration-300"></i>
-        </a>
       </nav>
     </div>
 
+    {/* Footer im Menü Overlay */}
     <div class="px-6 sm:px-10 py-6 border-t border-white/10">
-      <div class="max-w-7xl mx-auto w-full flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-slate-300/80 text-sm font-medium">
-        <span>Grabenstraße 39a, 8010 Graz</span>
-        <div class="flex gap-8">
-          <a href="https://www.instagram.com/die.bruecke.graz" target="_blank" class="hover:text-white hover:underline decoration-rose-500 underline-offset-4 transition">Instagram</a>
-          <a href="https://www.facebook.com/brueckegraz" target="_blank" class="hover:text-white hover:underline decoration-rose-500 underline-offset-4 transition">Facebook</a>
+      <div class="max-w-7xl mx-auto w-full flex flex-col md:flex-row justify-between items-start md:items-center gap-6 md:gap-4 text-slate-300/80 text-sm font-medium">
+        <span class="flex items-center gap-2"><i class="fa-solid fa-location-dot text-rose-500"></i> Grabenstraße 39a, 8010 Graz</span>
+        
+        {/* Social Icons Loop */}
+        <div class="flex flex-wrap gap-6">
+           {socials.map((social) => (
+              <a 
+                  href={social.href} 
+                  target="_blank" 
+                  aria-label={social.label}
+                  class="text-slate-400 hover:text-white transition-colors"
+              >
+                  <i class={`fa-brands ${social.icon} text-lg`}></i>
+              </a>
+           ))}
         </div>
+
       </div>
     </div>
   </div>
 </div>
 
 <style is:global>
-  /* Theme toggle morph (moon → sun) */
+  /* Theme toggle morph */
   #themeToggle .theme-moon,
   #themeToggle .theme-sun {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    transition:
-      transform 420ms cubic-bezier(0.22, 1, 0.36, 1),
-      opacity 220ms ease;
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1), opacity 220ms ease;
     will-change: transform, opacity;
   }
 
-  #themeToggle .theme-sun {
-    opacity: 0;
-    transform: rotate(-90deg) scale(0.75);
-  }
+  #themeToggle .theme-sun { opacity: 0; transform: rotate(-90deg) scale(0.75); }
+  #themeToggle.is-dark .theme-moon { opacity: 0; transform: rotate(90deg) scale(0.75); }
+  #themeToggle.is-dark .theme-sun { opacity: 1; transform: rotate(0deg) scale(1); }
 
-  #themeToggle.is-dark .theme-moon {
-    opacity: 0;
-    transform: rotate(90deg) scale(0.75);
-  }
-
-  #themeToggle.is-dark .theme-sun {
-    opacity: 1;
-    transform: rotate(0deg) scale(1);
-  }
   /* Backdrop */
   .nav-backdrop {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
+    opacity: 0; visibility: hidden; pointer-events: none;
     transition: opacity 650ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 650ms;
   }
   #navBackdrop[data-state='open'] {
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
+    opacity: 1; visibility: visible; pointer-events: auto;
     transition: opacity 650ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 
-  /* Nav panel transitions (in-flow) */
+  /* Nav panel transitions */
   .nav-transition {
     transition-property: max-height, opacity, transform;
     transition-duration: 650ms;
@@ -209,139 +238,74 @@ const projectName = settings?.project_name || 'Die Brücke';
   }
 
   #navOverlay[data-state='closed'] {
-    max-height: 0;
-    opacity: 0;
-    transform: translateY(-10px);
-    pointer-events: none;
+    max-height: 0; opacity: 0; transform: translateY(-10px); pointer-events: none;
   }
 
   #navOverlay[data-state='open'] {
-    /* Not fullscreen: still large enough for the grid; scroll inside if needed */
-    max-height: calc(100vh - 64px);
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
+    max-height: calc(100vh - 64px); opacity: 1; transform: translateY(0); pointer-events: auto;
+    overflow-y: auto; 
   }
 
-  /* Header float + shrink (scroll) */
-  #header-shell.header-shell {
-    padding: 0;
-    transition: padding 300ms ease;
-  }
+  /* Header float */
+  #header-shell.header-shell { padding: 0; transition: padding 300ms ease; }
+  #header-shell.header-shell.is-float { padding: 0.75rem 1rem 0; }
 
-  /* floating wrapper padding is allowed; header itself stays square on scroll */
-  #header-shell.header-shell.is-float {
-    padding: 0.75rem 1rem 0;
-  }
-
-  /* Sticky/float: nav overlay should look like a card (rounded top+bottom) */
-  #header-shell.is-float #navOverlay {
-    border-radius: 28px !important;
-  }
+  #header-shell.is-float #navOverlay { border-radius: 28px !important; }
   #header-shell.is-float #navOverlay[data-state='open'] {
-    margin-top: 0.75rem;
-    box-shadow: 0 18px 45px rgba(15, 23, 42, 0.18);
+    margin-top: 0.75rem; box-shadow: 0 18px 45px rgba(15, 23, 42, 0.18);
   }
 
-  /* Burger → Close morph (crossfade + rotate) */
-  #btnOpenNav .icon-bars,
-  #btnOpenNav .icon-x {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    transition:
-      transform 420ms cubic-bezier(0.22, 1, 0.36, 1),
-      opacity 220ms ease;
-    will-change: transform, opacity;
+  /* Burger Morph */
+  #btnOpenNav .icon-bars, #btnOpenNav .icon-x {
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1), opacity 220ms ease;
   }
-
-  #btnOpenNav .icon-x {
-    opacity: 0;
-    transform: rotate(-90deg) scale(0.75);
-  }
-
-  #btnOpenNav.is-open .icon-bars {
-    opacity: 0;
-    transform: rotate(90deg) scale(0.75);
-  }
-
-  #btnOpenNav.is-open .icon-x {
-    opacity: 1;
-    transform: rotate(0deg) scale(1);
-  }
+  #btnOpenNav .icon-x { opacity: 0; transform: rotate(-90deg) scale(0.75); }
+  #btnOpenNav.is-open .icon-bars { opacity: 0; transform: rotate(90deg) scale(0.75); }
+  #btnOpenNav.is-open .icon-x { opacity: 1; transform: rotate(0deg) scale(1); }
 
   @media (min-width: 768px) {
-    #header-shell.header-shell.is-float {
-      padding-left: 2rem;
-      padding-right: 2rem;
-    }
+    #header-shell.header-shell.is-float { padding-left: 2rem; padding-right: 2rem; }
   }
 
-  /* On scroll: header may float/shrink, but stays rounded */
   #header-shell.is-float #main-header {
     border-radius: 28px !important;
-    background-color: rgba(255, 255, 255, 0.96);
-    backdrop-filter: blur(12px);
-    box-shadow: 0 18px 45px rgba(15, 23, 42, 0.10);
-    border: 1px solid rgba(15, 23, 42, 0.06);
+    background-color: rgba(255, 255, 255, 0.96); backdrop-filter: blur(12px);
+    box-shadow: 0 18px 45px rgba(15, 23, 42, 0.10); border: 1px solid rgba(15, 23, 42, 0.06);
   }
 
   html.dark #header-shell.is-float #main-header {
     background-color: rgba(15, 23, 42, 0.78);
-    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.55);
-    border: 1px solid rgba(255, 255, 255, 0.10);
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.55); border: 1px solid rgba(255, 255, 255, 0.10);
   }
 
-  #main-header.is-shrink {
-    padding-top: 0.85rem !important;
-    padding-bottom: 0.85rem !important;
-  }
-
-  /* Base (not floating): keep the top rounding consistent with the canvas */
-  #main-header {
-    border-top-left-radius: 28px;
-    border-top-right-radius: 28px;
-  }
-
-  #main-header.is-shrink #logo-container {
-    width: 2.25rem;
-    height: 2.25rem;
-    border-radius: 0.75rem;
-  }
+  #main-header.is-shrink { padding-top: 0.85rem !important; padding-bottom: 0.85rem !important; }
+  #main-header { border-top-left-radius: 28px; border-top-right-radius: 28px; }
+  #main-header.is-shrink #logo-container { width: 2.25rem; height: 2.25rem; border-radius: 0.75rem; }
 
   @media (prefers-reduced-motion: reduce) {
-    .nav-backdrop,
-    .nav-transition {
-      transition: none !important;
-    }
+    .nav-backdrop, .nav-transition { transition: none !important; }
   }
 </style>
 
 <script>
   function init() {
     const btnOpenNav = document.getElementById('btnOpenNav');
-    // const btnCloseNav = document.getElementById('btnCloseNav');
     const navOverlay = document.getElementById('navOverlay');
     const navBackdrop = document.getElementById('navBackdrop');
     const navLinks = navOverlay?.querySelectorAll('a');
-
     const themeToggle = document.getElementById('themeToggle');
-
     const headerShell = document.getElementById('header-shell');
     const mainHeader = document.getElementById('main-header');
     const logoContainer = document.getElementById('logo-container');
-    // removed: const navToggleIcon = document.getElementById('navToggleIcon');
 
     const prefersReduced = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
-
     const THEME_KEY = 'theme';
 
     const applyTheme = (isDark) => {
       document.documentElement.classList.toggle('dark', !!isDark);
       document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
-      try {
-        localStorage.setItem(THEME_KEY, isDark ? 'dark' : 'light');
-      } catch {}
+      try { localStorage.setItem(THEME_KEY, isDark ? 'dark' : 'light'); } catch {}
     };
 
     const syncThemeToggle = () => {
@@ -355,14 +319,8 @@ const projectName = settings?.project_name || 'Die Brücke';
     const setToggleVisual = (isOpen) => {
       const openBtn = document.getElementById('btnOpenNav');
       if (!openBtn) return;
-
       openBtn.classList.toggle('is-open', !!isOpen);
       openBtn.setAttribute('aria-label', isOpen ? 'Menü schließen' : 'Menü öffnen');
-    };
-
-    const setExpanded = (expanded) => {
-      if (!btnOpenNav) return;
-      btnOpenNav.setAttribute('aria-expanded', expanded ? 'true' : 'false');
     };
 
     const openMenu = () => {
@@ -371,7 +329,7 @@ const projectName = settings?.project_name || 'Die Brücke';
       navOverlay.setAttribute('aria-hidden', 'false');
       navBackdrop.setAttribute('data-state', 'open');
       navBackdrop.setAttribute('aria-hidden', 'false');
-      setExpanded(true);
+      btnOpenNav?.setAttribute('aria-expanded', 'true');
       setToggleVisual(true);
     };
 
@@ -381,22 +339,18 @@ const projectName = settings?.project_name || 'Die Brücke';
       navOverlay.setAttribute('aria-hidden', 'true');
       navBackdrop.setAttribute('data-state', 'closed');
       navBackdrop.setAttribute('aria-hidden', 'true');
-      setExpanded(false);
+      btnOpenNav?.setAttribute('aria-expanded', 'false');
       setToggleVisual(false);
     };
 
-    // Rebind (Astro swaps)
+    // Events Re-Binding
     if (btnOpenNav) {
       const newBtn = btnOpenNav.cloneNode(true);
       btnOpenNav.parentNode.replaceChild(newBtn, btnOpenNav);
       newBtn.addEventListener('click', () => {
         const overlay = document.getElementById('navOverlay');
         const isOpen = overlay?.getAttribute('data-state') === 'open';
-        if (isOpen) {
-          closeMenu();
-        } else {
-          openMenu();
-        }
+        isOpen ? closeMenu() : openMenu();
       });
     }
 
@@ -411,8 +365,6 @@ const projectName = settings?.project_name || 'Die Brücke';
       syncThemeToggle();
     }
 
-    // Removed btnCloseNav logic (button no longer exists)
-
     if (navBackdrop) {
       const newBackdrop = navBackdrop.cloneNode(true);
       navBackdrop.parentNode.replaceChild(newBackdrop, navBackdrop);
@@ -421,23 +373,24 @@ const projectName = settings?.project_name || 'Die Brücke';
 
     navLinks?.forEach((link) => link.addEventListener('click', closeMenu));
 
-    // ESC closes
+    // ESC Key
     if (!document.documentElement.dataset.headerEscBound) {
       document.documentElement.dataset.headerEscBound = '1';
       document.addEventListener('keydown', (e) => {
-        if (e.key !== 'Escape') return;
-        const overlay = document.getElementById('navOverlay');
-        if (overlay?.getAttribute('data-state') === 'open') closeMenu();
+        if (e.key === 'Escape') {
+          const overlay = document.getElementById('navOverlay');
+          if (overlay?.getAttribute('data-state') === 'open') closeMenu();
+        }
       });
     }
 
-    // Scroll: float + shrink (but keep header square)
+    // Scroll Logic
     const handleScroll = () => {
       const y = window.scrollY || 0;
       const scrolled = y > 18;
       headerShell?.classList.toggle('is-float', scrolled);
       mainHeader?.classList.toggle('is-shrink', scrolled);
-
+      
       if (!logoContainer) return;
       if (scrolled) {
         logoContainer.classList.remove('w-10', 'h-10', 'rounded-xl');
@@ -455,7 +408,6 @@ const projectName = settings?.project_name || 'Die Brücke';
     window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll();
 
-    // If we hot-swap, ensure menu is closed to avoid stuck state
     if (!prefersReduced) {
       closeMenu();
       setToggleVisual(false);
