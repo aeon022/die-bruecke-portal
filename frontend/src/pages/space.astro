@@ -19,78 +19,130 @@ const useCases = [
     {
         title: "Private Feiern",
         subtitle: "Dein Raum am Abend",
-        desc: "Geburtstage, Jubiläen oder Vereinsfeiern. Die Brücke verwandelt sich abends in einen stimmungsvollen Partyraum mit Bar-Infrastruktur.",
-        features: ["Bar & Kühlung vorhanden", "Lichttechnik für Stimmung", "Keine Sperrstunde (nach Absprache)"],
-        // Neues, stimmungsvolles Bild (Party/Licht)
+        desc: "Geburtstage, Jubiläen oder Vereinsfeiern. Die Brücke verwandelt sich abends in einen stimmungsvollen Partyraum.",
+        features: ["Bar & Drinks durch uns", "Essen: Dein Caterer oder DIY", "Lichttechnik für Stimmung"],
         image: "https://images.unsplash.com/photo-1516997121675-4c2d1684aa3e?q=80&w=1600&auto=format&fit=crop"
     }
 ];
 ---
 
-<MainLayout title="Dein Raum">
+<MainLayout title="Dein Raum | Die Brücke">
     
-    <section class="relative px-6 sm:px-10 pt-32 pb-20 bg-slate-900 text-white overflow-hidden">
-        <div class="max-w-7xl mx-auto relative z-10">
-            <span class="text-rose-500 font-bold tracking-widest uppercase text-xs mb-6 block">Infrastruktur & Technik</span>
-            <h1 class="text-5xl md:text-7xl lg:text-8xl font-display font-extrabold tracking-tighter mb-8 leading-[0.9]">
-                Dein Raum für <br/>
-                <span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-400 to-indigo-400">große Ideen.</span>
-            </h1>
-            <p class="text-xl text-slate-400 max-w-2xl leading-relaxed font-medium">
-                Ob Business-Seminar am Vormittag oder private Feier am Abend. 
-                Die Brücke bietet dir Platz, Technik und zentrale Lage in Graz.
-            </p>
-        </div>
-        <div class="absolute right-0 top-0 w-1/2 h-full bg-rose-600/10 blur-3xl rounded-full translate-x-1/2 -translate-y-1/2"></div>
-    </section>
+    {/* --- HERO SECTION --- */}
+    <section class="px-4 sm:px-6 pt-6 pb-20">
+        <div class="relative bg-slate-900 rounded-[48px] overflow-hidden min-h-[60vh] flex items-center px-6 md:px-16 py-24">
+            
+            {/* Background Effects */}
+            <div class="absolute top-0 right-0 w-full md:w-2/3 h-full overflow-hidden pointer-events-none">
+                <div class="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-indigo-500/20 rounded-full blur-[120px] animate-pulse-slow"></div>
+                <div class="absolute bottom-[-10%] right-[10%] w-[500px] h-[500px] bg-rose-500/10 rounded-full blur-[100px]"></div>
+                <div class="absolute inset-0 bg-[url('/noise.png')] opacity-20 mix-blend-overlay"></div>
+            </div>
 
-    <section class="px-6 sm:px-10 -mt-12 relative z-20">
-        <div class="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4">
-            {equipment.map(item => (
-                <div class="bg-white p-6 rounded-2xl shadow-xl border border-slate-100 text-center hover:-translate-y-1 transition-transform duration-300">
-                    <div class="w-12 h-12 mx-auto bg-slate-50 rounded-full flex items-center justify-center text-rose-600 mb-4">
-                        <i class={`fa-solid ${item.icon} text-xl`}></i>
+            <div class="max-w-7xl mx-auto w-full relative z-10 grid lg:grid-cols-2 gap-16 items-center">
+                
+                {/* Text Content */}
+                <div>
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-rose-300 text-xs font-bold uppercase tracking-widest mb-8 backdrop-blur-md">
+                        <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
+                        Infrastruktur & Technik
                     </div>
-                    <h3 class="font-bold text-slate-900 mb-1">{item.label}</h3>
-                    <p class="text-xs text-slate-500 font-medium uppercase tracking-wide">{item.desc}</p>
+                    
+                    <h1 class="text-5xl md:text-7xl lg:text-8xl font-display font-bold text-white mb-8 leading-[0.95] tracking-tight">
+                        Dein Raum für <br/>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-400 to-indigo-400">große Ideen.</span>
+                    </h1>
+                    
+                    <p class="text-xl text-slate-300 leading-relaxed mb-10 max-w-lg font-medium">
+                        Ob Business-Seminar am Vormittag oder private Feier am Abend. 
+                        Die Brücke bietet dir Platz, Technik und zentrale Lage in Graz.
+                    </p>
+                    
+                    <div class="flex flex-wrap gap-4">
+                        <a href="#details" class="px-8 py-3 bg-white text-slate-900 rounded-full font-bold hover:bg-rose-500 hover:text-white transition-all shadow-lg hover:shadow-rose-500/20">
+                            Ausstattung ansehen
+                        </a>
+                    </div>
                 </div>
-            ))}
+
+                {/* Hero Visual */}
+                <div class="relative hidden lg:block perspective-1000">
+                    <div class="relative z-10 rounded-[40px] overflow-hidden shadow-2xl rotate-2 hover:rotate-0 transition-transform duration-700 border border-white/10 bg-slate-800 aspect-square group">
+                        <img 
+                            src="https://images.unsplash.com/photo-1517457373958-b7bdd4587205?q=80&w=1000&auto=format&fit=crop" 
+                            alt="Event Space" 
+                            class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-700"
+                        />
+                         <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent pointer-events-none"></div>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
-    <section class="px-6 sm:px-10 py-24 bg-white">
-        <div class="max-w-7xl mx-auto space-y-24">
+    {/* --- EQUIPMENT GRID --- */}
+    <section class="px-4 sm:px-6 -mt-10 relative z-20 pb-24">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {equipment.map(item => (
+                    <div class="tech-card bg-white dark:bg-slate-900 p-6 md:p-8 rounded-[32px] shadow-xl border border-slate-100 dark:border-slate-800 text-center hover:-translate-y-1 transition-transform duration-300 group">
+                        <div class="w-14 h-14 mx-auto bg-slate-50 dark:bg-slate-800 rounded-2xl flex items-center justify-center text-rose-600 mb-4 group-hover:scale-110 transition-transform">
+                            <i class={`fa-solid ${item.icon} text-2xl`}></i>
+                        </div>
+                        <h3 class="font-bold text-slate-900 dark:text-white mb-2 text-lg">{item.label}</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wide">{item.desc}</p>
+                    </div>
+                ))}
+            </div>
+        </div>
+    </section>
+
+    {/* --- USE CASES --- */}
+    <section id="details" class="px-4 sm:px-6 pb-32">
+        <div class="max-w-7xl mx-auto space-y-32">
             {useCases.map((useCase, idx) => (
-                <div class={`flex flex-col md:flex-row gap-12 items-center ${idx % 2 === 1 ? 'md:flex-row-reverse' : ''}`}>
+                <div class={`flex flex-col md:flex-row gap-16 items-center ${idx % 2 === 1 ? 'md:flex-row-reverse' : ''}`}>
+                    
+                    {/* Image Side */}
                     <div class="flex-1 w-full">
-                        <div class="relative aspect-[4/3] rounded-[40px] overflow-hidden shadow-2xl group">
-                            <img src={useCase.image} alt={useCase.title} class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-700" />
+                        <div class="relative aspect-[4/3] rounded-[48px] overflow-hidden shadow-2xl group border border-slate-100 dark:border-slate-800">
+                            <img src={useCase.image} alt={useCase.title} class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-[1.5s]" />
                             <div class="absolute inset-0 bg-slate-900/10 group-hover:bg-transparent transition"></div>
                         </div>
                     </div>
-                    <div class="flex-1 space-y-6">
-                        <div class="inline-block px-4 py-2 rounded-full bg-slate-50 border border-slate-100 text-rose-600 font-bold text-xs uppercase tracking-widest">
+
+                    {/* Content Side */}
+                    <div class="flex-1 space-y-8">
+                        <div class="inline-block px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-rose-600 dark:text-rose-400 font-bold text-xs uppercase tracking-widest">
                             {useCase.subtitle}
                         </div>
-                        <h2 class="text-4xl md:text-5xl font-display font-bold text-slate-900 leading-tight">
-                            {useCase.title}
-                        </h2>
-                        <p class="text-slate-600 text-lg leading-relaxed">
-                            {useCase.desc}
-                        </p>
-                        <ul class="space-y-3 pt-4">
+                        
+                        <div>
+                            <h2 class="text-4xl md:text-5xl font-display font-bold text-slate-900 dark:text-white leading-tight mb-6">
+                                {useCase.title}
+                            </h2>
+                            <p class="text-slate-600 dark:text-slate-400 text-lg leading-relaxed font-medium">
+                                {useCase.desc}
+                            </p>
+                        </div>
+
+                        <ul class="space-y-4 pt-2">
                             {useCase.features.map(feat => (
-                                <li class="flex items-center gap-3 text-slate-700 font-medium">
-                                    <div class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-xs">
+                                <li class="flex items-center gap-4 text-slate-700 dark:text-slate-300 font-medium">
+                                    <div class="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-sm shrink-0">
                                         <i class="fa-solid fa-check"></i>
                                     </div>
                                     {feat}
                                 </li>
                             ))}
                         </ul>
-                        <div class="pt-6">
-                            <a href="/contact" class="inline-flex items-center gap-2 text-slate-900 font-bold hover:text-rose-600 transition-colors uppercase tracking-widest text-sm">
-                                Verfügbarkeit anfragen <i class="fa-solid fa-arrow-right"></i>
+
+                        <div class="pt-4">
+                            <a href="/contact" class="inline-flex items-center gap-3 text-slate-900 dark:text-white font-bold hover:text-rose-600 dark:hover:text-rose-400 transition-colors uppercase tracking-widest text-sm group">
+                                Verfügbarkeit anfragen 
+                                <span class="w-8 h-8 rounded-full border border-slate-200 dark:border-slate-700 flex items-center justify-center group-hover:bg-slate-100 dark:group-hover:bg-slate-800 transition-colors">
+                                    <i class="fa-solid fa-arrow-right group-hover:translate-x-0.5 transition-transform"></i>
+                                </span>
                             </a>
                         </div>
                     </div>
@@ -99,18 +151,35 @@ const useCases = [
         </div>
     </section>
 
-    <section class="px-6 sm:px-10 py-24 bg-slate-50 border-t border-slate-200">
-        <div class="max-w-4xl mx-auto text-center">
-            <h2 class="text-3xl font-display font-bold text-slate-900 mb-6">Mach es zu deinem Raum.</h2>
-            <p class="text-slate-600 text-lg mb-10">
-                Da jede Veranstaltung anders ist, erstellen wir dir gerne ein individuelles Angebot. 
-                Vereine und Sozialinitiativen erhalten bei uns Sonderkonditionen.
-            </p>
-            <a href="/contact" class="bg-rose-600 text-white px-10 py-4 rounded-full font-bold shadow-xl hover:bg-slate-900 transition-all transform hover:scale-105 inline-flex items-center gap-2">
-                <i class="fa-regular fa-paper-plane"></i>
-                Unverbindliches Angebot holen
-            </a>
+    {/* --- CTA BOX --- */}
+    <section class="px-4 sm:px-6 pb-24">
+        <div class="max-w-7xl mx-auto">
+            <div class="p-10 md:p-20 bg-slate-50 dark:bg-slate-900 rounded-[48px] border border-slate-100 dark:border-slate-800 text-center shadow-sm relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-rose-500/10 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
+
+                <div class="relative z-10 max-w-3xl mx-auto">
+                    <h2 class="text-3xl md:text-5xl font-display font-bold text-slate-900 dark:text-white mb-6 tracking-tight">
+                        Mach es zu <span class="text-rose-500">deinem Raum.</span>
+                    </h2>
+                    <p class="text-slate-500 dark:text-slate-400 text-lg mb-12 leading-relaxed">
+                        Da jede Veranstaltung anders ist, erstellen wir dir gerne ein individuelles Angebot. 
+                        <br class="hidden md:block"/>
+                        <strong class="text-slate-700 dark:text-slate-200">Bonus:</strong> Vereine und Sozialinitiativen erhalten bei uns Sonderkonditionen.
+                    </p>
+                    <a href="/contact" class="bg-rose-600 text-white px-10 py-5 rounded-full font-bold shadow-xl hover:bg-slate-900 dark:hover:bg-white dark:hover:text-slate-900 transition-all transform hover:scale-105 inline-flex items-center gap-3">
+                        <i class="fa-regular fa-paper-plane"></i>
+                        Unverbindliches Angebot holen
+                    </a>
+                </div>
+            </div>
         </div>
     </section>
+
+    <style is:global>
+        html.dark .tech-card {
+            background-color: #0f172a !important; 
+            border-color: rgba(255,255,255,0.1) !important;
+        }
+    </style>
 
 </MainLayout>
