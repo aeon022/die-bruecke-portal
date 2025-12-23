@@ -1,0 +1,142 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+
+// --- CONFIGURATION ---
+// TIER 1: "Die Fundamente" (Groß)
+// TIER 2: "Die Pfeiler" (Mittel)
+// TIER 3: "Die Bausteine" (Klein/Liste)
+
+const supporters = [
+  { name: "TechVision GmbH", tier: 1, url: "https://example.com", logo: "" },
+  { name: "Stadt Graz Kultur", tier: 1, url: "#", logo: "" },
+  { name: "Bäckerei Schmidt", tier: 2, url: "#", logo: "" },
+  { name: "Architekturbüro Plan B", tier: 2, url: "#", logo: "" },
+  { name: "Medienhaus Süd", tier: 2, url: "#", logo: "" },
+  { name: "Familie Müller", tier: 3, url: null, logo: "" },
+  { name: "Max Mustermann", tier: 3, url: null, logo: "" },
+  { name: "Lisa & Tom", tier: 3, url: null, logo: "" },
+  { name: "Anonym", tier: 3, url: null, logo: "" },
+  { name: "Dr. A. Bauer", tier: 3, url: null, logo: "" },
+  { name: "Verein der Freunde", tier: 3, url: null, logo: "" },
+];
+
+const getTierStyles = (tier) => {
+  switch(tier) {
+    case 1: 
+      return "col-span-2 md:col-span-3 text-3xl md:text-5xl font-display font-bold bg-indigo-600 text-white shadow-xl hover:scale-[1.02] hover:shadow-indigo-500/50";
+    case 2: 
+      return "col-span-1 md:col-span-2 text-xl md:text-2xl font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white border-2 border-slate-100 dark:border-slate-700 hover:border-rose-300 dark:hover:border-rose-700 hover:-rotate-1";
+    case 3: 
+      return "col-span-1 text-sm md:text-base font-medium bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800 hover:bg-white dark:hover:bg-slate-800";
+    default:
+      return "col-span-1";
+  }
+};
+---
+
+<MainLayout title="Unsere Unterstützer | Die Brücke">
+  
+  {/* --- HERO SECTION (Studio Canvas Style) --- */}
+  <section class="px-4 sm:px-6 pt-6 pb-12">
+    <div class="relative bg-slate-900 rounded-[48px] overflow-hidden min-h-[50vh] flex items-center justify-center text-center px-6 py-20">
+        
+        {/* Background Effects */}
+        <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+            <div class="absolute top-[-10%] right-[-5%] w-96 h-96 bg-rose-500/20 rounded-full blur-[100px]"></div>
+            <div class="absolute bottom-[-10%] left-[-5%] w-96 h-96 bg-indigo-500/20 rounded-full blur-[100px]"></div>
+            <div class="absolute inset-0 bg-[url('/noise.png')] opacity-20 mix-blend-overlay"></div>
+        </div>
+
+        {/* Content */}
+        <div class="relative z-10 max-w-4xl mx-auto">
+            {/* Sticker / Badge */}
+            <div class="inline-flex mb-8 animate-spin-slow">
+                <div class="relative w-24 h-24 flex items-center justify-center">
+                   <svg viewBox="0 0 100 100" class="w-full h-full fill-rose-500 text-rose-500">
+                        <path id="curve" d="M 50, 50 m -37, 0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0" fill="transparent"/>
+                        <text class="text-[13px] font-bold uppercase tracking-widest fill-current">
+                            <textPath href="#curve" startOffset="0%">
+                                • Danke • Support • Danke • Support
+                            </textPath>
+                        </text>
+                   </svg>
+                   <div class="absolute inset-0 flex items-center justify-center">
+                        <i class="fa-solid fa-heart text-2xl text-white"></i>
+                   </div>
+                </div>
+            </div>
+
+            <h1 class="text-5xl md:text-7xl lg:text-8xl font-display font-bold text-white leading-[0.95] tracking-tight mb-8">
+                Unsere <br/>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-400 to-indigo-400">Fundamente.</span>
+            </h1>
+            
+            <p class="text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed">
+                Große Visionen brauchen starke Schultern. Hier sind die Menschen und Unternehmen, 
+                die das Fundament für Kultur, Inklusion und Vielfalt legen.
+            </p>
+        </div>
+    </div>
+  </section>
+
+  {/* --- THE WALL (Shuffle Grid) --- */}
+  <section class="px-4 sm:px-6 pb-32 bg-white dark:bg-slate-950">
+    <div class="max-w-7xl mx-auto">
+      
+      {/* Grid Wrapper */}
+      <div id="wall-grid" class="grid grid-cols-2 md:grid-cols-6 gap-4 auto-rows-[minmax(120px,auto)]">
+        {supporters.map((s) => (
+          <a 
+            href={s.url || null} 
+            class={`
+              ${getTierStyles(s.tier)} 
+              relative rounded-3xl flex items-center justify-center p-6 text-center transition-all duration-500 group overflow-hidden
+              ${!s.url ? 'cursor-default' : 'cursor-pointer'}
+            `}
+          >
+            {/* Background Gradient für Tier 1 */}
+            {s.tier === 1 && (
+               <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.2),transparent)] opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            )}
+            
+            <span class="relative z-10 break-words w-full">{s.name}</span>
+
+            {/* Icon für Links */}
+            {s.url && (
+                <div class="absolute top-4 right-4 text-xs opacity-0 group-hover:opacity-50 transition-opacity">
+                    <i class="fa-solid fa-arrow-right"></i>
+                </div>
+            )}
+          </a>
+        ))}
+      </div>
+
+      {/* CTA Footer Block */}
+      <div class="mt-24 text-center">
+         <div class="inline-flex flex-col items-center">
+            <div class="w-px h-16 bg-slate-200 dark:bg-slate-800 mb-6"></div>
+            <a href="/join" class="group relative inline-flex items-center justify-center px-8 py-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-full font-bold overflow-hidden transition-all hover:scale-105">
+                <span class="relative z-10 flex items-center gap-3">
+                    Werde Teil der Wand <i class="fa-solid fa-hand-holding-heart group-hover:animate-pulse"></i>
+                </span>
+            </a>
+            <p class="mt-4 text-sm text-slate-500">Schon ab 5€ monatlich dabei sein.</p>
+         </div>
+      </div>
+
+    </div>
+  </section>
+
+  <script>
+    // Client-Side Shuffle für Zufalls-Anordnung bei jedem Reload
+    document.addEventListener('DOMContentLoaded', () => {
+      const grid = document.getElementById('wall-grid');
+      if(grid) {
+        for (let i = grid.children.length; i >= 0; i--) {
+          grid.appendChild(grid.children[Math.random() * i | 0]);
+        }
+      }
+    });
+  </script>
+
+</MainLayout>
