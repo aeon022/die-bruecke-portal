@@ -9,7 +9,7 @@ const [allEvents, allCategories] = await Promise.all([
 
 const ASSET_URL = 'http://localhost:8055/assets';
 
-// 1. Lookup Map erstellen (ID -> Name)
+// 1. Lookup Map erstellen
 const catLookup = new Map();
 (allCategories || []).forEach(cat => {
     if (cat.id) {
@@ -20,8 +20,8 @@ const catLookup = new Map();
 
 const categoryNames = Array.from(catLookup.values()).sort();
 
-// 2. Events vorbereiten (Manual Join)
-const eventsWithCats = allEvents.map(event => {
+// 2. Events vorbereiten
+let eventsWithCats = allEvents.map(event => {
     const rawCats = event.event_categories || [];
     const validNames = rawCats.map(rel => {
         let targetId = null;
@@ -37,116 +37,201 @@ const eventsWithCats = allEvents.map(event => {
         _catString: validNames.join(',') 
     };
 });
+
+// 3. Sortierung: Highlights zuerst
+eventsWithCats.sort((a, b) => {
+    if (a.is_highlight === true && b.is_highlight !== true) return -1;
+    if (a.is_highlight !== true && b.is_highlight === true) return 1;
+    return new Date(a.start_date).getTime() - new Date(b.start_date).getTime();
+});
 ---
 
-<MainLayout title="Veranstaltungskalender">
+<MainLayout title="Veranstaltungskalender | Die Brücke">
     
-    <section class="relative px-6 sm:px-10 pt-32 pb-12 bg-white overflow-hidden">
-        <div class="max-w-7xl mx-auto relative z-10">
-            <span class="inline-block px-3 py-1 rounded-full bg-slate-100 text-slate-500 text-xs font-bold uppercase tracking-widest mb-6">
-                Kultur & Begegnung
-            </span>
-            
-            <h1 class="text-5xl md:text-7xl lg:text-8xl font-display font-extrabold text-slate-900 tracking-tighter mb-8 leading-[0.9]">
-                Bühne frei.<br>
-                <span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-600 to-purple-600">Für Kultur.</span>
-            </h1>
-            
-            <p class="text-xl text-slate-500 max-w-2xl font-medium leading-relaxed">
-                Entdecke alle Termine, Workshops und kulturellen Highlights in der Brücke. 
-                Von intimen Konzerten bis zu offenen Diskussionsrunden – hier findet Begegnung statt.
-            </p>
-        </div>
+    {/* --- HERO SECTION --- */}
+    <section class="px-4 sm:px-6 pt-6 pb-12">
+        <div class="relative bg-slate-900 rounded-[48px] overflow-hidden min-h-[60vh] flex items-center px-6 md:px-16 py-24">
+            <div class="absolute top-0 right-0 w-full md:w-2/3 h-full overflow-hidden pointer-events-none">
+                <div class="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-purple-500/20 rounded-full blur-[120px] animate-pulse-slow"></div>
+                <div class="absolute bottom-[-10%] right-[10%] w-[500px] h-[500px] bg-rose-500/10 rounded-full blur-[100px]"></div>
+                <div class="absolute inset-0 bg-[url('/noise.png')] opacity-20 mix-blend-overlay"></div>
+            </div>
 
-        <div class="absolute top-0 right-0 -mr-20 -mt-20 w-[600px] h-[600px] bg-purple-50 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
-    </section>
-
-    <section class="px-6 sm:px-10 pb-12 sticky top-20 z-30 bg-white/80 backdrop-blur-md transition-all">
-        <div class="max-w-7xl mx-auto flex flex-wrap gap-2 py-4 border-y border-slate-100">
-            <button class="filter-btn active bg-slate-900 text-white px-5 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-all shadow-md hover:shadow-lg transform active:scale-95" 
-                    data-category="all">
-                Alle
-            </button>
-            {categoryNames.map(name => (
-                <button class="filter-btn bg-slate-50 text-slate-500 hover:bg-slate-100 hover:text-slate-900 px-5 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-all" 
-                        data-category={name}>
-                    {name}
-                </button>
-            ))}
-        </div>
-    </section>
-
-    <section class="px-6 sm:px-10 pb-24 bg-white">
-        <div class="max-w-7xl mx-auto">
-            
-            {/* Fallback */}
-            {eventsWithCats.length === 0 && (
-                <div class="text-center py-20 bg-slate-50 rounded-[32px] border border-dashed border-slate-200">
-                    <p class="text-slate-400 font-bold uppercase tracking-widest">Aktuell keine Termine veröffentlicht</p>
-                </div>
-            )}
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {eventsWithCats.map(event => (
-                    <div class="event-card group bg-white rounded-[32px] overflow-hidden border border-slate-100 hover:shadow-2xl transition-all duration-500 flex flex-col h-full" 
-                         data-cats={event._catString}>
-                        
-                        <a href={`/events/${event.slug}`} class="block overflow-hidden aspect-[4/3] bg-slate-100 relative">
-                            {event.image ? (
-                                <img src={`${ASSET_URL}/${event.image}`} class="w-full h-full object-cover group-hover:scale-110 transition duration-700" alt={event.title} />
-                            ) : (
-                                <div class="w-full h-full flex items-center justify-center text-slate-300 italic font-display uppercase tracking-widest text-[10px]">Kein Bild</div>
-                            )}
-                             <div class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-bold text-rose-600 uppercase tracking-widest shadow-sm">
-                                {new Date(event.start_date).toLocaleDateString('de-DE', { day: '2-digit', month: 'short' })}
-                            </div>
+            <div class="max-w-7xl mx-auto w-full relative z-10 grid lg:grid-cols-2 gap-16 items-center">
+                <div>
+                    <div class="mb-8">
+                        <a href="/" class="inline-flex items-center text-slate-400 hover:text-white font-bold transition-colors group text-xs uppercase tracking-widest">
+                            <i class="fa-solid fa-arrow-left mr-2 group-hover:-translate-x-1 transition-transform"></i>
+                            Startseite
                         </a>
-
-                        <div class="p-8 flex flex-col flex-grow">
-                            <div class="flex gap-1 mb-4 flex-wrap">
-                                {event._catString ? event._catString.split(',').map(catName => (
-                                    <span class="text-[9px] font-bold uppercase tracking-widest text-slate-400 border border-slate-100 px-2 py-0.5 rounded">
-                                        {catName}
-                                    </span>
-                                )) : null}
-                            </div>
-
-                            <h3 class="text-2xl font-display font-bold text-slate-900 group-hover:text-rose-600 transition-colors mb-4 leading-tight tracking-tight">
-                                {event.title}
-                            </h3>
-
-                            <div class="mt-auto flex items-center justify-between pt-6 border-t border-slate-50">
-                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Details ansehen</span>
-                                <div class="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-rose-600 group-hover:text-white transition-all">
-                                    <i class="fa-solid fa-arrow-right text-xs"></i>
-                                </div>
-                            </div>
-                        </div>
                     </div>
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-rose-300 text-xs font-bold uppercase tracking-widest mb-8 backdrop-blur-md">
+                        <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
+                        Kalender & Programm
+                    </div>
+                    <h1 class="text-5xl md:text-7xl font-display font-bold text-white mb-8 leading-[0.95] tracking-tight text-balance">
+                        Bühne frei. <br/>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-400 to-indigo-400 animate-gradient-x">Für Kultur.</span>
+                    </h1>
+                    <p class="text-xl text-slate-300 leading-relaxed mb-10 max-w-lg font-medium border-l-4 border-rose-500 pl-6">
+                        Von intimen Konzerten bis zu offenen Diskussionsrunden – hier findet Begegnung statt. Entdecke, was Graz bewegt.
+                    </p>
+                    <div class="flex flex-wrap gap-4">
+                        <button class="px-8 py-3 bg-white text-slate-900 rounded-full font-bold hover:bg-rose-500 hover:text-white transition-all shadow-lg hover:shadow-rose-500/20 cursor-default">
+                            Nächste Termine ↓
+                        </button>
+                    </div>
+                </div>
+                <div class="relative hidden lg:block perspective-1000">
+                    <div class="relative z-10 rounded-[40px] overflow-hidden shadow-2xl rotate-2 hover:rotate-0 transition-transform duration-700 border border-white/10 bg-slate-800 aspect-[4/3] group">
+                        <img src="https://images.unsplash.com/photo-1429962714451-bb934ecdc4ec?q=80&w=1000&auto=format&fit=crop" alt="Konzert Atmosphäre" class="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-700 scale-110 group-hover:scale-105" />
+                         <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent pointer-events-none"></div>
+                         <div class="absolute bottom-8 left-8 right-8 text-white">
+                            <p class="text-xs font-bold uppercase tracking-widest mb-1 text-rose-400">Live in der Brücke</p>
+                            <p class="font-display font-bold text-xl">Musik, die verbindet.</p>
+                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {/* --- FILTER BAR --- */}
+    <section class="px-4 sm:px-6 pb-12 sticky top-24 z-30 transition-all pointer-events-none">
+        <div class="max-w-7xl mx-auto pointer-events-auto">
+            {/* Added class 'filter-bar-container' for CSS targeting */}
+            <div class="filter-bar-container bg-white/80 dark:bg-slate-900/90 backdrop-blur-xl border border-slate-200/60 dark:border-slate-700 p-2 rounded-full shadow-xl shadow-slate-200/10 dark:shadow-black/20 inline-flex flex-wrap gap-2 transition-colors">
+                
+                <button class="filter-btn active px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest transition-all hover:scale-105 active:scale-95 shadow-md bg-slate-900 text-white dark:bg-white dark:text-slate-900" 
+                        data-category="all">
+                    Alle
+                </button>
+                
+                {categoryNames.map(name => (
+                    <button class="filter-btn px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest transition-all hover:scale-105 active:scale-95 bg-transparent text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white" 
+                            data-category={name}>
+                        {name}
+                    </button>
                 ))}
             </div>
         </div>
     </section>
 
-    <section class="px-6 sm:px-10 py-24 bg-slate-50 border-t border-slate-200">
+    {/* --- FLUID BENTO GRID --- */}
+    {/* Added class 'bento-grid-section' for CSS targeting */}
+    <section class="bento-grid-section px-6 sm:px-10 pb-24 bg-white dark:bg-slate-950 transition-colors">
+        <div class="max-w-7xl mx-auto">
+            
+            {eventsWithCats.length === 0 && (
+                <div class="text-center py-20 bg-slate-50 dark:bg-slate-900 rounded-[32px] border border-dashed border-slate-200 dark:border-slate-800">
+                    <p class="text-slate-400 font-bold uppercase tracking-widest">Aktuell keine Termine veröffentlicht</p>
+                </div>
+            )}
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 grid-flow-row-dense auto-rows-[minmax(380px,auto)]">
+                {eventsWithCats.map(event => {
+                    const isHighlight = event.is_highlight === true;
+
+                    return (
+                    <div 
+                        class={`event-card group relative overflow-hidden rounded-[40px] transition-all duration-500 hover:scale-[1.01] hover:shadow-2xl flex flex-col
+                        ${isHighlight 
+                            ? 'md:col-span-2 md:flex-row bg-white dark:bg-slate-900 shadow-xl ring-1 ring-slate-900/5 dark:ring-white/10 order-first' 
+                            : 'col-span-1 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800'
+                        }`}
+                        data-cats={event._catString}
+                    >
+                        {isHighlight && (
+                            <div class="highlight-glow absolute inset-0 bg-gradient-to-br from-amber-100/40 via-white to-white dark:from-amber-900/20 dark:via-slate-900 dark:to-slate-900 opacity-100 pointer-events-none z-0"></div>
+                        )}
+                        
+                        <a href={`/events/${event.slug}`} 
+                           class={`block relative overflow-hidden shrink-0 z-10
+                           ${isHighlight ? 'w-full md:w-2/5 h-64 md:h-auto' : 'w-full aspect-[4/3]'}`}>
+                            
+                            {event.image ? (
+                                <img src={`${ASSET_URL}/${event.image}`} class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt={event.title} />
+                            ) : (
+                                <div class="w-full h-full flex items-center justify-center bg-slate-200 dark:bg-slate-800 text-slate-400 italic font-display uppercase tracking-widest text-[10px]">Kein Bild</div>
+                            )}
+                            
+                            <div class="absolute top-5 left-5 flex flex-col gap-2 items-start">
+                                <div class="bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-full text-[11px] font-bold text-slate-900 uppercase tracking-widest shadow-sm">
+                                    {new Date(event.start_date).toLocaleDateString('de-DE', { day: '2-digit', month: 'short' })}
+                                </div>
+                                {isHighlight && (
+                                    <div class="bg-amber-400 text-slate-900 px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-widest shadow-md flex items-center gap-1.5 animate-pulse-slow">
+                                        <i class="fa-solid fa-star text-[10px]"></i>
+                                        Tipp
+                                    </div>
+                                )}
+                            </div>
+                        </a>
+
+                        <div class={`flex flex-col flex-grow relative z-10 justify-between
+                            ${isHighlight ? 'p-8 md:p-12' : 'p-8'}`}>
+                            
+                            <div>
+                                <div class="flex gap-2 mb-5 flex-wrap">
+                                    {event._catString ? event._catString.split(',').map(catName => (
+                                        <span class={`cat-badge text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-lg border
+                                            ${isHighlight 
+                                                ? 'bg-white/50 border-amber-200 text-amber-700 dark:bg-amber-900/30 dark:border-amber-700 dark:text-amber-400' 
+                                                : 'bg-white border-slate-200 text-slate-400 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-400'}`}>
+                                            {catName}
+                                        </span>
+                                    )) : null}
+                                </div>
+
+                                <h3 class={`font-display font-bold group-hover:text-rose-600 transition-colors leading-[1.1] tracking-tight mb-4
+                                    ${isHighlight ? 'text-3xl md:text-4xl' : 'text-2xl'}
+                                    text-slate-900 dark:text-white`}>
+                                    <a href={`/events/${event.slug}`} class="focus:outline-none">
+                                        <span class="absolute inset-0 md:hidden"></span>
+                                        {event.title}
+                                    </a>
+                                </h3>
+
+                                {isHighlight && event.description && (
+                                    <p class="text-slate-600 dark:text-slate-300 text-lg leading-relaxed mb-8 line-clamp-2 md:line-clamp-3 hidden md:block">
+                                        {event.description.replace(/<[^>]*>?/gm, '').substring(0, 160)}...
+                                    </p>
+                                )}
+                            </div>
+
+                            <div class="flex items-center justify-between pt-6 mt-4 border-t border-slate-200/50 dark:border-slate-800">
+                                <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest group-hover:text-rose-500 transition-colors">Details</span>
+                                <div class={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 transform group-hover:translate-x-1
+                                    ${isHighlight 
+                                        ? 'bg-amber-400 text-slate-900 shadow-lg shadow-amber-400/30' 
+                                        : 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm group-hover:bg-rose-600 group-hover:text-white'}`}>
+                                    <i class="fa-solid fa-arrow-right text-sm"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )})}
+            </div>
+        </div>
+    </section>
+
+    {/* --- FOOTER TEASERS --- */}
+    <section class="footer-teaser-section px-6 sm:px-10 py-24 bg-slate-50 dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 transition-colors">
         <div class="max-w-5xl mx-auto">
             <div class="grid md:grid-cols-2 gap-12 items-center">
                 <div>
                     <span class="text-rose-500 font-bold tracking-widest uppercase text-xs mb-4 block">Kulturraum Graz</span>
-                    <h2 class="text-4xl font-display font-bold text-slate-900 mb-6 tracking-tight">
+                    <h2 class="text-4xl font-display font-bold text-slate-900 dark:text-white mb-6 tracking-tight">
                         Vielfalt als Programm.
                     </h2>
-                    <p class="text-slate-600 leading-relaxed mb-6 font-medium">
+                    <p class="text-slate-600 dark:text-slate-400 leading-relaxed mb-6 font-medium">
                         Die Brücke ist mehr als nur ein Veranstaltungsort. Wir sind ein lebendiges Labor für soziale Innovation und kulturellen Austausch. Unser Programm entsteht oft direkt aus den Wünschen und Ideen unserer Besucher.
-                    </p>
-                    <p class="text-slate-600 leading-relaxed font-medium">
-                        Egal ob du Unterstützung suchst, dich künstlerisch ausdrücken möchtest oder einfach gute Gesellschaft suchst – unser Kalender spiegelt die Diversität unserer Gemeinschaft wider.
                     </p>
                 </div>
                 <div class="relative">
-                    <div class="aspect-square rounded-[32px] bg-white border border-slate-200 p-8 shadow-xl rotate-3 hover:rotate-0 transition-transform duration-500 flex flex-col justify-center items-center text-center">
-                         <i class="fa-solid fa-quote-left text-4xl text-rose-200 mb-6"></i>
-                         <p class="text-xl font-display font-bold text-slate-900 mb-4">
+                    <div class="aspect-square rounded-[32px] bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-8 shadow-xl rotate-3 hover:rotate-0 transition-transform duration-500 flex flex-col justify-center items-center text-center">
+                         <i class="fa-solid fa-quote-left text-4xl text-rose-200 dark:text-rose-900 mb-6"></i>
+                         <p class="text-xl font-display font-bold text-slate-900 dark:text-white mb-4">
                              "Ein Ort, an dem man Mensch sein darf, ohne Bedingungen."
                          </p>
                          <span class="text-xs font-bold uppercase tracking-widest text-slate-400">– Ein Besucher</span>
@@ -156,7 +241,7 @@ const eventsWithCats = allEvents.map(event => {
         </div>
     </section>
 
-    <section class="px-6 sm:px-10 py-24 bg-white">
+    <section class="cta-section px-6 sm:px-10 py-24 bg-white dark:bg-slate-950 transition-colors">
         <div class="max-w-7xl mx-auto">
             <div class="bg-slate-900 rounded-[40px] p-12 md:p-20 text-center relative overflow-hidden shadow-2xl">
                 <div class="absolute top-0 left-0 w-64 h-64 bg-rose-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 -translate-x-1/2 -translate-y-1/2"></div>
@@ -178,27 +263,97 @@ const eventsWithCats = allEvents.map(event => {
         </div>
     </section>
 
+    {/* --- BULLETPROOF DARK MODE FIXES (CSS) --- */}
+    <style is:global>
+        /* Force dark background for the main grid section */
+        html.dark .bento-grid-section,
+        html.dark .cta-section {
+            background-color: #020617 !important; /* slate-950 */
+        }
+        
+        /* Force dark background for footer teaser */
+        html.dark .footer-teaser-section {
+            background-color: #0f172a !important; /* slate-900 */
+        }
+
+        /* Force dark cards */
+        html.dark .event-card {
+            background-color: #0f172a !important; /* slate-900 */
+            border-color: rgba(255,255,255,0.1) !important;
+        }
+
+        /* Force dark glow for highlights (override white gradient) */
+        html.dark .highlight-glow {
+            background: linear-gradient(to bottom right, rgba(251, 191, 36, 0.1), #0f172a, #0f172a) !important;
+        }
+
+        /* Text colors */
+        html.dark .event-card h3 {
+            color: #ffffff !important;
+        }
+        html.dark .event-card p, 
+        html.dark .event-card .cat-badge {
+            color: #94a3b8 !important; /* slate-400 */
+        }
+
+        /* Highlight specific text fixes */
+        html.dark .event-card .cat-badge.bg-white\/50 {
+            background-color: rgba(15, 23, 42, 0.5) !important;
+            border-color: rgba(251, 191, 36, 0.3) !important;
+            color: #fbbf24 !important; /* amber-400 */
+        }
+
+        /* Filter Bar Container Dark Mode */
+        html.dark .filter-bar-container {
+            background-color: rgba(15, 23, 42, 0.9) !important; /* slate-900/90 */
+            border-color: rgba(255,255,255,0.1) !important;
+        }
+
+        /* Active Filter Button in Dark Mode */
+        html.dark .filter-btn.active {
+            background-color: #ffffff !important;
+            color: #0f172a !important; /* slate-900 */
+        }
+
+        /* Inactive Filter Button in Dark Mode */
+        html.dark .filter-btn:not(.active) {
+            color: #94a3b8 !important; /* slate-400 */
+        }
+        html.dark .filter-btn:not(.active):hover {
+            color: #ffffff !important;
+            background-color: rgba(255,255,255,0.1) !important;
+        }
+    </style>
+
 </MainLayout>
 
 <script>
     const buttons = document.querySelectorAll('.filter-btn');
     const cards = document.querySelectorAll('.event-card');
 
+    // JS-Logik für Filter, inkl. Dark Mode Klassen Handling
+    const activeClasses = ['bg-slate-900', 'text-white', 'shadow-md', 'dark:bg-white', 'dark:text-slate-900'];
+    const inactiveClasses = ['bg-transparent', 'text-slate-500', 'hover:bg-slate-100', 'hover:text-slate-900', 'dark:text-slate-400', 'dark:hover:bg-slate-800', 'dark:hover:text-white'];
+
     buttons.forEach(btn => {
         btn.addEventListener('click', () => {
             const category = btn.getAttribute('data-category');
 
             buttons.forEach(b => {
-                b.classList.remove('bg-slate-900', 'text-white', 'shadow-md');
-                b.classList.add('bg-slate-50', 'text-slate-500');
+                b.classList.remove(...activeClasses);
+                b.classList.add(...inactiveClasses);
+                // Wichtig: Auch die CSS-Klasse für JS-Query entfernen falls nötig, aber hier reicht classList
+                b.classList.remove('active');
             });
-            btn.classList.add('bg-slate-900', 'text-white', 'shadow-md');
-            btn.classList.remove('bg-slate-50', 'text-slate-500');
+            
+            btn.classList.remove(...inactiveClasses);
+            btn.classList.add(...activeClasses);
+            btn.classList.add('active'); // Für CSS targeting
 
             cards.forEach(card => {
                 const cardCats = card.getAttribute('data-cats') || '';
                 if (category === 'all' || cardCats.includes(category)) {
-                    (card as HTMLElement).style.display = 'block';
+                    (card as HTMLElement).style.display = 'flex'; 
                 } else {
                     (card as HTMLElement).style.display = 'none';
                 }
