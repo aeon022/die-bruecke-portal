@@ -8,8 +8,19 @@
             "routes": [
                 "/",
                 "/#backup-index",
+                "/about",
                 "/bak-index",
-                "/events"
+                "/camps",
+                "/contact",
+                "/datenschutz",
+                "/events",
+                "/impressum",
+                "/info",
+                "/join",
+                "/projects",
+                "/services",
+                "/space",
+                "/supporters"
             ],
             "current_route": "/"
         },
