@@ -4,7 +4,7 @@ import { getGlobalSettings } from '../lib/api';
 const settings = await getGlobalSettings();
 const projectName = settings?.project_name || 'Die Brücke';
 
-// SOCIAL MEDIA CONFIG (Synchron mit Footer)
+// SOCIAL MEDIA CONFIG
 const socials = [
   { icon: 'fa-facebook-f', href: 'https://www.facebook.com/brueckegraz', label: 'Facebook' },
   { icon: 'fa-instagram', href: 'https://www.instagram.com/die.bruecke.graz', label: 'Instagram' },
@@ -13,8 +13,7 @@ const socials = [
   { icon: 'fa-x-twitter', href: '#', label: 'X' },
 ];
 
-// MENÜ-KONFIGURATION (3x3 Grid = 9 Items)
-// Update: Partner raus, Kontakt rein, Reihenfolge angepasst.
+// MENÜ-KONFIGURATION (3x3 Grid)
 const menuItems = [
   { 
     number: '01', 
@@ -52,7 +51,6 @@ const menuItems = [
     href: '/projects', 
     desc: 'SofaKINO, StageDive & Co.' 
   },
-  // --- NEUE REIHENFOLGE 7, 8, 9 ---
   { 
     number: '07', 
     title: 'Über uns', 
@@ -93,11 +91,14 @@ const menuItems = [
       >
         <div class="w-3 h-3 rounded-sm bg-rose-500"></div>
       </div>
-      <span class="text-xl font-bold font-display tracking-tight text-slate-900 dark:text-slate-50">{projectName}</span>
+      {/* FIX: Klasse 'brand-text' hinzugefügt für sicheren Dark Mode Switch */}
+      <span class="text-xl font-bold font-display tracking-tight text-slate-900 dark:text-slate-50 brand-text">
+        {projectName}
+      </span>
     </a>
 
     <div class="flex items-center gap-4">
-      {/* Button 1: Highlight Projekt */}
+      {/* Button 1: Projekte */}
       <a
         href="/projects"
         class="hidden lg:inline-flex px-6 py-2.5 rounded-full bg-slate-100 dark:bg-white/10 text-slate-900 dark:text-slate-50 font-bold text-sm hover:bg-rose-50 dark:hover:bg-white/15 transition border border-slate-200 dark:border-white/10"
@@ -105,7 +106,7 @@ const menuItems = [
         Zu den Projekten
       </a>
 
-      {/* Button 2: Primary CTA (Kontakt) */}
+      {/* Button 2: Kontakt */}
       <a
         href="/contact"
         class="hidden md:inline-flex px-6 py-2.5 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-sm shadow-lg hover:bg-rose-600 dark:hover:bg-rose-500 transition hover:-translate-y-0.5"
@@ -157,7 +158,6 @@ const menuItems = [
         <span class="inline-block w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
         <span class="text-[11px] font-bold uppercase tracking-widest text-white/80">Menü</span>
       </div>
-      {/* Mobile CTA */}
       <a href="/contact" class="md:hidden text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-white transition">Kontakt</a>
     </div>
 
@@ -183,12 +183,10 @@ const menuItems = [
       </nav>
     </div>
 
-    {/* Footer im Menü Overlay */}
     <div class="px-6 sm:px-10 py-6 border-t border-white/10">
       <div class="max-w-7xl mx-auto w-full flex flex-col md:flex-row justify-between items-start md:items-center gap-6 md:gap-4 text-slate-300/80 text-sm font-medium">
         <span class="flex items-center gap-2"><i class="fa-solid fa-location-dot text-rose-500"></i> Grabenstraße 39a, 8010 Graz</span>
         
-        {/* Social Icons Loop */}
         <div class="flex flex-wrap gap-6">
            {socials.map((social) => (
               <a 
@@ -208,6 +206,11 @@ const menuItems = [
 </div>
 
 <style is:global>
+  /* FIX: Erzwinge weiße Farbe im Dark Mode für den Projektnamen */
+  html.dark .brand-text {
+    color: #f8fafc !important; /* slate-50 */
+  }
+
   /* Theme toggle morph */
   #themeToggle .theme-moon,
   #themeToggle .theme-sun {
