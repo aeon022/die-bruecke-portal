@@ -1,10 +1,23 @@
 ---
-import { getGlobalSettings } from '../lib/api';
+import { directus } from '../lib/directus';
+import { readSingleton } from '@directus/sdk';
 
-const settings = await getGlobalSettings();
-const projectName = settings?.project_name || 'Die Brücke';
+// Daten holen (analog zu layout.astro)
+let projectName = 'Die Brücke';
+let logoUrl = null;
 
-// SOCIAL MEDIA CONFIG
+try {
+	const settings = await directus.request(readSingleton('global_settings'));
+	if (settings) {
+		projectName = settings.project_name || 'Die Brücke';
+		if (settings.logo) {
+			logoUrl = `http://localhost:8055/assets/${settings.logo}`;
+		}
+	}
+} catch (error) {
+	console.error("Header: Fehler beim Laden der Settings", error);
+}
+
 const socials = [
   { icon: 'fa-facebook-f', href: 'https://www.facebook.com/brueckegraz', label: 'Facebook' },
   { icon: 'fa-instagram', href: 'https://www.instagram.com/die.bruecke.graz', label: 'Instagram' },
@@ -13,146 +26,67 @@ const socials = [
   { icon: 'fa-x-twitter', href: '#', label: 'X' },
 ];
 
-// MENÜ-KONFIGURATION (3x3 Grid)
 const menuItems = [
-  { 
-    number: '01', 
-    title: 'Kalender', 
-    href: '/events', 
-    desc: 'Alle Termine, Konzerte & Workshops.' 
-  },
-  { 
-    number: '02', 
-    title: 'Angebote', 
-    href: '/services', 
-    desc: 'Alltagsbegleitung & Assistenz.' 
-  },
-  { 
-    number: '03', 
-    title: 'Camps', 
-    href: '/camps', 
-    desc: 'Urlaub, Reisen & Abenteuer.' 
-  },
-  { 
-    number: '04', 
-    title: 'Info-Point', 
-    href: '/info', 
-    desc: 'Beratung, Rechte & Offenes Haus.' 
-  },
-  { 
-    number: '05', 
-    title: 'Dein Raum', 
-    href: '/space', 
-    desc: 'Mieten für Feiern & Seminare.' 
-  },
-  { 
-    number: '06', 
-    title: 'Projekte', 
-    href: '/projects', 
-    desc: 'SofaKINO, StageDive & Co.' 
-  },
-  { 
-    number: '07', 
-    title: 'Über uns', 
-    href: '/about', 
-    desc: 'Das Team, Geschichte & Mission.' 
-  },
-  { 
-    number: '08', 
-    title: 'Mitmachen', 
-    href: '/join', 
-    desc: 'Ehrenamt, Spenden & Zivildienst.' 
-  },
-  { 
-    number: '09', 
-    title: 'Kontakt', 
-    href: '/contact', 
-    desc: 'Öffnungszeiten, Anfahrt & Hallo.' 
-  },
+  { number: '01', title: 'Kalender', href: '/events', desc: 'Alle Termine, Konzerte & Workshops.' },
+  { number: '02', title: 'Angebote', href: '/services', desc: 'Alltagsbegleitung & Assistenz.' },
+  { number: '03', title: 'Camps', href: '/camps', desc: 'Urlaub, Reisen & Abenteuer.' },
+  { number: '04', title: 'Info-Point', href: '/info', desc: 'Beratung, Rechte & Offenes Haus.' },
+  { number: '05', title: 'Dein Raum', href: '/space', desc: 'Mieten für Feiern & Seminare.' },
+  { number: '06', title: 'Projekte', href: '/projects', desc: 'SofaKINO, StageDive & Co.' },
+  { number: '07', title: 'Über uns', href: '/about', desc: 'Das Team, Geschichte & Mission.' },
+  { number: '08', title: 'Mitmachen', href: '/join', desc: 'Ehrenamt, Spenden & Zivildienst.' },
+  { number: '09', title: 'Kontakt', href: '/contact', desc: 'Öffnungszeiten, Anfahrt & Hallo.' },
 ];
 ---
 
-<div
-  id="navBackdrop"
-  class="fixed inset-0 z-[80] bg-slate-950/40 backdrop-blur-[2px] nav-backdrop"
-  data-state="closed"
-  aria-hidden="true"
-></div>
+<div id="navBackdrop" class="fixed inset-0 z-[80] bg-slate-950/40 backdrop-blur-[2px] nav-backdrop" data-state="closed" aria-hidden="true"></div>
 
 <div id="header-shell" class="sticky top-0 z-[90] header-shell">
-  <header
-    id="main-header"
-    class="relative flex items-center justify-between px-6 sm:px-10 pt-8 pb-6 dark:bg-slate-900 border-b border-slate-100 dark:border-white/10 transition-[padding,background-color,box-shadow,transform,border-radius] duration-300 ease-in-out"
-  >
+  
+  <header id="main-header" class="relative flex items-center justify-between px-6 sm:px-10 pt-8 pb-6 transition-[padding,background-color,box-shadow,transform,border-radius,border] duration-300 ease-in-out">
+    
     <a href="/" class="flex items-center gap-3 group">
-      <div
-        id="logo-container"
-        class="w-10 h-10 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-white/10 flex items-center justify-center shadow-sm group-hover:border-rose-500 transition-all duration-300"
-      >
-        <div class="w-3 h-3 rounded-sm bg-rose-500"></div>
+      <div id="logo-container" class="w-10 h-10 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/10 flex items-center justify-center shadow-sm group-hover:border-rose-500 transition-all duration-300 overflow-hidden">
+        {logoUrl ? (
+             <img src={logoUrl} alt="Logo" class="w-full h-full object-contain p-1" />
+        ) : (
+             <div class="w-3 h-3 rounded-sm bg-rose-500"></div>
+        )}
       </div>
-      {/* FIX: Klasse 'brand-text' hinzugefügt für sicheren Dark Mode Switch */}
       <span class="text-xl font-bold font-display tracking-tight text-slate-900 dark:text-slate-50 brand-text">
         {projectName}
       </span>
     </a>
 
     <div class="flex items-center gap-4">
-      {/* Button 1: Projekte */}
-      <a
-        href="/projects"
-        class="hidden lg:inline-flex px-6 py-2.5 rounded-full bg-slate-100 dark:bg-white/10 text-slate-900 dark:text-slate-50 font-bold text-sm hover:bg-rose-50 dark:hover:bg-white/15 transition border border-slate-200 dark:border-white/10"
-      >
+      <a href="/projects" class="hidden lg:inline-flex px-6 py-2.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-50 font-bold text-sm hover:bg-rose-50 dark:hover:bg-slate-700 transition border border-slate-200 dark:border-white/5">
         Zu den Projekten
       </a>
-
-      {/* Button 2: Kontakt */}
-      <a
-        href="/contact"
-        class="hidden md:inline-flex px-6 py-2.5 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-sm shadow-lg hover:bg-rose-600 dark:hover:bg-rose-500 transition hover:-translate-y-0.5"
-      >
+      <a href="/contact" class="hidden md:inline-flex px-6 py-2.5 rounded-full bg-slate-900 dark:bg-slate-50 text-white dark:text-slate-900 font-bold text-sm shadow-lg hover:bg-rose-600 dark:hover:bg-rose-400 transition hover:-translate-y-0.5">
         Jetzt anfragen
       </a>
 
-      {/* Theme Toggle */}
-      <button
-        id="themeToggle"
-        class="w-12 h-12 rounded-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-white/10 flex items-center justify-center text-slate-900 dark:text-slate-50 hover:bg-slate-50 dark:hover:bg-slate-900 transition cursor-pointer shadow-sm relative"
-        type="button"
-        aria-label="Dark Mode aktivieren"
-      >
-        <span class="theme-moon pointer-events-none absolute inset-0 flex items-center justify-center">
+      <button onclick="window.toggleTheme()" id="themeToggle" class="w-12 h-12 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/5 flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-700 transition cursor-pointer shadow-sm relative focus:outline-none overflow-hidden group" type="button" aria-label="Design wechseln">
+        <span class="theme-moon absolute inset-0 flex items-center justify-center transition-all duration-500 rotate-0 scale-100 opacity-100 dark:rotate-90 dark:scale-0 dark:opacity-0 text-slate-600">
           <i class="fa-solid fa-moon text-lg"></i>
         </span>
-        <span class="theme-sun pointer-events-none absolute inset-0 flex items-center justify-center">
+        <span class="theme-sun absolute inset-0 flex items-center justify-center transition-all duration-500 -rotate-90 scale-0 opacity-0 dark:rotate-0 dark:scale-100 dark:opacity-100 text-yellow-400">
           <i class="fa-solid fa-sun text-lg"></i>
         </span>
       </button>
 
-      {/* Menu Toggle */}
-      <button
-        id="btnOpenNav"
-        class="w-12 h-12 rounded-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-white/10 flex items-center justify-center text-slate-900 dark:text-slate-50 hover:bg-slate-50 dark:hover:bg-slate-900 transition cursor-pointer shadow-sm relative"
-        aria-label="Menü öffnen"
-        aria-expanded="false"
-        aria-controls="navOverlay"
-      >
-        <span class="icon-bars pointer-events-none">
+      <button id="btnOpenNav" class="w-12 h-12 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/5 flex items-center justify-center text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-700 transition cursor-pointer shadow-sm relative focus:outline-none" aria-label="Menü öffnen" aria-expanded="false" aria-controls="navOverlay">
+        <span class="icon-bars pointer-events-none transition-opacity duration-300">
           <i class="fa-solid fa-bars text-xl"></i>
         </span>
-        <span class="icon-x pointer-events-none absolute inset-0 flex items-center justify-center">
+        <span class="icon-x pointer-events-none absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-300">
           <i class="fa-solid fa-xmark text-xl"></i>
         </span>
       </button>
     </div>
   </header>
 
-  <div
-    id="navOverlay"
-    class="-mt-px w-full bg-slate-800 dark:bg-slate-950/95 text-white border-x border-b border-white/10 dark:border-white/10 rounded-b-[40px] overflow-hidden nav-panel nav-transition"
-    data-state="closed"
-    aria-hidden="true"
-  >
+  <div id="navOverlay" class="-mt-px w-full bg-slate-800 dark:bg-slate-900/95 text-white border-x border-b border-white/10 dark:border-white/5 rounded-b-[40px] overflow-hidden nav-panel nav-transition shadow-2xl backdrop-blur-md" data-state="closed" aria-hidden="true">
     <div class="max-w-7xl mx-auto w-full px-6 sm:px-10 py-5 flex items-center justify-between border-b border-white/10">
       <div class="flex items-center gap-2">
         <span class="inline-block w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
@@ -163,132 +97,97 @@ const menuItems = [
 
     <div class="max-w-7xl mx-auto w-full px-6 sm:px-10 py-8">
       <nav class="grid grid-cols-1 md:grid-cols-3 w-full gap-2 md:gap-0">
-        
         {menuItems.map((item) => (
-          <a 
-            href={item.href} 
-            class="group relative p-7 md:p-10 border border-transparent hover:bg-white/5 rounded-3xl md:rounded-none transition duration-300 flex flex-col justify-center min-h-[160px] md:min-h-[180px] md:border-b md:border-r md:[&:nth-child(3n)]:border-r-0 md:[&:nth-child(n+7)]:border-b-0 md:border-white/10"
-          >
+          <a href={item.href} class="group relative p-7 md:p-10 border border-transparent hover:bg-white/5 rounded-3xl md:rounded-none transition duration-300 flex flex-col justify-center min-h-[160px] md:min-h-[180px] md:border-b md:border-r md:[&:nth-child(3n)]:border-r-0 md:[&:nth-child(n+7)]:border-b-0 md:border-white/10">
             <span class="block text-rose-500 font-bold mb-2 text-xs tracking-widest uppercase">{item.number}</span>
-            <span class="block text-3xl md:text-4xl font-display font-extrabold tracking-tight group-hover:text-rose-500 transition-colors">
-              {item.title}
-            </span>
-            <span class="block mt-3 text-slate-400 text-sm group-hover:text-white transition-colors font-medium max-w-xs leading-relaxed">
-              {item.desc}
-            </span>
+            <span class="block text-3xl md:text-4xl font-display font-extrabold tracking-tight group-hover:text-rose-500 transition-colors">{item.title}</span>
+            <span class="block mt-3 text-slate-400 text-sm group-hover:text-white transition-colors font-medium max-w-xs leading-relaxed">{item.desc}</span>
             <i class="fa-solid fa-arrow-right absolute bottom-8 right-8 text-xl text-white/10 group-hover:text-rose-500 group-hover:-rotate-45 transition-all duration-300"></i>
           </a>
         ))}
-
       </nav>
     </div>
 
     <div class="px-6 sm:px-10 py-6 border-t border-white/10">
       <div class="max-w-7xl mx-auto w-full flex flex-col md:flex-row justify-between items-start md:items-center gap-6 md:gap-4 text-slate-300/80 text-sm font-medium">
         <span class="flex items-center gap-2"><i class="fa-solid fa-location-dot text-rose-500"></i> Grabenstraße 39a, 8010 Graz</span>
-        
         <div class="flex flex-wrap gap-6">
            {socials.map((social) => (
-              <a 
-                  href={social.href} 
-                  target="_blank" 
-                  aria-label={social.label}
-                  class="text-slate-400 hover:text-white transition-colors"
-              >
+              <a href={social.href} target="_blank" aria-label={social.label} class="text-slate-400 hover:text-white transition-colors">
                   <i class={`fa-brands ${social.icon} text-lg`}></i>
               </a>
            ))}
         </div>
-
       </div>
     </div>
   </div>
 </div>
 
 <style is:global>
-  /* FIX: Erzwinge weiße Farbe im Dark Mode für den Projektnamen */
-  html.dark .brand-text {
-    color: #f8fafc !important; /* slate-50 */
-  }
+  /* Logo Text Override */
+  html.dark .brand-text { color: #f8fafc !important; }
 
-  /* Theme toggle morph */
-  #themeToggle .theme-moon,
-  #themeToggle .theme-sun {
-    display: inline-flex; align-items: center; justify-content: center;
-    transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1), opacity 220ms ease;
-    will-change: transform, opacity;
-  }
+  /* Backdrop & Transitions */
+  .nav-backdrop { opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 650ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 650ms; }
+  #navBackdrop[data-state='open'] { opacity: 1; visibility: visible; pointer-events: auto; transition: opacity 650ms cubic-bezier(0.22, 1, 0.36, 1); }
+  .nav-transition { transition: max-height 650ms cubic-bezier(0.22, 1, 0.36, 1), opacity 650ms cubic-bezier(0.22, 1, 0.36, 1), transform 650ms cubic-bezier(0.22, 1, 0.36, 1); }
+  #navOverlay[data-state='closed'] { max-height: 0; opacity: 0; transform: translateY(-10px); pointer-events: none; }
+  #navOverlay[data-state='open'] { max-height: calc(100vh - 64px); opacity: 1; transform: translateY(0); pointer-events: auto; overflow-y: auto; }
 
-  #themeToggle .theme-sun { opacity: 0; transform: rotate(-90deg) scale(0.75); }
-  #themeToggle.is-dark .theme-moon { opacity: 0; transform: rotate(90deg) scale(0.75); }
-  #themeToggle.is-dark .theme-sun { opacity: 1; transform: rotate(0deg) scale(1); }
-
-  /* Backdrop */
-  .nav-backdrop {
-    opacity: 0; visibility: hidden; pointer-events: none;
-    transition: opacity 650ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 650ms;
-  }
-  #navBackdrop[data-state='open'] {
-    opacity: 1; visibility: visible; pointer-events: auto;
-    transition: opacity 650ms cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  /* Nav panel transitions */
-  .nav-transition {
-    transition-property: max-height, opacity, transform;
-    transition-duration: 650ms;
-    transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  #navOverlay[data-state='closed'] {
-    max-height: 0; opacity: 0; transform: translateY(-10px); pointer-events: none;
-  }
-
-  #navOverlay[data-state='open'] {
-    max-height: calc(100vh - 64px); opacity: 1; transform: translateY(0); pointer-events: auto;
-    overflow-y: auto; 
-  }
-
-  /* Header float */
+  /* INITIAL STATE (Header Top - Nicht Sticky) */
   #header-shell.header-shell { padding: 0; transition: padding 300ms ease; }
-  #header-shell.header-shell.is-float { padding: 0.75rem 1rem 0; }
+  
+  /* HIER: Die gewünschte Trennlinie im Normalzustand */
+  #main-header { 
+    border-bottom: 1px solid rgba(226, 232, 240, 1); /* Slate 200 */
+    border-top-left-radius: 40px; 
+    border-top-right-radius: 40px; 
+  }
+  html.dark #main-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
 
-  #header-shell.is-float #navOverlay { border-radius: 28px !important; }
+  /* Sticky Layout Changes */
+  #header-shell.is-float { padding: 0.75rem 1rem 0; }
+  @media (min-width: 768px) { #header-shell.is-float { padding-left: 2rem; padding-right: 2rem; } }
+
+  #main-header.is-shrink { padding-top: 0.85rem !important; padding-bottom: 0.85rem !important; }
+  #main-header.is-shrink #logo-container { width: 2.25rem; height: 2.25rem; border-radius: 0.75rem; }
+
+  /* STICKY STYLES (Light Mode - CLEAN & BLUEISH) */
+  #header-shell.is-float #main-header {
+    border-radius: 40px !important; 
+    /* Leichtes Blau als Hintergrund (Slate-50 mit Transparenz) */
+    background-color: rgba(248, 250, 252, 0.95) !important; 
+    backdrop-filter: blur(12px);
+    
+    /* VORGABE: Keine Linie, Kein Schatten */
+    box-shadow: none !important;
+    border: none !important;
+  }
+  
+  /* STICKY STYLES (Dark Mode - Deep Blue) */
+  html.dark #header-shell.is-float #main-header {
+    background-color: rgba(15, 23, 42, 0.85) !important;
+    backdrop-filter: blur(16px);
+    box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5) !important;
+    border: 1px solid rgba(255, 255, 255, 0.03) !important;
+  }
+
+  /* Overlay Menu */
+  #header-shell.is-float #navOverlay { border-radius: 40px !important; }
   #header-shell.is-float #navOverlay[data-state='open'] {
-    margin-top: 0.75rem; box-shadow: 0 18px 45px rgba(15, 23, 42, 0.18);
+    margin-top: 0.75rem; 
+    box-shadow: 0 18px 45px rgba(15, 23, 42, 0.3);
   }
 
-  /* Burger Morph */
-  #btnOpenNav .icon-bars, #btnOpenNav .icon-x {
-    display: inline-flex; align-items: center; justify-content: center;
-    transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1), opacity 220ms ease;
-  }
+  /* Burger Animation */
+  #btnOpenNav .icon-bars, #btnOpenNav .icon-x { display: inline-flex; transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1), opacity 220ms ease; }
   #btnOpenNav .icon-x { opacity: 0; transform: rotate(-90deg) scale(0.75); }
   #btnOpenNav.is-open .icon-bars { opacity: 0; transform: rotate(90deg) scale(0.75); }
   #btnOpenNav.is-open .icon-x { opacity: 1; transform: rotate(0deg) scale(1); }
 
-  @media (min-width: 768px) {
-    #header-shell.header-shell.is-float { padding-left: 2rem; padding-right: 2rem; }
-  }
-
-  #header-shell.is-float #main-header {
-    border-radius: 28px !important;
-    background-color: rgba(255, 255, 255, 0.96); backdrop-filter: blur(12px);
-    box-shadow: 0 18px 45px rgba(15, 23, 42, 0.10); border: 1px solid rgba(15, 23, 42, 0.06);
-  }
-
-  html.dark #header-shell.is-float #main-header {
-    background-color: rgba(15, 23, 42, 0.78);
-    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.55); border: 1px solid rgba(255, 255, 255, 0.10);
-  }
-
-  #main-header.is-shrink { padding-top: 0.85rem !important; padding-bottom: 0.85rem !important; }
-  #main-header { border-top-left-radius: 28px; border-top-right-radius: 28px; }
-  #main-header.is-shrink #logo-container { width: 2.25rem; height: 2.25rem; border-radius: 0.75rem; }
-
-  @media (prefers-reduced-motion: reduce) {
-    .nav-backdrop, .nav-transition { transition: none !important; }
-  }
+  @media (prefers-reduced-motion: reduce) { .nav-backdrop, .nav-transition { transition: none !important; } }
 </style>
 
 <script>
@@ -296,128 +195,48 @@ const menuItems = [
     const btnOpenNav = document.getElementById('btnOpenNav');
     const navOverlay = document.getElementById('navOverlay');
     const navBackdrop = document.getElementById('navBackdrop');
-    const navLinks = navOverlay?.querySelectorAll('a');
-    const themeToggle = document.getElementById('themeToggle');
     const headerShell = document.getElementById('header-shell');
     const mainHeader = document.getElementById('main-header');
     const logoContainer = document.getElementById('logo-container');
 
-    const prefersReduced = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
-    const THEME_KEY = 'theme';
-
-    const applyTheme = (isDark) => {
-      document.documentElement.classList.toggle('dark', !!isDark);
-      document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
-      try { localStorage.setItem(THEME_KEY, isDark ? 'dark' : 'light'); } catch {}
+    const toggleMenu = () => {
+      const isOpen = navOverlay?.getAttribute('data-state') === 'open';
+      navOverlay?.setAttribute('data-state', isOpen ? 'closed' : 'open');
+      navBackdrop?.setAttribute('data-state', isOpen ? 'closed' : 'open');
+      btnOpenNav?.setAttribute('aria-expanded', !isOpen);
+      btnOpenNav?.classList.toggle('is-open', !isOpen);
     };
 
-    const syncThemeToggle = () => {
-      const btn = document.getElementById('themeToggle');
-      if (!btn) return;
-      const isDark = document.documentElement.classList.contains('dark');
-      btn.classList.toggle('is-dark', isDark);
-      btn.setAttribute('aria-label', isDark ? 'Light Mode aktivieren' : 'Dark Mode aktivieren');
-    };
-
-    const setToggleVisual = (isOpen) => {
-      const openBtn = document.getElementById('btnOpenNav');
-      if (!openBtn) return;
-      openBtn.classList.toggle('is-open', !!isOpen);
-      openBtn.setAttribute('aria-label', isOpen ? 'Menü schließen' : 'Menü öffnen');
-    };
-
-    const openMenu = () => {
-      if (!navOverlay || !navBackdrop) return;
-      navOverlay.setAttribute('data-state', 'open');
-      navOverlay.setAttribute('aria-hidden', 'false');
-      navBackdrop.setAttribute('data-state', 'open');
-      navBackdrop.setAttribute('aria-hidden', 'false');
-      btnOpenNav?.setAttribute('aria-expanded', 'true');
-      setToggleVisual(true);
-    };
-
-    const closeMenu = () => {
-      if (!navOverlay || !navBackdrop) return;
-      navOverlay.setAttribute('data-state', 'closed');
-      navOverlay.setAttribute('aria-hidden', 'true');
-      navBackdrop.setAttribute('data-state', 'closed');
-      navBackdrop.setAttribute('aria-hidden', 'true');
-      btnOpenNav?.setAttribute('aria-expanded', 'false');
-      setToggleVisual(false);
-    };
-
-    // Events Re-Binding
     if (btnOpenNav) {
-      const newBtn = btnOpenNav.cloneNode(true);
-      btnOpenNav.parentNode.replaceChild(newBtn, btnOpenNav);
-      newBtn.addEventListener('click', () => {
-        const overlay = document.getElementById('navOverlay');
-        const isOpen = overlay?.getAttribute('data-state') === 'open';
-        isOpen ? closeMenu() : openMenu();
-      });
-    }
-
-    if (themeToggle) {
-      const newTheme = themeToggle.cloneNode(true);
-      themeToggle.parentNode.replaceChild(newTheme, themeToggle);
-      newTheme.addEventListener('click', () => {
-        const isDark = document.documentElement.classList.contains('dark');
-        applyTheme(!isDark);
-        syncThemeToggle();
-      });
-      syncThemeToggle();
+      const nBtn = btnOpenNav.cloneNode(true);
+      btnOpenNav.parentNode.replaceChild(nBtn, btnOpenNav);
+      nBtn.addEventListener('click', toggleMenu);
     }
 
     if (navBackdrop) {
-      const newBackdrop = navBackdrop.cloneNode(true);
-      navBackdrop.parentNode.replaceChild(newBackdrop, navBackdrop);
-      newBackdrop.addEventListener('click', closeMenu);
+      const nDrop = navBackdrop.cloneNode(true);
+      navBackdrop.parentNode.replaceChild(nDrop, navBackdrop);
+      nDrop.addEventListener('click', toggleMenu);
     }
+    
+    navOverlay?.querySelectorAll('a').forEach(l => l.addEventListener('click', () => {
+         if(navOverlay.getAttribute('data-state') === 'open') toggleMenu();
+    }));
 
-    navLinks?.forEach((link) => link.addEventListener('click', closeMenu));
-
-    // ESC Key
-    if (!document.documentElement.dataset.headerEscBound) {
-      document.documentElement.dataset.headerEscBound = '1';
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-          const overlay = document.getElementById('navOverlay');
-          if (overlay?.getAttribute('data-state') === 'open') closeMenu();
-        }
-      });
-    }
-
-    // Scroll Logic
     const handleScroll = () => {
-      const y = window.scrollY || 0;
-      const scrolled = y > 18;
-      headerShell?.classList.toggle('is-float', scrolled);
-      mainHeader?.classList.toggle('is-shrink', scrolled);
-      
-      if (!logoContainer) return;
-      if (scrolled) {
-        logoContainer.classList.remove('w-10', 'h-10', 'rounded-xl');
-        logoContainer.classList.add('w-8', 'h-8', 'rounded-lg');
-      } else {
-        logoContainer.classList.remove('w-8', 'h-8', 'rounded-lg');
-        logoContainer.classList.add('w-10', 'h-10', 'rounded-xl');
-      }
+        const scrolled = (window.scrollY || 0) > 18;
+        headerShell?.classList.toggle('is-float', scrolled);
+        mainHeader?.classList.toggle('is-shrink', scrolled);
+        if(logoContainer) {
+             if(scrolled) { logoContainer.classList.add('w-8','h-8','rounded-lg'); logoContainer.classList.remove('w-10','h-10','rounded-xl'); }
+             else { logoContainer.classList.remove('w-8','h-8','rounded-lg'); logoContainer.classList.add('w-10','h-10','rounded-xl'); }
+        }
     };
-
-    if (window.__brueckeHeaderScrollHandler) {
-      window.removeEventListener('scroll', window.__brueckeHeaderScrollHandler);
-    }
-    window.__brueckeHeaderScrollHandler = handleScroll;
     window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll();
-
-    if (!prefersReduced) {
-      closeMenu();
-      setToggleVisual(false);
-    }
-    syncThemeToggle();
   }
 
   init();
   document.addEventListener('astro:after-swap', init);
+  window.addEventListener('theme-change', () => {});
 </script>

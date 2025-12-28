@@ -1,5 +1,5 @@
 ---
-import MainLayout from '../layouts/MainLayout.astro';
+import MainLayout from '../layouts/layout.astro';
 import { getEvents, getGlobalSettings } from '../lib/api';
 
 // 1. Daten laden
@@ -18,7 +18,8 @@ const upcomingEvents = allEvents
   .filter(e => e.id !== highlightEvent?.id)
   .slice(0, 3);
 
-const heroHeadline = settings?.hero_headline || "Kultur verbindet.<br> <span class=\"pr-2 bg-clip-text text-transparent bg-gradient-to-r from-rose-600 to-orange-400\">Inklusion</span> stärkt.";
+// FIX: Backticks für sauberen HTML-String genutzt
+const heroHeadline = settings?.hero_headline || `Kultur verbindet.<br> <span class="pr-2 bg-clip-text text-transparent bg-gradient-to-r from-rose-600 to-orange-400 dark:from-rose-400 dark:to-orange-300">Inklusion</span> stärkt.`;
 ---
 
 <MainLayout title="Startseite">
@@ -40,50 +41,54 @@ const heroHeadline = settings?.hero_headline || "Kultur verbindet.<br> <span cla
     </script>
     <noscript><style>.home-content{visibility:visible}</style></noscript>
 
-    {/* --- WRAPPER FÜR STUDIO-LOOK (GERUNDETE ECKEN OBEN/UNTEN) --- */}
+    {/* --- WRAPPER FÜR STUDIO-LOOK --- */}
     <div class="home-content">
     
     {/* --- HERO --- */}
-    <section class="relative z-10 px-6 sm:px-10 pt-32 pb-32 bg-white">
+    <section class="relative z-10 px-6 sm:px-10 pt-32 pb-32 transition-colors duration-300">
+
         <div class="max-w-6xl">
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-50 border border-slate-200 text-xs font-bold text-rose-500 mb-8 uppercase tracking-widest shadow-sm">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs font-bold text-rose-500 dark:text-rose-400 mb-8 uppercase tracking-widest shadow-sm">
                 <span class="text-[10px] mb-0.5">●</span> Seit 1983
             </div>
-            <h1 class="text-5xl sm:text-7xl lg:text-8xl font-display font-extrabold text-slate-900 tracking-tighter leading-[0.9] mb-12" set:html={heroHeadline}></h1>
-            <p class="text-xl text-slate-500 max-w-2xl leading-relaxed border-l-4 border-rose-500 pl-8 font-medium">
+            
+            {/* FIX: [&_*:not(.text-transparent)] verhindert, dass der Gradient überschrieben wird */}
+            <h1 class="text-5xl sm:text-7xl lg:text-8xl font-display font-extrabold text-slate-900 dark:text-white [&_*:not(.text-transparent)]:dark:text-white tracking-tighter leading-[0.9] mb-12" set:html={heroHeadline}></h1>
+            
+            <p class="text-xl text-slate-500 dark:text-slate-200 max-w-2xl leading-relaxed border-l-4 border-rose-500 pl-8 font-medium">
                 {settings?.hero_subline || "Dein Backup für einen Alltag nach deinen Regeln. Wir schaffen den Raum in Graz, in dem Unterstützung auf Augenhöhe passiert und Barrieren – ob aus Stein oder im Kopf – einfach keine Rolle spielen."}
             </p>
         </div>
     </section>
 
     {/* --- BENTO EVENTS HEADER --- */}
-    <section class="px-6 sm:px-10 pb-12 bg-white">
+    <section class="px-6 sm:px-10 pb-24 transition-colors duration-300">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div>
                 <div class="flex items-center gap-3 mb-4">
                     <span class="relative flex h-3 w-3">
                         <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-3 w-3 bg-rose-500"></span>
+                        <span class="relative inline-flex rounded-full h-3 w-3 bg-rose-500 dark:bg-rose-400"></span>
                     </span>
-                    <span class="text-rose-500 font-bold tracking-widest uppercase text-[10px]">Live aus Graz</span>
+                    <span class="text-rose-500 dark:text-rose-400 font-bold tracking-widest uppercase text-[10px]">Live aus Graz</span>
                 </div>
-                <h2 class="text-4xl md:text-5xl font-display font-bold text-slate-900 tracking-tighter">
+                <h2 class="text-4xl md:text-5xl font-display font-bold text-slate-900 dark:text-white tracking-tighter">
                     Was gerade geht.
                 </h2>
             </div>
-            <p class="text-slate-400 font-medium italic text-lg md:text-right">
+            <p class="text-slate-400 dark:text-slate-300 font-medium italic text-lg md:text-right">
                 Langweilig wird's woanders. <br class="hidden md:block"> Schau vorbei!
             </p>
         </div>
     </section>
 
     {/* --- BENTO EVENTS GRID --- */}
-    <section class="px-6 sm:px-10 pb-32 bg-white">
+    <section class="px-6 sm:px-10 pb-24 transition-colors duration-300">
         <div class="max-w-7xl mx-auto">
             <div class="grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-6 h-auto md:h-[700px]">
                 
                 {highlightEvent && (
-                    <a href={`/events/${highlightEvent.slug}`} class="md:col-span-2 md:row-span-2 relative group rounded-[32px] overflow-hidden bg-slate-900 shadow-xl">
+                    <a href={`/events/${highlightEvent.slug}`} class="md:col-span-2 md:row-span-2 relative group rounded-[32px] overflow-hidden bg-slate-900 shadow-xl border border-transparent dark:border-slate-800">
                         <img src={`${ASSET_URL}/${highlightEvent.image}`} class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition duration-1000" alt={highlightEvent.title} />
                         <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent"></div>
                         <div class="absolute bottom-0 left-0 p-8 md:p-12 text-white">
@@ -95,7 +100,7 @@ const heroHeadline = settings?.hero_headline || "Kultur verbindet.<br> <span cla
                 )}
 
                 {upcomingEvents.map((event, index) => (
-                    <a href={`/events/${event.slug}`} class={`relative group rounded-[32px] overflow-hidden bg-slate-900 border border-slate-900/10 hover:shadow-xl transition-all ${index === 2 ? 'md:col-span-2 md:row-span-1' : 'md:col-span-1 md:row-span-1'}`}>
+                    <a href={`/events/${event.slug}`} class={`relative group rounded-[32px] overflow-hidden bg-slate-900 border border-slate-900/10 dark:border-slate-800 hover:shadow-xl transition-all ${index === 2 ? 'md:col-span-2 md:row-span-1' : 'md:col-span-1 md:row-span-1'}`}>
                         <img src={`${ASSET_URL}/${event.image}`} class="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:scale-105 transition duration-1000" alt={event.title} />
                         <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/25 to-transparent"></div>
                         <div class="relative z-10 p-6 flex flex-col h-full">
@@ -104,7 +109,7 @@ const heroHeadline = settings?.hero_headline || "Kultur verbindet.<br> <span cla
                     </a>
                 ))}
                 
-                <a href="/events" class="md:col-span-1 md:row-span-1 bg-rose-600 rounded-[32px] p-8 flex items-center justify-center text-white group hover:bg-slate-900 transition-all shadow-lg overflow-hidden">
+                <a href="/events" class="md:col-span-1 md:row-span-1 bg-rose-600 rounded-[32px] p-8 flex items-center justify-center text-white group hover:bg-slate-900 transition-all shadow-lg overflow-hidden border border-transparent dark:border-slate-700">
                     <div class="flex items-center gap-4 text-left">
                         <i class="fa-solid fa-layer-group text-3xl group-hover:rotate-12 transition-transform shrink-0"></i>
                             <span class="text-xl font-display font-bold leading-tight tracking-tighter">
@@ -117,11 +122,14 @@ const heroHeadline = settings?.hero_headline || "Kultur verbindet.<br> <span cla
     </section>
 
     {/* --- SERVICES --- */}
-    <section class="px-6 sm:px-10 py-24 bg-slate-50">
+    <section class="px-6 sm:px-10 py-24 transition-colors duration-300">
         <div class="max-w-7xl mx-auto text-center">
             <div class="max-w-3xl mx-auto mb-20">
-                <h2 class="text-4xl md:text-6xl font-display font-extrabold text-slate-900 tracking-tighter mb-6">Selbstbestimmung.<br><span class="text-rose-600 italic">Gemeinsam gestalten.</span></h2>
-                <p class="text-lg text-slate-500 font-medium leading-relaxed">Inklusion bedeutet für uns Empowerment. Wir unterstützen dich genau dort, wo du uns brauchst – im Alltag, beim Wohnen oder auf Reisen.</p>
+                <h2 class="text-4xl md:text-6xl font-display font-extrabold text-slate-900 dark:text-white tracking-tighter mb-6">
+                    Selbstbestimmung.<br>
+                    <span class="text-rose-600 dark:text-rose-400 italic">Gemeinsam gestalten.</span>
+                </h2>
+                <p class="text-lg text-slate-500 dark:text-slate-300 font-medium leading-relaxed">Inklusion bedeutet für uns Empowerment. Wir unterstützen dich genau dort, wo du uns brauchst – im Alltag, beim Wohnen oder auf Reisen.</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-left">
@@ -131,10 +139,10 @@ const heroHeadline = settings?.hero_headline || "Kultur verbindet.<br> <span cla
                     { title: "Familienentlastung", slug: "familienentlastung", color: "bg-sky-500", icon: "fa-hands-holding-child", text: "Zeit zum Durchatmen für die ganze Familie." },
                     { title: "Urlaubsaktionen", slug: "services", color: "bg-rose-500", icon: "fa-umbrella-beach", text: "Barrierefrei & betreut die Welt entdecken." }
                 ].map(s => (
-                    <a href={`/${s.slug === 'services' ? 'services' : 'services/' + s.slug}`} class="group bg-white p-8 rounded-[32px] border border-slate-100 hover:shadow-2xl transition-all duration-500">
+                    <a href={`/${s.slug === 'services' ? 'services' : 'services/' + s.slug}`} class="group bg-white dark:bg-slate-900 p-8 rounded-[32px] border border-slate-100 dark:border-slate-800 hover:shadow-2xl transition-all duration-500">
                         <div class={`w-12 h-12 rounded-2xl ${s.color} text-white flex items-center justify-center text-xl mb-6 shadow-lg group-hover:scale-110 transition-transform`}><i class={`fa-solid ${s.icon}`}></i></div>
-                        <h3 class="text-xl font-display font-bold text-slate-900 mb-3">{s.title}</h3>
-                        <p class="text-slate-500 text-sm leading-relaxed">{s.text}</p>
+                        <h3 class="text-xl font-display font-bold text-slate-900 dark:text-white mb-3">{s.title}</h3>
+                        <p class="text-slate-500 dark:text-slate-300 text-sm leading-relaxed">{s.text}</p>
                     </a>
                 ))}
             </div>
@@ -143,14 +151,14 @@ const heroHeadline = settings?.hero_headline || "Kultur verbindet.<br> <span cla
 
 
     {/* --- PROJEKTE & INFOZENTRUM --- */}
-    <section class="px-6 sm:px-10 py-24 bg-white">
+    <section class="px-6 sm:px-10 py-24 transition-colors duration-300">
         <div class="max-w-7xl mx-auto">
-            <span class="text-rose-500 font-bold tracking-widest uppercase text-[10px] mb-4 block underline decoration-rose-500 decoration-2 underline-offset-8">Brückenpfeiler & Initiativen</span>
-            <h2 class="text-4xl md:text-5xl font-display font-bold text-slate-900 tracking-tighter mb-16">Was uns bewegt.</h2>
+            <span class="text-rose-500 dark:text-rose-400 font-bold tracking-widest uppercase text-[10px] mb-4 block underline decoration-rose-500 decoration-2 underline-offset-8">Brückenpfeiler & Initiativen</span>
+            <h2 class="text-4xl md:text-5xl font-display font-bold text-slate-900 dark:text-white tracking-tighter mb-16">Was uns bewegt.</h2>
             
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
-                {/* PROJEKT 1: URLAUBSAKTIONEN */}
-                <div class="group relative rounded-[48px] overflow-hidden bg-slate-900 aspect-[16/10] lg:aspect-auto">
+                {/* PROJEKT 1 */}
+                <div class="group relative rounded-[48px] overflow-hidden bg-slate-900 aspect-[16/10] lg:aspect-auto border border-transparent dark:border-slate-800">
                     <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200" class="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:scale-105 transition-transform duration-1000" alt="Urlaub" />
                     <div class="relative z-10 p-10 h-full flex flex-col justify-end text-white">
                         <span class="px-3 py-1 bg-rose-600 rounded-full text-[10px] font-bold uppercase w-fit mb-4">Highlight</span>
@@ -160,13 +168,13 @@ const heroHeadline = settings?.hero_headline || "Kultur verbindet.<br> <span cla
                     </div>
                 </div>
 
-                {/* PROJEKT 2: INFOZENTRUM */}
-                <div class="group relative rounded-[48px] overflow-hidden bg-slate-50 aspect-[16/10] lg:aspect-auto border border-slate-200">
+                {/* PROJEKT 2: Infozentrum */}
+                <div class="group relative rounded-[48px] overflow-hidden bg-slate-50 dark:bg-slate-900 aspect-[16/10] lg:aspect-auto border border-slate-200 dark:border-slate-800">
                     <div class="p-10 h-full flex flex-col justify-center">
-                        <div class="w-16 h-16 bg-slate-900 rounded-3xl text-white flex items-center justify-center text-2xl mb-8"><i class="fa-solid fa-circle-info"></i></div>
-                        <h3 class="text-3xl font-display font-bold text-slate-900 mb-4">Infozentrum</h3>
-                        <p class="text-slate-500 mb-8 leading-relaxed">Unsere erste Anlaufstelle in Graz. Unbürokratische Beratung bei Anträgen, Behördenwegen und sozialen Fragestellungen – menschlich und direkt.</p>
-                        <a href="/contact" class="px-8 py-3 bg-slate-900 text-white rounded-full font-bold w-fit hover:bg-rose-600 transition-all shadow-lg">Kontakt aufnehmen</a>
+                        <div class="w-16 h-16 bg-slate-900 dark:bg-white rounded-3xl text-white dark:text-slate-900 flex items-center justify-center text-2xl mb-8"><i class="fa-solid fa-circle-info"></i></div>
+                        <h3 class="text-3xl font-display font-bold text-slate-900 dark:text-white mb-4">Infozentrum</h3>
+                        <p class="text-slate-500 dark:text-slate-300 mb-8 leading-relaxed">Unsere erste Anlaufstelle in Graz. Unbürokratische Beratung bei Anträgen, Behördenwegen und sozialen Fragestellungen – menschlich und direkt.</p>
+                        <a href="/contact" class="px-8 py-3 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-full font-bold w-fit hover:bg-rose-600 dark:hover:bg-rose-500 dark:hover:text-white transition-all shadow-lg">Kontakt aufnehmen</a>
                     </div>
                 </div>
             </div>
@@ -174,10 +182,10 @@ const heroHeadline = settings?.hero_headline || "Kultur verbindet.<br> <span cla
     </section>
 
 
-    {/* --- PARTNER & FÖRDERGEBER (MARQUEE) --- */}
-    <section class="py-20 bg-white border-b border-slate-50">
+    {/* --- PARTNER & FÖRDERGEBER --- */}
+    <section class="py-20 border-b border-slate-50 dark:border-slate-900 transition-colors duration-300">
         <div class="max-w-7xl mx-auto px-6 mb-12 text-center">
-            <span class="text-slate-500 font-bold tracking-[0.2em] uppercase text-xs border-b-2 border-rose-500/20 pb-2">
+            <span class="text-slate-500 dark:text-slate-400 font-bold tracking-[0.2em] uppercase text-xs border-b-2 border-rose-500/20 pb-2">
         Ermöglicht durch unsere Partner & Fördergeber
             </span>
         </div>
@@ -265,10 +273,10 @@ const heroHeadline = settings?.hero_headline || "Kultur verbindet.<br> <span cla
         </div>
     </section>
 
-    {/* --- ZWISCHEN-TEXT & DIE VISUELLE LINIE --- */}
-    <section class="bg-white pt-40 pb-16 text-center">
+    {/* --- ZWISCHEN-TEXT --- */}
+    <section class="pt-40 pb-16 text-center transition-colors duration-300">
         <div class="max-w-4xl mx-auto px-6">
-            <p class="text-slate-400 font-medium text-xl italic">
+            <p class="text-slate-400 dark:text-slate-100 font-medium text-xl italic">
                 „Genug gescrollt. Zeit für einen Kaffee bei uns, oder?“
             </p>
             <div class="mt-12 flex flex-col items-center">
@@ -279,8 +287,8 @@ const heroHeadline = settings?.hero_headline || "Kultur verbindet.<br> <span cla
     </section>
 
     {/* --- MACH MIT CTA --- */}
-    <section class="px-6 sm:px-10 pb-32 bg-white">
-        <div class="bg-slate-900 rounded-[40px] p-12 sm:p-20 text-white text-center relative overflow-hidden shadow-2xl">
+    <section class="px-6 sm:px-10 pb-32 transition-colors duration-300">
+        <div class="bg-slate-900 rounded-[40px] p-12 sm:p-20 text-white text-center relative overflow-hidden shadow-2xl border border-transparent dark:border-slate-800">
             <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-rose-900/20 rounded-full blur-3xl opacity-50 pointer-events-none -translate-y-1/2 translate-x-1/2"></div>
             
             <div class="relative z-10 max-w-2xl mx-auto">
