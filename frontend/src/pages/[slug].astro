@@ -1,0 +1,79 @@
+---
+export const prerender = false; // Wichtig für SSR (Live-Daten)
+
+import Layout from '../layouts/layout.astro';
+import { directus } from '../lib/directus';
+import { readItems } from '@directus/sdk';
+
+const { slug } = Astro.params;
+
+let page = null;
+let error = null;
+
+try {
+  // Seite anhand des Slugs in der Collection 'pages' suchen
+  const result = await directus.request(readItems('pages', {
+    filter: {
+      slug: { _eq: slug }
+    }
+  }));
+  
+  if (result && result.length > 0) {
+    page = result[0];
+  }
+} catch (e) {
+  console.error(`Fehler beim Laden der Seite "${slug}":`, e);
+}
+
+// Wenn keine Seite gefunden wurde -> 404
+if (!page) {
+  return Astro.redirect('/404');
+}
+
+// Bild-URL Helper
+const heroUrl = page.hero_image ? `http://localhost:8055/assets/${page.hero_image}` : null;
+---
+
+<Layout title={page.title}>
+  
+  {/* HERO SECTION */}
+  <section class="relative pt-32 pb-20 overflow-hidden bg-slate-900">
+    {/* Hintergrundbild (falls vorhanden) oder Fallback-Verlauf */}
+    <div class="absolute inset-0 z-0">
+      {heroUrl ? (
+        <>
+            <img src={heroUrl} alt={page.title} class="w-full h-full object-cover opacity-30" />
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent"></div>
+        </>
+      ) : (
+        <div class="w-full h-full bg-slate-900">
+            <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-rose-500/10 rounded-full blur-[100px] pointer-events-none"></div>
+        </div>
+      )}
+    </div>
+
+    <div class="container mx-auto px-6 relative z-10 text-center">
+      <h1 class="text-4xl md:text-6xl font-display font-bold text-white mb-6">
+        {page.title}
+      </h1>
+      {/* Optional: Breadcrumbs könnten hier hin */}
+    </div>
+  </section>
+
+  {/* CONTENT SECTION */}
+  <section class="py-16 bg-white dark:bg-slate-950 min-h-[50vh]">
+    <div class="container mx-auto px-6">
+      <div class="max-w-3xl mx-auto prose prose-lg prose-slate dark:prose-invert prose-headings:font-display prose-a:text-rose-500 hover:prose-a:text-rose-600">
+        
+        {/* Inhalt rendern */}
+        {page.content ? (
+             <div set:html={page.content} />
+        ) : (
+             <p class="text-slate-500 italic">Diese Seite hat noch keinen Inhalt.</p>
+        )}
+
+      </div>
+    </div>
+  </section>
+
+</Layout>
