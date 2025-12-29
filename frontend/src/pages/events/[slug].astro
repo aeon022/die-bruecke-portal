@@ -1,5 +1,6 @@
 ---
 import MainLayout from '../../layouts/layout.astro';
+import { directus } from '../../lib/directus';
 import { getEventBySlug, getEvents } from '../../lib/api';
 
 const { slug } = Astro.params;
