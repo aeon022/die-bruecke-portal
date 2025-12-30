@@ -2,8 +2,14 @@
 import MainLayout from '../../layouts/layout.astro';
 import { directus } from '../../lib/directus';
 import { getEventBySlug, getEvents } from '../../lib/api';
+import pkg from 'rrule';
+const { RRule } = pkg; // npm install rrule
 
 const { slug } = Astro.params;
+
+// URL Parameter prüfen (falls jemand auf einen spezifischen Termin geklickt hat)
+const urlDateParam = Astro.url.searchParams.get('date');
+
 const event = await getEventBySlug(slug as string);
 const allEvents = await getEvents();
 
@@ -11,26 +17,117 @@ if (!event) {
   return Astro.redirect('/404');
 }
 
-// "Ähnliche Events"
+// --- WIEDERHOLUNGS-LOGIK (RRule) ---
+
+const dbStartDate = new Date(event.start_date);
+const dbEndDate = event.end_date ? new Date(event.end_date) : null;
+// Dauer des Events berechnen
+const duration = dbEndDate ? (dbEndDate.getTime() - dbStartDate.getTime()) : (2 * 60 * 60 * 1000); 
+
+let allDates: Date[] = [dbStartDate]; 
+
+if (event.recurrence && event.recurrence !== 'none' && event.recurrence_end) {
+    
+    // Config Objekt für RRule
+    let ruleOptions = {
+        freq: RRule.WEEKLY, // Default
+        interval: 1,
+        dtstart: dbStartDate,
+        until: new Date(event.recurrence_end)
+    };
+
+    switch (event.recurrence) {
+        case 'biweekly':
+            ruleOptions.freq = RRule.WEEKLY;
+            ruleOptions.interval = 2;
+            break;
+            
+        case 'monthly':
+            ruleOptions.freq = RRule.MONTHLY;
+            
+            // SPEZIALFALL: Monatlich nach Wochentag (z.B. "Jeden 1. Dienstag")
+            if (event.monthly_type === 'weekday') {
+                // 1. Welcher Wochentag ist das Startdatum? (0=So, 1=Mo, ..., 6=Sa)
+                const jsDay = dbStartDate.getDay();
+                // Mapping von JS Date auf RRule Konstanten
+                const rruleDays = [RRule.SU, RRule.MO, RRule.TU, RRule.WE, RRule.TH, RRule.FR, RRule.SA];
+                
+                // 2. Der Wievielte Wochentag ist es im Monat? (z.B. 6. Jänner = 1. Dienstag)
+                // Formel: Math.ceil(Tag / 7)
+                const nthPosition = Math.ceil(dbStartDate.getDate() / 7);
+
+                ruleOptions.byweekday = rruleDays[jsDay];
+                ruleOptions.bysetpos = nthPosition;
+            }
+            break;
+            
+        default: // 'weekly'
+            ruleOptions.freq = RRule.WEEKLY;
+            ruleOptions.interval = 1;
+    }
+
+    const rule = new RRule(ruleOptions);
+
+    // Generieren
+    const generatedDates = rule.all();
+
+    // FIX: Sommerzeit-Korrektur (Uhrzeit vom Original erzwingen)
+    allDates = generatedDates.map(date => {
+        const fixedDate = new Date(date);
+        fixedDate.setHours(dbStartDate.getHours());
+        fixedDate.setMinutes(dbStartDate.getMinutes());
+        return fixedDate;
+    });
+}
+
+// --- WELCHES DATUM SOLL ANGEZEIGT WERDEN? ---
+
+// 1. Prio: Das Datum aus der URL (?date=...)
+// 2. Prio: Das nächste Datum in der Zukunft (ab heute)
+// 3. Prio: Das allererste Datum (falls Event schon vorbei)
+
+const now = new Date();
+let displayDate = dbStartDate;
+
+if (urlDateParam) {
+    // Versuch, das URL Datum zu parsen
+    const parsed = new Date(urlDateParam);
+    if (!isNaN(parsed.getTime())) {
+        // Wir setzen die Uhrzeit des Original-Events auf das URL-Datum
+        parsed.setHours(dbStartDate.getHours(), dbStartDate.getMinutes());
+        displayDate = parsed;
+    }
+} else {
+    // Finde den nächsten Termin in der Zukunft
+    const nextUpcoming = allDates.find(d => d >= now);
+    if (nextUpcoming) {
+        displayDate = nextUpcoming;
+    } else {
+        // Falls alle Termine vorbei sind, nimm den letzten
+        displayDate = allDates[allDates.length - 1];
+    }
+}
+
+// End-Zeit für das angezeigte Datum berechnen
+const displayEndDate = new Date(displayDate.getTime() + duration);
+
+
+// --- FORMATIERUNG & HELPER ---
+
+const dateString = displayDate.toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric' });
+const timeString = displayDate.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+const weekday = displayDate.toLocaleDateString('de-DE', { weekday: 'long' });
+
 const relatedEvents = allEvents
     .filter((e: any) => e.id !== event.id)
     .slice(0, 3);
 
 const ASSET_URL = 'http://localhost:8055/assets';
-
-// Datum Formatierung
-const startDate = new Date(event.start_date);
-const endDate = event.end_date ? new Date(event.end_date) : new Date(startDate.getTime() + 2 * 60 * 60 * 1000); 
-
-const dateString = startDate.toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric' });
-const timeString = startDate.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
-const weekday = startDate.toLocaleDateString('de-DE', { weekday: 'long' });
-
 const getCatName = (cat: any) => cat.event_categories_id?.name || cat.event_categories_id?.title || 'Event';
 
-// Google Calendar URL
+// Google Calendar URL (dynamisch basierend auf displayDate)
 const formatGCalDate = (date: Date) => date.toISOString().replace(/-|:|\.\d\d\d/g, "");
-const gCalUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(event.title)}&dates=${formatGCalDate(startDate)}/${formatGCalDate(endDate)}&details=${encodeURIComponent("Infos: https://diebruecke.cc/events/" + slug)}&location=${encodeURIComponent("Die Brücke, Grabenstraße 39a, Graz")}&sf=true&output=xml`;
+const gCalUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(event.title)}&dates=${formatGCalDate(displayDate)}/${formatGCalDate(displayEndDate)}&details=${encodeURIComponent("Infos: https://diebruecke.cc/events/" + slug)}&location=${encodeURIComponent(event.location || "Die Brücke, Grabenstraße 39a, Graz")}&sf=true&output=xml`;
 
 // Share URL
 const currentUrl = `https://diebruecke.cc/events/${slug}`; 
@@ -74,6 +171,12 @@ const shareText = encodeURIComponent(`Event-Tipp: ${event.title}`);
                                     {getCatName(cat)}
                                 </span>
                             ))}
+                            {/* Badge für Serie anzeigen */}
+                            {allDates.length > 1 && (
+                                <span class="bg-rose-50 text-rose-600 border border-rose-100 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+                                    <i class="fa-solid fa-repeat mr-1"></i> Serie
+                                </span>
+                            )}
                         </div>
 
                         <h1 class="text-4xl md:text-5xl lg:text-6xl font-display font-extrabold text-slate-900 tracking-tighter leading-[1.1] mb-8">
@@ -96,6 +199,10 @@ const shareText = encodeURIComponent(`Event-Tipp: ${event.title}`);
                                 <div>
                                     <span class="block font-bold text-slate-900 text-lg">{weekday}</span>
                                     <span class="block text-slate-500">{dateString}</span>
+                                    {/* Hinweis wenn man nicht das Startdatum ansieht */}
+                                    {displayDate.getTime() !== dbStartDate.getTime() && (
+                                        <span class="text-xs text-rose-500 font-bold uppercase tracking-wide mt-1 block">Termin der Serie</span>
+                                    )}
                                 </div>
                             </div>
 
@@ -116,11 +223,38 @@ const shareText = encodeURIComponent(`Event-Tipp: ${event.title}`);
                                 <div>
                                     <span class="block font-bold text-slate-900 text-lg">Die Brücke</span>
                                     <a href="/contact" class="block text-slate-500 hover:text-rose-600 hover:underline decoration-rose-300 underline-offset-4 text-sm mt-1">
-                                        Grabenstraße 39a, Graz
+                                        {event.location || "Grabenstraße 39a, Graz"}
                                     </a>
                                 </div>
                             </div>
                         </div>
+
+                        {/* --- WIEDERHOLUNGSTERMINE --- */}
+                        {allDates.length > 1 && (
+                            <div class="mb-10 pt-8 border-t border-slate-200">
+                                <h4 class="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">
+                                    Alle Termine ({allDates.length})
+                                </h4>
+                                <div class="space-y-2 max-h-40 overflow-y-auto custom-scrollbar pr-2">
+                                    {allDates
+                                        .filter(d => d >= now || d.getTime() === displayDate.getTime()) // Nur Zukunft oder aktuell ausgewählt
+                                        .slice(0, 10) // Max 10 anzeigen
+                                        .map((date) => {
+                                            const isSelected = date.getTime() === displayDate.getTime();
+                                            // Format für Link: YYYY-MM-DD
+                                            const isoDate = date.toISOString().split('T')[0];
+                                            
+                                            return (
+                                                <a href={`?date=${isoDate}`} class={`flex items-center justify-between text-sm p-2 rounded-lg transition-colors ${isSelected ? 'bg-rose-50 text-rose-700 font-bold' : 'hover:bg-white text-slate-600'}`}>
+                                                    <span>{date.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: '2-digit' })}</span>
+                                                    <span>{date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })}</span>
+                                                </a>
+                                            )
+                                        })
+                                    }
+                                </div>
+                            </div>
+                        )}
 
                         <div class="space-y-4">
                             <a href="/contact" class="group relative block w-full text-center bg-slate-900 text-white font-bold text-lg py-5 rounded-2xl hover:bg-rose-600 transition-all shadow-xl hover:shadow-rose-500/40 transform hover:-translate-y-1 overflow-hidden">
@@ -131,7 +265,7 @@ const shareText = encodeURIComponent(`Event-Tipp: ${event.title}`);
                             </a>
 
                             <a href={gCalUrl} target="_blank" class="block w-full text-center bg-white border border-slate-200 text-slate-600 font-bold py-3 rounded-xl hover:bg-slate-50 hover:text-slate-900 transition-colors text-sm flex items-center justify-center gap-2">
-                                <i class="fa-regular fa-calendar-plus"></i> Im Kalender speichern
+                                <i class="fa-regular fa-calendar-plus"></i> Termin im Kalender
                             </a>
                         </div>
 
