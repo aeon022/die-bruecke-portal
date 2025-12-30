@@ -1,3 +1,5 @@
+[18:05:51.566] INFO: Extensions loaded
+[18:05:51.568] INFO: Loaded extensions: directus-extension-wpslug-interface
 version: 1
 directus: 11.14.0
 vendor: postgres
@@ -188,7 +190,7 @@ collections:
       preview_url: null
       singleton: false
       sort: null
-      sort_field: null
+      sort_field: sort
       translations: null
       unarchive_value: null
       versioning: false
@@ -242,6 +244,30 @@ collections:
       versioning: false
     schema:
       name: sponsors
+  - collection: team
+    meta:
+      accountability: all
+      archive_app_filter: true
+      archive_field: null
+      archive_value: null
+      collapse: open
+      collection: team
+      color: null
+      display_template: null
+      group: null
+      hidden: false
+      icon: null
+      item_duplication_fields: null
+      note: null
+      preview_url: null
+      singleton: false
+      sort: null
+      sort_field: sort
+      translations: null
+      unarchive_value: null
+      versioning: false
+    schema:
+      name: team
 fields:
   - collection: event_categories
     field: id
@@ -547,7 +573,7 @@ fields:
       translations: null
       validation: null
       validation_message: null
-      width: full
+      width: half
     schema:
       name: start_date
       table: events
@@ -587,7 +613,7 @@ fields:
       translations: null
       validation: null
       validation_message: null
-      width: full
+      width: half
     schema:
       name: end_date
       table: events
@@ -622,7 +648,7 @@ fields:
       readonly: false
       required: false
       searchable: true
-      sort: 6
+      sort: 9
       special: null
       translations: null
       validation: null
@@ -664,7 +690,7 @@ fields:
       readonly: false
       required: false
       searchable: true
-      sort: 7
+      sort: 10
       special: null
       translations: null
       validation: null
@@ -704,7 +730,7 @@ fields:
       readonly: false
       required: false
       searchable: true
-      sort: 8
+      sort: 11
       special:
         - file
       translations: null
@@ -745,7 +771,7 @@ fields:
       readonly: false
       required: false
       searchable: true
-      sort: 11
+      sort: 14
       special: null
       translations: null
       validation: null
@@ -795,7 +821,7 @@ fields:
       readonly: false
       required: false
       searchable: true
-      sort: 12
+      sort: 15
       special: null
       translations: null
       validation: null
@@ -836,13 +862,13 @@ fields:
       readonly: false
       required: false
       searchable: true
-      sort: 9
+      sort: 12
       special:
         - m2m
       translations: null
       validation: null
       validation_message: null
-      width: full
+      width: half
   - collection: events
     field: is_highlight
     type: json
@@ -863,19 +889,161 @@ fields:
       readonly: false
       required: false
       searchable: true
-      sort: 10
+      sort: 13
       special:
         - cast-json
       translations: null
       validation: null
       validation_message: null
-      width: full
+      width: half
     schema:
       name: is_highlight
       table: events
       data_type: json
       default_value: null
       max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: events
+    field: recurrence
+    type: string
+    meta:
+      collection: events
+      conditions: null
+      display: null
+      display_options: null
+      field: recurrence
+      group: null
+      hidden: false
+      interface: select-dropdown
+      note: null
+      options:
+        choices:
+          - text: Keine (Einmalig)
+            value: none
+          - text: Wöchentlich
+            value: weekly
+          - text: Alle 2 Wochen
+            value: biweekly
+          - text: Monatlich
+            value: monthly
+      readonly: false
+      required: false
+      searchable: true
+      sort: 6
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      name: recurrence
+      table: events
+      data_type: character varying
+      default_value: null
+      max_length: 255
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: events
+    field: recurrence_end
+    type: date
+    meta:
+      collection: events
+      conditions: null
+      display: null
+      display_options: null
+      field: recurrence_end
+      group: null
+      hidden: false
+      interface: datetime
+      note: null
+      options: null
+      readonly: false
+      required: false
+      searchable: true
+      sort: 7
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      name: recurrence_end
+      table: events
+      data_type: date
+      default_value: null
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: events
+    field: monthly_type
+    type: string
+    meta:
+      collection: events
+      conditions:
+        - hidden: false
+          name: Sichtbar
+          rule:
+            _and:
+              - recurrence:
+                  _eq: monthly
+      display: null
+      display_options: null
+      field: monthly_type
+      group: null
+      hidden: true
+      interface: select-dropdown
+      note: null
+      options:
+        choices:
+          - icon: date_range
+            text: Nach Datum
+            value: date
+          - icon: today
+            text: Nach Wochentag
+            value: weekday
+      readonly: false
+      required: false
+      searchable: true
+      sort: 8
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      name: monthly_type
+      table: events
+      data_type: character varying
+      default_value: null
+      max_length: 255
       numeric_precision: null
       numeric_scale: null
       is_nullable: true
@@ -2049,7 +2217,7 @@ fields:
       readonly: false
       required: false
       searchable: true
-      sort: 3
+      sort: 4
       special: null
       translations: null
       validation: null
@@ -2078,7 +2246,7 @@ fields:
     meta:
       collection: services
       conditions: null
-      display: null
+      display: formatted-value
       display_options: null
       field: teaser
       group: null
@@ -2089,7 +2257,7 @@ fields:
       readonly: false
       required: false
       searchable: true
-      sort: 4
+      sort: 5
       special: null
       translations: null
       validation: null
@@ -2118,7 +2286,7 @@ fields:
     meta:
       collection: services
       conditions: null
-      display: null
+      display: formatted-value
       display_options: null
       field: description
       group: null
@@ -2129,7 +2297,7 @@ fields:
       readonly: false
       required: false
       searchable: true
-      sort: 5
+      sort: 7
       special: null
       translations: null
       validation: null
@@ -2153,14 +2321,64 @@ fields:
       foreign_key_table: null
       foreign_key_column: null
   - collection: services
-    field: icon
+    field: type
+    type: string
+    meta:
+      collection: services
+      conditions: null
+      display: null
+      display_options: null
+      field: type
+      group: null
+      hidden: false
+      interface: select-dropdown
+      note: null
+      options:
+        choices:
+          - color: '#2ECDA7'
+            text: Freizeitassistenz (FASS)
+            value: Freizeitassistenz (FASS)
+          - color: '#3399FF'
+            text: Familienentlastungsdienst (FED)
+            value: Familienentlastungsdienst (FED)
+          - color: '#FFA439'
+            text: Wohnassistenz (WASS)
+            value: Wohnassistenz (WASS)
+      readonly: false
+      required: false
+      searchable: true
+      sort: 8
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: type
+      table: services
+      data_type: character varying
+      default_value: null
+      max_length: 255
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: services
+    field: image
     type: uuid
     meta:
       collection: services
       conditions: null
       display: null
       display_options: null
-      field: icon
+      field: image
       group: null
       hidden: false
       interface: file-image
@@ -2177,7 +2395,7 @@ fields:
       validation_message: null
       width: full
     schema:
-      name: icon
+      name: image
       table: services
       data_type: uuid
       default_value: null
@@ -2194,30 +2412,340 @@ fields:
       foreign_key_table: directus_files
       foreign_key_column: id
   - collection: services
-    field: type
+    field: subtitle
     type: string
     meta:
       collection: services
       conditions: null
       display: null
       display_options: null
-      field: type
+      field: subtitle
       group: null
       hidden: false
-      interface: select-dropdown
+      interface: input
       note: null
       options: null
       readonly: false
       required: false
       searchable: true
-      sort: 7
+      sort: 3
       special: null
       translations: null
       validation: null
       validation_message: null
       width: full
     schema:
-      name: type
+      name: subtitle
+      table: services
+      data_type: character varying
+      default_value: null
+      max_length: 255
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: services
+    field: color
+    type: string
+    meta:
+      collection: services
+      conditions: null
+      display: null
+      display_options: null
+      field: color
+      group: null
+      hidden: false
+      interface: input
+      note: null
+      options: null
+      readonly: false
+      required: false
+      searchable: true
+      sort: 10
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      name: color
+      table: services
+      data_type: character varying
+      default_value: null
+      max_length: 255
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: services
+    field: program_file
+    type: uuid
+    meta:
+      collection: services
+      conditions: null
+      display: null
+      display_options: null
+      field: program_file
+      group: null
+      hidden: false
+      interface: file
+      note: null
+      options: null
+      readonly: false
+      required: false
+      searchable: true
+      sort: 13
+      special:
+        - file
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: program_file
+      table: services
+      data_type: uuid
+      default_value: null
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: directus_files
+      foreign_key_column: id
+  - collection: services
+    field: button_text
+    type: string
+    meta:
+      collection: services
+      conditions: null
+      display: null
+      display_options: null
+      field: button_text
+      group: null
+      hidden: false
+      interface: input
+      note: null
+      options: null
+      readonly: false
+      required: false
+      searchable: true
+      sort: 12
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: button_text
+      table: services
+      data_type: character varying
+      default_value: null
+      max_length: 255
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: services
+    field: sort
+    type: integer
+    meta:
+      collection: services
+      conditions: null
+      display: null
+      display_options: null
+      field: sort
+      group: null
+      hidden: false
+      interface: input
+      note: null
+      options: null
+      readonly: false
+      required: false
+      searchable: true
+      sort: 14
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: sort
+      table: services
+      data_type: integer
+      default_value: null
+      max_length: null
+      numeric_precision: 32
+      numeric_scale: 0
+      is_nullable: false
+      is_unique: true
+      is_indexed: true
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: services
+    field: features
+    type: json
+    meta:
+      collection: services
+      conditions: null
+      display: null
+      display_options: null
+      field: features
+      group: null
+      hidden: false
+      interface: tags
+      note: null
+      options:
+        fields: []
+      readonly: false
+      required: false
+      searchable: true
+      sort: 11
+      special:
+        - cast-json
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: features
+      table: services
+      data_type: json
+      default_value: null
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: services
+    field: status
+    type: string
+    meta:
+      collection: services
+      conditions: null
+      display: null
+      display_options: null
+      field: status
+      group: null
+      hidden: false
+      interface: select-dropdown
+      note: null
+      options:
+        choices:
+          - color: '#2ECDA7'
+            text: published
+            value: published
+          - color: '#FFA439'
+            text: draft
+            value: draft
+          - color: '#E35169'
+            text: rejected
+            value: rejected
+      readonly: false
+      required: false
+      searchable: true
+      sort: 15
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: status
+      table: services
+      data_type: character varying
+      default_value: null
+      max_length: 255
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: services
+    field: icon
+    type: string
+    meta:
+      collection: services
+      conditions: null
+      display: null
+      display_options: null
+      field: icon
+      group: null
+      hidden: false
+      interface: select-dropdown
+      note: null
+      options:
+        choices:
+          - text: Freizeit & Gehen
+            value: fa-person-walking-luggage
+          - text: Familie & Kind
+            value: fa-hands-holding-child
+          - text: Wohnen & Haus
+            value: fa-house-chimney-user
+          - text: Reisen / Flugzeug
+            value: fa-plane-departure
+          - text: Herz / Hilfe
+            value: fa-hand-holding-heart
+          - text: Info / Info-Point
+            value: fa-circle-info
+          - text: Stern / Highlight
+            value: fa-star
+          - text: Kalender
+            value: fa-calendar-days
+      readonly: false
+      required: false
+      searchable: true
+      sort: 9
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      name: icon
       table: services
       data_type: character varying
       default_value: null
@@ -2725,6 +3253,304 @@ fields:
       has_auto_increment: false
       foreign_key_table: null
       foreign_key_column: null
+  - collection: team
+    field: id
+    type: integer
+    meta:
+      collection: team
+      conditions: null
+      display: null
+      display_options: null
+      field: id
+      group: null
+      hidden: true
+      interface: input
+      note: null
+      options: null
+      readonly: true
+      required: false
+      searchable: true
+      sort: 1
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: id
+      table: team
+      data_type: integer
+      default_value: nextval('team_id_seq'::regclass)
+      max_length: null
+      numeric_precision: 32
+      numeric_scale: 0
+      is_nullable: false
+      is_unique: true
+      is_indexed: false
+      is_primary_key: true
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: true
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: team
+    field: status
+    type: string
+    meta:
+      collection: team
+      conditions: null
+      display: null
+      display_options: null
+      field: status
+      group: null
+      hidden: false
+      interface: select-dropdown
+      note: null
+      options:
+        choices:
+          - color: '#2ECDA7'
+            text: published
+            value: published
+          - color: '#A2B5CD'
+            text: draft
+            value: draft
+          - color: '#6644FF'
+            text: archive
+            value: archive
+      readonly: false
+      required: false
+      searchable: true
+      sort: 3
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      name: status
+      table: team
+      data_type: character varying
+      default_value: null
+      max_length: 255
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: team
+    field: name
+    type: string
+    meta:
+      collection: team
+      conditions: null
+      display: null
+      display_options: null
+      field: name
+      group: null
+      hidden: false
+      interface: input
+      note: null
+      options: null
+      readonly: false
+      required: false
+      searchable: true
+      sort: 4
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: name
+      table: team
+      data_type: character varying
+      default_value: null
+      max_length: 255
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: team
+    field: role
+    type: string
+    meta:
+      collection: team
+      conditions: null
+      display: null
+      display_options: null
+      field: role
+      group: null
+      hidden: false
+      interface: input
+      note: null
+      options: null
+      readonly: false
+      required: false
+      searchable: true
+      sort: 6
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      name: role
+      table: team
+      data_type: character varying
+      default_value: null
+      max_length: 255
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: team
+    field: type
+    type: string
+    meta:
+      collection: team
+      conditions: null
+      display: null
+      display_options: null
+      field: type
+      group: null
+      hidden: false
+      interface: select-dropdown
+      note: null
+      options:
+        choices:
+          - color: '#3399FF'
+            text: Vorstand
+            value: board
+          - color: '#FFA439'
+            text: Team
+            value: operative
+      readonly: false
+      required: false
+      searchable: true
+      sort: 7
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      name: type
+      table: team
+      data_type: character varying
+      default_value: null
+      max_length: 255
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: team
+    field: image
+    type: uuid
+    meta:
+      collection: team
+      conditions: null
+      display: null
+      display_options: null
+      field: image
+      group: null
+      hidden: false
+      interface: file-image
+      note: null
+      options: null
+      readonly: false
+      required: false
+      searchable: true
+      sort: 5
+      special:
+        - file
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: image
+      table: team
+      data_type: uuid
+      default_value: null
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: directus_files
+      foreign_key_column: id
+  - collection: team
+    field: sort
+    type: integer
+    meta:
+      collection: team
+      conditions: null
+      display: null
+      display_options: null
+      field: sort
+      group: null
+      hidden: false
+      interface: input
+      note: null
+      options: null
+      readonly: false
+      required: false
+      searchable: true
+      sort: 2
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      name: sort
+      table: team
+      data_type: integer
+      default_value: null
+      max_length: null
+      numeric_precision: 32
+      numeric_scale: 0
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
 systemFields:
   - collection: directus_activity
     field: timestamp
@@ -2862,12 +3688,12 @@ relations:
       on_update: NO ACTION
       on_delete: SET NULL
   - collection: services
-    field: icon
+    field: image
     related_collection: directus_files
     meta:
       junction_field: null
       many_collection: services
-      many_field: icon
+      many_field: image
       one_allowed_collections: null
       one_collection: directus_files
       one_collection_field: null
@@ -2876,10 +3702,31 @@ relations:
       sort_field: null
     schema:
       table: services
-      column: icon
+      column: image
       foreign_key_table: directus_files
       foreign_key_column: id
-      constraint_name: services_icon_foreign
+      constraint_name: services_image_foreign
+      on_update: NO ACTION
+      on_delete: SET NULL
+  - collection: services
+    field: program_file
+    related_collection: directus_files
+    meta:
+      junction_field: null
+      many_collection: services
+      many_field: program_file
+      one_allowed_collections: null
+      one_collection: directus_files
+      one_collection_field: null
+      one_deselect_action: nullify
+      one_field: null
+      sort_field: null
+    schema:
+      table: services
+      column: program_file
+      foreign_key_table: directus_files
+      foreign_key_column: id
+      constraint_name: services_program_file_foreign
       on_update: NO ACTION
       on_delete: SET NULL
   - collection: shop_products
@@ -2922,5 +3769,26 @@ relations:
       foreign_key_table: directus_files
       foreign_key_column: id
       constraint_name: sponsors_logo_foreign
+      on_update: NO ACTION
+      on_delete: SET NULL
+  - collection: team
+    field: image
+    related_collection: directus_files
+    meta:
+      junction_field: null
+      many_collection: team
+      many_field: image
+      one_allowed_collections: null
+      one_collection: directus_files
+      one_collection_field: null
+      one_deselect_action: nullify
+      one_field: null
+      sort_field: null
+    schema:
+      table: team
+      column: image
+      foreign_key_table: directus_files
+      foreign_key_column: id
+      constraint_name: team_image_foreign
       on_update: NO ACTION
       on_delete: SET NULL
