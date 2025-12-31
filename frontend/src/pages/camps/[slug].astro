@@ -1,0 +1,166 @@
+---
+// frontend/src/pages/camps/[slug].astro
+export const prerender = false; // SSR für aktuelle Daten
+
+import MainLayout from '../../layouts/layout.astro';
+import { directus } from '../../lib/directus';
+import { readItems } from '@directus/sdk';
+
+const { slug } = Astro.params;
+
+let camp = null;
+
+try {
+  // Camp anhand des Slugs laden
+  const result = await directus.request(readItems('camps', {
+    filter: {
+      slug: { _eq: slug },
+      status: { _eq: 'published' }
+    }
+  }));
+  
+  if (result && result.length > 0) {
+    camp = result[0];
+  }
+} catch (error) {
+  console.error(`Fehler beim Laden des Camps ${slug}:`, error);
+}
+
+// 404 wenn nicht gefunden
+if (!camp) {
+  return Astro.redirect('/404');
+}
+
+const ASSET_URL = "http://localhost:8055/assets";
+const heroImage = camp.image ? `${ASSET_URL}/${camp.image}` : null;
+---
+
+<MainLayout title={`${camp.title} | Camps`}>
+
+    {/* HERO HEADER */}
+    <section class="relative pt-32 pb-20 bg-slate-900 overflow-hidden">
+        <div class="absolute inset-0 opacity-40">
+            {heroImage && (
+                <img src={heroImage} alt={camp.title} class="w-full h-full object-cover" />
+            )}
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent"></div>
+        </div>
+
+        <div class="container mx-auto px-6 relative z-10">
+            <a href="/camps" class="inline-flex items-center text-slate-400 hover:text-white mb-8 transition-colors text-sm font-bold uppercase tracking-widest">
+                <i class="fa-solid fa-arrow-left mr-2"></i> Alle Reisen
+            </a>
+            
+            <div class="max-w-4xl">
+                <div class="flex flex-wrap gap-3 mb-6">
+                    {/* Status Badge, falls gewünscht */}
+                    {camp.free_spots > 0 ? (
+                        <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-bold uppercase">
+                            {camp.free_spots} Plätze frei
+                        </span>
+                    ) : (
+                        <span class="px-3 py-1 rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/30 text-xs font-bold uppercase">
+                            Warteliste
+                        </span>
+                    )}
+                    {/* Tags */}
+                    {camp.tags && (Array.isArray(camp.tags) ? camp.tags : camp.tags.split(',')).map((tag: string) => (
+                         <span class="px-3 py-1 rounded-full bg-slate-700 text-slate-300 text-xs font-bold uppercase">{tag.trim()}</span>
+                    ))}
+                </div>
+
+                <h1 class="text-4xl md:text-6xl font-display font-extrabold text-white mb-6 leading-tight">
+                    {camp.title}
+                </h1>
+            </div>
+        </div>
+    </section>
+
+    {/* CONTENT & SIDEBAR */}
+    <section class="py-16 px-6 bg-white">
+        <div class="container mx-auto">
+            <div class="grid lg:grid-cols-3 gap-12 max-w-7xl mx-auto">
+                
+                {/* LINKS: Hauptinhalt */}
+                <div class="lg:col-span-2">
+                    <h2 class="text-2xl font-display font-bold text-slate-900 mb-6">Beschreibung</h2>
+                    <div class="prose prose-lg text-slate-600 prose-headings:text-slate-900 prose-a:text-rose-600" set:html={camp.description}></div>
+                </div>
+
+                {/* RECHTS: Info Box (Sticky) */}
+                <div class="lg:col-span-1">
+                    <div class="bg-slate-50 border border-slate-200 rounded-3xl p-8 sticky top-24">
+                        <h3 class="text-xl font-bold text-slate-900 mb-6 border-b border-slate-200 pb-4">
+                            Reise-Details
+                        </h3>
+                        
+                        <div class="space-y-6">
+                            <div class="flex items-start gap-4">
+                                <div class="w-10 h-10 rounded-full bg-rose-100 flex items-center justify-center shrink-0">
+                                    <i class="fa-regular fa-calendar text-rose-600"></i>
+                                </div>
+                                <div>
+                                    <span class="block text-xs font-bold text-slate-400 uppercase">Zeitraum</span>
+                                    <span class="text-slate-900 font-medium">{camp.date_range}</span>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-4">
+                                <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center shrink-0">
+                                    <i class="fa-solid fa-location-dot text-indigo-600"></i>
+                                </div>
+                                <div>
+                                    <span class="block text-xs font-bold text-slate-400 uppercase">Ort</span>
+                                    <span class="text-slate-900 font-medium">{camp.location}</span>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-4">
+                                <div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
+                                    <i class="fa-solid fa-users text-emerald-600"></i>
+                                </div>
+                                <div>
+                                    <span class="block text-xs font-bold text-slate-400 uppercase">Alter</span>
+                                    <span class="text-slate-900 font-medium">{camp.age_range}</span>
+                                </div>
+                            </div>
+                            
+                            {/* PREIS & FASS */}
+                            <div class="p-4 bg-white rounded-2xl border border-slate-100 mt-6">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-slate-500 text-sm">Selbstbehalt</span>
+                                    <span class="text-xl font-bold text-slate-900">€ {camp.price},-</span>
+                                </div>
+                                {camp.fass_hours && (
+                                    <div class="flex justify-between items-center pt-2 border-t border-slate-50">
+                                        <span class="text-slate-500 text-sm flex items-center gap-1">
+                                            <i class="fa-solid fa-info-circle text-slate-300"></i> FASS-Stunden
+                                        </span>
+                                        <span class="font-bold text-slate-700">{camp.fass_hours} h / Tag</span>
+                                    </div>
+                                )}
+                            </div>
+
+                        </div>
+
+                        {/* CTA Button */}
+                        <div class="mt-8">
+                            <a 
+                                href={`/contact?subject=Anfrage für Camp: ${camp.title}`} 
+                                class="block w-full py-4 bg-rose-600 hover:bg-rose-700 text-white text-center font-bold rounded-xl transition-colors shadow-lg shadow-rose-200"
+                            >
+                                Jetzt Anfragen
+                            </a>
+                            <p class="text-xs text-center text-slate-400 mt-3">
+                                Unverbindliche Anfrage per E-Mail
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+</MainLayout>

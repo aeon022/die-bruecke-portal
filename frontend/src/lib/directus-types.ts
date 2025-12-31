@@ -1,3 +1,33 @@
+export interface Camp {
+	/** @primaryKey */
+	id: number;
+	title?: string | null;
+	slug?: string | null;
+	image?: DirectusFile | string | null;
+	location?: string | null;
+	date_range?: string | null;
+	price?: number | null;
+	age_range?: string | null;
+	description?: string | null;
+	tags?: string[] | null;
+	free_spots?: string | null;
+	is_featured?: boolean | null;
+	status?: 'published' | 'draft' | 'archive' | null;
+	/** @description Stunden laut FASS */
+	fass_hours?: number | null;
+}
+
+export interface Department {
+	/** @primaryKey */
+	id: number;
+	title?: string | null;
+	description?: string | null;
+	email?: string | null;
+	phone?: string | null;
+	icon?: string | null;
+	sort?: number | null;
+}
+
 export interface EventCategory {
 	/** @primaryKey */
 	id: number;
@@ -107,7 +137,7 @@ export interface Sponsor {
 	name?: string | null;
 	logo?: DirectusFile | string | null;
 	website_url?: string | null;
-	tier?: 'Gold' | 'Silber' | 'Bornze' | 'Partner' | null;
+	tier?: 'base' | 'pillar' | 'brick' | 'Partner' | null;
 }
 
 export interface Team {
@@ -572,6 +602,8 @@ export interface DirectusExtension {
 }
 
 export interface Schema {
+	camps: Camp[];
+	departments: Department[];
 	event_categories: EventCategory[];
 	events: Event[];
 	events_event_categories: EventsEventCategory[];
@@ -613,6 +645,8 @@ export interface Schema {
 }
 
 export enum CollectionNames {
+	camps = 'camps',
+	departments = 'departments',
 	event_categories = 'event_categories',
 	events = 'events',
 	events_event_categories = 'events_event_categories',

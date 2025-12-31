@@ -7,15 +7,15 @@ let projectName = 'Die Brücke';
 let logoUrl = null;
 
 try {
-	const settings = await directus.request(readSingleton('global_settings'));
-	if (settings) {
-		projectName = settings.project_name || 'Die Brücke';
-		if (settings.logo) {
-			logoUrl = `http://localhost:8055/assets/${settings.logo}`;
-		}
-	}
+  const settings = await directus.request(readSingleton('global_settings'));
+  if (settings) {
+    projectName = settings.project_name || 'Die Brücke';
+    if (settings.logo) {
+      logoUrl = `http://localhost:8055/assets/${settings.logo}`;
+    }
+  }
 } catch (error) {
-	console.error("Header: Fehler beim Laden der Settings", error);
+  console.error("Header: Fehler beim Laden der Settings", error);
 }
 
 const socials = [
@@ -29,7 +29,7 @@ const socials = [
 const menuItems = [
   { number: '01', title: 'Kalender', href: '/events', desc: 'Alle Termine, Konzerte & Workshops.' },
   { number: '02', title: 'Angebote', href: '/services', desc: 'Alltagsbegleitung & Assistenz.' },
-  { number: '03', title: 'Camps', href: '/camps', desc: 'Urlaub, Reisen & Abenteuer.' },
+  { number: '03', title: 'Camps & Reisen', href: '/camps', desc: 'Urlaub, Reisen & Abenteuer.' },
   { number: '04', title: 'Info-Point', href: '/info', desc: 'Beratung, Rechte & Offenes Haus.' },
   { number: '05', title: 'Dein Raum', href: '/space', desc: 'Mieten für Feiern & Seminare.' },
   { number: '06', title: 'Projekte', href: '/projects', desc: 'SofaKINO, StageDive & Co.' },
@@ -156,7 +156,7 @@ const menuItems = [
 
   /* STICKY STYLES (Light Mode - CLEAN & BLUEISH) */
   #header-shell.is-float #main-header {
-    border-radius: 28px !important; 
+    border-radius: 34px !important; 
     /* Leichtes Blau als Hintergrund (Slate-50 mit Transparenz) */
     background-color: rgba(232, 234, 236, 0.95) !important; 
     backdrop-filter: blur(12px);
