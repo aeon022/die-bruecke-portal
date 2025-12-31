@@ -45,12 +45,17 @@ services:
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
       
-      # --- ÄNDERUNG: Cache AUS ---
+      # --- Cache (derzeit deaktiviert) ---
       CACHE_ENABLED: 'false'
       # CACHE_STORE: 'redis'
       # CACHE_HOST: 'cache'
       # CACHE_PORT: '6379'
-      # ---------------------------
+      
+      # --- NEU: Mailpit Konfiguration (Lokal) ---
+      EMAIL_TRANSPORT: 'smtp'
+      EMAIL_SMTP_HOST: 'mailpit'
+      EMAIL_SMTP_PORT: '1025'
+      EMAIL_FROM: 'admin@diebruecke.local'
 
       STORAGE_LOCATIONS: 'local'
       STORAGE_LOCAL_ROOT: '/directus/uploads'
@@ -64,12 +69,24 @@ services:
     depends_on:
       - database
       - cache
+      - mailpit # NEU: Wartet auf Mailpit
     networks:
       - bruecke_net
     deploy:
       resources:
         limits:
           memory: 1024M
+
+  # --- NEU: Mailpit Service ---
+  mailpit:
+    image: axllent/mailpit
+    container_name: bruecke_mail
+    restart: always
+    ports:
+      - "8025:8025" # Web-Interface
+      - "1025:1025" # SMTP Port (intern)
+    networks:
+      - bruecke_net
 
 networks:
   bruecke_net:

@@ -6,7 +6,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "gen:types": "directus-sdk-typegen --url http://localhost:8055 --token $DIRECTUS_STATIC_TOKEN --output src/lib/directus-types.ts"
   },
   "dependencies": {
     "@astrojs/node": "^9.5.1",
@@ -23,6 +24,7 @@
   "devDependencies": {
     "@pinegrow/piny-astro": "^1.0.8",
     "@tailwindcss/typography": "^0.5.19",
+    "directus-sdk-typegen": "^0.2.1",
     "micromorph": "^0.4.5"
   }
 }
