@@ -6,8 +6,8 @@ import { readItems } from '@directus/sdk';
 // 1. Daten laden (Collection: city_trips)
 const trips = await directus.request(readItems('city_trips', {
     filter: { status: { _eq: 'published' } },
-    sort: ['date_range'] 
-}));
+    sort: ['sort', 'date_range'] // Erst 'sort', dann Datum
+})); // <--- Hier fehlten die schließenden Klammern!
 
 const ASSET_URL = "http://localhost:8055/assets";
 

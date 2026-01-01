@@ -65,7 +65,40 @@ const featuredCamp = camps.find((c: any) => c.is_featured) || camps[0];
         </section>
     )}
 
-    {/* --- LIST SECTION (Alle Camps) --- */}
+    {/* --- LINK ZU CITY TRIPS (NEU) --- */}
+    <section class="px-4 sm:px-6 -mt-10 mb-20 relative z-20">
+        <div class="max-w-7xl mx-auto">
+            <a href="/city-trips" class="group relative block rounded-[32px] overflow-hidden bg-indigo-900 text-white shadow-2xl hover:shadow-indigo-900/30 transition-all hover:-translate-y-1">
+                
+                {/* Deko-Hintergrund */}
+                <div class="absolute inset-0 bg-gradient-to-r from-indigo-900 to-violet-900 opacity-90 z-10"></div>
+                <div class="absolute right-0 top-0 w-64 h-64 bg-white/5 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2"></div>
+                
+                {/* Inhalt */}
+                <div class="relative z-20 p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8">
+                    <div class="flex-1">
+                        <div class="inline-flex items-center gap-2 text-indigo-300 font-bold uppercase tracking-widest text-xs mb-3">
+                            <i class="fa-solid fa-bus"></i> Tagesausflüge & Kurztrips
+                        </div>
+                        <h3 class="text-3xl md:text-4xl font-display font-bold mb-3 group-hover:text-indigo-200 transition-colors">
+                            Nur kurz weg?
+                        </h3>
+                        <p class="text-indigo-100/80 text-lg max-w-xl leading-relaxed">
+                            Entdecke unsere City Trips. Perfekt für einen Tag voller Erlebnis, Kultur und Spaß – ganz ohne Kofferpacken.
+                        </p>
+                    </div>
+                    
+                    <div class="shrink-0">
+                        <span class="inline-flex items-center gap-3 bg-white text-indigo-900 px-8 py-4 rounded-full font-bold group-hover:bg-indigo-50 transition-colors">
+                            City Trips ansehen <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                        </span>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </section>
+
+        {/* --- LIST SECTION (Alle Camps) --- */}
     <section class="px-4 sm:px-6 pb-20">
         <div class="max-w-7xl mx-auto">
             <h2 class="text-3xl font-display font-bold text-slate-900 mb-12">Alle Reisen 2025</h2>
