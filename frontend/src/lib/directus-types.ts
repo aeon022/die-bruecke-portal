@@ -17,6 +17,24 @@ export interface Camp {
 	fass_hours?: number | null;
 }
 
+export interface CityTrip {
+	/** @primaryKey */
+	id: number;
+	status?: 'published' | 'draft' | 'archive' | null;
+	title?: string | null;
+	slug?: string | null;
+	image?: DirectusFile | string | null;
+	description?: string | null;
+	date_range?: string | null;
+	location?: string | null;
+	price?: number | null;
+	fass_hours?: number | null;
+	free_spots?: number | null;
+	is_featured?: boolean | null;
+	tags?: string[] | null;
+	sort?: number | null;
+}
+
 export interface Department {
 	/** @primaryKey */
 	id: number;
@@ -603,6 +621,7 @@ export interface DirectusExtension {
 
 export interface Schema {
 	camps: Camp[];
+	city_trips: CityTrip[];
 	departments: Department[];
 	event_categories: EventCategory[];
 	events: Event[];
@@ -646,6 +665,7 @@ export interface Schema {
 
 export enum CollectionNames {
 	camps = 'camps',
+	city_trips = 'city_trips',
 	departments = 'departments',
 	event_categories = 'event_categories',
 	events = 'events',

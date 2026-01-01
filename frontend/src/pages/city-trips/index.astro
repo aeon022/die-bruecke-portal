@@ -1,0 +1,118 @@
+---
+import MainLayout from '../../layouts/layout.astro';
+import { directus } from '../../lib/directus';
+import { readItems } from '@directus/sdk';
+
+// 1. Daten laden (Collection: city_trips)
+const trips = await directus.request(readItems('city_trips', {
+    filter: { status: { _eq: 'published' } },
+    sort: ['date_range'] 
+}));
+
+const ASSET_URL = "http://localhost:8055/assets";
+
+// 2. Featured-Logik
+const featuredTrip = trips.find((t: any) => t.is_featured) || trips[0];
+---
+
+<MainLayout title="City Trips & Ausflüge | Die Brücke">
+    
+    {/* --- HERO SECTION (Featured Trip) --- */}
+    {featuredTrip && (
+        <section class="px-4 sm:px-6 pt-6 pb-20">
+            <div class="relative bg-slate-900 rounded-[48px] overflow-hidden min-h-[50vh] flex items-center px-6 md:px-16 py-20">
+                
+                {/* Background Image */}
+                <div class="absolute inset-0">
+                    {featuredTrip.image && (
+                         <img src={`${ASSET_URL}/${featuredTrip.image}`} class="w-full h-full object-cover opacity-50" alt={featuredTrip.title} />
+                    )}
+                    <div class="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/60 to-transparent"></div>
+                </div>
+
+                <div class="relative z-10 max-w-2xl">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/20 border border-indigo-500/30 text-indigo-400 text-xs font-bold uppercase tracking-widest mb-6">
+                        <span class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span> Nächster Ausflug
+                    </div>
+                    <h1 class="text-4xl md:text-6xl font-display font-extrabold text-white mb-6 leading-tight">
+                        {featuredTrip.title}
+                    </h1>
+                    
+                    <p class="text-xl text-slate-300 mb-8 leading-relaxed line-clamp-3">
+                        {featuredTrip.description?.replace(/<[^>]*>?/gm, '')}
+                    </p>
+                    
+                    <div class="flex flex-wrap gap-6 mb-10 text-sm font-medium text-slate-400">
+                        <span class="flex items-center gap-2"><i class="fa-regular fa-calendar text-indigo-400"></i> {featuredTrip.date_range}</span>
+                        <span class="flex items-center gap-2"><i class="fa-solid fa-location-dot text-indigo-400"></i> {featuredTrip.location}</span>
+                    </div>
+
+                    <div class="flex flex-wrap gap-4">
+                        <a href={`/city-trips/${featuredTrip.slug}`} class="bg-indigo-600 text-white px-8 py-4 rounded-full font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-900/20">
+                            Infos & Anmeldung
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    )}
+
+    {/* --- LIST SECTION --- */}
+    <section class="px-4 sm:px-6 pb-20">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex items-end justify-between mb-12">
+                <h2 class="text-3xl font-display font-bold text-slate-900">Aktuelle Ausflüge</h2>
+                <div class="hidden md:block h-px flex-grow bg-slate-200 ml-8 relative top-[-10px]"></div>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {trips.map((trip: any) => (
+                    <article class="group bg-white border border-slate-200 rounded-3xl overflow-hidden hover:shadow-xl transition-all hover:-translate-y-1 flex flex-col h-full">
+                        <a href={`/city-trips/${trip.slug}`} class="block relative h-56 overflow-hidden">
+                            {trip.image ? (
+                                <img src={`${ASSET_URL}/${trip.image}`} alt={trip.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                            ) : (
+                                <div class="w-full h-full bg-slate-100 flex items-center justify-center text-slate-300"><i class="fa-solid fa-bus text-4xl"></i></div>
+                            )}
+                            <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-bold text-slate-900 shadow-sm">
+                                € {trip.price}
+                            </div>
+                        </a>
+                        
+                        <div class="p-6 flex flex-col flex-grow">
+                            <div class="flex gap-4 text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">
+                                <span><i class="fa-regular fa-calendar text-indigo-500 mr-1"></i> {trip.date_range}</span>
+                            </div>
+                            
+                            <h3 class="text-xl font-bold text-slate-900 mb-2">
+                                <a href={`/city-trips/${trip.slug}`} class="hover:text-indigo-600 transition-colors">
+                                    {trip.title}
+                                </a>
+                            </h3>
+
+                            {trip.fass_hours && (
+                                <div class="mb-4 text-xs font-bold text-slate-400">
+                                    <i class="fa-solid fa-check text-indigo-500 mr-1"></i> {trip.fass_hours}h FASS
+                                </div>
+                            )}
+                            
+                            <div class="pt-4 border-t border-slate-100 flex items-center justify-between mt-auto">
+                                <div class="flex items-center gap-2 text-sm font-medium text-slate-600">
+                                    {trip.free_spots > 0 ? (
+                                        <><span class="w-2 h-2 rounded-full bg-emerald-500"></span> {trip.free_spots} Plätze</>
+                                    ) : (
+                                        <><span class="w-2 h-2 rounded-full bg-rose-500"></span> Voll</>
+                                    )}
+                                </div>
+                                <a href={`/city-trips/${trip.slug}`} class="text-indigo-600 font-bold hover:underline inline-flex items-center gap-1">
+                                    Details <i class="fa-solid fa-arrow-right text-xs"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+                ))}
+            </div>
+        </div>
+    </section>
+
+</MainLayout>
