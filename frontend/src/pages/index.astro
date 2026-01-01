@@ -1,24 +1,33 @@
 ---
 import MainLayout from '../layouts/layout.astro';
 import { getEvents, getGlobalSettings } from '../lib/api';
+import { directus } from '../lib/directus';
+import { readItems } from '@directus/sdk';
 
 // 1. Daten laden
-const [settings, allEvents] = await Promise.all([
+const [settings, allEvents, dbServices] = await Promise.all([
   getGlobalSettings(),
-  getEvents()
+  getEvents(),
+  directus.request(readItems('services', {
+      sort: ['sort'],
+      filter: { status: { _eq: 'published' } }
+  }))
 ]);
 
 const ASSET_URL = 'http://localhost:8055/assets'; 
 
-// 2. Highlight Logik
+// Hilfs-Array für bunte Farben (rotierend)
+const serviceColors = ["bg-lime-500", "bg-orange-500", "bg-sky-500", "bg-indigo-500", "bg-purple-500"];
+
+// 2. Highlight Logik für Events
 const highlightEvent = allEvents.find(e => e.is_highlight === true);
 
-// 3. Die nächsten 3 Events
+// 3. Die nächsten 3 Events (ohne das Highlight)
 const upcomingEvents = allEvents
   .filter(e => e.id !== highlightEvent?.id)
   .slice(0, 3);
 
-// FIX: Backticks für sauberen HTML-String genutzt
+// Hero Headline
 const heroHeadline = settings?.hero_headline || `Kultur verbindet.<br> <span class="pr-2 bg-clip-text text-transparent bg-gradient-to-r from-rose-600 to-orange-400 dark:from-rose-400 dark:to-orange-300">Inklusion</span> stärkt.`;
 ---
 
@@ -52,7 +61,6 @@ const heroHeadline = settings?.hero_headline || `Kultur verbindet.<br> <span cla
                 <span class="text-[10px] mb-0.5">●</span> Seit 1983
             </div>
             
-            {/* FIX: [&_*:not(.text-transparent)] verhindert, dass der Gradient überschrieben wird */}
             <h1 class="text-5xl sm:text-7xl lg:text-8xl font-display font-extrabold text-slate-900 dark:text-white [&_*:not(.text-transparent)]:dark:text-white tracking-tighter leading-[0.9] mb-12" set:html={heroHeadline}></h1>
             
             <p class="text-xl text-slate-500 dark:text-slate-200 max-w-2xl leading-relaxed border-l-4 border-rose-500 pl-8 font-medium">
@@ -121,7 +129,7 @@ const heroHeadline = settings?.hero_headline || `Kultur verbindet.<br> <span cla
         </div>
     </section>
 
-    {/* --- SERVICES --- */}
+    {/* --- SERVICES (PURE DIRECTUS) --- */}
     <section class="px-6 sm:px-10 py-24 transition-colors duration-300">
         <div class="max-w-7xl mx-auto text-center">
             <div class="max-w-3xl mx-auto mb-20">
@@ -133,18 +141,23 @@ const heroHeadline = settings?.hero_headline || `Kultur verbindet.<br> <span cla
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-left">
-                {[
-                    { title: "Freizeitassistenz", slug: "freizeitassistenz", color: "bg-lime-500", icon: "fa-person-walking-luggage", text: "Deine Freizeit, deine Regeln. Wir begleiten dich." },
-                    { title: "Wohnassistenz", slug: "wohnassistenz", color: "bg-orange-500", icon: "fa-house-chimney-user", text: "Selbstständig leben in den eigenen vier Wänden." },
-                    { title: "Familienentlastung", slug: "familienentlastung", color: "bg-sky-500", icon: "fa-hands-holding-child", text: "Zeit zum Durchatmen für die ganze Familie." },
-                    { title: "Urlaubsaktionen", slug: "services", color: "bg-rose-500", icon: "fa-umbrella-beach", text: "Barrierefrei & betreut die Welt entdecken." }
-                ].map(s => (
-                    <a href={`/${s.slug === 'services' ? 'services' : 'services/' + s.slug}`} class="group bg-white dark:bg-slate-900 p-8 rounded-[32px] border border-slate-100 dark:border-slate-800 hover:shadow-2xl transition-all duration-500">
-                        <div class={`w-12 h-12 rounded-2xl ${s.color} text-white flex items-center justify-center text-xl mb-6 shadow-lg group-hover:scale-110 transition-transform`}><i class={`fa-solid ${s.icon}`}></i></div>
-                        <h3 class="text-xl font-display font-bold text-slate-900 dark:text-white mb-3">{s.title}</h3>
-                        <p class="text-slate-500 dark:text-slate-300 text-sm leading-relaxed">{s.text}</p>
-                    </a>
-                ))}
+                
+                {/* Loop direkt über DB Services */}
+                {dbServices.map((service: any, index: number) => {
+                    const colorClass = serviceColors[index % serviceColors.length];
+                    
+                    return (
+                        <a href={`/services/${service.slug}`} class="group bg-white dark:bg-slate-900 p-8 rounded-[32px] border border-slate-100 dark:border-slate-800 hover:shadow-2xl transition-all duration-500">
+                            <div class={`w-12 h-12 rounded-2xl ${colorClass} text-white flex items-center justify-center text-xl mb-6 shadow-lg group-hover:scale-110 transition-transform`}>
+                                <i class={`fa-solid ${service.icon || 'fa-hand-holding-heart'}`}></i>
+                            </div>
+                            <h3 class="text-xl font-display font-bold text-slate-900 dark:text-white mb-3">{service.title}</h3>
+                            <p class="text-slate-500 dark:text-slate-300 text-sm leading-relaxed line-clamp-3">
+                                {service.description?.replace(/<[^>]*>?/gm, '') || 'Mehr erfahren...'}
+                            </p>
+                        </a>
+                    );
+                })}
             </div>
         </div>
     </section>
@@ -157,24 +170,24 @@ const heroHeadline = settings?.hero_headline || `Kultur verbindet.<br> <span cla
             <h2 class="text-4xl md:text-5xl font-display font-bold text-slate-900 dark:text-white tracking-tighter mb-16">Was uns bewegt.</h2>
             
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
-                {/* PROJEKT 1 */}
+                {/* PROJEKT 1 (Link zu Camps) */}
                 <div class="group relative rounded-[48px] overflow-hidden bg-slate-900 aspect-[16/10] lg:aspect-auto border border-transparent dark:border-slate-800">
                     <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200" class="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:scale-105 transition-transform duration-1000" alt="Urlaub" />
                     <div class="relative z-10 p-10 h-full flex flex-col justify-end text-white">
                         <span class="px-3 py-1 bg-rose-600 rounded-full text-[10px] font-bold uppercase w-fit mb-4">Highlight</span>
                         <h3 class="text-3xl font-display font-bold mb-4">Betreute Urlaubsaktionen</h3>
                         <p class="text-slate-300 max-w-md mb-6 leading-relaxed">Eines unserer Herzstücke: Gemeinsam verreisen, Barrieren überwinden und echte Urlaubsfreude erleben.</p>
-                        <a href="/services" class="text-rose-400 font-bold flex items-center gap-2">Details ansehen <i class="fa-solid fa-arrow-right"></i></a>
+                        <a href="/camps" class="text-rose-400 font-bold flex items-center gap-2">Details ansehen <i class="fa-solid fa-arrow-right"></i></a>
                     </div>
                 </div>
 
-                {/* PROJEKT 2: Infozentrum */}
+                {/* PROJEKT 2: Infozentrum (Link zu Info) */}
                 <div class="group relative rounded-[48px] overflow-hidden bg-slate-50 dark:bg-slate-900 aspect-[16/10] lg:aspect-auto border border-slate-200 dark:border-slate-800">
                     <div class="p-10 h-full flex flex-col justify-center">
                         <div class="w-16 h-16 bg-slate-900 dark:bg-white rounded-3xl text-white dark:text-slate-900 flex items-center justify-center text-2xl mb-8"><i class="fa-solid fa-circle-info"></i></div>
                         <h3 class="text-3xl font-display font-bold text-slate-900 dark:text-white mb-4">Infozentrum</h3>
                         <p class="text-slate-500 dark:text-slate-300 mb-8 leading-relaxed">Unsere erste Anlaufstelle in Graz. Unbürokratische Beratung bei Anträgen, Behördenwegen und sozialen Fragestellungen – menschlich und direkt.</p>
-                        <a href="/contact" class="px-8 py-3 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-full font-bold w-fit hover:bg-rose-600 dark:hover:bg-rose-500 dark:hover:text-white transition-all shadow-lg">Kontakt aufnehmen</a>
+                        <a href="/info" class="px-8 py-3 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-full font-bold w-fit hover:bg-rose-600 dark:hover:bg-rose-500 dark:hover:text-white transition-all shadow-lg">Kontakt aufnehmen</a>
                     </div>
                 </div>
             </div>
