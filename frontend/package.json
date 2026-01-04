@@ -22,9 +22,12 @@
     "tailwindcss": "^4.1.18"
   },
   "devDependencies": {
+    "@astrojs/react": "^4.4.2",
     "@pinegrow/piny-astro": "^1.0.8",
     "@tailwindcss/typography": "^0.5.19",
     "directus-sdk-typegen": "^0.2.1",
-    "micromorph": "^0.4.5"
+    "micromorph": "^0.4.5",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3"
   }
 }

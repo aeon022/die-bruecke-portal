@@ -3,7 +3,6 @@
         "open-pages": [
             "pinyfakepage.html"
         ],
-        "ai-project-brief": "Web Portal Relaunch für \"Die Brücke - soziokulturelles Zentrum\". https://diebruecke.social",
         "app-routes": {
             "routes": [
                 "/",
@@ -11,6 +10,7 @@
                 "/about",
                 "/bak-index",
                 "/camps",
+                "/city-trips",
                 "/contact",
                 "/datenschutz",
                 "/events",
@@ -25,10 +25,11 @@
             "current_route": "/"
         },
         "tw-external-config": {
-            "external_config_url": null,
             "external_source_url": null
         },
-        "source-folders": null,
+        "source-folders": [
+            "src"
+        ],
         "preview-url": "http://localhost:4321"
     }
 }

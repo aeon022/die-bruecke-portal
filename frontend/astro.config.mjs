@@ -2,28 +2,34 @@
 import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import PinyAstro from "@pinegrow/piny-astro";
-import node from '@astrojs/node'; // Wir brauchen einen Adapter für SSR
+import node from '@astrojs/node';
+import react from '@astrojs/react'; 
 
 // https://astro.build/config
 export default defineConfig({
   
-  output: 'server', // <--- WICHTIG: Server Side Rendering aktivieren
+  output: 'server',
   adapter: node({
     mode: 'standalone',
   }),
 
-  // Remote Images (z.B. für astro:assets <Image />)
   image: {
     domains: ['images.unsplash.com', 'source.unsplash.com', 'unsplash.com'],
   },
   
   integrations: [
-    PinyAstro()
+    PinyAstro(),
+    react(), // <--- WICHTIG: Hier muss der Aufruf hin (ohne Babel-Plugins)
   ],
 
   vite: {
     plugins: [
       tailwindcss(),
     ],
+    server: {
+      watch: {
+        usePolling: true,
+      },
+    },
   },
 });
