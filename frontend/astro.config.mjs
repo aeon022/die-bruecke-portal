@@ -1,35 +1,37 @@
-// @ts-check
+import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'astro/config';
-import tailwindcss from '@tailwindcss/vite';
-import PinyAstro from "@pinegrow/piny-astro";
 import node from '@astrojs/node';
-import react from '@astrojs/react'; 
+import react from '@astrojs/react';
+import tailwindcss from '@tailwindcss/vite';
+import vue from '@astrojs/vue';
+import PinyAstro from '@pinegrow/piny-astro'; // <-- Das ist neu
 
-// https://astro.build/config
 export default defineConfig({
-  
   output: 'server',
-  adapter: node({
-    mode: 'standalone',
-  }),
+  adapter: node({ mode: 'standalone' }),
 
-  image: {
-    domains: ['images.unsplash.com', 'source.unsplash.com', 'unsplash.com'],
-  },
-  
   integrations: [
-    PinyAstro(),
-    react(), // <--- WICHTIG: Hier muss der Aufruf hin (ohne Babel-Plugins)
+    react(),
+    vue(),
+    PinyAstro({
+        // Hot Reloading für .astro Dateien aktivieren (Standard)
+        hotReload: true, 
+    }),
   ],
 
   vite: {
     plugins: [
       tailwindcss(),
     ],
-    server: {
-      watch: {
-        usePolling: true,
+    resolve: {
+      alias: {
+        '@': fileURLToPath(new URL('./src', import.meta.url)),
+        '~': fileURLToPath(new URL('./src', import.meta.url)),
+        '~~': fileURLToPath(new URL('./', import.meta.url)),
       },
     },
+    server: {
+      watch: { usePolling: true }
+    }
   },
 });

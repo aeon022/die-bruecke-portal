@@ -6,9 +6,8 @@
         "app-routes": {
             "routes": [
                 "/",
-                "/#backup-index",
                 "/about",
-                "/bak-index",
+                "/barebone",
                 "/camps",
                 "/city-trips",
                 "/contact",
@@ -17,19 +16,30 @@
                 "/impressum",
                 "/info",
                 "/join",
+                "/pinytest",
                 "/projects",
                 "/services",
                 "/space",
                 "/supporters"
             ],
-            "current_route": "/"
+            "current_route": "/pinytest"
         },
         "tw-external-config": {
             "external_source_url": null
         },
-        "source-folders": [
-            "src"
-        ],
-        "preview-url": "http://localhost:4321"
+        "source-folders": null,
+        "preview-url": "http://localhost:4321",
+        "ai-project-brief": null,
+        "component-settings": {
+            "frontend/src/pages/space.astro:::Temp": {
+                "route": "/space"
+            },
+            "frontend/src/pages/index.astro:::Temp": {
+                "black-box": false
+            },
+            "frontend/src/pages/about.astro:::Temp": {
+                "route": "/space"
+            }
+        }
     }
 }

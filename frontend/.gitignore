@@ -26,3 +26,8 @@ pnpm-debug.log*
 # Database Dumps
 *.sql
 *.dump
+
+
+# Pinegrow temp folders
+_pg*
+pinegrow.json
