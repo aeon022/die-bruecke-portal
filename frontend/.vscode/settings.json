@@ -1,0 +1,28 @@
+{
+    "piny.project_settings": {
+        "open-pages": [
+            "pinyfakepage.html"
+        ],
+        "app-routes": {
+            "routes": [
+                "/",
+                "/about",
+                "/barebone",
+                "/camps",
+                "/city-trips",
+                "/contact",
+                "/datenschutz",
+                "/events",
+                "/impressum",
+                "/info",
+                "/join",
+                "/pinytest",
+                "/projects",
+                "/services",
+                "/space",
+                "/supporters"
+            ],
+            "current_route": "/space"
+        }
+    }
+}
