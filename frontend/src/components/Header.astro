@@ -154,25 +154,31 @@ const menuItems = [
   #main-header.is-shrink { padding-top: 0.85rem !important; padding-bottom: 0.85rem !important; }
   #main-header.is-shrink #logo-container { width: 2.25rem; height: 2.25rem; border-radius: 0.75rem; }
 
-  /* STICKY STYLES (Light Mode - COOL SLATE) */
+  /* STICKY STYLES (Light Mode - CLEAN) */
   #header-shell.is-float #main-header {
-    border-radius: 34px !important; 
+    border-radius: 24px !important; 
     
     /* Harmonizes with Slate-800 Overlay: Cool Blue-Gray */
-    background-color: rgba(248, 250, 252, 0.95) !important; /* Slate-50 */
+    background-color: #64748b !important; /* Slate-500 */
     backdrop-filter: blur(12px);
-    
-    /* Subtle Slate Border & Shadow */
-    border: 1px solid rgba(226, 232, 240, 0.8) !important; /* Slate-200 */
-    box-shadow: 0 10px 30px -5px rgba(71, 85, 105, 0.1) !important; /* Slate-600 Shadow */
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  /* TEXT-KORREKTUR für Light Mode Sticky: */
+  /* Wenn der Header 'is-float' (sticky) hat, wird der Text weiß */
+  #header-shell.is-float .brand-text { 
+      color: white !important; 
   }
   
-  /* STICKY STYLES (Dark Mode - Deep Blue) */
+  /* STICKY STYLES (Dark Mode - CLEAN) */
   html.dark #header-shell.is-float #main-header {
     background-color: #0f172a !important; 
     backdrop-filter: blur(16px);
-    box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5) !important;
-    border: 1px solid rgba(255, 255, 255, 0.03) !important;
+    
+    /* UPDATE: Border und Shadow entfernt */
+    box-shadow: none !important;
+    border: none !important;
   }
 
   /* Overlay Menu */

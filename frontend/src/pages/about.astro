@@ -22,7 +22,7 @@ const leadership = team.filter(m => m.type === 'operative');
 
 const ASSET_URL = "http://localhost:8055/assets";
 
-// --- DATEN: TIMELINE (Bleibt vorerst statisch, wie gewünscht) ---
+// --- DATEN: TIMELINE ---
 const history = [
     { 
         year: "1983", 
@@ -60,35 +60,35 @@ const history = [
 <MainLayout title="Über uns | Die Brücke">
     
     {/* --- HERO --- */}
-    <section class="relative px-6 sm:px-10 pt-40 pb-32 bg-white overflow-hidden">
+    <section class="relative px-6 sm:px-10 pt-40 pb-32 bg-white dark:bg-slate-950 overflow-hidden transition-colors duration-300">
         <div class="max-w-7xl mx-auto relative z-10">
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-50 border border-slate-200 text-xs font-bold text-rose-500 mb-8 uppercase tracking-widest shadow-sm">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs font-bold text-rose-500 dark:text-rose-400 mb-8 uppercase tracking-widest shadow-sm">
                 <span class="text-[10px] mb-0.5">●</span> Das Original seit 1983
             </div>
             
-            <h1 class="text-6xl md:text-8xl lg:text-9xl font-display font-extrabold text-slate-900 tracking-tighter mb-10 leading-[0.9]">
+            <h1 class="text-6xl md:text-8xl lg:text-9xl font-display font-extrabold text-slate-900 dark:text-white tracking-tighter mb-10 leading-[0.9]">
                 Wir bauen <br>
                 <span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 via-indigo-500 to-indigo-600">Brücken.</span>
             </h1>
 
             <div class="grid md:grid-cols-2 gap-16 items-center">
                 <div class="space-y-6">
-                    <p class="text-3xl text-slate-900 leading-[1.1] font-bold tracking-tight">
+                    <p class="text-3xl text-slate-900 dark:text-white leading-[1.1] font-bold tracking-tight">
                         Wir sind das Backup für deine Unabhängigkeit.
                     </p>
-                    <p class="text-xl text-slate-500 leading-relaxed font-medium">
+                    <p class="text-xl text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
                         Wo andere über Inklusion reden, schaffen wir seit 42 Jahren den Raum, in dem sie einfach passiert – unbürokratisch und radikal menschlich.
                     </p>
                 </div>
 
                 <div class="relative flex justify-center md:justify-end">
                     <div class="relative group">
-                        <div class="w-64 h-64 rounded-full bg-slate-50 border-2 border-dashed border-slate-200 flex items-center justify-center p-8 text-center rotate-12 group-hover:rotate-0 transition-transform duration-700 shadow-sm">
+                        <div class="w-64 h-64 rounded-full bg-slate-50 dark:bg-slate-900 border-2 border-dashed border-slate-200 dark:border-slate-700 flex items-center justify-center p-8 text-center rotate-12 group-hover:rotate-0 transition-transform duration-700 shadow-sm">
                             <p class="text-slate-400 font-display font-bold leading-tight uppercase text-sm">
                                 <span class="text-rose-500 text-xl block mb-2">⚠ Achtung</span>
                                 Enthält Spuren von <br>
-                                <span class="text-slate-900 line-through opacity-30 decoration-rose-500">Mitleid</span><br>
-                                <span class="text-slate-900 font-black text-lg">Echtem Leben</span>
+                                <span class="text-slate-900 dark:text-white line-through opacity-30 decoration-rose-500">Mitleid</span><br>
+                                <span class="text-slate-900 dark:text-white font-black text-lg">Echtem Leben</span>
                             </p>
                         </div>
                         <div class="absolute -bottom-4 -right-2 bg-yellow-200 text-slate-800 px-6 py-3 shadow-xl -rotate-6 font-bold text-sm border-l-4 border-yellow-400">
@@ -102,9 +102,9 @@ const history = [
     </section>
         
     {/* --- WERTE --- */}
-    <section class="px-6 sm:px-10 py-32 bg-white">
+    <section class="px-6 sm:px-10 py-32 bg-white dark:bg-slate-950 transition-colors duration-300">
         <div class="max-w-7xl mx-auto text-center">
-            <h2 class="text-4xl md:text-6xl font-display font-extrabold text-slate-900 tracking-tighter mb-20">
+            <h2 class="text-4xl md:text-6xl font-display font-extrabold text-slate-900 dark:text-white tracking-tighter mb-20">
                 Worauf wir <span class="text-rose-600">bauen.</span>
             </h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
@@ -115,14 +115,16 @@ const history = [
                 ].map(card => (
                     <div class="group h-[400px] [perspective:1000px]">
                         <div class="relative h-full w-full rounded-[48px] shadow-xl transition-all duration-500 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)] cursor-pointer">
-                            <div class="absolute inset-0 h-full w-full rounded-[48px] bg-slate-50 flex flex-col items-center justify-center p-10 [backface-visibility:hidden]">
+                            {/* FRONT SIDE */}
+                            <div class="absolute inset-0 h-full w-full rounded-[48px] bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 flex flex-col items-center justify-center p-10 [backface-visibility:hidden]">
                                 <div class={`w-20 h-20 ${card.color} text-white rounded-3xl flex items-center justify-center text-3xl mb-6 shadow-lg`}>
                                     <i class={`fa-solid ${card.icon}`}></i>
                                 </div>
-                                <h3 class="text-2xl font-display font-bold text-slate-900">{card.title}</h3>
-                                <p class="text-slate-400 mt-4 font-bold uppercase text-[10px] tracking-widest">Mehr erfahren</p>
+                                <h3 class="text-2xl font-display font-bold text-slate-900 dark:text-white">{card.title}</h3>
+                                <p class="text-slate-400 dark:text-slate-500 mt-4 font-bold uppercase text-[10px] tracking-widest">Mehr erfahren</p>
                             </div>
-                            <div class="absolute inset-0 h-full w-full rounded-[48px] bg-slate-900 p-10 text-white [transform:rotateY(180deg)] [backface-visibility:hidden] flex flex-col items-center justify-center text-center">
+                            {/* BACK SIDE */}
+                            <div class="absolute inset-0 h-full w-full rounded-[48px] bg-slate-900 dark:bg-slate-800 border border-slate-800 dark:border-slate-700 p-10 text-white [transform:rotateY(180deg)] [backface-visibility:hidden] flex flex-col items-center justify-center text-center">
                                 <h3 class="text-2xl font-display font-bold mb-4">{card.title}</h3>
                                 <p class="text-slate-300 leading-relaxed font-medium">{card.text}</p>
                             </div>
@@ -134,24 +136,26 @@ const history = [
     </section>
 
     {/* --- TIMELINE --- */}
-    <section class="px-6 sm:px-10 py-32 bg-slate-50 relative overflow-hidden">
+    <section class="px-6 sm:px-10 py-32 bg-slate-50 dark:bg-slate-900 relative overflow-hidden transition-colors duration-300">
         <div class="max-w-4xl mx-auto relative">
             <div class="text-center mb-24">
                 <span class="text-rose-500 font-bold tracking-widest uppercase text-xs mb-4 block underline decoration-rose-500 decoration-2 underline-offset-8">Unsere Geschichte</span>
-                <h2 class="text-4xl md:text-6xl font-display font-bold text-slate-900 tracking-tighter">Vom Visionär <br>zum Fels in der Brandung.</h2>
+                <h2 class="text-4xl md:text-6xl font-display font-bold text-slate-900 dark:text-white tracking-tighter">Vom Visionär <br>zum Fels in der Brandung.</h2>
             </div>
             <div class="relative pl-8 md:pl-0" id="timelineContainer">
-                <div class="absolute left-8 md:left-1/2 top-0 bottom-0 w-0.5 bg-slate-200 -translate-x-1/2"></div>
+                {/* Vertical Line */}
+                <div class="absolute left-8 md:left-1/2 top-0 bottom-0 w-0.5 bg-slate-200 dark:bg-slate-800 -translate-x-1/2"></div>
                 <div id="timelineProgress" class="absolute left-8 md:left-1/2 top-0 w-1 bg-rose-600 -translate-x-1/2 transition-all duration-100 ease-out" style="height: 0%;"></div>
+                
                 <div class="space-y-24 md:space-y-40 relative z-10">
                     {history.map((item, idx) => (
                         <div class={`flex flex-col md:flex-row items-center gap-8 md:gap-16 timeline-item opacity-20 transition-all duration-700 transform translate-y-8 ${idx % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'}`}>
                             <div class={`flex-1 ${idx % 2 === 0 ? 'md:text-right' : 'md:text-left'} text-left`}>
-                                <span class="text-7xl font-display font-black text-slate-200 block mb-2">{item.year}</span>
-                                <h3 class="text-2xl font-bold text-slate-900 mb-4">{item.title}</h3>
-                                <p class="text-slate-500 leading-relaxed font-medium">{item.desc}</p>
+                                <span class="text-7xl font-display font-black text-slate-200 dark:text-slate-800 block mb-2 transition-colors">{item.year}</span>
+                                <h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-4">{item.title}</h3>
+                                <p class="text-slate-500 dark:text-slate-400 leading-relaxed font-medium">{item.desc}</p>
                             </div>
-                            <div class="absolute left-8 md:left-1/2 w-5 h-5 rounded-full bg-white border-4 border-rose-600 -translate-x-1/2 shadow-[0_0_0_8px_rgba(255,255,255,1)]"></div>
+                            <div class="absolute left-8 md:left-1/2 w-5 h-5 rounded-full bg-white dark:bg-slate-950 border-4 border-rose-600 -translate-x-1/2 shadow-[0_0_0_8px_rgba(255,255,255,1)] dark:shadow-[0_0_0_8px_rgba(15,23,42,1)] transition-colors"></div>
                             <div class="flex-1 hidden md:block"></div>
                         </div>
                     ))}
@@ -198,12 +202,12 @@ const history = [
 
 
     {/* --- TEAM SECTION --- */}
-    <section class="px-6 sm:px-10 py-32 bg-white">
+    <section class="px-6 sm:px-10 py-32 bg-white dark:bg-slate-950 transition-colors duration-300">
         <div class="max-w-7xl mx-auto">
             
             <div class="mb-24">
                 <span class="text-rose-500 font-bold tracking-widest uppercase text-xs mb-4 block underline decoration-rose-500 decoration-2 underline-offset-8">Struktur & Köpfe</span>
-                <h2 class="text-4xl md:text-6xl font-display font-extrabold text-slate-900 tracking-tighter leading-tight">
+                <h2 class="text-4xl md:text-6xl font-display font-extrabold text-slate-900 dark:text-white tracking-tighter leading-tight">
                     Menschen mit <br>
                     <span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 via-indigo-500 to-indigo-600">
                         Haltung & Herz.
@@ -213,15 +217,15 @@ const history = [
 
             <div class="mb-32">
                 <div class="flex items-center gap-6 mb-12">
-                    <h3 class="text-2xl font-display font-bold text-slate-900 shrink-0">Der Vorstand</h3>
-                    <div class="h-px bg-slate-100 flex-1"></div>
+                    <h3 class="text-2xl font-display font-bold text-slate-900 dark:text-white shrink-0">Der Vorstand</h3>
+                    <div class="h-px bg-slate-100 dark:bg-slate-800 flex-1 transition-colors"></div>
                     <span class="text-slate-400 text-[10px] font-bold uppercase tracking-[0.2em]">Strategische Führung</span>
                 </div>
 
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
                     {boardMembers.map(member => (
                         <div class="group">
-                            <div class="aspect-square rounded-[32px] overflow-hidden bg-slate-100 mb-4 border border-slate-200 shadow-sm group-hover:shadow-xl transition-all duration-500 flex items-center justify-center relative">
+                            <div class="aspect-square rounded-[32px] overflow-hidden bg-slate-100 dark:bg-slate-900 mb-4 border border-slate-200 dark:border-slate-800 shadow-sm group-hover:shadow-xl transition-all duration-500 flex items-center justify-center relative">
                                 {member.image ? (
                                     <img 
                                         src={`${ASSET_URL}/${member.image}?key=system-medium-cover`} 
@@ -229,13 +233,13 @@ const history = [
                                         alt={member.name}
                                     />
                                 ) : (
-                                    <span class="text-2xl font-display font-black text-slate-300 group-hover:text-rose-500 transition-colors uppercase">
+                                    <span class="text-2xl font-display font-black text-slate-300 dark:text-slate-700 group-hover:text-rose-500 transition-colors uppercase">
                                         {member.name.split(' ').map(n => n[0]).join('')}
                                     </span>
                                 )}
                             </div>
-                            <h4 class="text-sm font-bold text-slate-900 leading-tight mb-1">{member.name}</h4>
-                            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-tighter leading-none">{member.role}</p>
+                            <h4 class="text-sm font-bold text-slate-900 dark:text-white leading-tight mb-1">{member.name}</h4>
+                            <p class="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-tighter leading-none">{member.role}</p>
                         </div>
                     ))}
                 </div>
@@ -243,8 +247,8 @@ const history = [
 
             <div>
                 <div class="flex items-center gap-6 mb-12">
-                    <h3 class="text-2xl font-display font-bold text-slate-900 shrink-0">Das Team</h3>
-                    <div class="h-px bg-slate-100 flex-1"></div>
+                    <h3 class="text-2xl font-display font-bold text-slate-900 dark:text-white shrink-0">Das Team</h3>
+                    <div class="h-px bg-slate-100 dark:bg-slate-800 flex-1 transition-colors"></div>
                 </div>
 
                 <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-10">
@@ -252,7 +256,7 @@ const history = [
                         <div class="group text-center">
                             <div class="relative w-32 h-32 md:w-40 md:h-40 mx-auto mb-6">
                                 <div class="absolute inset-0 rounded-full bg-gradient-to-tr from-rose-500 to-indigo-600 animate-spin-slow opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                                <div class="absolute inset-1 rounded-full overflow-hidden border-4 border-white bg-slate-50 flex items-center justify-center relative">
+                                <div class="absolute inset-1 rounded-full overflow-hidden border-4 border-white dark:border-slate-800 bg-slate-50 dark:bg-slate-900 flex items-center justify-center relative transition-colors">
                                     {member.image ? (
                                         <img 
                                             src={`${ASSET_URL}/${member.image}?key=system-medium-cover`} 
@@ -260,19 +264,19 @@ const history = [
                                             alt={member.name}
                                         />
                                     ) : (
-                                        <span class="text-3xl font-display font-black text-slate-200 group-hover:text-slate-400 transition-colors uppercase">
+                                        <span class="text-3xl font-display font-black text-slate-200 dark:text-slate-700 group-hover:text-slate-400 transition-colors uppercase">
                                             {member.name.split(' ').map(n => n[0]).join('')}
                                         </span>
                                     )}
                                 </div>
                             </div>
-                            <h4 class="text-lg font-bold text-slate-900 mb-1 leading-tight">{member.name}</h4>
-                            <p class="text-slate-500 text-[10px] font-bold uppercase tracking-widest">{member.role}</p>
+                            <h4 class="text-lg font-bold text-slate-900 dark:text-white mb-1 leading-tight">{member.name}</h4>
+                            <p class="text-slate-500 dark:text-slate-500 text-[10px] font-bold uppercase tracking-widest">{member.role}</p>
                         </div>
                     ))}
 
-                    <div class="flex flex-col items-center justify-center group cursor-pointer border-2 border-dashed border-slate-100 rounded-full aspect-square w-32 h-32 md:w-40 md:h-40 mx-auto hover:border-rose-500 transition-all">
-                         <i class="fa-solid fa-plus text-slate-200 group-hover:text-rose-500 text-xl"></i>
+                    <div class="flex flex-col items-center justify-center group cursor-pointer border-2 border-dashed border-slate-100 dark:border-slate-800 rounded-full aspect-square w-32 h-32 md:w-40 md:h-40 mx-auto hover:border-rose-500 dark:hover:border-rose-500 transition-all">
+                         <i class="fa-solid fa-plus text-slate-200 dark:text-slate-700 group-hover:text-rose-500 text-xl"></i>
                     </div>
                 </div>
             </div>
@@ -280,9 +284,9 @@ const history = [
     </section>
 
     {/* --- JOIN US --- */}
-    <section class="px-6 sm:px-10 py-24 bg-white">
+    <section class="px-6 sm:px-10 py-24 bg-white dark:bg-slate-950 transition-colors duration-300">
         <div class="max-w-7xl mx-auto">
-            <a href="/join" class="group relative bg-indigo-600 rounded-[48px] p-10 md:p-14 overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-10 shadow-xl hover:shadow-indigo-200 transition-all duration-500">
+            <a href="/join" class="group relative bg-indigo-600 rounded-[48px] p-10 md:p-14 overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-10 shadow-xl hover:shadow-indigo-200 dark:hover:shadow-none transition-all duration-500">
                 <div class="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(255,255,255,0.1),transparent)] pointer-events-none"></div>
                 <div class="relative z-10 flex flex-col lg:flex-row items-center gap-10 text-center lg:text-left">
                     <div class="w-20 h-20 rounded-3xl bg-white/10 flex items-center justify-center text-white text-3xl border border-white/20 group-hover:rotate-6 transition-transform">
@@ -305,11 +309,11 @@ const history = [
     </section>
 
     {/* --- EXIT SECTION --- */}
-    <section class="bg-white pb-32 text-center">
+    <section class="bg-white dark:bg-slate-950 pb-32 text-center transition-colors duration-300">
         <div class="max-w-4xl mx-auto px-6">
             <div class="flex flex-col items-center">
                 <div class="w-2 h-2 rounded-full bg-rose-500 mb-2"></div>
-                <div class="w-0.5 h-24 bg-gradient-to-b from-rose-500 via-slate-200 to-transparent"></div>
+                <div class="w-0.5 h-24 bg-gradient-to-b from-rose-500 via-slate-200 dark:via-slate-800 to-transparent"></div>
             </div>
         </div>
     </section>

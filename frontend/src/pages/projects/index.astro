@@ -5,21 +5,57 @@ import { readItems } from '@directus/sdk';
 
 // 1. Projekte aus Directus laden
 const projects = await directus.request(readItems('projects', {
-    sort: ['sort'], // oder 'date_created'
+    sort: ['sort'],
     filter: { status: { _eq: 'published' } }
 }));
 
 const ASSET_URL = 'http://localhost:8055/assets'; 
 
-// Fallback Helper für Farben, falls im CMS leer
-const getGradient = (color: string) => color || "from-slate-700 to-slate-900";
+// 2. DESIGN MAPPING (Tailwind JIT Fix)
+// Wir mappen Projekt-Titel (oder Slugs) auf feste Tailwind-Klassen.
+// So stellen wir sicher, dass der Compiler diese Klassen auch wirklich generiert.
+const styleMap: Record<string, { gradient: string, text: string, border: string }> = {
+    'SofaKINO': { 
+        gradient: "from-indigo-500 to-purple-600",
+        text: "group-hover:text-indigo-600",
+        border: "group-hover:border-indigo-200"
+    },
+    'AlltagsAkademie': { 
+        gradient: "from-emerald-500 to-teal-500",
+        text: "group-hover:text-emerald-600",
+        border: "group-hover:border-emerald-200"
+    },
+    'Erzähl mir was': { 
+        gradient: "from-amber-400 to-orange-600",
+        text: "group-hover:text-orange-600",
+        border: "group-hover:border-orange-200"
+    },
+    'Stage Dive': { 
+        gradient: "from-rose-500 to-orange-500",
+        text: "group-hover:text-rose-600",
+        border: "group-hover:border-rose-200"
+    },
+    // Fallback für neue Projekte
+    'default': { 
+        gradient: "from-slate-700 to-slate-900",
+        text: "group-hover:text-slate-600",
+        border: "group-hover:border-slate-300"
+    }
+};
+
+// Helper Funktion
+const getStyle = (title: string) => {
+    // Versuche exakten Match, sonst Teil-Match, sonst Default
+    const key = Object.keys(styleMap).find(k => title.includes(k)) || 'default';
+    return styleMap[key];
+};
 ---
 
 <MainLayout title="Unsere Projekte | Die Brücke">
     
     {/* --- HERO SECTION --- */}
     <section class="px-4 sm:px-6 pt-6 pb-12">
-        <div class="relative bg-slate-900 rounded-[48px] overflow-hidden min-h-[50vh] flex items-center px-8 md:px-16 py-20">
+        <div class="relative bg-slate-900 rounded-[48px] overflow-hidden min-h-[50vh] flex items-center px-8 md:px-16 py-20 shadow-2xl">
             
             {/* Background Effects */}
             <div class="absolute top-0 right-0 w-2/3 h-full overflow-hidden pointer-events-none">
@@ -64,23 +100,25 @@ const getGradient = (color: string) => color || "from-slate-700 to-slate-900";
             <div id="bento-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-[minmax(350px,auto)] grid-flow-dense">
                 
                 {projects.map((project: any, index: number) => {
-                    const gradient = getGradient(project.color);
+                    const styles = getStyle(project.title);
+                    
                     return (
                         <a 
                             href={`/projects/${project.slug}`} 
-                            class="bento-card group relative flex flex-col justify-between rounded-[40px] p-8 overflow-hidden transition-all duration-500 bg-white border border-slate-100 shadow-xl shadow-slate-200/50"
+                            class={`bento-card group relative flex flex-col justify-between rounded-[40px] p-8 overflow-hidden transition-all duration-500 bg-white border border-slate-100 shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:-translate-y-1 ${styles.border} hover:border-transparent ring-0 hover:ring-2 ring-offset-0 ring-opacity-50 ring-[currentColor]`}
                             data-index={index}
+                            style={`--hover-color: ${styles.text.split('-').pop()}`} /* Fallback für Ring Color Logic wenn nötig */
                         >
-                            {/* Hover Gradient */}
-                            <div class={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-500`}></div>
+                            {/* Hover Gradient Full Cover (Subtle) */}
+                            <div class={`absolute inset-0 bg-gradient-to-br ${styles.gradient} opacity-0 group-hover:opacity-[0.03] transition-opacity duration-500`}></div>
                             
                             {/* Top Area */}
                             <div class="relative z-10 flex justify-between items-start mb-6">
-                                <div class={`icon-box w-14 h-14 rounded-2xl bg-gradient-to-br ${gradient} flex items-center justify-center text-white text-2xl shadow-lg group-hover:scale-110 transition-transform duration-500`}>
+                                <div class={`icon-box w-14 h-14 rounded-2xl bg-gradient-to-br ${styles.gradient} flex items-center justify-center text-white text-2xl shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-500`}>
                                     <i class={`fa-solid ${project.icon || 'fa-star'}`}></i>
                                 </div>
                                 {project.category && (
-                                    <span class="badge px-3 py-1 rounded-full bg-slate-100 text-slate-500 text-[10px] font-bold uppercase tracking-widest border border-slate-200">
+                                    <span class="badge px-3 py-1 rounded-full bg-slate-100 text-slate-500 text-[10px] font-bold uppercase tracking-widest border border-slate-200 group-hover:bg-white group-hover:shadow-sm transition-all">
                                         {project.category}
                                     </span>
                                 )}
@@ -88,17 +126,17 @@ const getGradient = (color: string) => color || "from-slate-700 to-slate-900";
                             
                             {/* Content */}
                             <div class="relative z-10 flex-grow flex flex-col justify-center">
-                                <h2 class="project-title text-3xl font-display font-bold text-slate-900 mb-4 leading-tight group-hover:text-rose-600 transition-colors">
+                                <h2 class={`project-title text-3xl font-display font-bold text-slate-900 mb-4 leading-tight transition-colors duration-300 ${styles.text}`}>
                                     {project.title}
                                 </h2>
-                                <p class="project-desc text-slate-500 leading-relaxed line-clamp-3 group-[.is-featured]:line-clamp-6 mb-4">
+                                <p class="project-desc text-slate-500 leading-relaxed line-clamp-3 group-[.is-featured]:line-clamp-6 mb-4 font-medium">
                                     {project.description}
                                 </p>
                             </div>
 
                             {/* Bottom Arrow */}
                             <div class="relative z-10 mt-auto flex items-center gap-3">
-                                <span class="arrow-circle w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 group-hover:bg-slate-900 group-hover:border-slate-900 group-hover:text-white transition-all duration-300">
+                                <span class={`arrow-circle w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 group-hover:bg-slate-900 group-hover:border-slate-900 group-hover:text-white transition-all duration-300 bg-white`}>
                                      <i class="fa-solid fa-arrow-right -rotate-45 group-hover:rotate-0 transition-transform duration-300"></i>
                                 </span>
                                 <span class="cta-text text-sm font-bold text-slate-900 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-300">
@@ -106,27 +144,33 @@ const getGradient = (color: string) => color || "from-slate-700 to-slate-900";
                                 </span>
                             </div>
 
-                            {/* Decorative Blob */}
-                            <div class={`absolute -bottom-24 -right-24 w-64 h-64 rounded-full bg-gradient-to-br ${gradient} opacity-[0.03] group-hover:scale-150 transition-transform duration-700 blur-3xl pointer-events-none`}></div>
+                            {/* Decorative Blob (More Flash!) */}
+                            <div class={`absolute -bottom-10 -right-10 w-40 h-40 rounded-full bg-gradient-to-br ${styles.gradient} opacity-20 group-hover:opacity-40 group-hover:scale-[2.5] transition-all duration-700 blur-[60px] pointer-events-none mix-blend-multiply dark:mix-blend-screen`}></div>
                         </a>
                     );
                 })}
 
                 {/* --- STATIC CARD (Ideen) --- */}
-                <div class="bento-card static-card relative rounded-[40px] p-8 min-h-[350px] flex flex-col justify-center items-center text-center overflow-hidden bg-slate-900 border border-slate-800">
+                <div class="bento-card static-card relative rounded-[40px] p-8 min-h-[350px] flex flex-col justify-center items-center text-center overflow-hidden bg-slate-900 border border-slate-800 shadow-2xl hover:scale-[1.02] transition-transform duration-500">
                     <div class="absolute inset-0 opacity-20 pointer-events-none">
                          <svg class="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
                              <path d="M0 100 C 20 0 50 0 100 100 Z" fill="none" stroke="white" stroke-width="0.5" vector-effect="non-scaling-stroke" opacity="0.5"/>
                          </svg>
                     </div>
+                    {/* Noise Overlay */}
+                    <div class="absolute inset-0 bg-[url('/noise.png')] opacity-10 mix-blend-overlay"></div>
+                    
                     <div class="relative z-10">
-                        <div class="w-14 h-14 mx-auto rounded-full bg-white/10 flex items-center justify-center text-white text-2xl mb-6 backdrop-blur-sm">
+                        <div class="w-14 h-14 mx-auto rounded-full bg-white/10 flex items-center justify-center text-white text-2xl mb-6 backdrop-blur-sm shadow-inner border border-white/5">
                             <i class="fa-regular fa-lightbulb"></i>
                         </div>
-                        <h3 class="text-2xl font-display font-bold text-white mb-3">
+                        <h3 class="text-2xl font-display font-bold text-white mb-3 tracking-tight">
                             Hast du eine Idee?
                         </h3>
-                        <a href="/contact" class="mt-4 inline-flex items-center justify-center px-6 py-2 rounded-full bg-white text-slate-900 font-bold hover:bg-rose-500 hover:text-white transition-all hover:scale-105 text-sm">
+                        <p class="text-slate-400 text-sm mb-6 max-w-xs mx-auto">
+                            Wir suchen immer nach neuen Impulsen für Graz.
+                        </p>
+                        <a href="/contact" class="mt-4 inline-flex items-center justify-center px-8 py-3 rounded-full bg-white text-slate-900 font-bold hover:bg-rose-500 hover:text-white transition-all hover:shadow-lg hover:shadow-rose-500/25 text-sm">
                             Schreib uns
                         </a>
                      </div>
@@ -136,16 +180,45 @@ const getGradient = (color: string) => color || "from-slate-700 to-slate-900";
         </div>
     </section>
 
-    {/* CSS & Scripts (Beibehalten) */}
+    {/* CSS & Scripts */}
     <style is:global>
-        /* ... CSS bleibt identisch wie in deiner Vorlage ... */
-        html.dark .bento-card { background-color: #0f172a !important; border-color: rgba(255, 255, 255, 0.1) !important; box-shadow: none !important; }
-        html.dark .static-card { background-color: #020617 !important; border-color: rgba(255, 255, 255, 0.1) !important; }
+        /* Dark Mode Overrides */
+        html.dark .bento-card { 
+            background-color: #0f172a !important; /* slate-900 */
+            border-color: rgba(255, 255, 255, 0.05) !important; 
+            box-shadow: none !important; 
+        }
+        
+        html.dark .bento-card:hover {
+            background-color: #1e293b !important; /* slate-800 */
+        }
+
+        html.dark .static-card { 
+            background-color: #020617 !important; /* slate-950 */
+            border-color: rgba(255, 255, 255, 0.1) !important; 
+        }
+        
         html.dark .project-title { color: #f8fafc !important; }
         html.dark .project-desc { color: #94a3b8 !important; }
-        html.dark .badge { background-color: #1e293b !important; color: #cbd5e1 !important; border-color: rgba(255,255,255,0.1) !important; }
-        html.dark .arrow-circle { border-color: rgba(255,255,255,0.2) !important; color: #cbd5e1 !important; }
-        html.dark .project-card:hover .arrow-circle { background-color: white !important; color: black !important; }
+        
+        html.dark .badge { 
+            background-color: #1e293b !important; 
+            color: #cbd5e1 !important; 
+            border-color: rgba(255,255,255,0.1) !important; 
+        }
+        
+        html.dark .arrow-circle { 
+            border-color: rgba(255,255,255,0.1) !important; 
+            color: #64748b !important; 
+            background-color: #1e293b !important;
+        }
+        
+        html.dark .bento-card:hover .arrow-circle { 
+            background-color: white !important; 
+            color: black !important; 
+            border-color: white !important;
+        }
+        
         html.dark .cta-text { color: white !important; }
     </style>
 

@@ -8,16 +8,22 @@ function getSafeLabel(obj: any) {
     return obj.name || obj.title || obj.label || obj.bezeichnung || obj.titel || 'Kategorie';
 }
 
+// FILTER-LOGIK: Im Production-Mode nur veröffentlichte Events zeigen
+const statusFilter = import.meta.env.PROD 
+  ? { status: { _eq: 'published' } } 
+  : {};
+
 /**
  * Holt Events und baut die M2M-Beziehung MANUELL zusammen.
  */
 export async function getEvents() {
     try {
-        // 1. Hole alle Events
+        // 1. Hole alle Events (mit Status-Filter!)
         const eventsPromise = directus.request(
             readItems('events', {
                 fields: ['*', 'is_highlight'], 
-                sort: ['-start_date'],
+                filter: statusFilter, // <--- HIER EINGEFÜGT
+                sort: ['start_date'], // Empfehlung: Aufsteigend sortieren (nächste Termine zuerst), statt -start_date
                 limit: -1
             })
         );
@@ -55,8 +61,10 @@ export async function getEvents() {
 
         const relationsMap = new Map<string, string[]>();
         junctions.forEach((rel: any) => {
+            // Directus Junction IDs können variieren, wir prüfen beide Richtungen
             const eId = rel.events_id || rel.event_id;
             const cId = rel.event_categories_id || rel.event_category_id || rel.category_id;
+            
             if (eId && cId) {
                 const eKey = String(eId);
                 if (!relationsMap.has(eKey)) relationsMap.set(eKey, []);
@@ -102,6 +110,7 @@ export async function getEventCategories() {
 }
 
 export async function getEventBySlug(slug: string) {
+    // Wir nutzen getEvents(), damit auch hier die M2M-Relationen sauber aufgelöst sind
     const all = await getEvents();
     return all.find((e: any) => e.slug === slug) || null;
 }
@@ -131,6 +140,8 @@ export async function getGlobalSettings() {
     try {
         return await directus.request(readSingleton('global_settings'));
     } catch (error) {
+        // Singleton existiert vielleicht noch nicht oder ist leer
+        console.warn('Global Settings konnten nicht geladen werden.');
         return null;
     }
 }

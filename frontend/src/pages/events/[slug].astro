@@ -3,11 +3,11 @@ import MainLayout from '../../layouts/layout.astro';
 import { directus } from '../../lib/directus';
 import { getEventBySlug, getEvents } from '../../lib/api';
 import pkg from 'rrule';
-const { RRule } = pkg; // npm install rrule
+const { RRule } = pkg; 
 
 const { slug } = Astro.params;
 
-// URL Parameter prüfen (falls jemand auf einen spezifischen Termin geklickt hat)
+// URL Parameter prüfen
 const urlDateParam = Astro.url.searchParams.get('date');
 
 const event = await getEventBySlug(slug as string);
@@ -18,23 +18,18 @@ if (!event) {
 }
 
 // --- HERO IMAGE LOGIK ---
-// Wenn ein spezielles Hero-Bild im CMS hinterlegt ist, nimm das.
-// Sonst nimm das normale Listen-Bild als Fallback.
 const heroImage = event.hero_image || event.image;
 
 // --- WIEDERHOLUNGS-LOGIK (RRule) ---
 const dbStartDate = new Date(event.start_date);
 const dbEndDate = event.end_date ? new Date(event.end_date) : null;
-// Dauer des Events berechnen
 const duration = dbEndDate ? (dbEndDate.getTime() - dbStartDate.getTime()) : (2 * 60 * 60 * 1000); 
 
 let allDates: Date[] = [dbStartDate]; 
 
 if (event.recurrence && event.recurrence !== 'none' && event.recurrence_end) {
-    
-    // Config Objekt für RRule
     let ruleOptions = {
-        freq: RRule.WEEKLY, // Default
+        freq: RRule.WEEKLY, 
         interval: 1,
         dtstart: dbStartDate,
         until: new Date(event.recurrence_end)
@@ -45,37 +40,24 @@ if (event.recurrence && event.recurrence !== 'none' && event.recurrence_end) {
             ruleOptions.freq = RRule.WEEKLY;
             ruleOptions.interval = 2;
             break;
-            
         case 'monthly':
             ruleOptions.freq = RRule.MONTHLY;
-            
-            // SPEZIALFALL: Monatlich nach Wochentag (z.B. "Jeden 1. Dienstag")
             if (event.monthly_type === 'weekday') {
-                // 1. Welcher Wochentag ist das Startdatum? (0=So, 1=Mo, ..., 6=Sa)
                 const jsDay = dbStartDate.getDay();
-                // Mapping von JS Date auf RRule Konstanten
                 const rruleDays = [RRule.SU, RRule.MO, RRule.TU, RRule.WE, RRule.TH, RRule.FR, RRule.SA];
-                
-                // 2. Der Wievielte Wochentag ist es im Monat? (z.B. 6. Jänner = 1. Dienstag)
-                // Formel: Math.ceil(Tag / 7)
                 const nthPosition = Math.ceil(dbStartDate.getDate() / 7);
-
                 ruleOptions.byweekday = rruleDays[jsDay];
                 ruleOptions.bysetpos = nthPosition;
             }
             break;
-            
-        default: // 'weekly'
+        default: 
             ruleOptions.freq = RRule.WEEKLY;
             ruleOptions.interval = 1;
     }
 
     const rule = new RRule(ruleOptions);
-
-    // Generieren
     const generatedDates = rule.all();
 
-    // FIX: Sommerzeit-Korrektur (Uhrzeit vom Original erzwingen)
     allDates = generatedDates.map(date => {
         const fixedDate = new Date(date);
         fixedDate.setHours(dbStartDate.getHours());
@@ -84,40 +66,28 @@ if (event.recurrence && event.recurrence !== 'none' && event.recurrence_end) {
     });
 }
 
-// --- WELCHES DATUM SOLL ANGEZEIGT WERDEN? ---
-
-// 1. Prio: Das Datum aus der URL (?date=...)
-// 2. Prio: Das nächste Datum in der Zukunft (ab heute)
-// 3. Prio: Das allererste Datum (falls Event schon vorbei)
-
+// --- ANZEIGE DATUM ---
 const now = new Date();
 let displayDate = dbStartDate;
 
 if (urlDateParam) {
-    // Versuch, das URL Datum zu parsen
     const parsed = new Date(urlDateParam);
     if (!isNaN(parsed.getTime())) {
-        // Wir setzen die Uhrzeit des Original-Events auf das URL-Datum
         parsed.setHours(dbStartDate.getHours(), dbStartDate.getMinutes());
         displayDate = parsed;
     }
 } else {
-    // Finde den nächsten Termin in der Zukunft
     const nextUpcoming = allDates.find(d => d >= now);
     if (nextUpcoming) {
         displayDate = nextUpcoming;
     } else {
-        // Falls alle Termine vorbei sind, nimm den letzten
         displayDate = allDates[allDates.length - 1];
     }
 }
 
-// End-Zeit für das angezeigte Datum berechnen
 const displayEndDate = new Date(displayDate.getTime() + duration);
 
-
-// --- FORMATIERUNG & HELPER ---
-
+// --- FORMATIERUNG ---
 const dateString = displayDate.toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric' });
 const timeString = displayDate.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
 const weekday = displayDate.toLocaleDateString('de-DE', { weekday: 'long' });
@@ -129,11 +99,9 @@ const relatedEvents = allEvents
 const ASSET_URL = 'http://localhost:8055/assets';
 const getCatName = (cat: any) => cat.event_categories_id?.name || cat.event_categories_id?.title || 'Event';
 
-// Google Calendar URL (dynamisch basierend auf displayDate)
 const formatGCalDate = (date: Date) => date.toISOString().replace(/-|:|\.\d\d\d/g, "");
 const gCalUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(event.title)}&dates=${formatGCalDate(displayDate)}/${formatGCalDate(displayEndDate)}&details=${encodeURIComponent("Infos: https://diebruecke.cc/events/" + slug)}&location=${encodeURIComponent(event.location || "Die Brücke, Grabenstraße 39a, Graz")}&sf=true&output=xml`;
 
-// Share URL
 const currentUrl = `https://diebruecke.cc/events/${slug}`; 
 const shareText = encodeURIComponent(`Event-Tipp: ${event.title}`);
 ---
@@ -141,14 +109,12 @@ const shareText = encodeURIComponent(`Event-Tipp: ${event.title}`);
 <MainLayout title={event.title}>
   
     <section class="relative h-[60vh] lg:h-[70vh] min-h-[500px] overflow-hidden bg-slate-900">
-        {/* Background Blur Image - uses heroImage */}
         {heroImage && (
             <div class="absolute inset-0 opacity-40 blur-3xl scale-110">
                 <img src={`${ASSET_URL}/${heroImage}`} class="w-full h-full object-cover" alt="" />
             </div>
         )}
         
-        {/* Main Hero Image - uses heroImage */}
         {heroImage ? (
             <img 
               src={`${ASSET_URL}/${heroImage}`} 
@@ -160,52 +126,61 @@ const shareText = encodeURIComponent(`Event-Tipp: ${event.title}`);
                 <i class="fa-regular fa-image text-8xl text-white/20"></i>
             </div>
         )}
-        <div class="absolute inset-0 bg-gradient-to-t from-slate-50 via-slate-50/20 to-transparent z-20"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-50 via-slate-50/20 to-transparent dark:from-slate-950 dark:via-slate-900/50 z-20"></div>
     </section>
 
     <div class="relative z-30 -mt-32 px-4 sm:px-6 md:px-10 pb-24">
         <div class="max-w-7xl mx-auto">
             
-            <div class="bg-white rounded-[40px] shadow-2xl shadow-slate-200/50 border border-slate-100 overflow-visible">
+            {/* --- CARD CONTAINER (Dark Mode angepasst) --- */}
+            <div class="bg-white dark:bg-slate-900 rounded-[40px] shadow-2xl shadow-slate-200/50 dark:shadow-black/50 border border-slate-100 dark:border-slate-800 overflow-visible transition-colors duration-300">
                 
                 <div class="grid lg:grid-cols-12 gap-0 items-start relative">
                     
-                    <div class="lg:col-span-8 p-8 md:p-14 min-h-[100vh]">
+                    <div class="lg:col-span-8 p-8 md:p-14 min-h-[50vh]">
+                        
+                        {/* NEU: Backlink */}
+                        <div class="mb-6">
+                            <a href="/events" class="inline-flex items-center text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-rose-500 transition-colors group">
+                                <i class="fa-solid fa-arrow-left mr-2 group-hover:-translate-x-1 transition-transform"></i>
+                                Zurück zur Übersicht
+                            </a>
+                        </div>
+
                         <div class="flex flex-wrap gap-3 mb-8">
                             {event.event_categories?.map((cat: any) => (
-                                <span class="bg-slate-100 text-slate-600 border border-slate-200 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+                                <span class="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
                                     {getCatName(cat)}
                                 </span>
                             ))}
-                            {/* Badge für Serie anzeigen */}
                             {allDates.length > 1 && (
-                                <span class="bg-rose-50 text-rose-600 border border-rose-100 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+                                <span class="bg-rose-50 dark:bg-rose-900/20 text-rose-600 dark:text-rose-400 border border-rose-100 dark:border-rose-900/30 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
                                     <i class="fa-solid fa-repeat mr-1"></i> Serie
                                 </span>
                             )}
                         </div>
 
-                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-display font-extrabold text-slate-900 tracking-tighter leading-[1.1] mb-8">
+                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-display font-extrabold text-slate-900 dark:text-white tracking-tighter leading-[1.1] mb-8">
                             {event.title}
                         </h1>
 
-                        <div class="prose prose-lg prose-slate max-w-none font-medium leading-relaxed text-slate-600 prose-headings:font-display prose-headings:font-bold prose-a:text-rose-600 hover:prose-a:text-rose-700" set:html={event.description}>
+                        {/* Prose mit dark:prose-invert für automatische Farbumkehr */}
+                        <div class="prose prose-lg prose-slate dark:prose-invert max-w-none font-medium leading-relaxed text-slate-600 dark:text-slate-300 prose-headings:font-display prose-headings:font-bold prose-a:text-rose-600 hover:prose-a:text-rose-700" set:html={event.description}>
                         </div>
                     </div>
 
-                    <aside class="lg:col-span-4 bg-slate-50/80 backdrop-blur-md border-t lg:border-t-0 lg:border-l border-slate-100 p-8 md:p-14 w-full rounded-tr-[40px] rounded-br-[40px] lg:sticky lg:top-32 lg:max-h-[calc(100vh-4rem)] overflow-y-auto custom-scrollbar">
+                    <aside class="lg:col-span-4 bg-slate-50/80 dark:bg-slate-900/50 backdrop-blur-md border-t lg:border-t-0 lg:border-l border-slate-100 dark:border-slate-800 p-8 md:p-14 w-full rounded-tr-[40px] rounded-br-[40px] lg:sticky lg:top-32 lg:max-h-[calc(100vh-4rem)] overflow-y-auto custom-scrollbar">
                         
                         <h3 class="text-sm font-bold uppercase tracking-widest text-slate-400 mb-8">Hard Facts</h3>
                         
                         <div class="space-y-8 mb-12">
                             <div class="flex items-start gap-4">
-                                <div class="w-12 h-12 rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-rose-600 shadow-sm shrink-0">
+                                <div class="w-12 h-12 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-rose-600 dark:text-rose-400 shadow-sm shrink-0">
                                     <i class="fa-regular fa-calendar text-xl"></i>
                                 </div>
                                 <div>
-                                    <span class="block font-bold text-slate-900 text-lg">{weekday}</span>
-                                    <span class="block text-slate-500">{dateString}</span>
-                                    {/* Hinweis wenn man nicht das Startdatum ansieht */}
+                                    <span class="block font-bold text-slate-900 dark:text-white text-lg">{weekday}</span>
+                                    <span class="block text-slate-500 dark:text-slate-400">{dateString}</span>
                                     {displayDate.getTime() !== dbStartDate.getTime() && (
                                         <span class="text-xs text-rose-500 font-bold uppercase tracking-wide mt-1 block">Termin der Serie</span>
                                     )}
@@ -213,45 +188,46 @@ const shareText = encodeURIComponent(`Event-Tipp: ${event.title}`);
                             </div>
 
                             <div class="flex items-start gap-4">
-                                <div class="w-12 h-12 rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-rose-600 shadow-sm shrink-0">
+                                <div class="w-12 h-12 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-rose-600 dark:text-rose-400 shadow-sm shrink-0">
                                     <i class="fa-regular fa-clock text-xl"></i>
                                 </div>
                                 <div>
-                                    <span class="block font-bold text-slate-900 text-lg">{timeString} Uhr</span>
-                                    <span class="block text-slate-500">Einlass ab 30 Min. vorher</span>
+                                    <span class="block font-bold text-slate-900 dark:text-white text-lg">{timeString} Uhr</span>
+                                    <span class="block text-slate-500 dark:text-slate-400">Einlass ab 30 Min. vorher</span>
                                 </div>
                             </div>
 
                             <div class="flex items-start gap-4">
-                                <div class="w-12 h-12 rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-rose-600 shadow-sm shrink-0">
+                                <div class="w-12 h-12 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-rose-600 dark:text-rose-400 shadow-sm shrink-0">
                                     <i class="fa-solid fa-location-dot text-xl"></i>
                                 </div>
                                 <div>
-                                    <span class="block font-bold text-slate-900 text-lg">Die Brücke</span>
-                                    <a href="/contact" class="block text-slate-500 hover:text-rose-600 hover:underline decoration-rose-300 underline-offset-4 text-sm mt-1">
+                                    <span class="block font-bold text-slate-900 dark:text-white text-lg">Die Brücke</span>
+                                    <a href="/contact" class="block text-slate-500 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:underline decoration-rose-300 underline-offset-4 text-sm mt-1">
                                         {event.location || "Grabenstraße 39a, Graz"}
                                     </a>
                                 </div>
                             </div>
                         </div>
 
-                        {/* --- WIEDERHOLUNGSTERMINE --- */}
                         {allDates.length > 1 && (
-                            <div class="mb-10 pt-8 border-t border-slate-200">
+                            <div class="mb-10 pt-8 border-t border-slate-200 dark:border-slate-700">
                                 <h4 class="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">
                                     Alle Termine ({allDates.length})
                                 </h4>
                                 <div class="space-y-2 max-h-40 overflow-y-auto custom-scrollbar pr-2">
                                     {allDates
-                                        .filter(d => d >= now || d.getTime() === displayDate.getTime()) // Nur Zukunft oder aktuell ausgewählt
-                                        .slice(0, 10) // Max 10 anzeigen
+                                        .filter(d => d >= now || d.getTime() === displayDate.getTime()) 
+                                        .slice(0, 10) 
                                         .map((date) => {
                                             const isSelected = date.getTime() === displayDate.getTime();
-                                            // Format für Link: YYYY-MM-DD
                                             const isoDate = date.toISOString().split('T')[0];
                                             
                                             return (
-                                                <a href={`?date=${isoDate}`} class={`flex items-center justify-between text-sm p-2 rounded-lg transition-colors ${isSelected ? 'bg-rose-50 text-rose-700 font-bold' : 'hover:bg-white text-slate-600'}`}>
+                                                <a href={`?date=${isoDate}`} class={`flex items-center justify-between text-sm p-2 rounded-lg transition-colors 
+                                                    ${isSelected 
+                                                        ? 'bg-rose-50 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300 font-bold' 
+                                                        : 'hover:bg-white dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400'}`}>
                                                     <span>{date.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: '2-digit' })}</span>
                                                     <span>{date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })}</span>
                                                 </a>
@@ -263,44 +239,46 @@ const shareText = encodeURIComponent(`Event-Tipp: ${event.title}`);
                         )}
 
                         <div class="space-y-4">
-                            <a href="/contact" class="group relative block w-full text-center bg-slate-900 text-white font-bold text-lg py-5 rounded-2xl hover:bg-rose-600 transition-all shadow-xl hover:shadow-rose-500/40 transform hover:-translate-y-1 overflow-hidden">
+                            {/* Ticket Button: High Contrast in Dark Mode (White Button) */}
+                            <a href="/contact" class="group relative block w-full text-center bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-lg py-5 rounded-2xl hover:bg-rose-600 dark:hover:bg-rose-400 dark:hover:text-white transition-all shadow-xl hover:shadow-rose-500/40 transform hover:-translate-y-1 overflow-hidden">
                                 <span class="relative z-10 flex items-center justify-center gap-2">
                                     <i class="fa-solid fa-ticket"></i> Tickets kaufen
                                 </span>
-                                <div class="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-shine"></div>
+                                <div class="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 dark:via-black/10 to-transparent -translate-x-full group-hover:animate-shine"></div>
                             </a>
 
-                            <a href={gCalUrl} target="_blank" class="block w-full text-center bg-white border border-slate-200 text-slate-600 font-bold py-3 rounded-xl hover:bg-slate-50 hover:text-slate-900 transition-colors text-sm flex items-center justify-center gap-2">
+                            <a href={gCalUrl} target="_blank" class="block w-full text-center bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold py-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors text-sm flex items-center justify-center gap-2">
                                 <i class="fa-regular fa-calendar-plus"></i> Termin im Kalender
                             </a>
                         </div>
 
-                        <div class="mt-10 pt-8 border-t border-slate-200">
+                        <div class="mt-10 pt-8 border-t border-slate-200 dark:border-slate-700">
                             <p class="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4 text-center">Freunde einladen</p>
                             
                             <div class="grid grid-cols-5 gap-2">
+                                {/* Social Buttons: Dark Mode Fixes */}
                                 <button onclick={`window.open('https://wa.me/?text=${shareText}%20${encodeURIComponent(currentUrl)}')`} 
-                                        class="h-10 rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-500 hover:text-white transition-all transform hover:scale-110 active:scale-95 cursor-pointer flex items-center justify-center" title="WhatsApp">
+                                        class="h-10 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500 hover:text-white transition-all transform hover:scale-110 active:scale-95 cursor-pointer flex items-center justify-center" title="WhatsApp">
                                     <i class="fa-brands fa-whatsapp text-lg"></i>
                                 </button>
                                 
                                 <button onclick={`window.open('https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}')`} 
-                                        class="h-10 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition-all transform hover:scale-110 active:scale-95 cursor-pointer flex items-center justify-center" title="Facebook">
+                                        class="h-10 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-600 hover:text-white transition-all transform hover:scale-110 active:scale-95 cursor-pointer flex items-center justify-center" title="Facebook">
                                     <i class="fa-brands fa-facebook-f text-lg"></i>
                                 </button>
 
                                 <button onclick={`window.open('https://twitter.com/intent/tweet?text=${shareText}&url=${encodeURIComponent(currentUrl)}')`} 
-                                        class="h-10 rounded-lg bg-slate-100 text-slate-900 hover:bg-black hover:text-white transition-all transform hover:scale-110 active:scale-95 cursor-pointer flex items-center justify-center" title="X (Twitter)">
+                                        class="h-10 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white hover:bg-black hover:text-white transition-all transform hover:scale-110 active:scale-95 cursor-pointer flex items-center justify-center" title="X (Twitter)">
                                     <i class="fa-brands fa-x-twitter text-lg"></i>
                                 </button>
 
                                 <button onclick={`window.open('https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(currentUrl)}')`} 
-                                        class="h-10 rounded-lg bg-sky-50 text-sky-700 hover:bg-sky-700 hover:text-white transition-all transform hover:scale-110 active:scale-95 cursor-pointer flex items-center justify-center" title="LinkedIn">
+                                        class="h-10 rounded-lg bg-sky-50 dark:bg-sky-900/30 text-sky-700 dark:text-sky-400 hover:bg-sky-700 hover:text-white transition-all transform hover:scale-110 active:scale-95 cursor-pointer flex items-center justify-center" title="LinkedIn">
                                     <i class="fa-brands fa-linkedin-in text-lg"></i>
                                 </button>
 
                                 <button id="share-insta" 
-                                        class="h-10 rounded-lg bg-fuchsia-50 text-fuchsia-600 hover:bg-gradient-to-tr hover:from-yellow-400 hover:via-red-500 hover:to-purple-500 hover:text-white transition-all transform hover:scale-110 active:scale-95 cursor-pointer flex items-center justify-center relative group" title="Link kopieren">
+                                        class="h-10 rounded-lg bg-fuchsia-50 dark:bg-fuchsia-900/30 text-fuchsia-600 dark:text-fuchsia-400 hover:bg-gradient-to-tr hover:from-yellow-400 hover:via-red-500 hover:to-purple-500 hover:text-white transition-all transform hover:scale-110 active:scale-95 cursor-pointer flex items-center justify-center relative group" title="Link kopieren">
                                     <i class="fa-brands fa-instagram text-lg"></i>
                                 </button>
                             </div>
@@ -314,33 +292,33 @@ const shareText = encodeURIComponent(`Event-Tipp: ${event.title}`);
     </div>
 
     {relatedEvents.length > 0 && (
-        <section class="px-6 sm:px-10 pb-24 bg-white">
+        <section class="px-6 sm:px-10 pb-24 bg-white dark:bg-slate-950 transition-colors">
             <div class="max-w-7xl mx-auto">
-                <div class="flex items-end justify-between mb-12 border-b border-slate-100 pb-6">
-                    <h2 class="text-3xl md:text-4xl font-display font-bold text-slate-900">Das könnte dich auch interessieren</h2>
-                    <a href="/events" class="hidden md:inline-flex items-center gap-2 text-rose-600 font-bold hover:text-slate-900 transition-colors">
+                <div class="flex items-end justify-between mb-12 border-b border-slate-100 dark:border-slate-800 pb-6">
+                    <h2 class="text-3xl md:text-4xl font-display font-bold text-slate-900 dark:text-white">Das könnte dich auch interessieren</h2>
+                    <a href="/events" class="hidden md:inline-flex items-center gap-2 text-rose-600 font-bold hover:text-slate-900 dark:hover:text-white transition-colors">
                         Alles ansehen <i class="fa-solid fa-arrow-right"></i>
                     </a>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                     {relatedEvents.map((rel: any) => (
-                         <a href={`/events/${rel.slug}`} class="group block bg-slate-50 rounded-[32px] p-4 hover:bg-white border border-transparent hover:border-slate-100 hover:shadow-xl transition-all duration-300">
+                         <a href={`/events/${rel.slug}`} class="group block bg-slate-50 dark:bg-slate-900 rounded-[32px] p-4 hover:bg-white dark:hover:bg-slate-800 border border-transparent hover:border-slate-100 dark:hover:border-slate-700 hover:shadow-xl transition-all duration-300">
                             <div class="aspect-[16/10] rounded-2xl overflow-hidden mb-6 relative">
                                 {rel.image ? (
                                     <img src={`${ASSET_URL}/${rel.image}`} class="w-full h-full object-cover group-hover:scale-110 transition duration-700" alt={rel.title} />
                                 ) : (
-                                    <div class="w-full h-full bg-slate-200 flex items-center justify-center text-slate-400 font-bold text-xs uppercase">Kein Bild</div>
+                                    <div class="w-full h-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-slate-400 font-bold text-xs uppercase">Kein Bild</div>
                                 )}
-                                <div class="absolute top-3 left-3 bg-white/90 backdrop-blur px-2 py-1 rounded-md text-[10px] font-bold text-rose-600 uppercase tracking-widest shadow-sm">
+                                <div class="absolute top-3 left-3 bg-white/90 dark:bg-slate-900/90 backdrop-blur px-2 py-1 rounded-md text-[10px] font-bold text-rose-600 dark:text-rose-400 uppercase tracking-widest shadow-sm">
                                     {new Date(rel.start_date).toLocaleDateString('de-DE', { day: '2-digit', month: 'short' })}
                                 </div>
                             </div>
                             <div class="px-2 pb-2">
-                                <h3 class="text-xl font-display font-bold text-slate-900 mb-2 group-hover:text-rose-600 transition-colors line-clamp-2">
+                                <h3 class="text-xl font-display font-bold text-slate-900 dark:text-white mb-2 group-hover:text-rose-600 transition-colors line-clamp-2">
                                     {rel.title}
                                 </h3>
-                                <p class="text-slate-500 text-sm line-clamp-2">
+                                <p class="text-slate-500 dark:text-slate-400 text-sm line-clamp-2">
                                     Mehr erfahren <span class="group-hover:translate-x-1 inline-block transition-transform">→</span>
                                 </p>
                             </div>
@@ -385,4 +363,7 @@ const shareText = encodeURIComponent(`Event-Tipp: ${event.title}`);
     .custom-scrollbar::-webkit-scrollbar { width: 4px; }
     .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
     .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
+    
+    /* Dark scrollbar */
+    html.dark .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #475569; }
 </style>
