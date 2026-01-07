@@ -17,8 +17,12 @@ if (!event) {
   return Astro.redirect('/404');
 }
 
-// --- WIEDERHOLUNGS-LOGIK (RRule) ---
+// --- HERO IMAGE LOGIK ---
+// Wenn ein spezielles Hero-Bild im CMS hinterlegt ist, nimm das.
+// Sonst nimm das normale Listen-Bild als Fallback.
+const heroImage = event.hero_image || event.image;
 
+// --- WIEDERHOLUNGS-LOGIK (RRule) ---
 const dbStartDate = new Date(event.start_date);
 const dbEndDate = event.end_date ? new Date(event.end_date) : null;
 // Dauer des Events berechnen
@@ -137,15 +141,17 @@ const shareText = encodeURIComponent(`Event-Tipp: ${event.title}`);
 <MainLayout title={event.title}>
   
     <section class="relative h-[60vh] lg:h-[70vh] min-h-[500px] overflow-hidden bg-slate-900">
-        {event.image && (
+        {/* Background Blur Image - uses heroImage */}
+        {heroImage && (
             <div class="absolute inset-0 opacity-40 blur-3xl scale-110">
-                <img src={`${ASSET_URL}/${event.image}`} class="w-full h-full object-cover" alt="" />
+                <img src={`${ASSET_URL}/${heroImage}`} class="w-full h-full object-cover" alt="" />
             </div>
         )}
         
-        {event.image ? (
+        {/* Main Hero Image - uses heroImage */}
+        {heroImage ? (
             <img 
-              src={`${ASSET_URL}/${event.image}`} 
+              src={`${ASSET_URL}/${heroImage}`} 
               alt={event.title} 
               class="absolute inset-0 w-full h-full object-contain md:object-cover relative z-10 transition-transform duration-[2s] hover:scale-105"
             />
