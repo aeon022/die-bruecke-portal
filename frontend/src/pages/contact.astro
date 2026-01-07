@@ -1,5 +1,25 @@
 ---
 import MainLayout from '../layouts/layout.astro';
+import { directus } from '../lib/directus';
+import { readSingleton } from '@directus/sdk';
+
+// 1. Daten holen (Settings für Öffnungszeiten + Departments statisch)
+let settings;
+try {
+    settings = await directus.request(readSingleton('global_settings'));
+} catch (error) {
+    console.error("Kontakt: Konnte Global Settings nicht laden", error);
+}
+
+// Fallback, falls in Directus noch nichts eingetragen ist
+const defaultOpeningHours = [
+    { label: "Montag – Donnerstag", time: "09:00 – 16:00", highlight: false },
+    { label: "Freitag", time: "09:00 – 13:00", highlight: false },
+    { label: "Veranstaltungen", time: "Je nach Programm", highlight: true }
+];
+
+// Nimm die Daten aus der DB oder den Fallback
+const openingHours = settings?.opening_hours || defaultOpeningHours;
 
 const departments = [
     {
@@ -30,31 +50,33 @@ const departments = [
     
     <div class="home-content px-4 md:px-6">
 
-    <section class="relative px-6 sm:px-10 pt-32 pb-20 bg-white rounded-t-[32px] md:rounded-t-[64px] overflow-hidden">
+    {/* --- HERO --- */}
+    <section class="relative px-6 sm:px-10 pt-32 pb-20 bg-white dark:bg-slate-950 rounded-t-[32px] md:rounded-t-[64px] overflow-hidden transition-colors duration-300">
         <div class="max-w-7xl mx-auto relative z-10">
-            <span class="inline-block px-3 py-1 rounded-full bg-slate-100 text-slate-500 text-xs font-bold uppercase tracking-widest mb-6">
+            <span class="inline-block px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-widest mb-6">
                 Erreichbarkeit
             </span>
-            <h1 class="text-5xl md:text-7xl lg:text-8xl font-display font-extrabold text-slate-900 tracking-tighter mb-8 leading-[0.9]">
+            <h1 class="text-5xl md:text-7xl lg:text-8xl font-display font-extrabold text-slate-900 dark:text-white tracking-tighter mb-8 leading-[0.9]">
                 Wir sind <br>
-                <span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-600 to-slate-600">für dich da.</span>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-600 to-slate-600 dark:to-slate-400">für dich da.</span>
             </h1>
-            <p class="text-xl text-slate-500 max-w-2xl font-medium leading-relaxed">
+            <p class="text-xl text-slate-500 dark:text-slate-400 max-w-2xl font-medium leading-relaxed">
                 Du hast Fragen zu unseren Angeboten, möchtest Tickets reservieren oder brauchst Unterstützung? 
                 Schreib uns, ruf an oder komm einfach vorbei.
             </p>
         </div>
-        <div class="absolute top-0 right-0 -mr-20 -mt-20 w-[600px] h-[600px] bg-slate-100 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
+        <div class="absolute top-0 right-0 -mr-20 -mt-20 w-[600px] h-[600px] bg-slate-100 dark:bg-slate-900 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
     </section>
 
-    <section class="px-6 sm:px-10 pb-24 bg-white">
+    <section class="px-6 sm:px-10 pb-24 bg-white dark:bg-slate-950 transition-colors duration-300">
         <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 lg:gap-24">
             
             <div class="space-y-12">
                 
-                <div class="bg-slate-50 rounded-[32px] border border-slate-100 overflow-hidden">
+                {/* --- INFO BOX & KARTE --- */}
+                <div class="bg-slate-50 dark:bg-slate-900 rounded-[32px] border border-slate-100 dark:border-slate-800 overflow-hidden transition-colors duration-300">
                     
-                    <div class="relative w-full h-64 bg-slate-200 group" id="map-container">
+                    <div class="relative w-full h-64 bg-slate-200 dark:bg-slate-800 group" id="map-container">
                         <iframe 
                             id="google-map"
                             class="w-full h-full absolute inset-0 hidden"
@@ -63,20 +85,21 @@ const departments = [
                             referrerpolicy="no-referrer-when-downgrade">
                         </iframe>
 
-                        <div id="map-placeholder" class="absolute inset-0 bg-cover bg-center flex flex-col items-center justify-center p-6 text-center transition-all cursor-pointer hover:bg-slate-300/50" 
-                             style="background-image: url('https://maps.googleapis.com/maps/api/staticmap?center=Grabenstraße+39a,Graz&zoom=15&size=800x400&maptype=roadmap&style=feature:all|saturation:-100&key=YOUR_API_KEY_PLACEHOLDER'); background-color: #e2e8f0;">
+                        <div id="map-placeholder" class="absolute inset-0 bg-cover bg-center flex flex-col items-center justify-center p-6 text-center transition-all cursor-pointer hover:bg-slate-300/50 dark:hover:bg-slate-700/50" 
+                             style="background-image: url('https://maps.googleapis.com/maps/api/staticmap?center=Grabenstraße+39a,Graz&zoom=15&size=800x400&maptype=roadmap&style=feature:all|saturation:-100&key=YOUR_API_KEY_PLACEHOLDER'); background-color: #cbd5e1;">
                              
-                            <div class="absolute inset-0 bg-slate-200 opacity-50" style="background-image: radial-gradient(#cbd5e1 1px, transparent 1px); background-size: 20px 20px;"></div>
+                            {/* Overlay Pattern */}
+                            <div class="absolute inset-0 bg-slate-200 dark:bg-slate-800 opacity-50" style="background-image: radial-gradient(#94a3b8 1px, transparent 1px); background-size: 20px 20px;"></div>
                             
-                            <div class="relative z-10 bg-white/90 backdrop-blur-md p-6 rounded-2xl shadow-xl border border-white/50 max-w-xs text-center">
+                            <div class="relative z-10 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md p-6 rounded-2xl shadow-xl border border-white/50 dark:border-white/10 max-w-xs text-center">
                                 <div class="w-12 h-12 bg-rose-600 rounded-full flex items-center justify-center text-white text-xl mx-auto mb-3 shadow-lg">
                                     <i class="fa-solid fa-location-dot"></i>
                                 </div>
-                                <h4 class="font-bold text-slate-900 mb-1">Karte laden</h4>
-                                <p class="text-xs text-slate-500 mb-4">
+                                <h4 class="font-bold text-slate-900 dark:text-white mb-1">Karte laden</h4>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">
                                     Mit dem Klick akzeptierst du, dass Daten an Google Maps übertragen werden.
                                 </p>
-                                <button id="btn-load-map" class="bg-slate-900 text-white text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-full hover:bg-rose-600 transition-colors w-full">
+                                <button id="btn-load-map" class="bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-full hover:bg-rose-600 dark:hover:bg-rose-400 dark:hover:text-white transition-colors w-full">
                                     Karte aktivieren
                                 </button>
                             </div>
@@ -86,86 +109,82 @@ const departments = [
                     <div class="p-8">
                         <div class="flex items-start gap-4 mb-8">
                             <div>
-                                <h3 class="font-bold text-xl text-slate-900 leading-tight mb-2">Die Brücke <br><span class="text-sm font-normal text-slate-500">soziokulturelles Zentrum</span></h3>
-                                <p class="text-slate-500 leading-relaxed text-lg">
+                                <h3 class="font-bold text-xl text-slate-900 dark:text-white leading-tight mb-2">Die Brücke <br><span class="text-sm font-normal text-slate-500 dark:text-slate-400">soziokulturelles Zentrum</span></h3>
+                                <p class="text-slate-500 dark:text-slate-400 leading-relaxed text-lg">
                                     Grabenstraße 39a <br>
                                     8010 Graz <br>
                                     Österreich
                                 </p>
-                                <a href="https://www.google.com/maps/search/?api=1&query=Die+Brücke+Grabenstraße+39a+Graz" target="_blank" class="inline-flex items-center gap-2 text-sm font-bold text-rose-600 mt-4 hover:underline">
+                                <a href="http://googleusercontent.com/maps.google.com/maps?q=Die+Brücke+Graz+Grabenstraße+39a" target="_blank" class="inline-flex items-center gap-2 text-sm font-bold text-rose-600 dark:text-rose-400 mt-4 hover:underline">
                                     In Google Maps öffnen <i class="fa-solid fa-arrow-up-right-from-square"></i>
                                 </a>
                             </div>
                         </div>
 
-                        <div class="h-px bg-slate-200 w-full mb-8"></div>
+                        <div class="h-px bg-slate-200 dark:bg-slate-800 w-full mb-8"></div>
 
-                        <h4 class="font-bold text-slate-900 mb-4 flex items-center gap-2">
+                        <h4 class="font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
                             <i class="fa-solid fa-bus text-slate-400"></i> Anfahrt mit Öffis
                         </h4>
                         
                         <div class="space-y-6">
                             <div>
-                                <p class="text-slate-900 text-sm font-bold mb-1">Straßenbahn (Richtung Andritz)</p>
-                                <p class="text-slate-500 text-sm mb-2">Haltestelle <strong class="text-slate-700">Hasnerplatz / Päd. Hochschule</strong>. Von dort kurzer Fußweg durch den Park.</p>
+                                <p class="text-slate-900 dark:text-white text-sm font-bold mb-1">Straßenbahn (Richtung Andritz)</p>
+                                <p class="text-slate-500 dark:text-slate-400 text-sm mb-2">Haltestelle <strong class="text-slate-700 dark:text-slate-300">Hasnerplatz / Päd. Hochschule</strong>. Von dort kurzer Fußweg durch den Park.</p>
                                 <div class="flex flex-wrap gap-2">
-                                    <span class="px-2 py-1 rounded bg-white border border-slate-200 text-xs font-bold text-slate-600">Linie 3</span>
-                                    <span class="px-2 py-1 rounded bg-white border border-slate-200 text-xs font-bold text-slate-600">Linie 5</span>
+                                    <span class="px-2 py-1 rounded bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300">Linie 3</span>
+                                    <span class="px-2 py-1 rounded bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300">Linie 5</span>
                                 </div>
                             </div>
 
                             <div>
-                                <p class="text-slate-900 text-sm font-bold mb-1">Bus</p>
-                                <p class="text-slate-500 text-sm mb-2">Haltestelle <strong class="text-slate-700">Grabenstraße</strong>.</p>
+                                <p class="text-slate-900 dark:text-white text-sm font-bold mb-1">Bus</p>
+                                <p class="text-slate-500 dark:text-slate-400 text-sm mb-2">Haltestelle <strong class="text-slate-700 dark:text-slate-300">Grabenstraße</strong>.</p>
                                 <div class="flex flex-wrap gap-2">
-                                    <span class="px-2 py-1 rounded bg-white border border-slate-200 text-xs font-bold text-slate-600">Bus 39</span>
-                                    <span class="px-2 py-1 rounded bg-white border border-slate-200 text-xs font-bold text-slate-600">Bus 63</span>
+                                    <span class="px-2 py-1 rounded bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300">Bus 39</span>
+                                    <span class="px-2 py-1 rounded bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300">Bus 63</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
+                {/* --- DYNAMISCHE ÖFFNUNGSZEITEN --- */}
                 <div>
-                    <h3 class="text-2xl font-display font-bold text-slate-900 mb-6">Bürozeiten</h3>
-                    <ul class="space-y-4 text-slate-600">
-                        <li class="flex justify-between border-b border-slate-100 pb-2">
-                            <span>Montag – Donnerstag</span>
-                            <span class="font-bold">09:00 – 16:00</span>
-                        </li>
-                        <li class="flex justify-between border-b border-slate-100 pb-2">
-                            <span>Freitag</span>
-                            <span class="font-bold">09:00 – 13:00</span>
-                        </li>
-                        <li class="flex justify-between text-rose-600 font-medium">
-                            <span>Veranstaltungen</span>
-                            <span>Je nach Programm</span>
-                        </li>
+                    <h3 class="text-2xl font-display font-bold text-slate-900 dark:text-white mb-6">Bürozeiten</h3>
+                    <ul class="space-y-4 text-slate-600 dark:text-slate-300">
+                        {openingHours.map((slot: any) => (
+                            <li class={`flex justify-between border-b border-slate-100 dark:border-slate-800 pb-2 ${slot.highlight ? 'text-rose-600 dark:text-rose-400 font-medium' : ''}`}>
+                                <span>{slot.label}</span>
+                                <span class="font-bold">{slot.time}</span>
+                            </li>
+                        ))}
                     </ul>
                 </div>
             </div>
 
-            <div class="bg-white rounded-[40px] shadow-2xl shadow-slate-200/50 p-8 md:p-12 border border-slate-100 relative overflow-hidden h-fit">
-                <div class="absolute top-0 right-0 w-64 h-64 bg-rose-50 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+            {/* --- KONTAKTFORMULAR --- */}
+            <div class="bg-white dark:bg-slate-900 rounded-[40px] shadow-2xl shadow-slate-200/50 dark:shadow-none p-8 md:p-12 border border-slate-100 dark:border-slate-800 relative overflow-hidden h-fit transition-colors duration-300">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-rose-50 dark:bg-rose-900/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
 
-                <h3 class="text-3xl font-display font-bold text-slate-900 mb-2 relative z-10">Schreib uns</h3>
-                <p class="text-slate-500 mb-8 relative z-10 font-medium">Wir melden uns so schnell wie möglich bei dir.</p>
+                <h3 class="text-3xl font-display font-bold text-slate-900 dark:text-white mb-2 relative z-10">Schreib uns</h3>
+                <p class="text-slate-500 dark:text-slate-400 mb-8 relative z-10 font-medium">Wir melden uns so schnell wie möglich bei dir.</p>
 
                 <form class="space-y-6 relative z-10" action="#" method="POST" onsubmit="event.preventDefault(); alert('Das Formular ist in dieser Demo noch inaktiv.');">
                     <div class="grid md:grid-cols-2 gap-6">
                         <div class="space-y-2">
-                            <label for="name" class="text-xs font-bold uppercase tracking-widest text-slate-500 ml-4">Name</label>
-                            <input type="text" id="name" required class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all" placeholder="Dein Name" />
+                            <label for="name" class="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 ml-4">Name</label>
+                            <input type="text" id="name" required class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all dark:text-white" placeholder="Dein Name" />
                         </div>
                         <div class="space-y-2">
-                            <label for="email" class="text-xs font-bold uppercase tracking-widest text-slate-500 ml-4">E-Mail</label>
-                            <input type="email" id="email" required class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all" placeholder="deine@mail.com" />
+                            <label for="email" class="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 ml-4">E-Mail</label>
+                            <input type="email" id="email" required class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all dark:text-white" placeholder="deine@mail.com" />
                         </div>
                     </div>
 
                     <div class="space-y-2">
-                        <label for="subject" class="text-xs font-bold uppercase tracking-widest text-slate-500 ml-4">Betreff</label>
-                        <select id="subject" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all appearance-none font-medium">
+                        <label for="subject" class="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 ml-4">Betreff</label>
+                        <select id="subject" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all appearance-none font-medium dark:text-white">
                             <option>Allgemeine Anfrage</option>
                             <option>Soziale Dienste (LEVO)</option>
                             <option>Tickets & Events</option>
@@ -175,12 +194,12 @@ const departments = [
                     </div>
 
                     <div class="space-y-2">
-                        <label for="message" class="text-xs font-bold uppercase tracking-widest text-slate-500 ml-4">Nachricht</label>
-                        <textarea id="message" rows="5" required class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all" placeholder="Wie können wir helfen?"></textarea>
+                        <label for="message" class="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 ml-4">Nachricht</label>
+                        <textarea id="message" rows="5" required class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all dark:text-white" placeholder="Wie können wir helfen?"></textarea>
                     </div>
 
                     <div class="pt-4">
-                        <button type="submit" class="w-full bg-slate-900 text-white font-bold text-lg rounded-2xl py-4 hover:bg-rose-600 transition-all shadow-lg hover:shadow-rose-500/25 transform active:scale-95">
+                        <button type="submit" class="w-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-lg rounded-2xl py-4 hover:bg-rose-600 dark:hover:bg-rose-400 dark:hover:text-white transition-all shadow-lg hover:shadow-rose-500/25 transform active:scale-95">
                             Nachricht absenden
                         </button>
                     </div>
@@ -190,7 +209,7 @@ const departments = [
         </div>
     </section>
 
-    <section class="px-6 sm:px-10 py-24 bg-slate-900 text-white rounded-[48px]">
+    <section class="px-6 sm:px-10 py-24 bg-slate-900 text-white rounded-[48px] dark:border dark:border-slate-800">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16">
                 <h2 class="text-3xl md:text-5xl font-display font-bold mb-4 tracking-tight">Der direkte Draht</h2>
@@ -217,10 +236,10 @@ const departments = [
         </div>
     </section>
 
-    {/* --- NEU: JOIN US / BRÜCKENPFEILER SECTION --- */}
-    <section class="px-6 sm:px-10 py-24 bg-white">
+    {/* --- JOIN US --- */}
+    <section class="px-6 sm:px-10 py-24 bg-white dark:bg-slate-950 transition-colors duration-300">
         <div class="max-w-7xl mx-auto">
-            <a href="/join" class="group relative bg-indigo-600 rounded-[48px] p-10 md:p-14 overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-10 shadow-xl hover:shadow-indigo-200 transition-all duration-500">
+            <a href="/join" class="group relative bg-indigo-600 rounded-[48px] p-10 md:p-14 overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-10 shadow-xl hover:shadow-indigo-200 dark:hover:shadow-none transition-all duration-500">
                 <div class="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(255,255,255,0.1),transparent)] pointer-events-none"></div>
                 <div class="relative z-10 flex flex-col lg:flex-row items-center gap-10 text-center lg:text-left">
                     <div class="w-20 h-20 rounded-3xl bg-white/10 flex items-center justify-center text-white text-3xl border border-white/20 group-hover:rotate-6 transition-transform">
@@ -242,15 +261,15 @@ const departments = [
         </div>
     </section>
 
-    {/* --- AUFLOCKERUNG / EXIT SECTION --- */}
-    <section class="bg-white pt-24 pb-16 text-center">
+    {/* --- EXIT SECTION --- */}
+    <section class="bg-white dark:bg-slate-950 pt-24 pb-16 text-center transition-colors duration-300">
         <div class="max-w-4xl mx-auto px-6">
-            <p class="text-slate-400 font-medium text-xl italic leading-relaxed">
+            <p class="text-slate-400 dark:text-slate-500 font-medium text-xl italic leading-relaxed">
                 „Inklusion ist keine Einzelleistung. <br class="hidden md:block"> Es ist das Ergebnis vieler kleiner Begegnungen.“
             </p>
             <div class="mt-12 flex flex-col items-center">
                 <div class="w-2 h-2 rounded-full bg-rose-500 mb-2"></div>
-                <div class="w-0.5 h-24 bg-gradient-to-b from-rose-500 via-slate-200 to-transparent"></div>
+                <div class="w-0.5 h-24 bg-gradient-to-b from-rose-500 via-slate-200 dark:via-slate-800 to-transparent"></div>
             </div>
         </div>
     </section>
@@ -261,14 +280,15 @@ const departments = [
 <script>
     function initMapLogic() {
         const placeholder = document.getElementById('map-placeholder');
-        const iframe = document.getElementById('google-map') as HTMLIFrameElement;
+        const iframe = document.getElementById('google-map');
         
+        // Standard Embed Link (Google Maps Embed API)
         const address = "Die Brücke Graz Grabenstraße 39a";
-        const mapUrl = `http://googleusercontent.com/maps.google.com/6{encodeURIComponent(address)}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+        const mapUrl = `https://maps.google.com/maps?q=${encodeURIComponent(address)}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
 
         if (placeholder && iframe) {
             placeholder.addEventListener('click', () => {
-                iframe.src = mapUrl;
+                iframe.setAttribute('src', mapUrl);
                 iframe.classList.remove('hidden');
                 placeholder.style.display = 'none';
             });
