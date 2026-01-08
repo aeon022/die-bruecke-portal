@@ -3,7 +3,7 @@ import MainLayout from '../layouts/layout.astro';
 import { directus } from '../lib/directus';
 import { readSingleton } from '@directus/sdk';
 
-// 1. Daten holen (Settings für Öffnungszeiten + Departments statisch)
+// 1. Daten laden
 let settings;
 try {
     settings = await directus.request(readSingleton('global_settings'));
@@ -11,15 +11,33 @@ try {
     console.error("Kontakt: Konnte Global Settings nicht laden", error);
 }
 
-// Fallback, falls in Directus noch nichts eingetragen ist
+// --- DATEN-LOGIK MIT FALLBACKS ---
+
+// A) Öffnungszeiten
 const defaultOpeningHours = [
     { label: "Montag – Donnerstag", time: "09:00 – 16:00", highlight: false },
     { label: "Freitag", time: "09:00 – 13:00", highlight: false },
     { label: "Veranstaltungen", time: "Je nach Programm", highlight: true }
 ];
-
-// Nimm die Daten aus der DB oder den Fallback
 const openingHours = settings?.opening_hours || defaultOpeningHours;
+
+// B) Barrierefreiheit
+const defaultAccessItems = [
+    { label: "Ebenerdiger Zugang (Rampe)", icon: "wheelchair" },
+    { label: "Euro-Key Behinderten-WC", icon: "restroom" },
+    { label: "Behinderten-Parkplatz (Hof)", icon: "square-parking" },
+    { label: "Assistenzhunde willkommen", icon: "dog" }
+];
+const accessibilityItems = settings?.accessibility_items || defaultAccessItems;
+
+// C) FAQ
+const defaultFaqs = [
+    { question: "Ist die Brücke barrierefrei?", answer: "Ja, zu 100%. Der Zugang ist ebenerdig, wir verfügen über ein Euro-Key Behinderten-WC und breite Türen im gesamten Veranstaltungsbereich." },
+    { question: "Kann man Räume mieten?", answer: "Ja, unsere Seminarräume und der Veranstaltungssaal können gemietet werden. Schreib uns einfach eine Anfrage an kultur@diebruecke.cc." },
+    { question: "Muss ich Tickets reservieren?", answer: "Für größere Konzerte empfehlen wir eine Reservierung (via Mail oder Pretix). Bei den meisten offenen Abenden gilt: Einfach vorbeikommen!" },
+    { question: "Kann ich ein Praktikum machen?", answer: "Gerne! Wir bieten Plätze für Sozialpraktika, Zivildienst und ehrenamtliche Mitarbeit. Meld dich bei sozial@diebruecke.cc." }
+];
+const faqs = settings?.faqs || defaultFaqs;
 
 const departments = [
     {
@@ -149,7 +167,26 @@ const departments = [
                     </div>
                 </div>
 
-                {/* --- DYNAMISCHE ÖFFNUNGSZEITEN --- */}
+                {/* --- BARRIEREFREIHEIT --- */}
+                {accessibilityItems.length > 0 && (
+                    <div class="bg-indigo-50 dark:bg-indigo-900/20 rounded-[32px] p-8 border border-indigo-100 dark:border-indigo-900/30">
+                        <h3 class="text-lg font-display font-bold text-indigo-900 dark:text-indigo-200 mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-universal-access"></i> Barrierefreiheit
+                        </h3>
+                        <ul class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            {accessibilityItems.map((item: any) => (
+                                <li class="flex items-center gap-3 text-sm text-indigo-800 dark:text-indigo-300 font-medium">
+                                    <span class="w-8 h-8 rounded-full bg-white dark:bg-indigo-900 flex items-center justify-center text-indigo-600 dark:text-indigo-400 shrink-0">
+                                        <i class={`fa-solid fa-${item.icon || 'check'}`}></i>
+                                    </span>
+                                    {item.label}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
+
+                {/* --- ÖFFNUNGSZEITEN --- */}
                 <div>
                     <h3 class="text-2xl font-display font-bold text-slate-900 dark:text-white mb-6">Bürozeiten</h3>
                     <ul class="space-y-4 text-slate-600 dark:text-slate-300">
@@ -163,52 +200,84 @@ const departments = [
                 </div>
             </div>
 
-            {/* --- KONTAKTFORMULAR --- */}
-            <div class="bg-white dark:bg-slate-900 rounded-[40px] shadow-2xl shadow-slate-200/50 dark:shadow-none p-8 md:p-12 border border-slate-100 dark:border-slate-800 relative overflow-hidden h-fit transition-colors duration-300">
-                <div class="absolute top-0 right-0 w-64 h-64 bg-rose-50 dark:bg-rose-900/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+            {/* --- RECHTE SPALTE: FORMULAR & FAQ --- */}
+            <div class="space-y-12">
+                
+                {/* KONTAKTFORMULAR (LIVE) */}
+                <div class="bg-white dark:bg-slate-900 rounded-[40px] shadow-2xl shadow-slate-200/50 dark:shadow-none p-8 md:p-12 border border-slate-100 dark:border-slate-800 relative overflow-hidden h-fit transition-colors duration-300">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-rose-50 dark:bg-rose-900/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
 
-                <h3 class="text-3xl font-display font-bold text-slate-900 dark:text-white mb-2 relative z-10">Schreib uns</h3>
-                <p class="text-slate-500 dark:text-slate-400 mb-8 relative z-10 font-medium">Wir melden uns so schnell wie möglich bei dir.</p>
+                    <h3 class="text-3xl font-display font-bold text-slate-900 dark:text-white mb-2 relative z-10">Schreib uns</h3>
+                    <p class="text-slate-500 dark:text-slate-400 mb-8 relative z-10 font-medium">Wir melden uns so schnell wie möglich bei dir.</p>
 
-                <form class="space-y-6 relative z-10" action="#" method="POST" onsubmit="event.preventDefault(); alert('Das Formular ist in dieser Demo noch inaktiv.');">
-                    <div class="grid md:grid-cols-2 gap-6">
-                        <div class="space-y-2">
-                            <label for="name" class="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 ml-4">Name</label>
-                            <input type="text" id="name" required class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all dark:text-white" placeholder="Dein Name" />
+                    <form id="contact-form" class="space-y-6 relative z-10">
+                        
+                        {/* Status Message Container */}
+                        <div id="form-message" class="hidden p-4 rounded-xl text-sm font-bold mb-4"></div>
+
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="space-y-2">
+                                <label for="name" class="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 ml-4">Name</label>
+                                <input type="text" id="name" name="name" required class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all dark:text-white" placeholder="Dein Name" />
+                            </div>
+                            <div class="space-y-2">
+                                <label for="email" class="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 ml-4">E-Mail</label>
+                                <input type="email" id="email" name="email" required class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all dark:text-white" placeholder="deine@mail.com" />
+                            </div>
                         </div>
+
                         <div class="space-y-2">
-                            <label for="email" class="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 ml-4">E-Mail</label>
-                            <input type="email" id="email" required class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all dark:text-white" placeholder="deine@mail.com" />
+                            <label for="subject" class="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 ml-4">Betreff</label>
+                            <select id="subject" name="subject" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all appearance-none font-medium dark:text-white">
+                                <option>Allgemeine Anfrage</option>
+                                <option>Soziale Dienste (LEVO)</option>
+                                <option>Tickets & Events</option>
+                                <option>Raummiete</option>
+                                <option>Ehrenamt & Jobs</option>
+                            </select>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label for="message" class="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 ml-4">Nachricht</label>
+                            <textarea id="message" name="message" rows="5" required class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all dark:text-white" placeholder="Wie können wir helfen?"></textarea>
+                        </div>
+
+                        <div class="pt-4">
+                            <button type="submit" id="submit-btn" class="w-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-lg rounded-2xl py-4 hover:bg-rose-600 dark:hover:bg-rose-400 dark:hover:text-white transition-all shadow-lg hover:shadow-rose-500/25 transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
+                                <span>Nachricht absenden</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                {/* --- FAQ ACCORDION --- */}
+                {faqs.length > 0 && (
+                    <div class="pt-8">
+                        <h3 class="text-2xl font-display font-bold text-slate-900 dark:text-white mb-6">Häufige Fragen</h3>
+                        <div class="space-y-4">
+                            {faqs.map((faq: any) => (
+                                <details class="group bg-slate-50 dark:bg-slate-900 rounded-2xl overflow-hidden border border-slate-100 dark:border-slate-800 open:bg-white dark:open:bg-slate-800 open:shadow-lg transition-all duration-300">
+                                    <summary class="flex items-center justify-between p-6 cursor-pointer font-bold text-slate-700 dark:text-slate-200 hover:text-rose-600 dark:hover:text-rose-400 transition-colors list-none outline-none">
+                                        <span>{faq.question || faq.q}</span>
+                                        <span class="w-8 h-8 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-400 group-open:rotate-180 group-open:bg-rose-50 dark:group-open:bg-rose-900/20 group-open:text-rose-600 transition-all">
+                                            <i class="fa-solid fa-chevron-down text-xs"></i>
+                                        </span>
+                                    </summary>
+                                    <div class="px-6 pb-6 text-slate-500 dark:text-slate-400 leading-relaxed text-sm animate-fade-in">
+                                        {faq.answer || faq.a}
+                                    </div>
+                                </details>
+                            ))}
                         </div>
                     </div>
+                )}
 
-                    <div class="space-y-2">
-                        <label for="subject" class="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 ml-4">Betreff</label>
-                        <select id="subject" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all appearance-none font-medium dark:text-white">
-                            <option>Allgemeine Anfrage</option>
-                            <option>Soziale Dienste (LEVO)</option>
-                            <option>Tickets & Events</option>
-                            <option>Raummiete</option>
-                            <option>Ehrenamt & Jobs</option>
-                        </select>
-                    </div>
-
-                    <div class="space-y-2">
-                        <label for="message" class="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 ml-4">Nachricht</label>
-                        <textarea id="message" rows="5" required class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all dark:text-white" placeholder="Wie können wir helfen?"></textarea>
-                    </div>
-
-                    <div class="pt-4">
-                        <button type="submit" class="w-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-lg rounded-2xl py-4 hover:bg-rose-600 dark:hover:bg-rose-400 dark:hover:text-white transition-all shadow-lg hover:shadow-rose-500/25 transform active:scale-95">
-                            Nachricht absenden
-                        </button>
-                    </div>
-                </form>
             </div>
 
         </div>
     </section>
 
+    {/* ... DEPARTMENTS & JOIN US (Gleich wie vorher) ... */}
     <section class="px-6 sm:px-10 py-24 bg-slate-900 text-white rounded-[48px] dark:border dark:border-slate-800">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16">
@@ -236,7 +305,6 @@ const departments = [
         </div>
     </section>
 
-    {/* --- JOIN US --- */}
     <section class="px-6 sm:px-10 py-24 bg-white dark:bg-slate-950 transition-colors duration-300">
         <div class="max-w-7xl mx-auto">
             <a href="/join" class="group relative bg-indigo-600 rounded-[48px] p-10 md:p-14 overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-10 shadow-xl hover:shadow-indigo-200 dark:hover:shadow-none transition-all duration-500">
@@ -261,7 +329,7 @@ const departments = [
         </div>
     </section>
 
-    {/* --- EXIT SECTION --- */}
+    {/* --- EXIT --- */}
     <section class="bg-white dark:bg-slate-950 pt-24 pb-16 text-center transition-colors duration-300">
         <div class="max-w-4xl mx-auto px-6">
             <p class="text-slate-400 dark:text-slate-500 font-medium text-xl italic leading-relaxed">
@@ -277,12 +345,45 @@ const departments = [
     </div>
 </MainLayout>
 
+{/* --- SEO: SCHEMA.ORG --- */}
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "CommunityCenter",
+  "name": "Die Brücke - soziokulturelles Zentrum",
+  "url": "https://diebruecke.cc",
+  "telephone": "+43 316 67 22 48",
+  "email": "office@diebruecke.cc",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Grabenstraße 39a",
+    "addressLocality": "Graz",
+    "postalCode": "8010",
+    "addressCountry": "AT"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": 47.085, 
+    "longitude": 15.435 
+  },
+  "openingHoursSpecification": openingHours.map(h => {
+      let days = [];
+      if(h.label.includes('Montag')) days.push("Monday");
+      if(h.label.includes('Dienstag')) days.push("Tuesday");
+      if(h.label.includes('Mittwoch')) days.push("Wednesday");
+      if(h.label.includes('Donnerstag')) days.push("Thursday");
+      if(h.label.includes('Freitag')) days.push("Friday");
+      if(h.label.includes('Samstag')) days.push("Saturday");
+      if(h.label.includes('Sonntag')) days.push("Sunday");
+      if(h.label.includes('Montag') && h.label.includes('Donnerstag')) days = ["Monday", "Tuesday", "Wednesday", "Thursday"];
+      return { "@type": "OpeningHoursSpecification", "dayOfWeek": days, "opens": h.time.split('–')[0]?.trim() || "09:00", "closes": h.time.split('–')[1]?.trim() || "16:00" };
+  }).filter(o => o.dayOfWeek.length > 0)
+})} />
+
 <script>
+    // 1. Google Maps Logic
     function initMapLogic() {
         const placeholder = document.getElementById('map-placeholder');
         const iframe = document.getElementById('google-map');
-        
-        // Standard Embed Link (Google Maps Embed API)
         const address = "Die Brücke Graz Grabenstraße 39a";
         const mapUrl = `https://maps.google.com/maps?q=${encodeURIComponent(address)}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
 
@@ -295,6 +396,76 @@ const departments = [
         }
     }
 
-    initMapLogic();
-    document.addEventListener('astro:after-swap', initMapLogic);
+    // 2. Form Logic (SEND TO API)
+    function initFormLogic() {
+        const form = document.getElementById('contact-form') as HTMLFormElement;
+        const msgBox = document.getElementById('form-message');
+        const submitBtn = document.getElementById('submit-btn');
+
+        if(form && msgBox && submitBtn) {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                // UI: Loading State
+                const originalBtnText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Senden...';
+                submitBtn.setAttribute('disabled', 'true');
+                msgBox.classList.add('hidden');
+
+                // Data
+                const formData = new FormData(form);
+                const data = Object.fromEntries(formData.entries());
+
+                try {
+                    // Call Astro API Endpoint
+                    const response = await fetch('/api/contact', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+
+                    const result = await response.json();
+
+                    if(response.ok) {
+                        // Success
+                        msgBox.innerHTML = `<i class="fa-solid fa-check-circle"></i> ${result.message}`;
+                        msgBox.className = "p-4 rounded-xl text-sm font-bold mb-4 bg-emerald-100 text-emerald-800 border border-emerald-200 block";
+                        form.reset();
+                    } else {
+                        // Error from API
+                        throw new Error(result.message || 'Fehler beim Senden');
+                    }
+
+                } catch (error) {
+                    console.error(error);
+                    msgBox.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> ${error.message || 'Verbindungsfehler. Bitte versuche es später.'}`;
+                    msgBox.className = "p-4 rounded-xl text-sm font-bold mb-4 bg-rose-100 text-rose-800 border border-rose-200 block";
+                } finally {
+                    // Reset Button
+                    submitBtn.innerHTML = originalBtnText;
+                    submitBtn.removeAttribute('disabled');
+                }
+            });
+        }
+    }
+
+    // Init
+    const init = () => {
+        initMapLogic();
+        initFormLogic();
+    }
+    
+    init();
+    document.addEventListener('astro:after-swap', init);
 </script>
+
+<style>
+    details > summary { list-style: none; }
+    details > summary::-webkit-details-marker { display: none; }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-5px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in { animation: fadeIn 0.3s ease-out forwards; }
+</style>
