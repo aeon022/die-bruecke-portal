@@ -3,7 +3,7 @@ import MainLayout from '../layouts/layout.astro';
 import { directus } from '../lib/directus';
 import { readSingleton } from '@directus/sdk';
 
-// 1. Daten laden
+// 1. Daten laden (Logik 1:1 aus contact.astro übernommen)
 let settings;
 try {
     settings = await directus.request(readSingleton('global_settings'));
@@ -31,12 +31,12 @@ const accessibilityItems = settings?.accessibility_items || defaultAccessItems;
 // --- EIGENE DATEN FÜR INFOZENTRUM ---
 const tasks = [
     { 
-        title: "Rechte & Kosten", // UPDATE: Kosten explizit nennen
+        title: "Rechte & Kosten", 
         icon: "fa-scale-balanced", 
         text: "Wir klären deinen Anspruch nach dem Behindertengesetz (LEVO) und rechnen mögliche Selbstbehalte vorab gemeinsam durch." 
     },
     { 
-        title: "Antrags-Hilfe", // UPDATE: Wording "Wir übersetzen"
+        title: "Antrags-Hilfe", 
         icon: "fa-file-signature", 
         text: "Behördendeutsch kann kompliziert sein. Wir helfen dir beim Ausfüllen von Anträgen (Behindertenpass, Pflegegeld, Förderungen)." 
     },
@@ -55,7 +55,7 @@ const tasks = [
 const faqs = [
     { 
         q: "Kostet die Beratung etwas?", 
-        a: "Nein. Die Beratung im Infozentrum ist immer kostenlos und unverbindlich. Wenn du später mobile Dienste (z.B. Wohnassistenz) in Anspruch nimmst, kann je nach Einkommen ein gesetzlicher Selbstbehalt anfallen. Das rechnen wir aber vorher genau aus." // UPDATE: LEVO Hinweis
+        a: "Nein. Die Beratung im Infozentrum ist immer kostenlos und unverbindlich. Wenn du später mobile Dienste (z.B. Wohnassistenz) in Anspruch nimmst, kann je nach Einkommen ein gesetzlicher Selbstbehalt anfallen. Das rechnen wir aber vorher genau aus." 
     },
     { 
         q: "Brauche ich einen Termin?", 
