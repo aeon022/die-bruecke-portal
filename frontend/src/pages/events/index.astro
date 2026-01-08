@@ -9,26 +9,24 @@ const [allEvents, allCategories] = await Promise.all([
 
 const ASSET_URL = 'http://localhost:8055/assets';
 
-// --- HELPER: Datum & Zeit formatieren (Robust wie Startseite) ---
+// --- HELPER: Datum & Zeit formatieren ---
 function formatEventDate(dateObj: Date, event: any) {
     const day = dateObj.toLocaleDateString('de-DE', { day: '2-digit', month: 'short' }).toUpperCase();
     
-    // 1. Versuch: Explizites Feld time_start
-    let time = event.time_start ? event.time_start.slice(0, 5) : "";
-
-    // 2. Fallback: Zeit aus dem Datumsobjekt ziehen (falls time_start leer ist)
-    if (!time || time === "00:00") {
-         const t = dateObj.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
-         // Wenn t nicht 00:00 ist, nehmen wir es als Zeit
-         if (t !== "00:00") time = t;
+    // Zeit-Logik: Priorität auf explizites Feld, Fallback auf Datumsobjekt
+    let time = "";
+    if (event.time_start) {
+        time = event.time_start.slice(0, 5);
+    } else {
+        // Fallback: Versuche Zeit aus Date-Objekt zu holen (wenn nicht 00:00)
+        const t = dateObj.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+        if (t !== "00:00") time = t;
     }
     
-    // Wenn immer noch keine Zeit oder 00:00 -> nur Datum
     if (!time || time === "00:00") {
         return day;
     }
     
-    // Sonst: Datum • Zeit
     return `${day} • ${time}`;
 }
 
@@ -41,7 +39,6 @@ const getNextEventDate = (event) => {
     
     if (eventDate >= now) return eventDate;
 
-    // Wiederholungs-Logik
     if (event.recurrence === 'monthly' || event.rrule?.includes('FREQ=MONTHLY')) {
         while (eventDate < now) {
             eventDate.setMonth(eventDate.getMonth() + 1);
@@ -71,9 +68,10 @@ const catLookup = new Map();
 
 const categoryNames = Array.from(catLookup.values()).sort();
 
-// 2. Events vorbereiten
+// 2. Events vorbereiten & BENTO-LOGIK (Zig-Zag)
+let highlightCounter = 0; // Zähler für Highlights
+
 let eventsWithCats = allEvents.map(event => {
-    // Kategorien auflösen
     const rawCats = event.event_categories || [];
     const validNames = rawCats.map(rel => {
         let targetId = null;
@@ -84,13 +82,20 @@ let eventsWithCats = allEvents.map(event => {
         return null;
     }).filter(Boolean);
 
-    // Datum berechnen
     const displayDate = getNextEventDate(event);
+    
+    // Zig-Zag Logik berechnen
+    let highlightPos = null;
+    if (event.is_highlight === true) {
+        highlightCounter++;
+        highlightPos = highlightCounter; // 1, 2, 3...
+    }
 
     return {
         ...event,
         _catString: validNames.join(','),
         _displayDate: displayDate, 
+        _highlightPos: highlightPos // Speichern für Template
     };
 });
 
@@ -173,14 +178,18 @@ eventsWithCats.sort((a, b) => {
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 grid-flow-row-dense auto-rows-[minmax(380px,auto)]">
                 {eventsWithCats.map(event => {
                     const isHighlight = event.is_highlight === true;
-                    // WICHTIG: Wir nutzen jetzt _displayDate für die Anzeige!
+                    // Zick-Zack-Logik: Wenn Highlight Index gerade ist (2, 4, 6...), dann rechts ausrichten
+                    const isEvenHighlight = event._highlightPos && event._highlightPos % 2 === 0;
+                    
                     const dateToShow = event._displayDate;
 
                     return (
                     <div 
                         class={`event-card group relative overflow-hidden rounded-[40px] transition-all duration-500 hover:scale-[1.01] hover:shadow-2xl flex flex-col
                         ${isHighlight 
-                            ? 'md:col-span-2 md:flex-row bg-gradient-to-br from-rose-50 via-white to-amber-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 shadow-xl ring-1 ring-slate-900/5 dark:ring-white/10' 
+                            // HIGHLIGHT CARD: col-span-2. Wenn gerade -> start-2 (rechts). Wenn ungerade -> default (links)
+                            ? `md:col-span-2 md:flex-row bg-gradient-to-br from-rose-50 via-white to-amber-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 shadow-xl ring-1 ring-slate-900/5 dark:ring-white/10 ${isEvenHighlight ? 'lg:col-start-2' : ''}` 
+                            // STANDARD CARD
                             : 'col-span-1 bg-gradient-to-br from-white to-slate-50 dark:from-slate-900 dark:to-slate-950 border border-slate-100 dark:border-slate-800'
                         }`}
                         data-cats={event._catString}
@@ -202,11 +211,9 @@ eventsWithCats.sort((a, b) => {
                                 <div class="w-full h-full flex items-center justify-center bg-slate-200 dark:bg-slate-800 text-slate-400 italic font-display uppercase tracking-widest text-[10px]">Kein Bild</div>
                             )}
                             
-                            {/* DATE BADGE (Gefixed: Mit Event-Übergabe für Zeit-Fallback) */}
+                            {/* DATE BADGE (Jetzt mit Zeit & Event Übergabe) */}
                             <div class="absolute top-6 left-6 flex gap-2 items-start">
-                                {/* Dunkler Badge */}
                                 <span class="px-3 py-1 rounded-full bg-slate-900/80 backdrop-blur-md text-white text-[10px] font-bold uppercase shadow-lg tracking-widest border border-white/10">
-                                    {/* FIX: Hier übergeben wir jetzt (Datum, ganzes Event) */}
                                     {formatEventDate(dateToShow, event)}
                                 </span>
                                 
@@ -266,7 +273,6 @@ eventsWithCats.sort((a, b) => {
         </div>
     </section>
 
-    {/* ... Footer Teaser & CTA ... */}
     {/* --- FOOTER TEASERS --- */}
     <section class="footer-teaser-section px-6 sm:px-10 py-24 bg-slate-50 dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 transition-colors">
         <div class="max-w-5xl mx-auto">
@@ -316,19 +322,17 @@ eventsWithCats.sort((a, b) => {
     </section>
 
     <style is:global>
-        /* Sticky State Enhancements */
         .filter-bar-container.is-stuck {
-            background-color: rgba(241, 245, 249, 0.95) !important; /* slate-100 */
-            border-color: rgba(203, 213, 225, 0.8) !important; /* slate-300 */
+            background-color: rgba(241, 245, 249, 0.95) !important;
+            border-color: rgba(203, 213, 225, 0.8) !important;
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
 
         html.dark .filter-bar-container.is-stuck {
-            background-color: rgba(15, 23, 42, 0.95) !important; /* slate-900 */
+            background-color: rgba(15, 23, 42, 0.95) !important;
             border-color: rgba(51, 65, 85, 0.8) !important;
         }
 
-        /* Active Filter Button Dark Mode */
         html.dark .filter-btn.active {
             background-color: #ffffff !important;
             color: #0f172a !important;
@@ -343,7 +347,6 @@ eventsWithCats.sort((a, b) => {
     const filterContainer = document.getElementById('filter-container');
     const sentinel = document.getElementById('sticky-sentinel');
 
-    // 1. Sticky-Detection
     if (sentinel && filterContainer) {
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -360,7 +363,6 @@ eventsWithCats.sort((a, b) => {
         observer.observe(sentinel);
     }
 
-    // 2. Filter-Logik
     const activeClasses = ['bg-slate-900', 'text-white', 'shadow-md', 'dark:bg-white', 'dark:text-slate-900'];
     const inactiveClasses = ['bg-transparent', 'text-slate-500', 'hover:bg-slate-100', 'hover:text-slate-900', 'dark:text-slate-400', 'dark:hover:bg-slate-800', 'dark:hover:text-white'];
 
