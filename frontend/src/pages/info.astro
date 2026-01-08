@@ -3,7 +3,7 @@ import MainLayout from '../layouts/layout.astro';
 import { directus } from '../lib/directus';
 import { readSingleton } from '@directus/sdk';
 
-// 1. Daten laden (Logik 1:1 aus contact.astro übernommen)
+// 1. Daten laden
 let settings;
 try {
     settings = await directus.request(readSingleton('global_settings'));
@@ -19,7 +19,7 @@ const defaultOpeningHours = [
 ];
 const openingHours = settings?.opening_hours || defaultOpeningHours;
 
-// --- DATEN-LOGIK: BARRIEREFREIHEIT (Neu aus Contact übernommen) ---
+// --- DATEN-LOGIK: BARRIEREFREIHEIT ---
 const defaultAccessItems = [
     { label: "Ebenerdiger Zugang (Rampe)", icon: "wheelchair" },
     { label: "Euro-Key Behinderten-WC", icon: "restroom" },
@@ -31,39 +31,39 @@ const accessibilityItems = settings?.accessibility_items || defaultAccessItems;
 // --- EIGENE DATEN FÜR INFOZENTRUM ---
 const tasks = [
     { 
-        title: "Rechte & Infos", 
+        title: "Rechte & Kosten", // UPDATE: Kosten explizit nennen
         icon: "fa-scale-balanced", 
-        text: "Informationen über deine Rechte und die für dich verfügbaren Unterstützungsleistungen." 
+        text: "Wir klären deinen Anspruch nach dem Behindertengesetz (LEVO) und rechnen mögliche Selbstbehalte vorab gemeinsam durch." 
     },
     { 
-        title: "Formular-Check", 
+        title: "Antrags-Hilfe", // UPDATE: Wording "Wir übersetzen"
         icon: "fa-file-signature", 
-        text: "Hilfe beim Ausfüllen von Anträgen und Begleitung im Umgang mit Behörden." 
+        text: "Behördendeutsch kann kompliziert sein. Wir helfen dir beim Ausfüllen von Anträgen (Behindertenpass, Pflegegeld, Förderungen)." 
     },
     { 
-        title: "Assistenz-Bedarf", 
+        title: "Assistenz finden", 
         icon: "fa-handshake-angle", 
-        text: "Gemeinsame Klärung, welche Assistenzform (FASS, FED, WASS, persönliches Budget) am besten zu deinem Leben passt." 
+        text: "Gemeinsame Klärung, welche Leistung (Wohnassistenz, Freizeitassistenz, Familienentlastung, persönliches Budget) genau zu deinem Leben passt." 
     },
     { 
-        title: "Orientierung", 
+        title: "Netzwerk Graz", 
         icon: "fa-route", 
-        text: "Wir wissen, wer in Graz weiterhilft. Gezielte Vermittlung an spezialisierte Fachstellen." 
+        text: "Wir kennen die Stadt. Wenn wir etwas nicht selbst anbieten, wissen wir genau, wer dir in Graz weiterhelfen kann." 
     }
 ];
 
 const faqs = [
     { 
         q: "Kostet die Beratung etwas?", 
-        a: "Nein. Alle Angebote im Infozentrum sind kostenlos." 
+        a: "Nein. Die Beratung im Infozentrum ist immer kostenlos und unverbindlich. Wenn du später mobile Dienste (z.B. Wohnassistenz) in Anspruch nimmst, kann je nach Einkommen ein gesetzlicher Selbstbehalt anfallen. Das rechnen wir aber vorher genau aus." // UPDATE: LEVO Hinweis
     },
     { 
         q: "Brauche ich einen Termin?", 
-        a: "Für kurze Fragen kannst du einfach vorbeikommen. Für ausführliche Beratung empfehlen wir einen Termin." 
+        a: "Für kurze Fragen kannst du einfach vorbeikommen. Für ausführliche Beratung (z.B. Anträge ausfüllen) empfehlen wir einen Termin, damit wir uns Zeit nehmen können." 
     },
     { 
         q: "Welche Dokumente brauche ich?", 
-        a: "Für das Erstgespräch gar nichts – komm einfach so. Falls du bereits Bescheide, Arztbriefe oder Anträge hast, bring sie gerne mit. Das hilft uns, die Situation schneller zu erfassen." 
+        a: "Für das Erstgespräch gar nichts – komm einfach so. Falls du bereits Bescheide, Arztbriefe oder den Behindertenpass hast, bring sie gerne mit. Das hilft uns, die Situation schneller zu erfassen." 
     }
 ];
 ---
@@ -273,7 +273,7 @@ const faqs = [
                         </ul>
                     </div>
 
-                    {/* Barrierefreiheit (NEU) */}
+                    {/* Barrierefreiheit */}
                     {accessibilityItems.length > 0 && (
                         <div class="mb-8">
                             <h5 class="font-bold text-sm text-slate-900 dark:text-white mb-3 flex items-center gap-2">
@@ -290,8 +290,8 @@ const faqs = [
                         </div>
                     )}
 
-                    {/* GELBER INFO BLOCK */}
-                    <div class="p-4 bg-yellow-100 dark:bg-yellow-900/20 rounded-2xl border border-yellow-200 dark:border-yellow-900/50">
+                    {/* KONTAKT & TERMIN */}
+                    <div class="p-4 bg-yellow-100 dark:bg-yellow-900/20 rounded-2xl border border-yellow-200 dark:border-yellow-900/50 mb-8">
                         <p class="text-xs text-yellow-800 dark:text-yellow-200 font-bold leading-tight mb-2">
                             <i class="fa-solid fa-info-circle mr-1"></i>
                             Termine & Anruf
@@ -300,6 +300,24 @@ const faqs = [
                             Terminvereinbarung gerne via <a href="mailto:office@diebruecke.cc" class="underline decoration-dotted hover:text-rose-500">office@diebruecke.cc</a> oder einfach während der Öffnungszeiten anrufen.
                         </p>
                     </div>
+
+                    {/* EXTERNER NOTFALL LINK (PSYNOT) */}
+                    <div class="pt-6 border-t border-slate-200 dark:border-slate-700">
+                        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 text-center">Im akuten Notfall (24/7)</p>
+                        
+                        <a href="https://psynot-stmk.at" target="_blank" class="block bg-slate-50 dark:bg-slate-800 hover:bg-white dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 rounded-xl p-4 transition-all group text-left shadow-sm hover:shadow-md">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="font-bold text-slate-700 dark:text-slate-200 text-sm flex items-center gap-2">
+                                    <i class="fa-solid fa-phone-volume text-rose-500"></i> Psychosozialer Dienst
+                                </span>
+                                <i class="fa-solid fa-arrow-up-right-from-square text-xs text-slate-400 group-hover:text-rose-500 transition-colors"></i>
+                            </div>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mt-2">
+                                Kostenlose Soforthilfe in der Steiermark, wenn wir geschlossen haben. Rund um die Uhr erreichbar.
+                            </p>
+                        </a>
+                    </div>
+
                 </div>
 
             </div>
