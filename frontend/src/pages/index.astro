@@ -211,7 +211,19 @@ const heroHeadline = settings?.hero_headline || `Kultur verbindet.<br> <span cla
                         <div class="w-16 h-16 bg-slate-900 dark:bg-white rounded-3xl text-white dark:text-slate-900 flex items-center justify-center text-2xl mb-8"><i class="fa-solid fa-circle-info"></i></div>
                         <h3 class="text-3xl font-display font-bold text-slate-900 dark:text-white mb-4">Infozentrum</h3>
                         <p class="text-slate-500 dark:text-slate-300 mb-8 leading-relaxed">Unsere erste Anlaufstelle in Graz. Unbürokratische Beratung bei Anträgen, Behördenwegen und sozialen Fragestellungen – menschlich und direkt.</p>
-                        <a href="/info" class="px-8 py-3 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-full font-bold w-fit hover:bg-rose-600 dark:hover:bg-rose-500 dark:hover:text-white transition-all shadow-lg">Kontakt aufnehmen</a>
+                        
+                        {/* BUTTON GRUPPE */}
+                        <div class="flex flex-wrap gap-3">
+                            {/* Button 1: Zur Seite */}
+                            <a href="/info" class="px-6 py-3 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-full font-bold hover:bg-rose-600 dark:hover:bg-rose-500 dark:hover:text-white transition-all shadow-lg">
+                                Details
+                            </a>
+                            
+                            {/* Button 2: Mailto */}
+                            <a href="mailto:office@diebruecke.cc" class="px-6 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 rounded-full font-bold hover:border-rose-500 hover:text-rose-500 transition-all shadow-sm flex items-center gap-2">
+                                <i class="fa-regular fa-envelope"></i> E-Mail
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
