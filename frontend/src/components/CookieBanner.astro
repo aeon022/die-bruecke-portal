@@ -17,7 +17,8 @@
         </div>
 
         <div class="flex flex-wrap gap-2 justify-end">
-            <a href="/privacy" class="px-4 py-2 text-xs font-bold text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors mr-auto self-center">
+            {/* LINK GEÄNDERT AUF /datenschutz */}
+            <a href="/datenschutz" class="px-4 py-2 text-xs font-bold text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors mr-auto self-center">
                 Datenschutz
             </a>
             
@@ -34,37 +35,26 @@
 </div>
 
 <script is:inline>
-    // Wir prüfen, ob schon eine Entscheidung getroffen wurde
     const cookieBanner = document.getElementById('cookie-banner');
     const acceptBtn = document.getElementById('cookie-accept');
     const rejectBtn = document.getElementById('cookie-reject');
 
-    // Funktion zum Anzeigen (mit kleiner Verzögerung für Smoothness)
     const showBanner = () => {
         if (!localStorage.getItem('cookie_consent')) {
             setTimeout(() => {
                 cookieBanner.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
-            }, 1000); // Zeigt sich erst nach 1 Sekunde
+            }, 1000); 
         }
     };
 
-    // Funktion zum Speichern
     const setConsent = (status) => {
         localStorage.setItem('cookie_consent', status);
-        // Banner ausblenden
         cookieBanner.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
-        
-        // Optional: Hier könntest du Google Analytics zünden, falls status === 'accepted'
-        if (status === 'accepted') {
-            console.log('Cookies akzeptiert - Hier könnten Scripts laden.');
-        }
     };
 
-    // Event Listener
     if (acceptBtn) acceptBtn.addEventListener('click', () => setConsent('accepted'));
     if (rejectBtn) rejectBtn.addEventListener('click', () => setConsent('rejected'));
 
-    // Start
     showBanner();
 </script>
 
