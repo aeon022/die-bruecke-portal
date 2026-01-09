@@ -1,0 +1,85 @@
+---
+import MainLayout from '../layouts/layout.astro';
+---
+
+<MainLayout title="404 | Nichts gefunden | Die Brücke">
+    {/* Container passt sich an: Weiß im Light-Mode, Dunkel im Dark-Mode */}
+    <div class="relative min-h-screen flex flex-col items-center justify-center text-center px-6 overflow-hidden bg-white dark:bg-slate-950 selection:bg-rose-500 selection:text-white">
+        
+        {/* --- BACKGROUND FX --- */}
+        <div class="absolute inset-0 w-full h-full pointer-events-none">
+            <div class="absolute inset-0 opacity-[0.03] dark:opacity-[0.15] mix-blend-multiply dark:mix-blend-overlay bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
+            {/* Blobs nur dezent im Hintergrund */}
+            <div class="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-rose-500/5 dark:bg-rose-600/10 rounded-full blur-[120px] animate-pulse-slow"></div>
+        </div>
+
+        {/* --- CONTENT --- */}
+        <div class="relative z-10 max-w-5xl mx-auto flex flex-col items-center">
+            
+            {/* LUSTIGES ELEMENT */}
+            <div class="mb-4 relative group cursor-help transition-transform hover:scale-110 duration-300">
+                <div class="text-7xl md:text-9xl grayscale hover:grayscale-0 animate-bounce-slow">
+                    🚧
+                </div>
+            </div>
+
+            {/* MASSIVE 404 TITEL (SCHWARZ) */}
+            <div class="relative mb-2 select-none leading-none">
+                {/* Im Light Mode: SCHWARZ (slate-900). Im Dark Mode: WEISS */}
+                <h1 class="text-[12rem] sm:text-[16rem] md:text-[22rem] font-display font-black tracking-tighter text-slate-900 dark:text-white drop-shadow-2xl">
+                    4<span class="inline-block text-rose-600 dark:text-rose-500 animate-pulse">0</span>4
+                </h1>
+                
+                {/* Deko-Text im Hintergrund (nur Outline) */}
+                <h1 class="absolute top-0 left-1/2 -translate-x-1/2 w-full text-[12rem] sm:text-[16rem] md:text-[22rem] font-display font-black tracking-tighter text-transparent stroke-text opacity-10 pointer-events-none blur-sm">
+                    404
+                </h1>
+            </div>
+
+            {/* Headline & Text (DUNKELGRAU statt WEISS im Lightmode) */}
+            <h2 class="text-3xl md:text-5xl font-display font-bold mb-8 tracking-tight text-slate-900 dark:text-white">
+                Ende Gelände.
+            </h2>
+            
+            {/* Hier war das Problem: text-slate-400 war zu hell auf weißem Grund. Jetzt slate-600. */}
+            <p class="text-xl md:text-2xl text-slate-600 dark:text-slate-300 mb-12 leading-relaxed max-w-2xl mx-auto font-medium">
+                Herzlichen Glückwunsch, du hast das Ende des Internets erreicht. <br class="hidden md:block" />
+                Hier gibt es weder Kaffee noch Brücken.
+            </p>
+
+            {/* BUTTONS */}
+            <div class="flex flex-col sm:flex-row justify-center gap-6 w-full sm:w-auto">
+                
+                {/* Home Button: Schwarz im Lightmode, Rose im Darkmode */}
+                <a href="/" class="group bg-slate-900 dark:bg-rose-600 text-white px-10 py-5 rounded-full font-bold shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 flex items-center justify-center gap-3">
+                    <i class="fa-solid fa-house text-lg"></i>
+                    <span>Rette mich (Home)</span>
+                </a>
+                
+                {/* Programm Button: Rahmen Schwarz im Lightmode */}
+                <a href="/events" class="group px-10 py-5 rounded-full font-bold border-2 border-slate-900 dark:border-slate-700 text-slate-900 dark:text-slate-300 hover:bg-slate-900 hover:text-white dark:hover:bg-white dark:hover:text-slate-950 transition-all duration-300 flex items-center justify-center gap-3">
+                    <i class="fa-regular fa-calendar-check text-lg"></i>
+                    <span>Zum Programm</span>
+                </a>
+
+            </div>
+
+        </div>
+    </div>
+
+    <style>
+        @keyframes bounce-slow {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+        .animate-bounce-slow {
+            animation: bounce-slow 4s infinite ease-in-out;
+        }
+        
+        /* Outline Text Effekt */
+        .stroke-text {
+            -webkit-text-stroke: 2px currentColor;
+            color: transparent;
+        }
+    </style>
+</MainLayout>
