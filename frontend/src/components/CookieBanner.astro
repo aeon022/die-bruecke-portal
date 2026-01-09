@@ -1,0 +1,79 @@
+---
+---
+
+<div id="cookie-banner" class="fixed bottom-4 right-4 md:bottom-8 md:right-8 z-50 max-w-sm w-[calc(100%-2rem)] translate-y-20 opacity-0 pointer-events-none transition-all duration-500 ease-out" role="dialog" aria-live="polite">
+    <div class="bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-slate-200 dark:border-slate-800 p-6 rounded-[32px] shadow-2xl shadow-black/10">
+        
+        <div class="flex items-start gap-4">
+            <div class="text-3xl animate-bounce-slow">🍪</div>
+            <div>
+                <h3 class="font-display font-bold text-slate-900 dark:text-white text-lg mb-2">
+                    Nur die Guten.
+                </h3>
+                <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
+                    Wir nutzen technisch notwendige Cookies, damit die Website läuft. Keine Tracker, keine Werbung, versprochen.
+                </p>
+            </div>
+        </div>
+
+        <div class="flex flex-wrap gap-2 justify-end">
+            <a href="/privacy" class="px-4 py-2 text-xs font-bold text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors mr-auto self-center">
+                Datenschutz
+            </a>
+            
+            <button id="cookie-reject" class="px-5 py-2.5 rounded-full border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 text-xs font-bold hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">
+                Ablehnen
+            </button>
+            
+            <button id="cookie-accept" class="px-6 py-2.5 rounded-full bg-rose-600 text-white text-xs font-bold shadow-lg hover:bg-rose-700 hover:scale-105 transition-all">
+                Alles klar!
+            </button>
+        </div>
+
+    </div>
+</div>
+
+<script is:inline>
+    // Wir prüfen, ob schon eine Entscheidung getroffen wurde
+    const cookieBanner = document.getElementById('cookie-banner');
+    const acceptBtn = document.getElementById('cookie-accept');
+    const rejectBtn = document.getElementById('cookie-reject');
+
+    // Funktion zum Anzeigen (mit kleiner Verzögerung für Smoothness)
+    const showBanner = () => {
+        if (!localStorage.getItem('cookie_consent')) {
+            setTimeout(() => {
+                cookieBanner.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+            }, 1000); // Zeigt sich erst nach 1 Sekunde
+        }
+    };
+
+    // Funktion zum Speichern
+    const setConsent = (status) => {
+        localStorage.setItem('cookie_consent', status);
+        // Banner ausblenden
+        cookieBanner.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+        
+        // Optional: Hier könntest du Google Analytics zünden, falls status === 'accepted'
+        if (status === 'accepted') {
+            console.log('Cookies akzeptiert - Hier könnten Scripts laden.');
+        }
+    };
+
+    // Event Listener
+    if (acceptBtn) acceptBtn.addEventListener('click', () => setConsent('accepted'));
+    if (rejectBtn) rejectBtn.addEventListener('click', () => setConsent('rejected'));
+
+    // Start
+    showBanner();
+</script>
+
+<style>
+    @keyframes bounce-slow {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-5px); }
+    }
+    .animate-bounce-slow {
+        animation: bounce-slow 3s infinite ease-in-out;
+    }
+</style>
