@@ -4,7 +4,7 @@ import { getEvents, getGlobalSettings } from '../lib/api';
 import { directus } from '../lib/directus';
 import { readItems } from '@directus/sdk';
 
-const ASSET_URL = 'http://localhost:8055/assets'; 
+const ASSET_URL = 'https://api.diebruecke.social/assets'; 
 
 // 1. Daten laden (Jetzt inkl. Partners)
 const [settings, allEvents, dbServices, dbPartners] = await Promise.all([

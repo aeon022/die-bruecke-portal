@@ -9,7 +9,7 @@ const camps = await directus.request(readItems('camps', {
     sort: ['date_range'] 
 }));
 
-const ASSET_URL = "http://localhost:8055/assets";
+const ASSET_URL = "https://api.diebruecke.social/assets";
 
 // 2. Featured-Logik
 const featuredCamp = camps.find((c: any) => c.is_featured) || camps[0];

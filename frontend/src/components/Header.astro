@@ -11,7 +11,7 @@ try {
   if (settings) {
     projectName = settings.project_name || 'Die Brücke';
     if (settings.logo) {
-      logoUrl = `http://localhost:8055/assets/${settings.logo}`;
+      logoUrl = `https://api.diebruecke.social/assets/${settings.logo}`;
     }
   }
 } catch (error) {

@@ -9,7 +9,7 @@ const trips = await directus.request(readItems('city_trips', {
     sort: ['sort', 'date_range'] // Erst 'sort', dann Datum
 })); // <--- Hier fehlten die schließenden Klammern!
 
-const ASSET_URL = "http://localhost:8055/assets";
+const ASSET_URL = "https://api.diebruecke.social/assets";
 
 // 2. Featured-Logik
 const featuredTrip = trips.find((t: any) => t.is_featured) || trips[0];

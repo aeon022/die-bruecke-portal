@@ -23,7 +23,7 @@ try {
 
 if (!trip) return Astro.redirect('/404');
 
-const ASSET_URL = "http://localhost:8055/assets";
+const ASSET_URL = "https://api.diebruecke.social/assets";
 const heroImage = trip.image ? `${ASSET_URL}/${trip.image}` : null;
 ---
 

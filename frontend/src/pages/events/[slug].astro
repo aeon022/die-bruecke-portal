@@ -96,7 +96,7 @@ const relatedEvents = allEvents
     .filter((e: any) => e.id !== event.id)
     .slice(0, 3);
 
-const ASSET_URL = 'http://localhost:8055/assets';
+const ASSET_URL = 'https://api.diebruecke.social/assets';
 const getCatName = (cat: any) => cat.event_categories_id?.name || cat.event_categories_id?.title || 'Event';
 
 const formatGCalDate = (date: Date) => date.toISOString().replace(/-|:|\.\d\d\d/g, "");

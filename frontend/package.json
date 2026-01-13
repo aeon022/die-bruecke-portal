@@ -7,7 +7,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "gen:types": "directus-sdk-typegen --url http://localhost:8055 --token $DIRECTUS_STATIC_TOKEN --output src/lib/directus-types.ts"
+    "gen:types": "directus-sdk-typegen --url https://api.diebruecke.social --token $DIRECTUS_STATIC_TOKEN --output src/lib/directus-types.ts"
   },
   "dependencies": {
     "@astrojs/node": "^9.5.1",

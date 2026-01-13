@@ -31,7 +31,7 @@ if (!camp) {
   return Astro.redirect('/404');
 }
 
-const ASSET_URL = "http://localhost:8055/assets";
+const ASSET_URL = "https://api.diebruecke.social/assets";
 const heroImage = camp.image ? `${ASSET_URL}/${camp.image}` : null;
 ---
 

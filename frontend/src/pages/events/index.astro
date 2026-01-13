@@ -7,7 +7,7 @@ const [allEvents, allCategories] = await Promise.all([
     getEventCategories()
 ]);
 
-const ASSET_URL = 'http://localhost:8055/assets';
+const ASSET_URL = 'https://api.diebruecke.social/assets';
 
 // --- HELPER: Datum & Zeit formatieren (Exakt wie Startseite) ---
 function formatEventDate(dateObj: Date, timeStr?: string) {

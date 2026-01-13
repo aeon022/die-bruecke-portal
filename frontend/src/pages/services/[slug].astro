@@ -31,7 +31,7 @@ if (!service) {
 }
 
 // 3. URLs für Bilder und Dateien zusammenbauen
-const ASSET_URL = "http://localhost:8055/assets";
+const ASSET_URL = "https://api.diebruecke.social/assets";
 const serviceImage = service.image ? `${ASSET_URL}/${service.image}` : null;
 const downloadUrl = service.program_file ? `${ASSET_URL}/${service.program_file}` : null;
 
