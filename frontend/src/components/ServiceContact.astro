@@ -1,0 +1,35 @@
+---
+// src/components/ServiceContact.astro
+---
+
+<div class="mt-12 space-y-6">
+    
+    {/* --- TELEFON BOX --- */}
+    <div class="bg-slate-50 border border-slate-100 rounded-3xl p-8 flex flex-col sm:flex-row items-center gap-6">
+        <div class="w-12 h-12 rounded-full bg-slate-900 text-white flex items-center justify-center shrink-0 shadow-md">
+            <i class="fa-solid fa-phone"></i>
+        </div>
+        <div class="text-center sm:text-left flex-1">
+            <h3 class="font-bold text-slate-900 text-lg">Noch Fragen?</h3>
+            <p class="text-slate-500 text-sm">Wir helfen dir gerne persönlich weiter.</p>
+        </div>
+        <a href="tel:+43316672248" class="px-6 py-3 bg-white border border-slate-200 text-slate-900 font-bold rounded-full hover:bg-slate-900 hover:text-white transition-colors shadow-sm whitespace-nowrap">
+            0316 67 22 48
+        </a>
+    </div>
+
+    {/* --- EMAIL BOX (NEU) --- */}
+    <div class="bg-slate-50 border border-slate-100 rounded-3xl p-8 flex flex-col sm:flex-row items-center gap-6">
+        <div class="w-12 h-12 rounded-full bg-rose-500 text-white flex items-center justify-center shrink-0 shadow-md">
+            <i class="fa-solid fa-envelope"></i>
+        </div>
+        <div class="text-center sm:text-left flex-1">
+            <h3 class="font-bold text-slate-900 text-lg">Schreib uns</h3>
+            <p class="text-slate-500 text-sm">Anfragen & Infos per Mail.</p>
+        </div>
+        <a href="mailto:office@diebruecke.cc" class="px-6 py-3 bg-white border border-slate-200 text-slate-900 font-bold rounded-full hover:bg-rose-500 hover:text-white hover:border-rose-500 transition-colors shadow-sm whitespace-nowrap">
+            office@diebruecke.cc
+        </a>
+    </div>
+
+</div>

@@ -37,40 +37,60 @@ import MainLayout from '../layouts/layout.astro';
         {/* --- MITMACH-OPTIONEN GRID --- */}
         <section class="px-6 sm:px-10 py-24 bg-white">
             <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {[
-                    { 
-                        title: "Ehrenamt", 
-                        icon: "fa-heart-pulse", 
-                        text: "Schenke Zeit. Begleite uns bei Ausflügen, im Café oder bei unseren Kultur-Events in Graz." 
-                    },
-                    { 
-                        title: "Praktikum", 
-                        icon: "fa-graduation-cap", 
-                        text: "Lerne Inklusion von den Pionieren. Wir bieten Praktikumsplätze für soziale Berufe & Studium." 
-                    },
-                    { 
-                        title: "Zivildienst / FSJ", 
-                        icon: "fa-hand-holding-hand", 
-                        text: "Ein Jahr, das prägt. Werde Teil unseres Teams und unterstütze uns im Alltag und bei Reisen." 
-                    },
-                    { 
-                        title: "Mitgliedschaft", 
-                        icon: "fa-id-card", 
-                        text: "Werde Teil des Vereins. Mit deinem Beitrag sicherst du unsere unabhängige Arbeit seit 1983." 
-                    }
-                ].map(card => (
-                    <div class="group bg-slate-50 rounded-[40px] p-10 border border-slate-100 hover:shadow-xl transition-all duration-500">
-                        <div class="w-14 h-14 rounded-2xl bg-white flex items-center justify-center text-slate-900 text-xl mb-8 shadow-sm group-hover:bg-rose-500 group-hover:text-white transition-all">
-                            <i class={`fa-solid ${card.icon}`}></i>
-                        </div>
-                        <h3 class="text-2xl font-display font-bold text-slate-900 mb-4 tracking-tight">{card.title}</h3>
-                        <p class="text-slate-500 text-sm leading-relaxed font-medium">{card.text}</p>
+                
+                {/* 1. Ehrenamt */}
+                <div class="group bg-slate-50 rounded-[40px] p-10 border border-slate-100 hover:shadow-xl transition-all duration-500">
+                    <div class="w-14 h-14 rounded-2xl bg-white flex items-center justify-center text-slate-900 text-xl mb-8 shadow-sm group-hover:bg-rose-500 group-hover:text-white transition-all">
+                        <i class="fa-solid fa-heart-pulse"></i>
                     </div>
-                ))}
+                    <h3 class="text-2xl font-display font-bold text-slate-900 mb-4 tracking-tight">Ehrenamt</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed font-medium">Schenke Zeit. Begleite uns bei Ausflügen, im Café oder bei unseren Kultur-Events in Graz.</p>
+                </div>
+
+                {/* 2. Praktikum */}
+                <div class="group bg-slate-50 rounded-[40px] p-10 border border-slate-100 hover:shadow-xl transition-all duration-500">
+                    <div class="w-14 h-14 rounded-2xl bg-white flex items-center justify-center text-slate-900 text-xl mb-8 shadow-sm group-hover:bg-rose-500 group-hover:text-white transition-all">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+                    <h3 class="text-2xl font-display font-bold text-slate-900 mb-4 tracking-tight">Praktikum</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed font-medium">Lerne Inklusion von den Pionieren. Wir bieten Praktikumsplätze für soziale Berufe & Studium.</p>
+                </div>
+
+                {/* 3. Mitgliedschaft */}
+                <div class="group bg-slate-50 rounded-[40px] p-10 border border-slate-100 hover:shadow-xl transition-all duration-500">
+                    <div class="w-14 h-14 rounded-2xl bg-white flex items-center justify-center text-slate-900 text-xl mb-8 shadow-sm group-hover:bg-rose-500 group-hover:text-white transition-all">
+                        <i class="fa-solid fa-id-card"></i>
+                    </div>
+                    <h3 class="text-2xl font-display font-bold text-slate-900 mb-4 tracking-tight">Mitgliedschaft</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed font-medium">Werde Teil des Vereins. Mit deinem Beitrag sicherst du unsere unabhängige Arbeit seit 1983.</p>
+                </div>
+
+                {/* 4. SPONSORING (UPDATED TEXT) */}
+                <div class="group relative bg-white rounded-[40px] p-10 border-2 border-rose-500/20 shadow-2xl shadow-rose-500/10 hover:shadow-rose-500/20 hover:-translate-y-1 transition-all duration-500 overflow-hidden">
+                    {/* Background Glow */}
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-rose-100 rounded-full blur-3xl -mr-16 -mt-16 opacity-50"></div>
+                    
+                    <div class="relative z-10">
+                        <div class="w-14 h-14 rounded-2xl bg-rose-500 flex items-center justify-center text-white text-xl mb-8 shadow-lg shadow-rose-500/30 animate-pulse-slow">
+                            <i class="fa-solid fa-handshake"></i>
+                        </div>
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-rose-500 mb-2 block">Für Unternehmen</span>
+                        <h3 class="text-2xl font-display font-bold text-slate-900 mb-4 tracking-tight">Helden gesucht</h3>
+                        
+                        <p class="text-slate-600 text-sm leading-relaxed font-medium mb-6">
+                            Inklusion ist verdammt gut fürs Karma – und für dein Image. Werde unser Lieblings-Partner und investiere in Momente, die wirklich zählen, statt in heiße Luft.
+                        </p>
+                        
+                        <a href="mailto:office@diebruecke.cc?subject=Sponsoring%20Anfrage" class="inline-flex items-center text-rose-600 font-bold text-sm hover:underline decoration-2 underline-offset-4">
+                            Lass uns reden <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
+                        </a>
+                    </div>
+                </div>
+
             </div>
         </section>
 
-        {/* --- SPENDEN-SEKTION (DARK CARD) --- */}
+        {/* --- SPENDEN-SEKTION (UPDATED IMAGE) --- */}
         <section class="mb-10 rounded-[48px] px-6 sm:px-10 py-32 bg-slate-900 text-white relative overflow-hidden shadow-2xl">
             <div class="absolute top-0 right-0 w-1/2 h-full bg-rose-600/5 skew-x-12 translate-x-1/4"></div>
             <div class="max-w-7xl mx-auto relative z-10 grid lg:grid-cols-2 gap-24 items-center">
@@ -92,11 +112,13 @@ import MainLayout from '../layouts/layout.astro';
                         </a>
                     </div>
                 </div>
-                <div class="relative rounded-[48px] overflow-hidden border-4 border-white/10 shadow-2xl">
+                
+                {/* --- NEUES BILD --- */}
+                <div class="relative rounded-[48px] overflow-hidden border-4 border-white/10 shadow-2xl aspect-square md:aspect-auto h-full min-h-[400px]">
                     <img 
-                        src="https://images.unsplash.com/photo-1559027615-cd937c9be54a?q=80&w=1200" 
-                        class="w-full h-auto grayscale group-hover:grayscale-0 transition-all duration-1000" 
-                        alt="Zusammenarbeit" 
+                        src="https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?q=80&w=1200&auto=format&fit=crop" 
+                        class="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000" 
+                        alt="Gemeinsam Wege gehen" 
                     />
                 </div>
             </div>

@@ -2,6 +2,7 @@
 export const prerender = false;
 
 import MainLayout from '../../layouts/layout.astro';
+import ServiceContact from '../../components/ServiceContact.astro'; // <--- HIER IMPORTIEREN
 import { directus } from '../../lib/directus';
 import { readItems } from '@directus/sdk';
 
@@ -122,19 +123,9 @@ const features = service.features || [];
                     {/* WYSIWYG Content aus Directus */}
                     <div class="prose prose-lg prose-slate text-slate-500 leading-relaxed mb-12 focus:outline-none" set:html={service.description}></div>
                     
-                    {/* Kontakt Box */}
-                    <div class="bg-slate-50 border border-slate-100 rounded-3xl p-8 flex flex-col sm:flex-row items-center gap-6 mt-12">
-                        <div class="w-12 h-12 rounded-full bg-slate-900 text-white flex items-center justify-center shrink-0 shadow-md">
-                            <i class="fa-solid fa-phone"></i>
-                        </div>
-                        <div class="text-center sm:text-left flex-1">
-                            <h3 class="font-bold text-slate-900 text-lg">Noch Fragen?</h3>
-                            <p class="text-slate-500 text-sm">Wir helfen dir gerne persönlich weiter.</p>
-                        </div>
-                        <a href="tel:+43316672248" class="px-6 py-3 bg-white border border-slate-200 text-slate-900 font-bold rounded-full hover:bg-slate-900 hover:text-white transition-colors shadow-sm whitespace-nowrap">
-                            0316 67 22 48
-                        </a>
-                    </div>
+                    {/* KONTAKT KOMPONENTE (Telefon + Email) */}
+                    <ServiceContact />
+
                 </div>
 
                 {/* SIDEBAR */}
