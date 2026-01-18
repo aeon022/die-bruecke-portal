@@ -9,22 +9,16 @@ const [allEvents, allCategories] = await Promise.all([
 
 const ASSET_URL = 'https://api.diebruecke.social/assets';
 
-// --- HELPER: Datum & Zeit formatieren (Exakt wie Startseite) ---
+// --- HELPER: Datum & Zeit formatieren ---
 function formatEventDate(dateObj: Date, timeStr?: string) {
     const day = dateObj.toLocaleDateString('de-DE', { day: '2-digit', month: 'short' }).toUpperCase();
-    
-    // Zeit-Logik: Schneide Sekunden ab (HH:MM)
     let time = "";
     if (timeStr) {
         time = timeStr.slice(0, 5);
     }
-    
-    // Wenn Zeit leer oder 00:00 -> nur Datum
     if (!time || time === "00:00") {
         return day;
     }
-    
-    // Sonst: Datum • Zeit
     return `${day} • ${time}`;
 }
 
@@ -69,7 +63,6 @@ const categoryNames = Array.from(catLookup.values()).sort();
 
 // 2. Events vorbereiten
 let eventsWithCats = allEvents.map(event => {
-    // Kategorien auflösen
     const rawCats = event.event_categories || [];
     const validNames = rawCats.map(rel => {
         let targetId = null;
@@ -80,15 +73,12 @@ let eventsWithCats = allEvents.map(event => {
         return null;
     }).filter(Boolean);
 
-    // Datum berechnen
     const displayDate = getNextEventDate(event);
 
     return {
         ...event,
         _catString: validNames.join(','),
         _displayDate: displayDate, 
-        // Zig-Zag Logik: Zähler hier berechnen wäre sauberer, aber wir machen es unten im Template-Loop, 
-        // da wir vorher noch filtern.
     };
 });
 
@@ -100,7 +90,6 @@ eventsWithCats.sort((a, b) => {
     return a._displayDate.getTime() - b._displayDate.getTime();
 });
 
-// Hilfsvariable für Zig-Zag
 let highlightCounter = 0;
 ---
 
@@ -143,20 +132,30 @@ let highlightCounter = 0;
     {/* --- SENTINEL FOR STICKY DETECTION --- */}
     <div id="sticky-sentinel" class="absolute left-0 w-full h-px -mt-24 pointer-events-none opacity-0"></div>
 
-    {/* --- FILTER BAR --- */}
-    <section class="px-4 sm:px-6 pb-12 sticky top-24 z-30 transition-all pointer-events-none">
-        <div class="max-w-7xl mx-auto pointer-events-auto">
-            <div id="filter-container" class="filter-bar-container bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/60 dark:border-white/5 p-2 rounded-2xl shadow-xl shadow-slate-200/10 dark:shadow-black/40 inline-flex flex-wrap gap-2 transition-all duration-500">
-                <button class="filter-btn active px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-all hover:scale-105 active:scale-95 shadow-md bg-slate-900 text-white dark:bg-white dark:text-slate-900" 
+    {/* --- FILTER BAR (Optimized for Mobile) --- */}
+    <section class="px-0 sm:px-6 pb-12 sticky top-24 z-30 transition-all pointer-events-none">
+        <div class="max-w-7xl mx-auto pointer-events-auto w-full">
+            {/* FIX: 
+               - px-4 padding direkt am Container für Mobile Scroll
+               - flex-nowrap + overflow-x-auto für horizontales Scrollen
+               - hide-scrollbar Klasse (siehe styles unten)
+            */}
+            <div id="filter-container" class="filter-bar-container bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-y sm:border border-slate-200/60 dark:border-white/5 py-3 px-4 sm:p-2 sm:rounded-2xl shadow-xl shadow-slate-200/10 dark:shadow-black/40 flex flex-nowrap gap-3 overflow-x-auto hide-scrollbar snap-x snap-mandatory transition-all duration-500">
+                
+                <button class="filter-btn active flex-shrink-0 snap-center px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-all hover:scale-105 active:scale-95 shadow-md bg-slate-900 text-white dark:bg-white dark:text-slate-900 whitespace-nowrap" 
                         data-category="all">
                     Alle
                 </button>
+                
                 {categoryNames.map(name => (
-                    <button class="filter-btn px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-all hover:scale-105 active:scale-95 bg-transparent text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white" 
+                    <button class="filter-btn flex-shrink-0 snap-center px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-all hover:scale-105 active:scale-95 bg-transparent text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white whitespace-nowrap" 
                             data-category={name}>
                         {name}
                     </button>
                 ))}
+                
+                {/* Spacer für Mobile Scroll damit der letzte Button nicht klebt */}
+                <div class="w-2 sm:hidden flex-shrink-0"></div>
             </div>
         </div>
     </section>
@@ -175,7 +174,6 @@ let highlightCounter = 0;
                 {eventsWithCats.map(event => {
                     const isHighlight = event.is_highlight === true;
                     
-                    // Zick-Zack-Logik on the fly
                     let isEvenHighlight = false;
                     if (isHighlight) {
                         highlightCounter++;
@@ -210,7 +208,6 @@ let highlightCounter = 0;
                                 <div class="w-full h-full flex items-center justify-center bg-slate-200 dark:bg-slate-800 text-slate-400 italic font-display uppercase tracking-widest text-[10px]">Kein Bild</div>
                             )}
                             
-                            {/* DATE BADGE */}
                             <div class="absolute top-6 left-6 flex gap-2 items-start">
                                 <span class="px-3 py-1 rounded-full bg-slate-900/80 backdrop-blur-md text-white text-[10px] font-bold uppercase shadow-lg tracking-widest border border-white/10">
                                     {formatEventDate(dateToShow, event.time_start)}
@@ -259,7 +256,6 @@ let highlightCounter = 0;
                             <div class="flex items-center justify-between pt-6 mt-4 border-t border-slate-200/50 dark:border-white/5">
                                 <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest group-hover:text-rose-500 transition-colors">Details</span>
                                 
-                                {/* --- FIX: ARROW BUTTON IST JETZT EIN LINK --- */}
                                 <a href={`/events/${event.slug}`} class={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 transform group-hover:translate-x-1
                                     ${isHighlight 
                                         ? 'bg-rose-500 text-white shadow-lg shadow-rose-500/20' 
@@ -274,7 +270,6 @@ let highlightCounter = 0;
         </div>
     </section>
 
-    {/* ... Footer Teaser & CTA ... */}
     {/* --- FOOTER TEASERS --- */}
     <section class="footer-teaser-section px-6 sm:px-10 py-24 bg-slate-50 dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 transition-colors">
         <div class="max-w-5xl mx-auto">
@@ -338,6 +333,15 @@ let highlightCounter = 0;
         html.dark .filter-btn.active {
             background-color: #ffffff !important;
             color: #0f172a !important;
+        }
+        
+        /* Hides scrollbar but allows scrolling */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
     </style>
 
