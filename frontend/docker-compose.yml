@@ -1,0 +1,17 @@
+services:
+  beta_frontend:
+    build:
+      context: ./app/frontend
+      dockerfile: Dockerfile
+      # WICHTIG: Das hier hat gefehlt!
+      args:
+        DIRECTUS_URL: https://api.diebruecke.social
+    container_name: bruecke_beta
+    restart: always
+    ports:
+      - "127.0.0.1:4321:4321"
+    environment:
+      - DIRECTUS_URL=https://api.diebruecke.social
+      - PUBLIC_DIRECTUS_URL=https://api.diebruecke.social 
+      - HOST=0.0.0.0
+      - PORT=4321

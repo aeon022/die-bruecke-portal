@@ -60,9 +60,9 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       
       # Performance & Cache (Redis vorbereitet)
-      CACHE_ENABLED: ${CACHE_ENABLED:-false}
-      CACHE_STORE: 'redis'
-      CACHE_REDIS: 'redis://bruecke_cache:6379'
+      CACHE_ENABLED: 'false'
+      CACHE_STORE: 'memory'
+      # CACHE_REDIS: 'redis://bruecke_cache:6379'
       
       # System & Security
       STORAGE_LOCATIONS: 'local'

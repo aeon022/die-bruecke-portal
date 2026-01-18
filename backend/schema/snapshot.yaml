@@ -106,11 +106,11 @@ collections:
       archive_value: archived
       collapse: open
       collection: events
-      color: null
+      color: '#2ECDA7'
       display_template: null
       group: null
       hidden: false
-      icon: null
+      icon: event_note
       item_duplication_fields: null
       note: null
       preview_url: null
@@ -2230,7 +2230,7 @@ fields:
       translations: null
       validation: null
       validation_message: null
-      width: half
+      width: full
     schema:
       name: location
       table: events
@@ -2329,8 +2329,8 @@ fields:
       is_generated: false
       generation_expression: null
       has_auto_increment: false
-      foreign_key_table: directus_files
-      foreign_key_column: id
+      foreign_key_table: null
+      foreign_key_column: null
   - collection: events
     field: pretix_link
     type: string
@@ -2348,12 +2348,12 @@ fields:
       readonly: false
       required: false
       searchable: true
-      sort: 23
+      sort: 17
       special: null
       translations: null
       validation: null
       validation_message: null
-      width: full
+      width: half
     schema:
       name: pretix_link
       table: events
@@ -2671,57 +2671,43 @@ fields:
       is_generated: false
       generation_expression: null
       has_auto_increment: false
-      foreign_key_table: directus_files
-      foreign_key_column: id
-  - collection: events
-    field: price_standard
-    type: float
-    meta:
-      collection: events
-      conditions: null
-      display: null
-      display_options: null
-      field: price_standard
-      group: null
-      hidden: false
-      interface: input
-      note: null
-      options: null
-      readonly: false
-      required: false
-      searchable: true
-      sort: 17
-      special: null
-      translations: null
-      validation: null
-      validation_message: null
-      width: half
-    schema:
-      name: price_standard
-      table: events
-      data_type: real
-      default_value: 25
-      max_length: null
-      numeric_precision: 24
-      numeric_scale: null
-      is_nullable: true
-      is_unique: false
-      is_indexed: false
-      is_primary_key: false
-      is_generated: false
-      generation_expression: null
-      has_auto_increment: false
       foreign_key_table: null
       foreign_key_column: null
   - collection: events
-    field: price_reduced
-    type: float
+    field: divider-33cxzd
+    type: alias
     meta:
       collection: events
       conditions: null
       display: null
       display_options: null
-      field: price_reduced
+      field: divider-33cxzd
+      group: null
+      hidden: false
+      interface: presentation-divider
+      note: Tickets
+      options:
+        title: Tickets
+      readonly: false
+      required: false
+      searchable: true
+      sort: 16
+      special:
+        - alias
+        - no-data
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+  - collection: events
+    field: pretix_slug
+    type: string
+    meta:
+      collection: events
+      conditions: null
+      display: null
+      display_options: null
+      field: pretix_slug
       group: null
       hidden: false
       interface: input
@@ -2737,87 +2723,7 @@ fields:
       validation_message: null
       width: half
     schema:
-      name: price_reduced
-      table: events
-      data_type: real
-      default_value: 20
-      max_length: null
-      numeric_precision: 24
-      numeric_scale: null
-      is_nullable: true
-      is_unique: false
-      is_indexed: false
-      is_primary_key: false
-      is_generated: false
-      generation_expression: null
-      has_auto_increment: false
-      foreign_key_table: null
-      foreign_key_column: null
-  - collection: events
-    field: price_member
-    type: float
-    meta:
-      collection: events
-      conditions: null
-      display: null
-      display_options: null
-      field: price_member
-      group: null
-      hidden: false
-      interface: input
-      note: null
-      options: null
-      readonly: false
-      required: false
-      searchable: true
-      sort: 19
-      special: null
-      translations: null
-      validation: null
-      validation_message: null
-      width: half
-    schema:
-      name: price_member
-      table: events
-      data_type: real
-      default_value: 15
-      max_length: null
-      numeric_precision: 24
-      numeric_scale: null
-      is_nullable: true
-      is_unique: false
-      is_indexed: false
-      is_primary_key: false
-      is_generated: false
-      generation_expression: null
-      has_auto_increment: false
-      foreign_key_table: null
-      foreign_key_column: null
-  - collection: events
-    field: pretix_item_id
-    type: string
-    meta:
-      collection: events
-      conditions: null
-      display: null
-      display_options: null
-      field: pretix_item_id
-      group: null
-      hidden: false
-      interface: input
-      note: null
-      options: null
-      readonly: false
-      required: false
-      searchable: true
-      sort: 21
-      special: null
-      translations: null
-      validation: null
-      validation_message: null
-      width: half
-    schema:
-      name: pretix_item_id
+      name: pretix_slug
       table: events
       data_type: character varying
       default_value: null
@@ -2834,14 +2740,107 @@ fields:
       foreign_key_table: null
       foreign_key_column: null
   - collection: events
-    field: pretix_program_time_id
+    field: ticket_status
     type: string
     meta:
       collection: events
       conditions: null
       display: null
       display_options: null
-      field: pretix_program_time_id
+      field: ticket_status
+      group: null
+      hidden: false
+      interface: select-dropdown
+      note: null
+      options:
+        choices:
+          - color: '#2ECDA7'
+            text: available
+            value: available
+          - color: '#E35169'
+            text: sold_out
+            value: sold_out
+          - color: '#FFC23B'
+            text: pending
+            value: pending
+      readonly: false
+      required: false
+      searchable: true
+      sort: 19
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      name: ticket_status
+      table: events
+      data_type: character varying
+      default_value: null
+      max_length: 255
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: events
+    field: is_free_entry
+    type: boolean
+    meta:
+      collection: events
+      conditions: null
+      display: null
+      display_options: null
+      field: is_free_entry
+      group: null
+      hidden: false
+      interface: boolean
+      note: null
+      options:
+        colorOff: '#E35169'
+        colorOn: '#2ECDA7'
+      readonly: false
+      required: false
+      searchable: true
+      sort: 20
+      special:
+        - cast-boolean
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      name: is_free_entry
+      table: events
+      data_type: boolean
+      default_value: false
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: events
+    field: tickets_left
+    type: integer
+    meta:
+      collection: events
+      conditions: null
+      display: null
+      display_options: null
+      field: tickets_left
       group: null
       hidden: false
       interface: input
@@ -2857,13 +2856,13 @@ fields:
       validation_message: null
       width: half
     schema:
-      name: pretix_program_time_id
+      name: tickets_left
       table: events
-      data_type: character varying
+      data_type: integer
       default_value: null
-      max_length: 255
-      numeric_precision: null
-      numeric_scale: null
+      max_length: null
+      numeric_precision: 32
+      numeric_scale: 0
       is_nullable: true
       is_unique: false
       is_indexed: false
@@ -2874,40 +2873,45 @@ fields:
       foreign_key_table: null
       foreign_key_column: null
   - collection: events
-    field: pretix_sync_status
+    field: pretix_sync_state
     type: string
     meta:
       collection: events
       conditions: null
-      display: null
-      display_options: null
-      field: pretix_sync_status
+      display: labels
+      display_options:
+        choices:
+          - color: '#2ECDA7'
+            text: Verbunden
+            value: connected
+          - color: '#E35169'
+            text: Fehler / Nicht gefunden
+            value: error
+          - color: '#FFC23B'
+            text: Wartet...
+            value: pending
+          - color: '#A2B5CD'
+            text: Kein Pretix
+            value: none
+      field: pretix_sync_state
       group: null
       hidden: false
       interface: select-dropdown
       note: null
       options:
-        choices:
-          - color: '#FFC23B'
-            text: pending
-            value: pending
-          - color: '#2ECDA7'
-            text: success
-            value: success
-          - color: '#E35169'
-            text: error
-            value: error
+        choices: null
+        icon: plug_connect
       readonly: false
       required: false
       searchable: true
-      sort: 20
+      sort: 27
       special: null
       translations: null
       validation: null
       validation_message: null
       width: half
     schema:
-      name: pretix_sync_status
+      name: pretix_sync_state
       table: events
       data_type: character varying
       default_value: null
@@ -2924,34 +2928,34 @@ fields:
       foreign_key_table: null
       foreign_key_column: null
   - collection: events
-    field: pretix_error
-    type: json
+    field: export_to_pretix
+    type: boolean
     meta:
       collection: events
       conditions: null
       display: null
       display_options: null
-      field: pretix_error
+      field: export_to_pretix
       group: null
       hidden: false
-      interface: input-code
+      interface: boolean
       note: null
       options: null
       readonly: false
       required: false
       searchable: true
-      sort: 24
+      sort: 28
       special:
-        - cast-json
+        - cast-boolean
       translations: null
       validation: null
       validation_message: null
-      width: full
+      width: half
     schema:
-      name: pretix_error
+      name: export_to_pretix
       table: events
-      data_type: json
-      default_value: null
+      data_type: boolean
+      default_value: false
       max_length: null
       numeric_precision: null
       numeric_scale: null
@@ -2965,14 +2969,134 @@ fields:
       foreign_key_table: null
       foreign_key_column: null
   - collection: events
-    field: divider-py-g_h
+    field: price_regular
+    type: decimal
+    meta:
+      collection: events
+      conditions: null
+      display: null
+      display_options: null
+      field: price_regular
+      group: null
+      hidden: false
+      interface: input
+      note: null
+      options: null
+      readonly: false
+      required: false
+      searchable: true
+      sort: 23
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      name: price_regular
+      table: events
+      data_type: numeric
+      default_value: null
+      max_length: null
+      numeric_precision: 10
+      numeric_scale: 2
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: events
+    field: price_reduced
+    type: decimal
+    meta:
+      collection: events
+      conditions: null
+      display: null
+      display_options: null
+      field: price_reduced
+      group: null
+      hidden: false
+      interface: input
+      note: null
+      options: null
+      readonly: false
+      required: false
+      searchable: true
+      sort: 24
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      name: price_reduced
+      table: events
+      data_type: numeric
+      default_value: null
+      max_length: null
+      numeric_precision: 10
+      numeric_scale: 2
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: events
+    field: price_member
+    type: decimal
+    meta:
+      collection: events
+      conditions: null
+      display: null
+      display_options: null
+      field: price_member
+      group: null
+      hidden: false
+      interface: input
+      note: null
+      options: null
+      readonly: false
+      required: false
+      searchable: true
+      sort: 25
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      name: price_member
+      table: events
+      data_type: numeric
+      default_value: null
+      max_length: null
+      numeric_precision: 10
+      numeric_scale: 2
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: events
+    field: divider-lrou8p
     type: alias
     meta:
       collection: events
       conditions: null
       display: null
       display_options: null
-      field: divider-py-g_h
+      field: divider-lrou8p
       group: null
       hidden: false
       interface: presentation-divider
@@ -2981,7 +3105,7 @@ fields:
       readonly: false
       required: false
       searchable: true
-      sort: 16
+      sort: 26
       special:
         - alias
         - no-data
@@ -2989,6 +3113,194 @@ fields:
       validation: null
       validation_message: null
       width: full
+  - collection: events
+    field: capacity_total
+    type: integer
+    meta:
+      collection: events
+      conditions: null
+      display: null
+      display_options: null
+      field: capacity_total
+      group: null
+      hidden: false
+      interface: input
+      note: null
+      options: null
+      readonly: false
+      required: false
+      searchable: true
+      sort: 21
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      name: capacity_total
+      table: events
+      data_type: integer
+      default_value: null
+      max_length: null
+      numeric_precision: 32
+      numeric_scale: 0
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: events
+    field: divider-0dvi3w
+    type: alias
+    meta:
+      collection: events
+      conditions: null
+      display: null
+      display_options: null
+      field: divider-0dvi3w
+      group: null
+      hidden: false
+      interface: presentation-divider
+      note: null
+      options: null
+      readonly: false
+      required: false
+      searchable: true
+      sort: 29
+      special:
+        - alias
+        - no-data
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+  - collection: events
+    field: payment_bank
+    type: boolean
+    meta:
+      collection: events
+      conditions: null
+      display: null
+      display_options: null
+      field: payment_bank
+      group: null
+      hidden: false
+      interface: boolean
+      note: Aktiviert Vorauskasse/Banküberweisung
+      options: null
+      readonly: false
+      required: false
+      searchable: true
+      sort: 30
+      special:
+        - cast-boolean
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      name: payment_bank
+      table: events
+      data_type: boolean
+      default_value: true
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: events
+    field: payment_stripe
+    type: boolean
+    meta:
+      collection: events
+      conditions: null
+      display: null
+      display_options: null
+      field: payment_stripe
+      group: null
+      hidden: false
+      interface: boolean
+      note: Aktiviert Stripe Zahlungen
+      options: null
+      readonly: false
+      required: false
+      searchable: true
+      sort: 31
+      special:
+        - cast-boolean
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      name: payment_stripe
+      table: events
+      data_type: boolean
+      default_value: true
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: events
+    field: payment_paypal
+    type: boolean
+    meta:
+      collection: events
+      conditions: null
+      display: null
+      display_options: null
+      field: payment_paypal
+      group: null
+      hidden: false
+      interface: boolean
+      note: Aktiviert PayPal Zahlungen
+      options: null
+      readonly: false
+      required: false
+      searchable: true
+      sort: 32
+      special:
+        - cast-boolean
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      name: payment_paypal
+      table: events
+      data_type: boolean
+      default_value: true
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
   - collection: events_event_categories
     field: id
     type: integer
@@ -4871,8 +5183,8 @@ fields:
       is_generated: false
       generation_expression: null
       has_auto_increment: false
-      foreign_key_table: directus_files
-      foreign_key_column: id
+      foreign_key_table: null
+      foreign_key_column: null
   - collection: partners
     field: website
     type: string
@@ -5790,8 +6102,8 @@ fields:
       is_generated: false
       generation_expression: null
       has_auto_increment: false
-      foreign_key_table: directus_files
-      foreign_key_column: id
+      foreign_key_table: null
+      foreign_key_column: null
   - collection: services
     field: subtitle
     type: string
@@ -5911,8 +6223,8 @@ fields:
       is_generated: false
       generation_expression: null
       has_auto_increment: false
-      foreign_key_table: directus_files
-      foreign_key_column: id
+      foreign_key_table: null
+      foreign_key_column: null
   - collection: services
     field: button_text
     type: string
@@ -6382,8 +6694,8 @@ fields:
       is_generated: false
       generation_expression: null
       has_auto_increment: false
-      foreign_key_table: directus_files
-      foreign_key_column: id
+      foreign_key_table: null
+      foreign_key_column: null
   - collection: shop_products
     field: snipcart_guid
     type: string
@@ -6997,14 +7309,6 @@ relations:
       one_deselect_action: nullify
       one_field: null
       sort_field: null
-    schema:
-      table: events
-      column: image
-      foreign_key_table: directus_files
-      foreign_key_column: id
-      constraint_name: events_image_foreign
-      on_update: NO ACTION
-      on_delete: SET NULL
   - collection: events
     field: hero_image
     related_collection: directus_files
@@ -7018,14 +7322,6 @@ relations:
       one_deselect_action: nullify
       one_field: null
       sort_field: null
-    schema:
-      table: events
-      column: hero_image
-      foreign_key_table: directus_files
-      foreign_key_column: id
-      constraint_name: events_hero_image_foreign
-      on_update: NO ACTION
-      on_delete: SET NULL
   - collection: events_event_categories
     field: event_categories_id
     related_collection: event_categories
@@ -7186,14 +7482,6 @@ relations:
       one_deselect_action: nullify
       one_field: null
       sort_field: null
-    schema:
-      table: partners
-      column: logo
-      foreign_key_table: directus_files
-      foreign_key_column: id
-      constraint_name: partners_logo_foreign
-      on_update: NO ACTION
-      on_delete: SET NULL
   - collection: projects
     field: image
     related_collection: directus_files
@@ -7228,14 +7516,6 @@ relations:
       one_deselect_action: nullify
       one_field: null
       sort_field: null
-    schema:
-      table: services
-      column: image
-      foreign_key_table: directus_files
-      foreign_key_column: id
-      constraint_name: services_image_foreign
-      on_update: NO ACTION
-      on_delete: SET NULL
   - collection: services
     field: program_file
     related_collection: directus_files
@@ -7249,14 +7529,6 @@ relations:
       one_deselect_action: nullify
       one_field: null
       sort_field: null
-    schema:
-      table: services
-      column: program_file
-      foreign_key_table: directus_files
-      foreign_key_column: id
-      constraint_name: services_program_file_foreign
-      on_update: NO ACTION
-      on_delete: SET NULL
   - collection: shop_products
     field: image
     related_collection: directus_files
@@ -7270,14 +7542,6 @@ relations:
       one_deselect_action: nullify
       one_field: null
       sort_field: null
-    schema:
-      table: shop_products
-      column: image
-      foreign_key_table: directus_files
-      foreign_key_column: id
-      constraint_name: shop_products_image_foreign
-      on_update: NO ACTION
-      on_delete: SET NULL
   - collection: sponsors
     field: logo
     related_collection: directus_files
