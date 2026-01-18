@@ -6,7 +6,7 @@ import { readItems } from '@directus/sdk';
 
 const ASSET_URL = 'https://api.diebruecke.social/assets'; 
 
-// 1. Daten laden (Jetzt inkl. Partners)
+// 1. Daten laden
 const [settings, allEvents, dbServices, dbPartners] = await Promise.all([
   getGlobalSettings(),
   getEvents(),
@@ -36,7 +36,7 @@ function formatEventDate(event: any) {
     return time === "00:00" ? day : `${day} • ${time}`;
 }
 
-// 3. Highlight Logik für Events (Automatische Warteschlange)
+// 3. Highlight Logik für Events
 const now = new Date();
 
 const highlightCandidates = allEvents.filter(e => {
@@ -99,7 +99,7 @@ const heroHeadline = settings?.hero_headline || `Kultur verbindet.<br> <span cla
     </section>
 
     {/* --- BENTO EVENTS HEADER --- */}
-    <section class="px-6 sm:px-10 pb-24 transition-colors duration-300">
+    <section class="px-6 sm:px-10 pb-12 transition-colors duration-300">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div>
                 <div class="flex items-center gap-3 mb-4">
@@ -122,11 +122,13 @@ const heroHeadline = settings?.hero_headline || `Kultur verbindet.<br> <span cla
     {/* --- BENTO EVENTS GRID --- */}
     <section class="px-6 sm:px-10 pb-24 transition-colors duration-300">
         <div class="max-w-7xl mx-auto">
+            {/* Grid Container: Auf Mobile h-auto, auf Desktop feste Höhe für Bento-Look */}
             <div class="grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-6 h-auto md:h-[700px]">
                 
                 {/* HIGHLIGHT EVENT */}
                 {highlightEvent && (
-                    <a href={`/events/${highlightEvent.slug}`} class="md:col-span-2 md:row-span-2 relative group rounded-[32px] overflow-hidden bg-slate-900 shadow-xl border border-transparent dark:border-slate-800">
+                    /* Mobile: min-h-[500px] für Impact | Desktop: min-h-0 (wird durch Grid bestimmt) */
+                    <a href={`/events/${highlightEvent.slug}`} class="md:col-span-2 md:row-span-2 relative group rounded-[32px] overflow-hidden bg-slate-900 shadow-xl border border-transparent dark:border-slate-800 min-h-[500px] md:min-h-0">
                         <img src={`${ASSET_URL}/${highlightEvent.image}`} class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition duration-1000" alt={highlightEvent.title} />
                         <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent"></div>
                         
@@ -138,8 +140,8 @@ const heroHeadline = settings?.hero_headline || `Kultur verbindet.<br> <span cla
                             </span>
                         </div>
 
-                        <div class="absolute bottom-0 left-0 p-8 md:p-12 text-white">
-                            <h2 class="text-3xl md:text-5xl font-display font-bold leading-tight mb-4 tracking-tight">{highlightEvent.title}</h2>
+                        <div class="absolute bottom-0 left-0 p-8 md:p-12 text-white w-full">
+                            <h2 class="text-3xl md:text-5xl font-display font-bold leading-tight mb-4 tracking-tight drop-shadow-md">{highlightEvent.title}</h2>
                             <span class="font-bold flex items-center gap-2 text-rose-400">Mehr erfahren <i class="fa-solid fa-arrow-right text-xs"></i></span>
                         </div>
                     </a>
@@ -147,7 +149,8 @@ const heroHeadline = settings?.hero_headline || `Kultur verbindet.<br> <span cla
 
                 {/* UPCOMING EVENTS */}
                 {upcomingEvents.map((event, index) => (
-                    <a href={`/events/${event.slug}`} class={`relative group rounded-[32px] overflow-hidden bg-slate-900 border border-slate-900/10 dark:border-slate-800 hover:shadow-xl transition-all ${index === 2 ? 'md:col-span-2 md:row-span-1' : 'md:col-span-1 md:row-span-1'}`}>
+                    /* Mobile: min-h-[350px] damit Bild wirkt */
+                    <a href={`/events/${event.slug}`} class={`relative group rounded-[32px] overflow-hidden bg-slate-900 border border-slate-900/10 dark:border-slate-800 hover:shadow-xl transition-all min-h-[350px] md:min-h-0 ${index === 2 ? 'md:col-span-2 md:row-span-1' : 'md:col-span-1 md:row-span-1'}`}>
                         <img src={`${ASSET_URL}/${event.image}`} class="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:scale-105 transition duration-1000" alt={event.title} />
                         <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/25 to-transparent"></div>
                         
@@ -158,13 +161,15 @@ const heroHeadline = settings?.hero_headline || `Kultur verbindet.<br> <span cla
                             </span>
                         </div>
 
-                        <div class="relative z-10 p-6 flex flex-col h-full">
-                            <h3 class="mt-auto text-lg font-display font-bold text-white group-hover:text-rose-200 transition-colors line-clamp-2 leading-tight tracking-tight">{event.title}</h3>
+                        <div class="relative z-10 p-6 flex flex-col h-full justify-end">
+                            <h3 class="text-xl font-display font-bold text-white group-hover:text-rose-200 transition-colors line-clamp-3 leading-tight tracking-tight drop-shadow-md">{event.title}</h3>
                         </div>
                     </a>
                 ))}
                 
-                <a href="/events" class="md:col-span-1 md:row-span-1 bg-rose-600 rounded-[32px] p-8 flex items-center justify-center text-white group hover:bg-slate-900 transition-all shadow-lg overflow-hidden border border-transparent dark:border-slate-700">
+                {/* ALLE EVENTS LINK */}
+                {/* Mobile: min-h-[200px] */}
+                <a href="/events" class="md:col-span-1 md:row-span-1 bg-rose-600 rounded-[32px] p-8 flex items-center justify-center text-white group hover:bg-slate-900 transition-all shadow-lg overflow-hidden border border-transparent dark:border-slate-700 min-h-[200px] md:min-h-0">
                     <div class="flex items-center gap-4 text-left">
                         <i class="fa-solid fa-layer-group text-3xl group-hover:rotate-12 transition-transform shrink-0"></i>
                             <span class="text-xl font-display font-bold leading-tight tracking-tighter">
