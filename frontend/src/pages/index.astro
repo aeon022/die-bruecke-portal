@@ -127,7 +127,6 @@ const heroHeadline = settings?.hero_headline || `Kultur verbindet.<br> <span cla
                 
                 {/* HIGHLIGHT EVENT */}
                 {highlightEvent && (
-                    /* Mobile: min-h-[500px] für Impact | Desktop: min-h-0 (wird durch Grid bestimmt) */
                     <a href={`/events/${highlightEvent.slug}`} class="md:col-span-2 md:row-span-2 relative group rounded-[32px] overflow-hidden bg-slate-900 shadow-xl border border-transparent dark:border-slate-800 min-h-[500px] md:min-h-0">
                         <img src={`${ASSET_URL}/${highlightEvent.image}`} class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition duration-1000" alt={highlightEvent.title} />
                         <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent"></div>
@@ -149,7 +148,6 @@ const heroHeadline = settings?.hero_headline || `Kultur verbindet.<br> <span cla
 
                 {/* UPCOMING EVENTS */}
                 {upcomingEvents.map((event, index) => (
-                    /* Mobile: min-h-[350px] damit Bild wirkt */
                     <a href={`/events/${event.slug}`} class={`relative group rounded-[32px] overflow-hidden bg-slate-900 border border-slate-900/10 dark:border-slate-800 hover:shadow-xl transition-all min-h-[350px] md:min-h-0 ${index === 2 ? 'md:col-span-2 md:row-span-1' : 'md:col-span-1 md:row-span-1'}`}>
                         <img src={`${ASSET_URL}/${event.image}`} class="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:scale-105 transition duration-1000" alt={event.title} />
                         <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/25 to-transparent"></div>
@@ -168,7 +166,6 @@ const heroHeadline = settings?.hero_headline || `Kultur verbindet.<br> <span cla
                 ))}
                 
                 {/* ALLE EVENTS LINK */}
-                {/* Mobile: min-h-[200px] */}
                 <a href="/events" class="md:col-span-1 md:row-span-1 bg-rose-600 rounded-[32px] p-8 flex items-center justify-center text-white group hover:bg-slate-900 transition-all shadow-lg overflow-hidden border border-transparent dark:border-slate-700 min-h-[200px] md:min-h-0">
                     <div class="flex items-center gap-4 text-left">
                         <i class="fa-solid fa-layer-group text-3xl group-hover:rotate-12 transition-transform shrink-0"></i>
@@ -219,9 +216,10 @@ const heroHeadline = settings?.hero_headline || `Kultur verbindet.<br> <span cla
             
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
                 {/* PROJEKT 1 (Link zu Camps) */}
-                <div class="group relative rounded-[48px] overflow-hidden bg-slate-900 aspect-[16/10] lg:aspect-auto border border-transparent dark:border-slate-800">
+                {/* FIX: min-h-[500px] statt aspect, weniger padding mobil */}
+                <div class="group relative rounded-[48px] overflow-hidden bg-slate-900 min-h-[500px] lg:min-h-0 lg:aspect-auto border border-transparent dark:border-slate-800">
                     <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200" class="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:scale-105 transition-transform duration-1000" alt="Urlaub" />
-                    <div class="relative z-10 p-10 h-full flex flex-col justify-end text-white">
+                    <div class="relative z-10 p-6 sm:p-10 h-full flex flex-col justify-end text-white">
                         <span class="px-3 py-1 bg-rose-600 rounded-full text-[10px] font-bold uppercase w-fit mb-4">Highlight</span>
                         <h3 class="text-3xl font-display font-bold mb-4">Betreute Urlaubsaktionen</h3>
                         <p class="text-slate-300 max-w-md mb-6 leading-relaxed">Eines unserer Herzstücke: Gemeinsam verreisen, Barrieren überwinden und echte Urlaubsfreude erleben.</p>
@@ -230,8 +228,9 @@ const heroHeadline = settings?.hero_headline || `Kultur verbindet.<br> <span cla
                 </div>
 
                 {/* PROJEKT 2: Infozentrum (Link zu Info) */}
-                <div class="group relative rounded-[48px] overflow-hidden bg-slate-50 dark:bg-slate-900 aspect-[16/10] lg:aspect-auto border border-slate-200 dark:border-slate-800">
-                    <div class="p-10 h-full flex flex-col justify-center">
+                 {/* FIX: min-h-[500px] statt aspect, weniger padding mobil */}
+                <div class="group relative rounded-[48px] overflow-hidden bg-slate-50 dark:bg-slate-900 min-h-[500px] lg:min-h-0 lg:aspect-auto border border-slate-200 dark:border-slate-800">
+                    <div class="p-6 sm:p-10 h-full flex flex-col justify-center">
                         <div class="w-16 h-16 bg-slate-900 dark:bg-white rounded-3xl text-white dark:text-slate-900 flex items-center justify-center text-2xl mb-8"><i class="fa-solid fa-circle-info"></i></div>
                         <h3 class="text-3xl font-display font-bold text-slate-900 dark:text-white mb-4">Infozentrum</h3>
                         <p class="text-slate-500 dark:text-slate-300 mb-8 leading-relaxed">Unsere erste Anlaufstelle in Graz. Unbürokratische Beratung bei Anträgen, Behördenwegen und sozialen Fragestellungen – menschlich und direkt.</p>
