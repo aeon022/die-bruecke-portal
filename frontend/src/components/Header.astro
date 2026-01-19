@@ -45,7 +45,7 @@ const menuItems = [
   
   <header id="main-header" class="relative flex items-center justify-between px-6 sm:px-10 pt-8 pb-6 transition-[padding,background-color,box-shadow,transform,border-radius,border] duration-300 ease-in-out">
     
-    <a href="/" class="flex items-center gap-3 group">
+    <a href="/" class="flex items-center gap-3 group" aria-label="Zur Startseite">
       <div id="logo-container" class="w-10 h-10 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/10 flex items-center justify-center shadow-sm group-hover:border-rose-500 transition-all duration-300 overflow-hidden">
         {logoUrl ? (
              <img src={logoUrl} alt="Logo" class="w-full h-full object-contain p-1" />
@@ -58,15 +58,24 @@ const menuItems = [
       </span>
     </a>
 
-    <div class="flex items-center gap-4">
-      <a href="/projects" class="hidden lg:inline-flex px-6 py-2.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-50 font-bold text-sm hover:bg-rose-50 dark:hover:bg-slate-700 transition border border-slate-200 dark:border-white/5">
-        Zu den Projekten
-      </a>
-      <a href="/contact" class="hidden md:inline-flex px-6 py-2.5 rounded-full bg-slate-900 dark:bg-slate-50 text-white dark:text-slate-900 font-bold text-sm shadow-lg hover:bg-rose-600 dark:hover:bg-rose-400 transition hover:-translate-y-0.5">
-        Jetzt anfragen
+    <div class="flex items-center gap-2 sm:gap-3">
+      {/* Button 1: Projekte (Desktop) */}
+      <a href="/projects" class="hidden lg:inline-flex px-5 py-2.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-50 font-bold text-sm hover:bg-rose-50 dark:hover:bg-slate-700 transition border border-slate-200 dark:border-white/5">
+        Projekte
       </a>
 
-      <button onclick="window.toggleTheme()" id="themeToggle" class="w-12 h-12 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/5 flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-700 transition cursor-pointer shadow-sm relative focus:outline-none overflow-hidden group" type="button" aria-label="Design wechseln">
+      {/* Button 2: Über uns (Mobile hidden) */}
+      <a href="/about" class="hidden md:inline-flex px-5 py-2.5 rounded-full bg-slate-900 dark:bg-slate-50 text-white dark:text-slate-900 font-bold text-sm shadow-lg hover:bg-rose-600 dark:hover:bg-rose-400 transition hover:-translate-y-0.5">
+        Über uns
+      </a>
+
+      {/* Button 3: Barrierefreiheit - MIT GLOBAL TOOLTIP ATTRIBUT */}
+      <button id="btnAccessibility" data-tooltip="Barrierefreiheit (Taste / oder Strg + K)" class="w-12 h-12 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/5 flex items-center justify-center text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/30 transition cursor-pointer shadow-sm focus:outline-none focus:ring-2 focus:ring-rose-500" type="button" aria-label="Barrierefreiheit Menü öffnen">
+         <i class="fa-solid fa-wheelchair text-lg"></i>
+      </button>
+
+      {/* Button 4: Theme Toggle - MIT GLOBAL TOOLTIP ATTRIBUT */}
+      <button onclick="window.toggleTheme()" id="themeToggle" data-tooltip="Design wechseln" class="w-12 h-12 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/5 flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-700 transition cursor-pointer shadow-sm relative focus:outline-none overflow-hidden group" type="button" aria-label="Design wechseln">
         <span class="theme-moon absolute inset-0 flex items-center justify-center transition-all duration-500 rotate-0 scale-100 opacity-100 dark:rotate-90 dark:scale-0 dark:opacity-0 text-slate-600">
           <i class="fa-solid fa-moon text-lg"></i>
         </span>
@@ -75,14 +84,19 @@ const menuItems = [
         </span>
       </button>
 
-      <button id="btnOpenNav" class="w-12 h-12 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/5 flex items-center justify-center text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-700 transition cursor-pointer shadow-sm relative focus:outline-none" aria-label="Menü öffnen" aria-expanded="false" aria-controls="navOverlay">
-        <span class="icon-bars pointer-events-none transition-opacity duration-300">
-          <i class="fa-solid fa-bars text-xl"></i>
-        </span>
-        <span class="icon-x pointer-events-none absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-300">
-          <i class="fa-solid fa-xmark text-xl"></i>
-        </span>
+      {/* Button 5: Burger Menu */}
+      <button id="btnOpenNav" class="h-12 pl-3 pr-5 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/5 flex items-center justify-center gap-2 text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-700 transition cursor-pointer shadow-sm relative focus:outline-none group" aria-label="Menü öffnen" aria-expanded="false" aria-controls="navOverlay">
+        <div class="relative w-6 h-6 flex items-center justify-center">
+            <span class="icon-bars pointer-events-none transition-opacity duration-300 absolute inset-0 flex items-center justify-center">
+              <i class="fa-solid fa-bars text-xl group-hover:scale-110 transition-transform"></i>
+            </span>
+            <span class="icon-x pointer-events-none absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-300">
+              <i class="fa-solid fa-xmark text-xl text-rose-500"></i>
+            </span>
+        </div>
+        <span class="font-bold text-sm tracking-wide">Menü</span>
       </button>
+
     </div>
   </header>
 
@@ -90,7 +104,7 @@ const menuItems = [
     <div class="max-w-7xl mx-auto w-full px-6 sm:px-10 py-5 flex items-center justify-between border-b border-white/10">
       <div class="flex items-center gap-2">
         <span class="inline-block w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
-        <span class="text-[11px] font-bold uppercase tracking-widest text-white/80">Menü</span>
+        <span class="text-[11px] font-bold uppercase tracking-widest text-white/80">Navigation</span>
       </div>
       <a href="/contact" class="md:hidden text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-white transition">Kontakt</a>
     </div>
@@ -137,7 +151,6 @@ const menuItems = [
   /* INITIAL STATE (Header Top - Nicht Sticky) */
   #header-shell.header-shell { padding: 0; transition: padding 300ms ease; }
   
-  /* HIER: Die gewünschte Trennlinie im Normalzustand */
   #main-header { 
     border-bottom: 1px solid rgba(226, 232, 240, 1); /* Slate 200 */
     border-top-left-radius: 40px; 
@@ -157,8 +170,6 @@ const menuItems = [
   /* STICKY STYLES (Light Mode - CLEAN) */
   #header-shell.is-float #main-header {
     border-radius: 24px !important; 
-    
-    /* Harmonizes with Slate-800 Overlay: Cool Blue-Gray */
     background-color: #64748b !important; /* Slate-500 */
     backdrop-filter: blur(12px);
     border: none !important;
@@ -166,7 +177,6 @@ const menuItems = [
   }
 
   /* TEXT-KORREKTUR für Light Mode Sticky: */
-  /* Wenn der Header 'is-float' (sticky) hat, wird der Text weiß */
   #header-shell.is-float .brand-text { 
       color: white !important; 
   }
@@ -175,8 +185,6 @@ const menuItems = [
   html.dark #header-shell.is-float #main-header {
     background-color: #0f172a !important; 
     backdrop-filter: blur(16px);
-    
-    /* UPDATE: Border und Shadow entfernt */
     box-shadow: none !important;
     border: none !important;
   }
@@ -205,7 +213,16 @@ const menuItems = [
     const headerShell = document.getElementById('header-shell');
     const mainHeader = document.getElementById('main-header');
     const logoContainer = document.getElementById('logo-container');
+    const btnAccessibility = document.getElementById('btnAccessibility');
 
+    // --- ACCESSIBILITY BUTTON TRIGGER ---
+    if (btnAccessibility) {
+        btnAccessibility.addEventListener('click', () => {
+            document.dispatchEvent(new KeyboardEvent('keydown', { key: '/', bubbles: true }));
+        });
+    }
+
+    // --- MENU TOGGLE ---
     const toggleMenu = () => {
       const isOpen = navOverlay?.getAttribute('data-state') === 'open';
       navOverlay?.setAttribute('data-state', isOpen ? 'closed' : 'open');
@@ -230,6 +247,7 @@ const menuItems = [
          if(navOverlay.getAttribute('data-state') === 'open') toggleMenu();
     }));
 
+    // --- SCROLL LOGIC ---
     const handleScroll = () => {
         const scrolled = (window.scrollY || 0) > 18;
         headerShell?.classList.toggle('is-float', scrolled);

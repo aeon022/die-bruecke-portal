@@ -2,7 +2,6 @@
 const currentYear = new Date().getFullYear();
 
 // SOCIAL MEDIA CONFIG
-// TODO: Ersetze die '#' bei LinkedIn, YouTube und X mit den echten Profil-URLs!
 const socials = [
   { icon: 'fa-facebook-f', href: 'https://www.facebook.com/brueckegraz', label: 'Facebook' },
   { icon: 'fa-instagram', href: 'https://www.instagram.com/die.bruecke.graz', label: 'Instagram' },
@@ -102,7 +101,7 @@ const legals = [
                 <div class="bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50">
                     <h3 class="font-display font-bold text-white mb-3">Werde Brückenpfeiler</h3>
                     <p class="text-slate-400 text-sm mb-5 leading-relaxed">
-                        Dein Einsatz zählt. Ob Spende, Ehrenamt oder Zivildienst – bau mit uns an der Zukunft.
+                        Dein Einsatz zählt. Ob Spende, Ehrenamt oder Besucher:in – bau mit uns an der Zukunft.
                     </p>
                     <a href="/join" class="inline-flex items-center justify-center w-full bg-white hover:bg-indigo-50 text-slate-900 font-bold py-3 rounded-xl transition-all duration-300 text-sm group">
                         Jetzt mitmachen <i class="fa-solid fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform text-rose-500"></i>
@@ -112,8 +111,10 @@ const legals = [
             </div>
 
             {/* BOTTOM BAR */}
-            <div class="mt-16 pt-8 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4">
-                <div class="text-slate-500 text-xs flex flex-col md:flex-row gap-1 md:gap-4 text-center md:text-left">
+            <div class="mt-16 pt-8 border-t border-slate-800 flex flex-col lg:flex-row justify-between items-center gap-6 lg:gap-4">
+                
+                {/* COPYRIGHT & ADDRESS */}
+                <div class="text-slate-500 text-xs flex flex-col md:flex-row gap-1 md:gap-4 text-center md:text-left items-center md:items-start">
                     <span>&copy; {currentYear} Die Brücke.</span>
                     <span class="hidden md:inline text-slate-700">|</span>
                     <span>ZVR: 747612623</span>
@@ -122,7 +123,23 @@ const legals = [
                         <i class="fa-solid fa-location-dot text-rose-500/70"></i> Grabenstraße 39a, Graz
                     </span>
                 </div>
+
+                {/* SHORTCUT HINT (Barrierefreiheit) */}
+                <div class="hidden md:flex items-center gap-4 text-xs font-medium text-slate-400 bg-slate-800/50 px-4 py-2 rounded-full border border-slate-700/50">
+                    <span class="flex items-center gap-2">
+                        <i class="fa-regular fa-keyboard"></i>
+                        Shortcuts:
+                    </span>
+                    <span class="flex items-center gap-1">
+                        <kbd class="font-sans bg-slate-900 px-1.5 py-0.5 rounded border border-slate-600 text-[10px] shadow-sm text-slate-200">Ctrl</kbd>
+                        <span>+</span>
+                        <kbd class="font-sans bg-slate-900 px-1.5 py-0.5 rounded border border-slate-600 text-[10px] shadow-sm text-slate-200">K</kbd>
+                    </span>
+                    <span class="text-slate-500">oder</span>
+                    <kbd class="font-sans bg-slate-900 px-2 py-0.5 rounded border border-slate-600 text-[10px] shadow-sm min-w-[20px] text-center text-slate-200">/</kbd>
+                </div>
                 
+                {/* LEGAL LINKS */}
                 <div class="flex gap-6">
                     {legals.map((legal) => (
                         <a href={legal.href} class="text-slate-500 hover:text-white text-xs font-bold uppercase tracking-wider transition-colors">
@@ -131,6 +148,7 @@ const legals = [
                     ))}
                 </div>
             </div>
+            
         </div>
     </div>
 </footer>

@@ -36,48 +36,44 @@ function formatEventDate(event: any) {
     return time === "00:00" ? day : `${day} • ${time}`;
 }
 
-// 3. Helper: HTML säubern und Umlaute fixen (NEU)
+// 3. Helper: HTML säubern und Umlaute fixen
 function cleanText(html: string) {
     if (!html) return 'Mehr erfahren...';
-    
-    // a) Tags durch Leerzeichen ersetzen (verhindert Wortkollisionen)
     let text = html.replace(/<[^>]*>?/gm, ' ');
-    
-    // b) Gängige Entities manuell decodieren (ohne externe Library)
     const entities: Record<string, string> = {
         '&nbsp;': ' ', '&amp;': '&', '&quot;': '"', '&lt;': '<', '&gt;': '>',
         '&auml;': 'ä', '&Auml;': 'Ä', '&ouml;': 'ö', '&Ouml;': 'Ö', 
-        '&uuml;': 'ü', '&Uuml;': 'Ü', '&szlig;': 'ß', '&bdquo;': '„', '&ldquo;': '“'
+        '&uuml;': 'ü', '&Uuml;': 'Ü', '&szlig;': 'ß', '&bdquo;': '„', '&ldquo;': '“',
+        '&#8211;': '–', '&#8217;': '’'
     };
-    
     text = text.replace(/&[a-zA-Z0-9#]+;/g, (key) => entities[key] || key);
-    
-    // c) Doppelte Leerzeichen entfernen und trimmen
     return text.replace(/\s+/g, ' ').trim();
 }
 
-// 4. Highlight Logik für Events
-const now = new Date();
+// 4. Highlight Logik für Events (Robustere Datumsprüfung)
+const today = new Date();
+today.setHours(0,0,0,0);
 
+// Filtere nur zukünftige Highlights
 const highlightCandidates = allEvents.filter(e => {
     const eventDate = new Date(e.date_start || e.start_date || e.date); 
-    eventDate.setHours(0,0,0,0);
-    const today = new Date();
-    today.setHours(0,0,0,0);
     return e.is_highlight === true && eventDate >= today;
 });
 
+// Sortiere Highlights nach Datum (nächstes zuerst)
 highlightCandidates.sort((a, b) => {
     const dateA = new Date(a.date_start || a.start_date || a.date).getTime();
     const dateB = new Date(b.date_start || b.start_date || b.date).getTime();
     return dateA - dateB;
 });
 
+// Nimm das erste Highlight, oder falls keines da ist, das allererste Event (Fallback)
 const highlightEvent = highlightCandidates.length > 0 ? highlightCandidates[0] : allEvents[0];
 
-// 5. Die nächsten 3 Events (ohne das Highlight)
+// 5. Die nächsten 3 Events (ohne das Highlight Event, um Dopplung zu vermeiden)
 const upcomingEvents = allEvents
-  .filter(e => e.id !== highlightEvent?.id)
+  .filter(e => e.id !== highlightEvent?.id) // Verhindert Dopplung
+  .filter(e => new Date(e.date_start || e.start_date || e.date) >= today) // Nur Zukunft
   .slice(0, 3);
 
 const heroHeadline = settings?.hero_headline || `Kultur verbindet.<br> <span class="pr-2 bg-clip-text text-transparent bg-gradient-to-r from-rose-600 to-orange-400 dark:from-rose-400 dark:to-orange-300">Inklusion</span> stärkt.`;
@@ -102,11 +98,11 @@ const heroHeadline = settings?.hero_headline || `Kultur verbindet.<br> <span cla
     </script>
     <noscript><style>.home-content{visibility:visible}</style></noscript>
 
-    {/* --- WRAPPER --- */}
-    <div class="home-content">
+    {/* --- WRAPPER (ARIA ROLE: MAIN/ARTICLE) --- */}
+    <article class="home-content w-full">
     
     {/* --- HERO --- */}
-    <section class="relative z-10 px-6 sm:px-10 pt-32 pb-32 transition-colors duration-300">
+    <header class="relative z-10 px-6 sm:px-10 pt-32 pb-32 transition-colors duration-300">
         <div class="max-w-6xl">
             <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs font-bold text-rose-500 dark:text-rose-400 mb-8 uppercase tracking-widest shadow-sm">
                 <span class="text-[10px] mb-0.5">●</span> Seit 1983
@@ -116,10 +112,10 @@ const heroHeadline = settings?.hero_headline || `Kultur verbindet.<br> <span cla
                 {settings?.hero_subline || "Dein Backup für einen Alltag nach deinen Regeln. Wir schaffen den Raum in Graz, in dem Unterstützung auf Augenhöhe passiert und Barrieren – ob aus Stein oder im Kopf – einfach keine Rolle spielen."}
             </p>
         </div>
-    </section>
+    </header>
 
     {/* --- BENTO EVENTS HEADER --- */}
-    <section class="px-6 sm:px-10 pb-12 transition-colors duration-300">
+    <section aria-labelledby="events-heading" class="px-6 sm:px-10 pb-12 transition-colors duration-300">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div>
                 <div class="flex items-center gap-3 mb-4">
@@ -127,9 +123,9 @@ const heroHeadline = settings?.hero_headline || `Kultur verbindet.<br> <span cla
                         <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
                         <span class="relative inline-flex rounded-full h-3 w-3 bg-rose-500 dark:bg-rose-400"></span>
                     </span>
-                    <span class="text-rose-500 dark:text-rose-400 font-bold tracking-widest uppercase text-[10px]">Live aus Graz</span>
+                    <span class="text-rose-500 dark:text-rose-400 font-bold tracking-widest uppercase text-[10px]">Live aus der Brücke</span>
                 </div>
-                <h2 class="text-4xl md:text-5xl font-display font-bold text-slate-900 dark:text-white tracking-tighter">
+                <h2 id="events-heading" class="text-4xl md:text-5xl font-display font-bold text-slate-900 dark:text-white tracking-tighter">
                     Was gerade geht.
                 </h2>
             </div>
@@ -147,8 +143,10 @@ const heroHeadline = settings?.hero_headline || `Kultur verbindet.<br> <span cla
                 
                 {/* HIGHLIGHT EVENT */}
                 {highlightEvent && (
-                    <a href={`/events/${highlightEvent.slug}`} class="md:col-span-2 md:row-span-2 relative group rounded-[32px] overflow-hidden bg-slate-900 shadow-xl border border-transparent dark:border-slate-800 min-h-[500px] md:min-h-0">
-                        <img src={`${ASSET_URL}/${highlightEvent.image}`} class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition duration-1000" alt={highlightEvent.title} />
+                    <a href={`/events/${highlightEvent.slug}`} class="md:col-span-2 md:row-span-2 relative group rounded-[32px] overflow-hidden bg-slate-900 shadow-xl border border-transparent dark:border-slate-800 min-h-[500px] md:min-h-0 block" aria-label={`Highlight Event: ${highlightEvent.title}`}>
+                        {highlightEvent.image && (
+                            <img src={`${ASSET_URL}/${highlightEvent.image}`} class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition duration-1000" alt="" />
+                        )}
                         <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent"></div>
                         
                         {/* BATCH: Datum & Tipp */}
@@ -160,7 +158,7 @@ const heroHeadline = settings?.hero_headline || `Kultur verbindet.<br> <span cla
                         </div>
 
                         <div class="absolute bottom-0 left-0 p-8 md:p-12 text-white w-full">
-                            <h2 class="text-3xl md:text-5xl font-display font-bold leading-tight mb-4 tracking-tight drop-shadow-md">{highlightEvent.title}</h2>
+                            <h3 class="text-3xl md:text-5xl font-display font-bold leading-tight mb-4 tracking-tight drop-shadow-md">{highlightEvent.title}</h3>
                             <span class="font-bold flex items-center gap-2 text-rose-400">Mehr erfahren <i class="fa-solid fa-arrow-right text-xs"></i></span>
                         </div>
                     </a>
@@ -168,8 +166,10 @@ const heroHeadline = settings?.hero_headline || `Kultur verbindet.<br> <span cla
 
                 {/* UPCOMING EVENTS */}
                 {upcomingEvents.map((event, index) => (
-                    <a href={`/events/${event.slug}`} class={`relative group rounded-[32px] overflow-hidden bg-slate-900 border border-slate-900/10 dark:border-slate-800 hover:shadow-xl transition-all min-h-[350px] md:min-h-0 ${index === 2 ? 'md:col-span-2 md:row-span-1' : 'md:col-span-1 md:row-span-1'}`}>
-                        <img src={`${ASSET_URL}/${event.image}`} class="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:scale-105 transition duration-1000" alt={event.title} />
+                    <a href={`/events/${event.slug}`} class={`relative group rounded-[32px] overflow-hidden bg-slate-900 border border-slate-900/10 dark:border-slate-800 hover:shadow-xl transition-all min-h-[350px] md:min-h-0 block ${index === 2 ? 'md:col-span-2 md:row-span-1' : 'md:col-span-1 md:row-span-1'}`} aria-label={`Event: ${event.title}`}>
+                        {event.image && (
+                            <img src={`${ASSET_URL}/${event.image}`} class="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:scale-105 transition duration-1000" alt="" />
+                        )}
                         <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/25 to-transparent"></div>
                         
                         {/* BATCH: Datum */}
@@ -199,10 +199,10 @@ const heroHeadline = settings?.hero_headline || `Kultur verbindet.<br> <span cla
     </section>
 
     {/* --- SERVICES (PURE DIRECTUS) --- */}
-    <section class="px-6 sm:px-10 py-24 transition-colors duration-300">
+    <section aria-labelledby="services-heading" class="px-6 sm:px-10 py-24 transition-colors duration-300">
         <div class="max-w-7xl mx-auto text-center">
             <div class="max-w-3xl mx-auto mb-20">
-                <h2 class="text-4xl md:text-6xl font-display font-extrabold text-slate-900 dark:text-white tracking-tighter mb-6">
+                <h2 id="services-heading" class="text-4xl md:text-6xl font-display font-extrabold text-slate-900 dark:text-white tracking-tighter mb-6">
                     Selbstbestimmung.<br>
                     <span class="text-rose-600 dark:text-rose-400 italic">Gemeinsam gestalten.</span>
                 </h2>
@@ -213,13 +213,12 @@ const heroHeadline = settings?.hero_headline || `Kultur verbindet.<br> <span cla
                 {dbServices.map((service: any, index: number) => {
                     const colorClass = serviceColors[index % serviceColors.length];
                     return (
-                        <a href={`/services/${service.slug}`} class="group bg-white dark:bg-slate-900 p-8 rounded-[32px] border border-slate-100 dark:border-slate-800 hover:shadow-2xl transition-all duration-500">
+                        <a href={`/services/${service.slug}`} class="group bg-white dark:bg-slate-900 p-8 rounded-[32px] border border-slate-100 dark:border-slate-800 hover:shadow-2xl transition-all duration-500 block">
                             <div class={`w-12 h-12 rounded-2xl ${colorClass} text-white flex items-center justify-center text-xl mb-6 shadow-lg group-hover:scale-110 transition-transform`}>
                                 <i class={`fa-solid ${service.icon || 'fa-hand-holding-heart'}`}></i>
                             </div>
                             <h3 class="text-xl font-display font-bold text-slate-900 dark:text-white mb-3">{service.title}</h3>
                             <p class="text-slate-500 dark:text-slate-300 text-sm leading-relaxed line-clamp-3">
-                                {/* HIER IST DER FIX: cleanText() statt replace() */}
                                 {cleanText(service.description)}
                             </p>
                         </a>
@@ -230,15 +229,15 @@ const heroHeadline = settings?.hero_headline || `Kultur verbindet.<br> <span cla
     </section>
 
     {/* --- PROJEKTE & INFOZENTRUM --- */}
-    <section class="px-6 sm:px-10 py-24 transition-colors duration-300">
+    <section aria-labelledby="projects-heading" class="px-6 sm:px-10 py-24 transition-colors duration-300">
         <div class="max-w-7xl mx-auto">
             <span class="text-rose-500 dark:text-rose-400 font-bold tracking-widest uppercase text-[10px] mb-4 block underline decoration-rose-500 decoration-2 underline-offset-8">Brückenpfeiler & Initiativen</span>
-            <h2 class="text-4xl md:text-5xl font-display font-bold text-slate-900 dark:text-white tracking-tighter mb-16">Was uns bewegt.</h2>
+            <h2 id="projects-heading" class="text-4xl md:text-5xl font-display font-bold text-slate-900 dark:text-white tracking-tighter mb-16">Was uns bewegt.</h2>
             
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
                 {/* PROJEKT 1 (Link zu Camps) */}
                 <div class="group relative rounded-[48px] overflow-hidden bg-slate-900 min-h-[500px] lg:min-h-0 lg:aspect-auto border border-transparent dark:border-slate-800">
-                    <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200" class="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:scale-105 transition-transform duration-1000" alt="Urlaub" />
+                    <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200" class="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:scale-105 transition-transform duration-1000" alt="" />
                     <div class="relative z-10 p-6 sm:p-10 h-full flex flex-col justify-end text-white">
                         <span class="px-3 py-1 bg-rose-600 rounded-full text-[10px] font-bold uppercase w-fit mb-4">Highlight</span>
                         <h3 class="text-3xl font-display font-bold mb-4">Betreute Urlaubsaktionen</h3>
@@ -269,48 +268,48 @@ const heroHeadline = settings?.hero_headline || `Kultur verbindet.<br> <span cla
         </div>
     </section>
 
-    {/* --- PARTNER & FÖRDERGEBER --- */}
-    <section class="py-20 border-b border-slate-50 dark:border-slate-900 transition-colors duration-300">
+    {/* --- PARTNER & FÖRDERGEBER (Fixed A11y) --- */}
+    <section aria-label="Partner und Fördergeber" class="py-20 border-b border-slate-50 dark:border-slate-900 transition-colors duration-300">
         <div class="max-w-7xl mx-auto px-6 mb-12 text-center">
             <span class="text-slate-500 dark:text-slate-400 font-bold tracking-[0.2em] uppercase text-xs border-b-2 border-rose-500/20 pb-2">
-        Ermöglicht durch unsere Partner & Fördergeber
+                Ermöglicht durch unsere Partner & Fördergeber
             </span>
         </div>
         
-        {/* LOOP 1: Original */}
+        {/* Wrapper OHNE aria-hidden, damit Screenreader den ersten Loop finden */}
         <div class="relative flex overflow-x-hidden group">
+            
+            {/* LOOP 1: Original (Sichtbar für Screenreader) */}
             <div class="py-12 animate-marquee whitespace-nowrap flex items-center">
                 {(dbPartners.length > 0 ? dbPartners : [
-                    { name: "Placeholder", logo: "placeholder.png" } 
+                    { name: "Partner Platzhalter", logo: null } 
                 ]).map((partner: any) => (
                     <div class="mx-16 w-48 h-20 flex items-center justify-center grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-500">
-                        {partner.logo && (
+                        {partner.logo ? (
                             partner.website ? (
-                                <a href={partner.website} target="_blank" rel="noopener noreferrer" class="w-full h-full flex items-center justify-center">
+                                <a href={partner.website} target="_blank" rel="noopener noreferrer" class="w-full h-full flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-rose-500 rounded-lg">
                                     <img src={`${ASSET_URL}/${partner.logo}`} alt={partner.name} class="max-w-full max-h-full object-contain" />
                                 </a>
                             ) : (
                                 <img src={`${ASSET_URL}/${partner.logo}`} alt={partner.name} class="max-w-full max-h-full object-contain" />
                             )
+                        ) : (
+                             <span class="text-slate-300 font-bold text-xl">{partner.name}</span>
                         )}
                     </div>
                 ))}
             </div>
 
-            {/* LOOP 2: Klon für Infinite Scroll */}
-            <div class="absolute top-0 py-12 animate-marquee2 whitespace-nowrap flex items-center">
+            {/* LOOP 2: Klon (Versteckt für Screenreader, rein dekorativ für Infinite Scroll) */}
+            <div class="absolute top-0 py-12 animate-marquee2 whitespace-nowrap flex items-center" aria-hidden="true">
                 {(dbPartners.length > 0 ? dbPartners : [
-                    { name: "Placeholder", logo: "placeholder.png" }
+                    { name: "Partner Platzhalter", logo: null }
                 ]).map((partner: any) => (
                     <div class="mx-16 w-48 h-20 flex items-center justify-center grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-500">
-                        {partner.logo && (
-                            partner.website ? (
-                                <a href={partner.website} target="_blank" rel="noopener noreferrer" class="w-full h-full flex items-center justify-center">
-                                    <img src={`${ASSET_URL}/${partner.logo}`} alt={partner.name} class="max-w-full max-h-full object-contain" />
-                                </a>
-                            ) : (
-                                <img src={`${ASSET_URL}/${partner.logo}`} alt={partner.name} class="max-w-full max-h-full object-contain" />
-                            )
+                        {partner.logo ? (
+                            <img src={`${ASSET_URL}/${partner.logo}`} alt="" class="max-w-full max-h-full object-contain" />
+                        ) : (
+                             <span class="text-slate-300 font-bold text-xl">{partner.name}</span>
                         )}
                     </div>
                 ))}
@@ -339,7 +338,7 @@ const heroHeadline = settings?.hero_headline || `Kultur verbindet.<br> <span cla
         }
     </style>
 
-    {/* ... REST (Pionier, CTA) bleibt gleich ... */}
+    {/* ... REST (Pionier, CTA) ... */}
     <section class="px-6 sm:px-10 py-32 bg-slate-900 text-white relative overflow-hidden">
         <div class="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_50%,rgba(225,29,72,0.05),transparent)] pointer-events-none"></div>
 
@@ -353,7 +352,7 @@ const heroHeadline = settings?.hero_headline || `Kultur verbindet.<br> <span cla
                     </p>
                 </div>
                 
-                <div class="flex justify-center relative">
+                <div class="flex justify-center relative" aria-hidden="true">
                     <div class="relative flex items-center justify-center">
                         <div class="absolute w-64 h-64 md:w-80 md:h-80 rounded-full border border-rose-500/20 animate-[ping_3s_linear_infinite]"></div>
                         <div class="absolute w-64 h-64 md:w-80 md:h-80 rounded-full border border-rose-500/40 animate-[ping_2s_linear_infinite]"></div>
@@ -404,5 +403,5 @@ const heroHeadline = settings?.hero_headline || `Kultur verbindet.<br> <span cla
         </div>
     </section>
 
-    </div>
+    </article>
 </MainLayout>

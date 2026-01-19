@@ -1,7 +1,8 @@
 ---
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro'; 
-import CookieBanner from '../components/CookieBanner.astro'; // <--- IMPORT HINZUFÜGEN
+import CookieBanner from '../components/CookieBanner.astro';
+import CommandPalette from '../components/CommandPalette.astro'; // <--- 1. IMPORT HINZUFÜGEN
 import '../styles/global.css';
 
 const { title } = Astro.props;
@@ -49,8 +50,69 @@ const { title } = Astro.props;
     </style>
   </head>     
 
-  <body class="antialiased p-4 md:p-8 min-h-screen bg-gray-50 dark:bg-black transition-colors duration-300"> 
+  {/* --- GLOBALER TOOLTIP (JS Gesteuert für maximalen Z-Index) --- */}
+    <div id="global-tooltip" class="fixed pointer-events-none opacity-0 transition-opacity duration-200 bg-slate-900 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg shadow-xl z-[9999] whitespace-nowrap transform -translate-x-1/2 mt-2 hidden dark:bg-slate-50 dark:text-slate-900 border border-white/10 dark:border-slate-200">
+        </div>
+
+    <script is:inline>
+        // GLOBAL TOOLTIP LOGIC
+        const tooltip = document.getElementById('global-tooltip');
         
+        if (tooltip) {
+            document.body.addEventListener('mouseover', (e) => {
+                // Suche das nächste Element mit data-tooltip Attribut (auch wenn man auf das Icon klickt)
+                const target = e.target.closest('[data-tooltip]');
+                
+                if (target) {
+                    const text = target.getAttribute('data-tooltip');
+                    if (!text) return;
+
+                    // Text setzen
+                    tooltip.textContent = text;
+                    tooltip.classList.remove('hidden');
+                    
+                    // Position berechnen
+                    const rect = target.getBoundingClientRect();
+                    const centerX = rect.left + (rect.width / 2);
+                    const topY = rect.bottom; // Unter dem Element
+
+                    // Tooltip positionieren
+                    tooltip.style.left = `${centerX}px`;
+                    tooltip.style.top = `${topY}px`;
+                    
+                    // Einblenden (kleine Verzögerung für Smoothness)
+                    requestAnimationFrame(() => {
+                        tooltip.classList.remove('opacity-0');
+                    });
+                }
+            });
+
+            document.body.addEventListener('mouseout', (e) => {
+                const target = e.target.closest('[data-tooltip]');
+                if (target) {
+                    tooltip.classList.add('opacity-0');
+                    // Nach Transition verstecken
+                    setTimeout(() => {
+                         // Checken ob wir nicht schon wieder über einem anderen Tooltip sind
+                         if (tooltip.classList.contains('opacity-0')) {
+                             tooltip.classList.add('hidden');
+                         }
+                    }, 200);
+                }
+            });
+
+            // Wenn man scrollt, Tooltip verstecken (damit er nicht "mitwandert" an falscher Stelle)
+            window.addEventListener('scroll', () => {
+                tooltip.classList.add('opacity-0');
+                tooltip.classList.add('hidden');
+            }, { passive: true });
+        }
+    </script>
+
+  <body class="antialiased p-4 md:p-8 min-h-screen bg-gray-50 dark:bg-black transition-colors duration-300"> 
+        <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 z-[100] px-6 py-3 bg-rose-500 text-white font-bold rounded-xl shadow-xl outline-none ring-4 ring-rose-300 transition-all">
+        Zum Hauptinhalt springen
+    </a>
     <div class="relative max-w-[1400px] mx-auto rounded-[40px] shadow-2xl rounded-canvas isolate flex flex-col min-h-[calc(100vh-4rem)] bg-white dark:bg-slate-900 transition-colors duration-300">
 
       <div class="sticky top-0 z-50 rounded-t-[40px] overflow-hidden">
@@ -64,6 +126,9 @@ const { title } = Astro.props;
       <Footer />
       <CookieBanner />
     </div>
+
+    {/* 2. KOMPONENTE EINFÜGEN (Außerhalb des Wrappers für Fullscreen) */}
+    <CommandPalette />
 
     <style is:global>
         /* Erzwingt weiße Überschriften im Dark Mode innerhalb von Main */
