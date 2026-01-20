@@ -1,5 +1,6 @@
 ---
 import MainLayout from '../layouts/layout.astro';
+import Hero from '../components/Hero.astro'; // <--- NEU IMPORTIERT
 import { getEvents, getGlobalSettings } from '../lib/api';
 import { directus } from '../lib/directus';
 import { readItems } from '@directus/sdk';
@@ -31,8 +32,6 @@ function formatEventDate(event: any) {
     const date = new Date(dateStr);
     const day = date.toLocaleDateString('de-DE', { day: '2-digit', month: 'short' }).toUpperCase();
     const time = event.time_start ? event.time_start.slice(0, 5) : date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
-    
-    // Falls Zeit "00:00" ist, lassen wir sie weg
     return time === "00:00" ? day : `${day} • ${time}`;
 }
 
@@ -50,33 +49,36 @@ function cleanText(html: string) {
     return text.replace(/\s+/g, ' ').trim();
 }
 
-// 4. Highlight Logik für Events (Robustere Datumsprüfung)
+// 4. Highlight Logik
 const today = new Date();
 today.setHours(0,0,0,0);
 
-// Filtere nur zukünftige Highlights
 const highlightCandidates = allEvents.filter(e => {
     const eventDate = new Date(e.date_start || e.start_date || e.date); 
     return e.is_highlight === true && eventDate >= today;
 });
 
-// Sortiere Highlights nach Datum (nächstes zuerst)
 highlightCandidates.sort((a, b) => {
     const dateA = new Date(a.date_start || a.start_date || a.date).getTime();
     const dateB = new Date(b.date_start || b.start_date || b.date).getTime();
     return dateA - dateB;
 });
 
-// Nimm das erste Highlight, oder falls keines da ist, das allererste Event (Fallback)
 const highlightEvent = highlightCandidates.length > 0 ? highlightCandidates[0] : allEvents[0];
 
-// 5. Die nächsten 3 Events (ohne das Highlight Event, um Dopplung zu vermeiden)
 const upcomingEvents = allEvents
-  .filter(e => e.id !== highlightEvent?.id) // Verhindert Dopplung
-  .filter(e => new Date(e.date_start || e.start_date || e.date) >= today) // Nur Zukunft
+  .filter(e => e.id !== highlightEvent?.id)
+  .filter(e => new Date(e.date_start || e.start_date || e.date) >= today)
   .slice(0, 3);
 
+// --- DATEN FÜR HERO KOMPONENTE VORBEREITEN ---
 const heroHeadline = settings?.hero_headline || `Kultur verbindet.<br> <span class="pr-2 bg-clip-text text-transparent bg-gradient-to-r from-rose-600 to-orange-400 dark:from-rose-400 dark:to-orange-300">Inklusion</span> stärkt.`;
+
+const heroSubline = settings?.hero_subline || "Dein Rückenwind für einen Alltag nach deinen Regeln. Wir schaffen den Raum in Graz, in dem Begegnung auf Augenhöhe passiert und Barrieren – ob aus Stein oder im Kopf – einfach keine Rolle spielen.";
+
+const heroImg = settings?.hero_image 
+  ? `${ASSET_URL}/${settings.hero_image}`
+  : 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?q=80&w=2560&auto=format&fit=crop'; 
 ---
 
 <MainLayout title="Startseite">
@@ -98,310 +100,269 @@ const heroHeadline = settings?.hero_headline || `Kultur verbindet.<br> <span cla
     </script>
     <noscript><style>.home-content{visibility:visible}</style></noscript>
 
-    {/* --- WRAPPER (ARIA ROLE: MAIN/ARTICLE) --- */}
     <article class="home-content w-full">
     
-    {/* --- HERO --- */}
-    <header class="relative z-10 px-6 sm:px-10 pt-32 pb-32 transition-colors duration-300">
-        <div class="max-w-6xl">
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs font-bold text-rose-500 dark:text-rose-400 mb-8 uppercase tracking-widest shadow-sm">
-                <span class="text-[10px] mb-0.5">●</span> Seit 1983
-            </div>
-            <h1 class="text-5xl sm:text-7xl lg:text-8xl font-display font-extrabold text-slate-900 dark:text-white [&_*:not(.text-transparent)]:dark:text-white tracking-tighter leading-[0.9] mb-12" set:html={heroHeadline}></h1>
-            <p class="text-xl text-slate-500 dark:text-slate-200 max-w-2xl leading-relaxed border-l-4 border-rose-500 pl-8 font-medium">
-                {settings?.hero_subline || "Dein Backup für einen Alltag nach deinen Regeln. Wir schaffen den Raum in Graz, in dem Unterstützung auf Augenhöhe passiert und Barrieren – ob aus Stein oder im Kopf – einfach keine Rolle spielen."}
-            </p>
-        </div>
-    </header>
+        {/* --- HERO COMPONENT --- */}
+        <Hero 
+            headline={heroHeadline} 
+            subline={heroSubline} 
+            image={heroImg} 
+        />
 
-    {/* --- BENTO EVENTS HEADER --- */}
-    <section aria-labelledby="events-heading" class="px-6 sm:px-10 pb-12 transition-colors duration-300">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-6">
-            <div>
-                <div class="flex items-center gap-3 mb-4">
-                    <span class="relative flex h-3 w-3">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-3 w-3 bg-rose-500 dark:bg-rose-400"></span>
-                    </span>
-                    <span class="text-rose-500 dark:text-rose-400 font-bold tracking-widest uppercase text-[10px]">Live aus der Brücke</span>
-                </div>
-                <h2 id="events-heading" class="text-4xl md:text-5xl font-display font-bold text-slate-900 dark:text-white tracking-tighter">
-                    Was gerade geht.
-                </h2>
-            </div>
-            <p class="text-slate-400 dark:text-slate-300 font-medium italic text-lg md:text-right">
-                Langweilig wird's woanders. <br class="hidden md:block"> Komm wie du bist.
-            </p>
-        </div>
-    </section>
-
-    {/* --- BENTO EVENTS GRID --- */}
-    <section class="px-6 sm:px-10 pb-24 transition-colors duration-300">
-        <div class="max-w-7xl mx-auto">
-            {/* Grid Container: Auf Mobile h-auto, auf Desktop feste Höhe für Bento-Look */}
-            <div class="grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-6 h-auto md:h-[700px]">
-                
-                {/* HIGHLIGHT EVENT */}
-                {highlightEvent && (
-                    <a href={`/events/${highlightEvent.slug}`} class="md:col-span-2 md:row-span-2 relative group rounded-[32px] overflow-hidden bg-slate-900 shadow-xl border border-transparent dark:border-slate-800 min-h-[500px] md:min-h-0 block" aria-label={`Highlight Event: ${highlightEvent.title}`}>
-                        {highlightEvent.image && (
-                            <img src={`${ASSET_URL}/${highlightEvent.image}`} class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition duration-1000" alt="" />
-                        )}
-                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent"></div>
-                        
-                        {/* BATCH: Datum & Tipp */}
-                        <div class="absolute top-6 left-6 flex gap-2">
-                            <span class="px-3 py-1 rounded-full bg-amber-400 text-slate-900 text-[10px] font-bold uppercase shadow-lg tracking-widest">Tipp</span>
-                            <span class="px-3 py-1 rounded-full bg-slate-900/80 backdrop-blur-md text-white text-[10px] font-bold uppercase shadow-lg tracking-widest border border-white/10">
-                                {formatEventDate(highlightEvent)}
-                            </span>
-                        </div>
-
-                        <div class="absolute bottom-0 left-0 p-8 md:p-12 text-white w-full">
-                            <h3 class="text-3xl md:text-5xl font-display font-bold leading-tight mb-4 tracking-tight drop-shadow-md">{highlightEvent.title}</h3>
-                            <span class="font-bold flex items-center gap-2 text-rose-400">Mehr erfahren <i class="fa-solid fa-arrow-right text-xs"></i></span>
-                        </div>
-                    </a>
-                )}
-
-                {/* UPCOMING EVENTS */}
-                {upcomingEvents.map((event, index) => (
-                    <a href={`/events/${event.slug}`} class={`relative group rounded-[32px] overflow-hidden bg-slate-900 border border-slate-900/10 dark:border-slate-800 hover:shadow-xl transition-all min-h-[350px] md:min-h-0 block ${index === 2 ? 'md:col-span-2 md:row-span-1' : 'md:col-span-1 md:row-span-1'}`} aria-label={`Event: ${event.title}`}>
-                        {event.image && (
-                            <img src={`${ASSET_URL}/${event.image}`} class="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:scale-105 transition duration-1000" alt="" />
-                        )}
-                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/25 to-transparent"></div>
-                        
-                        {/* BATCH: Datum */}
-                        <div class="absolute top-6 left-6">
-                            <span class="px-3 py-1 rounded-full bg-slate-900/80 backdrop-blur-md text-white text-[10px] font-bold uppercase shadow-lg tracking-widest border border-white/10">
-                                {formatEventDate(event)}
-                            </span>
-                        </div>
-
-                        <div class="relative z-10 p-6 flex flex-col h-full justify-end">
-                            <h3 class="text-xl font-display font-bold text-white group-hover:text-rose-200 transition-colors line-clamp-3 leading-tight tracking-tight drop-shadow-md">{event.title}</h3>
-                        </div>
-                    </a>
-                ))}
-                
-                {/* ALLE EVENTS LINK */}
-                <a href="/events" class="md:col-span-1 md:row-span-1 bg-rose-600 rounded-[32px] p-8 flex items-center justify-center text-white group hover:bg-slate-900 transition-all shadow-lg overflow-hidden border border-transparent dark:border-slate-700 min-h-[200px] md:min-h-0">
-                    <div class="flex items-center gap-4 text-left">
-                        <i class="fa-solid fa-layer-group text-3xl group-hover:rotate-12 transition-transform shrink-0"></i>
-                            <span class="text-xl font-display font-bold leading-tight tracking-tighter">
-                            Alle <br>Veranstaltungen
-                            </span>
-                    </div>
-                </a>
-            </div>
-        </div>
-    </section>
-
-    {/* --- SERVICES (PURE DIRECTUS) --- */}
-    <section aria-labelledby="services-heading" class="px-6 sm:px-10 py-24 transition-colors duration-300">
-        <div class="max-w-7xl mx-auto text-center">
-            <div class="max-w-3xl mx-auto mb-20">
-                <h2 id="services-heading" class="text-4xl md:text-6xl font-display font-extrabold text-slate-900 dark:text-white tracking-tighter mb-6">
-                    Selbstbestimmung.<br>
-                    <span class="text-rose-600 dark:text-rose-400 italic">Gemeinsam gestalten.</span>
-                </h2>
-                <p class="text-lg text-slate-500 dark:text-slate-300 font-medium leading-relaxed">Inklusion bedeutet für uns Empowerment. Wir unterstützen dich genau dort, wo du uns brauchst – im Alltag, beim Wohnen oder auf Reisen.</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-left">
-                {dbServices.map((service: any, index: number) => {
-                    const colorClass = serviceColors[index % serviceColors.length];
-                    return (
-                        <a href={`/services/${service.slug}`} class="group bg-white dark:bg-slate-900 p-8 rounded-[32px] border border-slate-100 dark:border-slate-800 hover:shadow-2xl transition-all duration-500 block">
-                            <div class={`w-12 h-12 rounded-2xl ${colorClass} text-white flex items-center justify-center text-xl mb-6 shadow-lg group-hover:scale-110 transition-transform`}>
-                                <i class={`fa-solid ${service.icon || 'fa-hand-holding-heart'}`}></i>
-                            </div>
-                            <h3 class="text-xl font-display font-bold text-slate-900 dark:text-white mb-3">{service.title}</h3>
-                            <p class="text-slate-500 dark:text-slate-300 text-sm leading-relaxed line-clamp-3">
-                                {cleanText(service.description)}
-                            </p>
-                        </a>
-                    );
-                })}
-            </div>
-        </div>
-    </section>
-
-    {/* --- PROJEKTE & INFOZENTRUM --- */}
-    <section aria-labelledby="projects-heading" class="px-6 sm:px-10 py-24 transition-colors duration-300">
-        <div class="max-w-7xl mx-auto">
-            <span class="text-rose-500 dark:text-rose-400 font-bold tracking-widest uppercase text-[10px] mb-4 block underline decoration-rose-500 decoration-2 underline-offset-8">Brückenpfeiler & Initiativen</span>
-            <h2 id="projects-heading" class="text-4xl md:text-5xl font-display font-bold text-slate-900 dark:text-white tracking-tighter mb-16">Was uns bewegt.</h2>
-            
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
-                {/* PROJEKT 1 (Link zu Camps) */}
-                <div class="group relative rounded-[48px] overflow-hidden bg-slate-900 min-h-[500px] lg:min-h-0 lg:aspect-auto border border-transparent dark:border-slate-800">
-                    <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200" class="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:scale-105 transition-transform duration-1000" alt="" />
-                    <div class="relative z-10 p-6 sm:p-10 h-full flex flex-col justify-end text-white">
-                        <span class="px-3 py-1 bg-rose-600 rounded-full text-[10px] font-bold uppercase w-fit mb-4">Highlight</span>
-                        <h3 class="text-3xl font-display font-bold mb-4">Betreute Urlaubsaktionen</h3>
-                        <p class="text-slate-300 max-w-md mb-6 leading-relaxed">Eines unserer Herzstücke: Gemeinsam verreisen, Barrieren überwinden und echte Urlaubsfreude erleben.</p>
-                        <a href="/camps" class="text-rose-400 font-bold flex items-center gap-2">Details ansehen <i class="fa-solid fa-arrow-right"></i></a>
-                    </div>
-                </div>
-
-                {/* PROJEKT 2: Infozentrum (Link zu Info) */}
-                <div class="group relative rounded-[48px] overflow-hidden bg-slate-50 dark:bg-slate-900 min-h-[500px] lg:min-h-0 lg:aspect-auto border border-slate-200 dark:border-slate-800">
-                    <div class="p-6 sm:p-10 h-full flex flex-col justify-center">
-                        <div class="w-16 h-16 bg-slate-900 dark:bg-white rounded-3xl text-white dark:text-slate-900 flex items-center justify-center text-2xl mb-8"><i class="fa-solid fa-circle-info"></i></div>
-                        <h3 class="text-3xl font-display font-bold text-slate-900 dark:text-white mb-4">Infozentrum</h3>
-                        <p class="text-slate-500 dark:text-slate-300 mb-8 leading-relaxed">Unsere erste Anlaufstelle in Graz. Unbürokratische Beratung bei Anträgen, Behördenwegen und sozialen Fragestellungen – menschlich und direkt.</p>
-                        
-                        {/* BUTTON GRUPPE */}
-                        <div class="flex flex-wrap gap-3">
-                            <a href="/info" class="px-6 py-3 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-full font-bold hover:bg-rose-600 dark:hover:bg-rose-500 dark:hover:text-white transition-all shadow-lg">
-                                Details
-                            </a>
-                            <a href="mailto:office@diebruecke.cc" class="px-6 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 rounded-full font-bold hover:border-rose-500 hover:text-rose-500 transition-all shadow-sm flex items-center gap-2">
-                                <i class="fa-regular fa-envelope"></i> E-Mail
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    {/* --- PARTNER & FÖRDERGEBER (Fixed A11y) --- */}
-    <section aria-label="Partner und Fördergeber" class="py-20 border-b border-slate-50 dark:border-slate-900 transition-colors duration-300">
-        <div class="max-w-7xl mx-auto px-6 mb-12 text-center">
-            <span class="text-slate-500 dark:text-slate-400 font-bold tracking-[0.2em] uppercase text-xs border-b-2 border-rose-500/20 pb-2">
-                Ermöglicht durch unsere Partner & Fördergeber
-            </span>
-        </div>
-        
-        {/* Wrapper OHNE aria-hidden, damit Screenreader den ersten Loop finden */}
-        <div class="relative flex overflow-x-hidden group">
-            
-            {/* LOOP 1: Original (Sichtbar für Screenreader) */}
-            <div class="py-12 animate-marquee whitespace-nowrap flex items-center">
-                {(dbPartners.length > 0 ? dbPartners : [
-                    { name: "Partner Platzhalter", logo: null } 
-                ]).map((partner: any) => (
-                    <div class="mx-16 w-48 h-20 flex items-center justify-center grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-500">
-                        {partner.logo ? (
-                            partner.website ? (
-                                <a href={partner.website} target="_blank" rel="noopener noreferrer" class="w-full h-full flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-rose-500 rounded-lg">
-                                    <img src={`${ASSET_URL}/${partner.logo}`} alt={partner.name} class="max-w-full max-h-full object-contain" />
-                                </a>
-                            ) : (
-                                <img src={`${ASSET_URL}/${partner.logo}`} alt={partner.name} class="max-w-full max-h-full object-contain" />
-                            )
-                        ) : (
-                             <span class="text-slate-300 font-bold text-xl">{partner.name}</span>
-                        )}
-                    </div>
-                ))}
-            </div>
-
-            {/* LOOP 2: Klon (Versteckt für Screenreader, rein dekorativ für Infinite Scroll) */}
-            <div class="absolute top-0 py-12 animate-marquee2 whitespace-nowrap flex items-center" aria-hidden="true">
-                {(dbPartners.length > 0 ? dbPartners : [
-                    { name: "Partner Platzhalter", logo: null }
-                ]).map((partner: any) => (
-                    <div class="mx-16 w-48 h-20 flex items-center justify-center grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-500">
-                        {partner.logo ? (
-                            <img src={`${ASSET_URL}/${partner.logo}`} alt="" class="max-w-full max-h-full object-contain" />
-                        ) : (
-                             <span class="text-slate-300 font-bold text-xl">{partner.name}</span>
-                        )}
-                    </div>
-                ))}
-            </div>
-        </div>
-    </section>
-
-    <style>
-        @keyframes marquee {
-            0% { transform: translateX(0%); }
-            100% { transform: translateX(-100%); }
-        }
-        @keyframes marquee2 {
-            0% { transform: translateX(100%); }
-            100% { transform: translateX(0%); }
-        }
-        .animate-marquee {
-            animation: marquee 25s linear infinite;
-        }
-        .animate-marquee2 {
-            animation: marquee2 25s linear infinite;
-        }
-        .group:hover .animate-marquee,
-        .group:hover .animate-marquee2 {
-            animation-play-state: paused;
-        }
-    </style>
-
-    {/* ... REST (Pionier, CTA) ... */}
-    <section class="px-6 sm:px-10 py-32 bg-slate-900 text-white relative overflow-hidden">
-        <div class="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_50%,rgba(225,29,72,0.05),transparent)] pointer-events-none"></div>
-
-        <div class="max-w-7xl mx-auto relative z-10">
-            <div class="grid lg:grid-cols-2 gap-20 items-center">
+        {/* --- BENTO EVENTS HEADER --- */}
+        <section aria-labelledby="events-heading" class="px-6 sm:px-10 pb-12 transition-colors duration-300">
+            <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div>
-                    <span class="text-rose-500 font-bold tracking-widest uppercase text-xs mb-6 block tracking-[0.2em]">Pionier seit 1983</span>
-                    <h2 class="text-4xl md:text-6xl font-display font-extrabold mb-8 leading-[1.1] tracking-tighter">42 Jahre Mut zum<br>Miteinander.</h2>
-                    <p class="text-xl text-slate-400 leading-relaxed mb-10">
-                        Als erstes inklusives Zentrum Österreichs haben wir in Graz Pionierarbeit geleistet. Wir verbinden professionelle Begleitung mit offener Begegnung.
-                    </p>
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="relative flex h-3 w-3">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-3 w-3 bg-rose-500 dark:bg-rose-400"></span>
+                        </span>
+                        <span class="text-rose-500 dark:text-rose-400 font-bold tracking-widest uppercase text-[10px]">Live aus der Brücke</span>
+                    </div>
+                    <h2 id="events-heading" class="text-4xl md:text-5xl font-display font-bold text-slate-900 dark:text-white tracking-tighter">
+                        Was gerade geht.
+                    </h2>
                 </div>
+                <p class="text-slate-400 dark:text-slate-300 font-medium italic text-lg md:text-right">
+                    Langweilig wird's woanders. <br class="hidden md:block"> Komm wie du bist.
+                </p>
+            </div>
+        </section>
+
+        {/* --- BENTO EVENTS GRID --- */}
+        <section class="px-6 sm:px-10 pb-24 transition-colors duration-300">
+            <div class="max-w-7xl mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-6 h-auto md:h-[700px]">
+                    
+                    {/* HIGHLIGHT EVENT */}
+                    {highlightEvent && (
+                        <a href={`/events/${highlightEvent.slug}`} class="md:col-span-2 md:row-span-2 relative group rounded-[32px] overflow-hidden bg-slate-900 shadow-xl border border-transparent dark:border-slate-800 min-h-[500px] md:min-h-0 block" aria-label={`Highlight Event: ${highlightEvent.title}`}>
+                            {highlightEvent.image && (
+                                <img src={`${ASSET_URL}/${highlightEvent.image}`} class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition duration-1000" alt="" />
+                            )}
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent"></div>
+                            
+                            <div class="absolute top-6 left-6 flex gap-2">
+                                <span class="px-3 py-1 rounded-full bg-amber-400 text-slate-900 text-[10px] font-bold uppercase shadow-lg tracking-widest">Tipp</span>
+                                <span class="px-3 py-1 rounded-full bg-slate-900/80 backdrop-blur-md text-white text-[10px] font-bold uppercase shadow-lg tracking-widest border border-white/10">
+                                    {formatEventDate(highlightEvent)}
+                                </span>
+                            </div>
+
+                            <div class="absolute bottom-0 left-0 p-8 md:p-12 text-white w-full">
+                                <h3 class="text-3xl md:text-5xl font-display font-bold leading-tight mb-4 tracking-tight drop-shadow-md">{highlightEvent.title}</h3>
+                                <span class="font-bold flex items-center gap-2 text-rose-400">Mehr erfahren <i class="fa-solid fa-arrow-right text-xs"></i></span>
+                            </div>
+                        </a>
+                    )}
+
+                    {/* UPCOMING EVENTS */}
+                    {upcomingEvents.map((event, index) => (
+                        <a href={`/events/${event.slug}`} class={`relative group rounded-[32px] overflow-hidden bg-slate-900 border border-slate-900/10 dark:border-slate-800 hover:shadow-xl transition-all min-h-[350px] md:min-h-0 block ${index === 2 ? 'md:col-span-2 md:row-span-1' : 'md:col-span-1 md:row-span-1'}`} aria-label={`Event: ${event.title}`}>
+                            {event.image && (
+                                <img src={`${ASSET_URL}/${event.image}`} class="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:scale-105 transition duration-1000" alt="" />
+                            )}
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/25 to-transparent"></div>
+                            
+                            <div class="absolute top-6 left-6">
+                                <span class="px-3 py-1 rounded-full bg-slate-900/80 backdrop-blur-md text-white text-[10px] font-bold uppercase shadow-lg tracking-widest border border-white/10">
+                                    {formatEventDate(event)}
+                                </span>
+                            </div>
+
+                            <div class="relative z-10 p-6 flex flex-col h-full justify-end">
+                                <h3 class="text-xl font-display font-bold text-white group-hover:text-rose-200 transition-colors line-clamp-3 leading-tight tracking-tight drop-shadow-md">{event.title}</h3>
+                            </div>
+                        </a>
+                    ))}
+                    
+                    {/* ALLE EVENTS LINK */}
+                    <a href="/events" class="md:col-span-1 md:row-span-1 bg-rose-600 rounded-[32px] p-8 flex items-center justify-center text-white group hover:bg-slate-900 transition-all shadow-lg overflow-hidden border border-transparent dark:border-slate-700 min-h-[200px] md:min-h-0">
+                        <div class="flex items-center gap-4 text-left">
+                            <i class="fa-solid fa-layer-group text-3xl group-hover:rotate-12 transition-transform shrink-0"></i>
+                                <span class="text-xl font-display font-bold leading-tight tracking-tighter">
+                                Alle <br>Veranstaltungen
+                                </span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        {/* --- SERVICES --- */}
+        <section aria-labelledby="services-heading" class="px-6 sm:px-10 py-24 transition-colors duration-300">
+            <div class="max-w-7xl mx-auto text-center">
+                <div class="max-w-3xl mx-auto mb-20">
+                    <h2 id="services-heading" class="text-4xl md:text-6xl font-display font-extrabold text-slate-900 dark:text-white tracking-tighter mb-6">
+                        Selbstbestimmung.<br>
+                        <span class="text-rose-600 dark:text-rose-400 italic">Gemeinsam gestalten.</span>
+                    </h2>
+                    <p class="text-lg text-slate-500 dark:text-slate-300 font-medium leading-relaxed">Inklusion bedeutet für uns Empowerment. Wir unterstützen dich genau dort, wo du uns brauchst – im Alltag, beim Wohnen oder auf Reisen.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-left">
+                    {dbServices.map((service: any, index: number) => {
+                        const colorClass = serviceColors[index % serviceColors.length];
+                        return (
+                            <a href={`/services/${service.slug}`} class="group bg-white dark:bg-slate-900 p-8 rounded-[32px] border border-slate-100 dark:border-slate-800 hover:shadow-2xl transition-all duration-500 block">
+                                <div class={`w-12 h-12 rounded-2xl ${colorClass} text-white flex items-center justify-center text-xl mb-6 shadow-lg group-hover:scale-110 transition-transform`}>
+                                    <i class={`fa-solid ${service.icon || 'fa-hand-holding-heart'}`}></i>
+                                </div>
+                                <h3 class="text-xl font-display font-bold text-slate-900 dark:text-white mb-3">{service.title}</h3>
+                                <p class="text-slate-500 dark:text-slate-300 text-sm leading-relaxed line-clamp-3">
+                                    {cleanText(service.description)}
+                                </p>
+                            </a>
+                        );
+                    })}
+                </div>
+            </div>
+        </section>
+
+        {/* --- PROJEKTE & INFOZENTRUM --- */}
+        <section aria-labelledby="projects-heading" class="px-6 sm:px-10 py-24 transition-colors duration-300">
+            <div class="max-w-7xl mx-auto">
+                <span class="text-rose-500 dark:text-rose-400 font-bold tracking-widest uppercase text-[10px] mb-4 block underline decoration-rose-500 decoration-2 underline-offset-8">Brückenpfeiler & Initiativen</span>
+                <h2 id="projects-heading" class="text-4xl md:text-5xl font-display font-bold text-slate-900 dark:text-white tracking-tighter mb-16">Was uns bewegt.</h2>
                 
-                <div class="flex justify-center relative" aria-hidden="true">
-                    <div class="relative flex items-center justify-center">
-                        <div class="absolute w-64 h-64 md:w-80 md:h-80 rounded-full border border-rose-500/20 animate-[ping_3s_linear_infinite]"></div>
-                        <div class="absolute w-64 h-64 md:w-80 md:h-80 rounded-full border border-rose-500/40 animate-[ping_2s_linear_infinite]"></div>
-                        <div class="relative w-64 h-64 md:w-80 md:h-80 rounded-full border-4 border-rose-500 flex items-center justify-center p-8 text-center bg-slate-900 shadow-[0_0_50px_rgba(225,29,72,0.2)]">
-                            <p class="text-rose-500 font-display font-black text-2xl md:text-3xl leading-tight uppercase tracking-tighter">
-                                Erstes<br>Inklusives<br>Zentrum<br>Österreichs
-                            </p>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                    <div class="group relative rounded-[48px] overflow-hidden bg-slate-900 min-h-[500px] lg:min-h-0 lg:aspect-auto border border-transparent dark:border-slate-800">
+                        <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200" class="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:scale-105 transition-transform duration-1000" alt="" />
+                        <div class="relative z-10 p-6 sm:p-10 h-full flex flex-col justify-end text-white">
+                            <span class="px-3 py-1 bg-rose-600 rounded-full text-[10px] font-bold uppercase w-fit mb-4">Highlight</span>
+                            <h3 class="text-3xl font-display font-bold mb-4">Betreute Urlaubsaktionen</h3>
+                            <p class="text-slate-300 max-w-md mb-6 leading-relaxed">Eines unserer Herzstücke: Gemeinsam verreisen, Barrieren überwinden und echte Urlaubsfreude erleben.</p>
+                            <a href="/camps" class="text-rose-400 font-bold flex items-center gap-2">Details ansehen <i class="fa-solid fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+
+                    <div class="group relative rounded-[48px] overflow-hidden bg-slate-50 dark:bg-slate-900 min-h-[500px] lg:min-h-0 lg:aspect-auto border border-slate-200 dark:border-slate-800">
+                        <div class="p-6 sm:p-10 h-full flex flex-col justify-center">
+                            <div class="w-16 h-16 bg-slate-900 dark:bg-white rounded-3xl text-white dark:text-slate-900 flex items-center justify-center text-2xl mb-8"><i class="fa-solid fa-circle-info"></i></div>
+                            <h3 class="text-3xl font-display font-bold text-slate-900 dark:text-white mb-4">Infozentrum</h3>
+                            <p class="text-slate-500 dark:text-slate-300 mb-8 leading-relaxed">Unsere erste Anlaufstelle in Graz. Unbürokratische Beratung bei Anträgen, Behördenwegen und sozialen Fragestellungen – menschlich und direkt.</p>
+                            
+                            <div class="flex flex-wrap gap-3">
+                                <a href="/info" class="px-6 py-3 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-full font-bold hover:bg-rose-600 dark:hover:bg-rose-500 dark:hover:text-white transition-all shadow-lg">
+                                    Details
+                                </a>
+                                <a href="mailto:office@diebruecke.cc" class="px-6 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 rounded-full font-bold hover:border-rose-500 hover:text-rose-500 transition-all shadow-sm flex items-center gap-2">
+                                    <i class="fa-regular fa-envelope"></i> E-Mail
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <section class="pt-40 pb-16 text-center transition-colors duration-300">
-        <div class="max-w-4xl mx-auto px-6">
-            <p class="text-slate-400 dark:text-slate-100 font-medium text-xl italic">
-                „Genug gescrollt. Zeit für einen Kaffee bei uns, oder?“
-            </p>
-            <div class="mt-12 flex flex-col items-center">
-                <div class="w-2 h-2 rounded-full bg-rose-500 mb-2"></div>
-                <div class="w-0.5 h-24 bg-gradient-to-b from-rose-500 via-slate-200 to-transparent"></div>
+        {/* --- PARTNER --- */}
+        <section aria-label="Partner und Fördergeber" class="py-20 border-b border-slate-50 dark:border-slate-900 transition-colors duration-300">
+            <div class="max-w-7xl mx-auto px-6 mb-12 text-center">
+                <span class="text-slate-500 dark:text-slate-400 font-bold tracking-[0.2em] uppercase text-xs border-b-2 border-rose-500/20 pb-2">
+                    Ermöglicht durch unsere Partner & Fördergeber
+                </span>
             </div>
-        </div>
-    </section>
-
-    <section class="px-6 sm:px-10 pb-32 transition-colors duration-300">
-        <div class="bg-slate-900 rounded-[40px] p-12 sm:p-20 text-white text-center relative overflow-hidden shadow-2xl border border-transparent dark:border-slate-800">
-            <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-rose-900/20 rounded-full blur-3xl opacity-50 pointer-events-none -translate-y-1/2 translate-x-1/2"></div>
             
-            <div class="relative z-10 max-w-2xl mx-auto">
-                <h2 class="text-4xl sm:text-7xl font-display font-extrabold tracking-tighter mb-8 leading-[0.9]">
-                    Mach mit.<br><span class="text-rose-500">Werde Teil davon.</span>
-                </h2>
-                <p class="text-slate-300 mb-12 text-lg font-medium leading-relaxed">
-                    Egal ob du Unterstützung suchst, dich ehrenamtlich engagieren willst oder einfach nur eine gute Idee für Graz hast – unsere Tür steht offen.
-                </p>
-
-                <div class="flex flex-wrap justify-center gap-4">
-                    <a href="/contact" class="bg-rose-600 hover:bg-white hover:text-slate-900 px-10 py-4 rounded-full font-bold transition-all shadow-lg text-lg transform hover:-translate-y-1">
-                        Schreib uns
-                    </a>
-                    <a href="/about" class="bg-white/10 hover:bg-white/20 px-10 py-4 rounded-full font-bold transition-all border border-white/10 text-lg">
-                        Über den Verein
-                    </a>
+            <div class="relative flex overflow-x-hidden group">
+                <div class="py-12 animate-marquee whitespace-nowrap flex items-center">
+                    {(dbPartners.length > 0 ? dbPartners : [ { name: "Partner Platzhalter", logo: null } ]).map((partner: any) => (
+                        <div class="mx-16 w-48 h-20 flex items-center justify-center grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-500">
+                            {partner.logo ? (
+                                <img src={`${ASSET_URL}/${partner.logo}`} alt={partner.name} class="max-w-full max-h-full object-contain" />
+                            ) : (
+                                <span class="text-slate-300 font-bold text-xl">{partner.name}</span>
+                            )}
+                        </div>
+                    ))}
+                </div>
+                <div class="absolute top-0 py-12 animate-marquee2 whitespace-nowrap flex items-center" aria-hidden="true">
+                    {(dbPartners.length > 0 ? dbPartners : [ { name: "Partner Platzhalter", logo: null } ]).map((partner: any) => (
+                        <div class="mx-16 w-48 h-20 flex items-center justify-center grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-500">
+                            {partner.logo ? (
+                                <img src={`${ASSET_URL}/${partner.logo}`} alt="" class="max-w-full max-h-full object-contain" />
+                            ) : (
+                                <span class="text-slate-300 font-bold text-xl">{partner.name}</span>
+                            )}
+                        </div>
+                    ))}
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+
+        <style>
+            @keyframes marquee { 0% { transform: translateX(0%); } 100% { transform: translateX(-100%); } }
+            @keyframes marquee2 { 0% { transform: translateX(100%); } 100% { transform: translateX(0%); } }
+            .animate-marquee { animation: marquee 25s linear infinite; }
+            .animate-marquee2 { animation: marquee2 25s linear infinite; }
+            .group:hover .animate-marquee, .group:hover .animate-marquee2 { animation-play-state: paused; }
+        </style>
+
+        {/* --- FOOTER CTA --- */}
+        <section class="px-6 sm:px-10 py-32 bg-slate-900 text-white relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_50%,rgba(225,29,72,0.05),transparent)] pointer-events-none"></div>
+
+            <div class="max-w-7xl mx-auto relative z-10">
+                <div class="grid lg:grid-cols-2 gap-20 items-center">
+                    <div>
+                        <span class="text-rose-500 font-bold tracking-widest uppercase text-xs mb-6 block tracking-[0.2em]">Pionier seit 1983</span>
+                        <h2 class="text-4xl md:text-6xl font-display font-extrabold mb-8 leading-[1.1] tracking-tighter">42 Jahre Mut zum<br>Miteinander.</h2>
+                        <p class="text-xl text-slate-400 leading-relaxed mb-10">
+                            Als erstes inklusives Zentrum Österreichs haben wir in Graz Pionierarbeit geleistet. Wir verbinden professionelle Begleitung mit offener Begegnung.
+                        </p>
+                    </div>
+                    
+                    <div class="flex justify-center relative" aria-hidden="true">
+                        <div class="relative flex items-center justify-center">
+                            <div class="absolute w-64 h-64 md:w-80 md:h-80 rounded-full border border-rose-500/20 animate-[ping_3s_linear_infinite]"></div>
+                            <div class="absolute w-64 h-64 md:w-80 md:h-80 rounded-full border border-rose-500/40 animate-[ping_2s_linear_infinite]"></div>
+                            <div class="relative w-64 h-64 md:w-80 md:h-80 rounded-full border-4 border-rose-500 flex items-center justify-center p-8 text-center bg-slate-900 shadow-[0_0_50px_rgba(225,29,72,0.2)]">
+                                <p class="text-rose-500 font-display font-black text-2xl md:text-3xl leading-tight uppercase tracking-tighter">
+                                    Erstes<br>Inklusives<br>Zentrum<br>Österreichs
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="pt-40 pb-16 text-center transition-colors duration-300">
+            <div class="max-w-4xl mx-auto px-6">
+                <p class="text-slate-400 dark:text-slate-100 font-medium text-xl italic">
+                    „Genug gescrollt. Zeit für einen Kaffee bei uns, oder?“
+                </p>
+                <div class="mt-12 flex flex-col items-center">
+                    <div class="w-2 h-2 rounded-full bg-rose-500 mb-2"></div>
+                    <div class="w-0.5 h-24 bg-gradient-to-b from-rose-500 via-slate-200 to-transparent"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="px-6 sm:px-10 pb-32 transition-colors duration-300">
+            <div class="bg-slate-900 rounded-[40px] p-12 sm:p-20 text-white text-center relative overflow-hidden shadow-2xl border border-transparent dark:border-slate-800">
+                <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-rose-900/20 rounded-full blur-3xl opacity-50 pointer-events-none -translate-y-1/2 translate-x-1/2"></div>
+                
+                <div class="relative z-10 max-w-2xl mx-auto">
+                    <h2 class="text-4xl sm:text-7xl font-display font-extrabold tracking-tighter mb-8 leading-[0.9]">
+                        Mach mit.<br><span class="text-rose-500">Werde Teil davon.</span>
+                    </h2>
+                    <p class="text-slate-300 mb-12 text-lg font-medium leading-relaxed">
+                        Egal ob du Unterstützung suchst, dich ehrenamtlich engagieren willst oder einfach nur eine gute Idee für Graz hast – unsere Tür steht offen.
+                    </p>
+
+                    <div class="flex flex-wrap justify-center gap-4">
+                        <a href="/contact" class="bg-rose-600 hover:bg-white hover:text-slate-900 px-10 py-4 rounded-full font-bold transition-all shadow-lg text-lg transform hover:-translate-y-1">
+                            Schreib uns
+                        </a>
+                        <a href="/about" class="bg-white/10 hover:bg-white/20 px-10 py-4 rounded-full font-bold transition-all border border-white/10 text-lg">
+                            Über den Verein
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
 
     </article>
 </MainLayout>

@@ -1,0 +1,100 @@
+---
+interface Props {
+  headline: string;
+  subline: string;
+  image: string;
+}
+
+const { headline, subline, image } = Astro.props;
+---
+
+{/* --- HERO SECTION: PORTAL-BRÜCKE --- */}
+<section class="relative z-10 w-full min-h-[85vh] flex items-center overflow-hidden transition-colors duration-300 px-8 sm:px-16 lg:px-24 py-20 lg:py-0 group/hero">
+
+    <div class="max-w-[1600px] mx-auto w-full grid grid-cols-12 gap-8 lg:gap-12 relative h-full items-center">
+
+        {/* 1. TEXT CONTENT */}
+        <div class="relative z-20 col-span-12 lg:col-span-5 pointer-events-none">
+
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs font-bold text-rose-500 dark:text-rose-400 mb-8 uppercase tracking-widest shadow-sm whitespace-nowrap pointer-events-auto">
+                <span class="text-[10px] mb-0.5">●</span> Seit 1983
+            </div>
+
+            <h1 class="text-5xl sm:text-6xl xl:text-8xl font-display font-extrabold text-slate-900 dark:text-white tracking-tighter leading-[0.95] mb-8 drop-shadow-md lg:drop-shadow-none group-hover/hero:text-slate-900 transition-colors duration-500 [&_*:not(.text-transparent)]:dark:text-white whitespace-nowrap" set:html={headline}></h1>
+
+            <p class="text-xl text-slate-500 dark:text-slate-200 leading-relaxed border-l-4 border-rose-500 pl-6 font-medium mb-10 max-w-md group-hover/hero:text-slate-500 transition-colors duration-500 pointer-events-auto">
+                {subline}
+            </p>
+
+            <div class="flex flex-wrap gap-4 whitespace-nowrap pointer-events-auto">
+                <a href="/events" class="bg-rose-600 text-white px-8 py-4 rounded-full font-bold hover:bg-slate-900 dark:hover:bg-white dark:hover:text-slate-900 transition-all shadow-lg shadow-rose-500/20 hover:-translate-y-1">
+                    Programm entdecken
+                </a>
+                <a href="/about" class="bg-transparent text-slate-900 dark:text-white border-2 border-slate-200 dark:border-slate-700 px-8 py-4 rounded-full font-bold hover:border-rose-500 dark:hover:border-rose-500 transition-all hover:-translate-y-1">
+                    Mehr über uns
+                </a>
+            </div>
+        </div>
+
+        {/* 2. BILD CONTAINER */}
+        <div class="relative col-span-12 lg:col-span-7 h-[50vh] lg:h-[75vh] z-10 group/image">
+
+            <div class="relative w-full h-full">
+
+                {/* PORTAL-BILD: Rounded & Ring */}
+                <div class="w-full h-full rounded-[40px] lg:rounded-[80px] overflow-hidden shadow-2xl transition-all duration-1000 bg-slate-900 ring-4 ring-white dark:ring-slate-800 relative">
+
+                    <img
+                        src={image}
+                        alt="Impression aus der Brücke Graz"
+                        class="absolute inset-0 w-full h-full object-cover object-center scale-105 group-hover/image:scale-100 transition-transform duration-[1.5s]"
+                    />
+
+                    {/* VIGNETTE & OVERLAYS */}
+                    <div class="absolute inset-0 bg-[radial-gradient(circle_at_70%_40%,rgba(244,63,94,0.18),transparent_55%)]"></div>
+                    <div class="absolute inset-0 bg-gradient-to-l from-slate-900/35 via-slate-900/15 to-transparent group-hover/image:opacity-0 transition-opacity duration-500"></div>
+                    <div class="absolute inset-0 bg-slate-900/80 opacity-0 group-hover/image:opacity-100 transition-opacity duration-700 backdrop-blur-[2px]"></div>
+
+                    {/* WATERMARK */}
+                    <div class="absolute -bottom-10 -right-10 pointer-events-none select-none opacity-70 group-hover/image:opacity-100 transition-opacity duration-700">
+                        <p class="text-[120px] sm:text-[160px] xl:text-[220px] font-display font-black tracking-tighter leading-none text-white/10">
+                            BRÜCKE
+                        </p>
+                    </div>
+
+                    {/* GLASS CARDS */}
+                    <div class="absolute inset-0 z-10 flex items-end justify-end p-6 sm:p-10">
+                        <div class="w-full max-w-md space-y-3">
+                            <div class="group/card rounded-2xl border border-white/15 bg-white/10 backdrop-blur-xl px-5 py-4 shadow-[0_20px_60px_rgba(0,0,0,0.35)] translate-y-0 group-hover/image:-translate-y-2 transition-transform duration-700">
+                                <div class="flex items-center gap-3">
+                                    <div class="h-10 w-10 rounded-xl bg-rose-500/90 flex items-center justify-center text-white shadow-lg">
+                                        <i class="fa-solid fa-handshake-angle"></i>
+                                    </div>
+                                    <div class="leading-tight">
+                                        <p class="text-white font-bold tracking-tight">Unterstützung auf Augenhöhe</p>
+                                        <p class="text-white/70 text-sm">unbürokratisch • menschlich • direkt</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="rounded-2xl border border-white/15 bg-white/10 backdrop-blur-xl px-5 py-4 group-hover/image:-translate-y-1 transition-transform duration-700">
+                                    <p class="text-white/70 text-xs uppercase tracking-widest">Standort</p>
+                                    <p class="text-white font-extrabold text-lg tracking-tight">Graz</p>
+                                </div>
+                                <div class="rounded-2xl border border-white/15 bg-white/10 backdrop-blur-xl px-5 py-4 group-hover/image:-translate-y-1 transition-transform duration-700 delay-75">
+                                    <p class="text-white/70 text-xs uppercase tracking-widest">Seit</p>
+                                    <p class="text-white font-extrabold text-lg tracking-tight">1983</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* EDGE LIGHT */}
+                    <div class="absolute inset-0 ring-1 ring-inset ring-white/10 pointer-events-none"></div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
