@@ -6,83 +6,137 @@ import MainLayout from '../layouts/layout.astro';
     
     <div class="home-content px-4 md:px-6">
         
-        {/* --- HERO SECTION --- */}
-        <section class="relative z-10 px-6 sm:px-10 pt-32 pb-32 bg-white rounded-t-[32px] md:rounded-t-[64px] overflow-hidden">
-            <div class="max-w-7xl mx-auto relative z-10">
+        {/* --- FANCY FLOATING HERO --- */}
+        <section class="relative z-10 px-6 sm:px-10 pt-24 pb-32 bg-white dark:bg-slate-900 rounded-t-[48px] md:rounded-t-[64px] overflow-hidden transition-colors duration-500">
+            
+            <div class="absolute inset-0 pointer-events-none">
+                <div class="absolute top-1/4 left-10 w-64 h-64 bg-rose-500/10 rounded-full blur-3xl animate-pulse"></div>
                 
-                <div class="mb-12">
-                    <a href="/" class="inline-flex items-center text-slate-500 hover:text-slate-900 font-bold transition-colors group text-sm uppercase tracking-widest">
-                        <i class="fa-solid fa-arrow-left mr-2 group-hover:-translate-x-1 transition-transform"></i>
-                        Zurück zur Startseite
+                {/* Badge 1: Crew */}
+                <div class="absolute top-[15%] right-[5%] hidden xl:block float-animation">
+                    <div class="px-5 py-3 rounded-2xl bg-white dark:bg-slate-800 shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-slate-100 dark:border-slate-700 rotate-12 flex items-center gap-3">
+                        <span class="text-xl">🚀</span>
+                        <span class="text-slate-900 dark:text-white font-bold text-sm">Crew Member</span>
+                    </div>
+                </div>
+
+                {/* Badge 2: Partner */}
+                <div class="absolute top-[45%] right-[15%] hidden lg:block float-animation-delayed">
+                    <div class="px-5 py-3 rounded-2xl bg-white dark:bg-slate-800 shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-slate-100 dark:border-slate-700 -rotate-6 flex items-center gap-3">
+                        <span class="text-xl">🤝</span>
+                        <span class="text-slate-900 dark:text-white font-bold text-sm">Partner</span>
+                    </div>
+                </div>
+
+                 {/* Badge 3: Impact */}
+                 <div class="absolute bottom-[20%] right-[8%] hidden xl:block float-animation">
+                    <div class="px-5 py-3 rounded-2xl bg-white dark:bg-slate-800 shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-slate-100 dark:border-slate-700 rotate-3 flex items-center gap-3">
+                        <span class="text-xl">💎</span>
+                        <span class="text-slate-900 dark:text-white font-bold text-sm">Möglichmacher</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="max-w-7xl mx-auto relative z-10">
+                <div class="mb-16">
+                    <a href="/" class="inline-flex items-center text-slate-400 hover:text-rose-500 font-bold transition-colors group text-xs uppercase tracking-[0.2em]">
+                        <i class="fa-solid fa-chevron-left mr-2 group-hover:-translate-x-1 transition-transform"></i>
+                        Zurück
                     </a>
                 </div>
 
-                <div class="max-w-6xl">
-                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-50 border border-slate-200 text-xs font-bold text-rose-500 mb-8 uppercase tracking-widest shadow-sm">
-                        <span class="text-[10px] mb-0.5">●</span> Teil der Bewegung werden
+                <div class="max-w-5xl">
+                    <div class="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-[10px] font-bold uppercase tracking-[0.3em] mb-10">
+                        <span class="relative flex h-2 w-2">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
+                        </span>
+                        Werde Brückenpfeiler
                     </div>
                     
-                    <h1 class="text-6xl md:text-8xl font-display font-extrabold text-slate-900 tracking-tighter leading-[0.9] mb-12">
-                        Dein Einsatz. <br>
-                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 via-indigo-500 to-indigo-600">Unser Miteinander.</span>
+                    <h1 class="text-6xl md:text-8xl lg:text-9xl font-display font-black text-slate-900 dark:text-white tracking-tight leading-[0.85] mb-12">
+                        Nicht nur <br/>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-br from-rose-500 via-rose-600 to-indigo-700 italic">zuschauen.</span><br/>
+                        Einfach machen.
                     </h1>
                     
-                    <p class="text-xl text-slate-500 max-w-2xl leading-relaxed border-l-4 border-rose-500 pl-8 font-medium">
-                        Inklusion ist kein Zuschauer-Sport. Ob als Ehrenamtliche:r, Praktikant:in oder Spender:in – dein Engagement schafft den Raum, in dem Barrieren verschwinden.
-                    </p>
+                    <div class="max-w-2xl reveal">
+                        <p class="text-xl md:text-2xl text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
+                            Inklusion braucht keine Applaus-Kurve, sondern Leute, die mit anpacken. Werde Teil der Crew, die Barrieren in echte Brücken verwandelt.
+                        </p>
+                    </div>
                 </div>
             </div>
         </section>
 
-        {/* --- MITMACH-OPTIONEN GRID --- */}
-        <section class="px-6 sm:px-10 py-24 bg-white">
+        {/* --- TICKER SECTION --- */}
+        <section class="bg-white dark:bg-slate-900 py-10 border-y border-slate-100 dark:border-white/5 overflow-hidden transition-colors duration-500">
+            <div class="flex whitespace-nowrap gap-20 animate-infinite-scroll opacity-30">
+                {Array(3).fill(['SEIT 1983', 'STEUERLICH ABSETZBAR', 'IN GRAZ DAHEIM', '100% INKLUSIV', 'TEAM-SPECIALS']).flat().map((text) => (
+                    <span class="text-slate-900 dark:text-white font-display font-black text-2xl tracking-tighter uppercase">{text}</span>
+                ))}
+            </div>
+        </section>
+
+        {/* --- MITMACH-OPTIONEN --- */}
+        <section class="px-6 sm:px-10 py-24 bg-white dark:bg-slate-900 transition-colors duration-500">
             <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 
-                {/* 1. Ehrenamt */}
-                <div class="group bg-slate-50 rounded-[40px] p-10 border border-slate-100 hover:shadow-xl transition-all duration-500">
-                    <div class="w-14 h-14 rounded-2xl bg-white flex items-center justify-center text-slate-900 text-xl mb-8 shadow-sm group-hover:bg-rose-500 group-hover:text-white transition-all">
-                        <i class="fa-solid fa-heart-pulse"></i>
+                {/* 1. Die Crew */}
+                <div class="reveal group bg-slate-50 dark:bg-slate-800/50 rounded-[40px] p-10 border border-slate-100 dark:border-slate-800 hover:shadow-2xl transition-all duration-500">
+                    <div class="w-14 h-14 rounded-2xl bg-white dark:bg-slate-700 flex items-center justify-center text-rose-500 text-xl mb-8 shadow-sm group-hover:bg-rose-500 group-hover:text-white transition-all">
+                        <i class="fa-solid fa-bolt-lightning"></i>
                     </div>
-                    <h3 class="text-2xl font-display font-bold text-slate-900 mb-4 tracking-tight">Ehrenamt</h3>
-                    <p class="text-slate-500 text-sm leading-relaxed font-medium">Schenke Zeit. Begleite uns bei Ausflügen, im Café oder bei unseren Kultur-Events in Graz.</p>
+                    <h3 class="text-2xl font-display font-bold text-slate-900 dark:text-white mb-4 tracking-tight">Die Crew</h3>
+                    <p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed mb-6 font-medium">Schenke Zeit und werde Teil unserer Backstage-Crew bei Konzerten, Slams oder auf Reisen.</p>
+                    <span class="text-xs font-bold text-rose-500 dark:text-rose-400">Backstage-Vibe inklusive</span>
                 </div>
 
                 {/* 2. Praktikum */}
-                <div class="group bg-slate-50 rounded-[40px] p-10 border border-slate-100 hover:shadow-xl transition-all duration-500">
-                    <div class="w-14 h-14 rounded-2xl bg-white flex items-center justify-center text-slate-900 text-xl mb-8 shadow-sm group-hover:bg-rose-500 group-hover:text-white transition-all">
+                <div class="reveal group bg-slate-50 dark:bg-slate-800/50 rounded-[40px] p-10 border border-slate-100 dark:border-slate-800 hover:shadow-2xl transition-all duration-500" style="transition-delay: 100ms;">
+                    <div class="w-14 h-14 rounded-2xl bg-white dark:bg-slate-700 flex items-center justify-center text-indigo-500 text-xl mb-8 shadow-sm group-hover:bg-indigo-500 group-hover:text-white transition-all">
                         <i class="fa-solid fa-graduation-cap"></i>
                     </div>
-                    <h3 class="text-2xl font-display font-bold text-slate-900 mb-4 tracking-tight">Praktikum</h3>
-                    <p class="text-slate-500 text-sm leading-relaxed font-medium">Lerne Inklusion von den Pionieren. Wir bieten Praktikumsplätze für soziale Berufe & Studium.</p>
+                    <h3 class="text-2xl font-display font-bold text-slate-900 dark:text-white mb-4 tracking-tight">Praktikum</h3>
+                    <p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed mb-6 font-medium">Lerne von den Pionieren. Wir bieten Plätze für Soziale Arbeit, Kulturmanagement oder Pädagogik mit echtem Impact.</p>
+                    <span class="text-xs font-bold text-indigo-500 dark:text-indigo-400">Pionier-Erfahrung inklusive</span>
                 </div>
 
                 {/* 3. Mitgliedschaft */}
-                <div class="group bg-slate-50 rounded-[40px] p-10 border border-slate-100 hover:shadow-xl transition-all duration-500">
-                    <div class="w-14 h-14 rounded-2xl bg-white flex items-center justify-center text-slate-900 text-xl mb-8 shadow-sm group-hover:bg-rose-500 group-hover:text-white transition-all">
+                <div class="reveal group bg-slate-50 dark:bg-slate-800/50 rounded-[40px] p-10 border border-slate-100 dark:border-slate-800 hover:shadow-2xl transition-all duration-500" style="transition-delay: 200ms;">
+                    <div class="w-14 h-14 rounded-2xl bg-white dark:bg-slate-700 flex items-center justify-center text-emerald-500 text-xl mb-8 shadow-sm group-hover:bg-emerald-500 group-hover:text-white transition-all">
                         <i class="fa-solid fa-id-card"></i>
                     </div>
-                    <h3 class="text-2xl font-display font-bold text-slate-900 mb-4 tracking-tight">Mitgliedschaft</h3>
-                    <p class="text-slate-500 text-sm leading-relaxed font-medium">Werde Teil des Vereins. Mit deinem Beitrag sicherst du unsere unabhängige Arbeit seit 1983.</p>
+                    <h3 class="text-2xl font-display font-bold text-slate-900 dark:text-white mb-4 tracking-tight">Mitgliedschaft</h3>
+                    <p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed mb-6 font-medium">Werde Teil des Kern-Teams. Mit deinem Beitrag sicherst du unsere radikale Unabhängigkeit seit 1983.</p>
+                    <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400">Mitglieder-Tickets inklusive</span>
                 </div>
 
-                {/* 4. SPONSORING (UPDATED TEXT) */}
-                <div class="group relative bg-white rounded-[40px] p-10 border-2 border-rose-500/20 shadow-2xl shadow-rose-500/10 hover:shadow-rose-500/20 hover:-translate-y-1 transition-all duration-500 overflow-hidden">
-                    {/* Background Glow */}
-                    <div class="absolute top-0 right-0 w-32 h-32 bg-rose-100 rounded-full blur-3xl -mr-16 -mt-16 opacity-50"></div>
-                    
-                    <div class="relative z-10">
-                        <div class="w-14 h-14 rounded-2xl bg-rose-500 flex items-center justify-center text-white text-xl mb-8 shadow-lg shadow-rose-500/30 animate-pulse-slow">
+                {/* 4. Partnerschaft */}
+                <div class="reveal group relative bg-slate-900 dark:bg-slate-950 rounded-[40px] p-10 shadow-2xl hover:-translate-y-1 transition-all duration-500 overflow-hidden border border-transparent dark:border-slate-800" style="transition-delay: 300ms;">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-rose-500/10 rounded-full blur-3xl -mr-16 -mt-16"></div>
+                    <div class="relative z-10 flex flex-col h-full">
+                        <div class="w-14 h-14 rounded-2xl bg-rose-500 flex items-center justify-center text-white text-xl mb-8 shadow-lg shadow-rose-500/30">
                             <i class="fa-solid fa-handshake"></i>
                         </div>
-                        <span class="text-[10px] font-bold uppercase tracking-widest text-rose-500 mb-2 block">Für Unternehmen</span>
-                        <h3 class="text-2xl font-display font-bold text-slate-900 mb-4 tracking-tight">Helden gesucht</h3>
+                        <h3 class="text-2xl font-display font-bold text-white mb-4 tracking-tight leading-tight">Partnerschaft</h3>
                         
-                        <p class="text-slate-600 text-sm leading-relaxed font-medium mb-6">
-                            Inklusion ist verdammt gut fürs Karma – und für dein Image. Werde unser Lieblings-Partner und investiere in Momente, die wirklich zählen, statt in heiße Luft.
+                        <p class="text-slate-400 text-sm leading-relaxed font-medium mb-6 flex-grow">
+                            Investiere in echte Inklusion statt in heiße Luft. Wir bieten <span class="text-white font-bold">Firmenmitgliedschaften</span> mit exklusiven <span class="text-white font-bold">Team-Specials</span>.
                         </p>
                         
-                        <a href="mailto:office@diebruecke.cc?subject=Sponsoring%20Anfrage" class="inline-flex items-center text-rose-600 font-bold text-sm hover:underline decoration-2 underline-offset-4">
-                            Lass uns reden <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
+                        <div class="space-y-3 mb-10">
+                            <div class="flex items-center gap-2 text-[10px] font-bold text-rose-400 uppercase tracking-widest">
+                                <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> Exklusive Crew-Vorteile
+                            </div>
+                            <div class="flex items-center gap-2 text-[10px] font-bold text-rose-400 uppercase tracking-widest">
+                                <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> Premium Branding
+                            </div>
+                        </div>
+
+                        <a href="mailto:office@diebruecke.cc?subject=Partnerschaft" class="inline-flex items-center gap-3 px-8 py-4 bg-white text-slate-900 rounded-full font-bold hover:bg-rose-500 hover:text-white transition-all shadow-lg text-sm group/btn mt-auto">
+                            Reden wir?
+                            <i class="fa-solid fa-comments group-hover/btn:rotate-12 transition-transform"></i>
                         </a>
                     </div>
                 </div>
@@ -90,63 +144,75 @@ import MainLayout from '../layouts/layout.astro';
             </div>
         </section>
 
-        {/* --- SPENDEN-SEKTION (UPDATED IMAGE) --- */}
-        <section class="mb-10 rounded-[48px] px-6 sm:px-10 py-32 bg-slate-900 text-white relative overflow-hidden shadow-2xl">
-            <div class="absolute top-0 right-0 w-1/2 h-full bg-rose-600/5 skew-x-12 translate-x-1/4"></div>
+        {/* --- SPENDEN --- */}
+        <section class="reveal mb-10 rounded-[48px] px-6 sm:px-10 py-32 bg-slate-950 text-white relative overflow-hidden shadow-2xl border border-slate-800 mx-4 md:mx-0">
             <div class="max-w-7xl mx-auto relative z-10 grid lg:grid-cols-2 gap-24 items-center">
                 <div>
                     <span class="text-rose-500 font-bold tracking-widest uppercase text-xs mb-6 block underline decoration-rose-500 decoration-2 underline-offset-8">Support & Spenden</span>
-                    <h2 class="text-4xl md:text-6xl font-display font-extrabold mb-8 tracking-tighter leading-tight">
-                        Ermögliche <br><span class="text-rose-500 italic">neue Wege.</span>
+                    <h2 class="text-4xl md:text-6xl font-display font-extrabold mb-8 tracking-tighter leading-tight text-white">
+                        Werde zum <br><span class="text-rose-500 italic">Möglichmacher.</span>
                     </h2>
                     <p class="text-xl text-slate-400 leading-relaxed mb-10 max-w-xl font-medium">
-                        Manche Projekte wie unsere Urlaubsaktionen (Camps) oder spezielle Kultur-Events brauchen finanzielle Starthilfe. Deine Spende kommt direkt dort an, wo sie Barrieren abbaut.
+                        Deine Spende ist der Treibstoff für unsere Projekte. Ob Camps, Konzerte oder technische Innovationen – wir setzen dort an, wo das öffentliche Budget aufhört.
                     </p>
-                    <div class="space-y-6">
-                        <div class="flex items-center gap-4 bg-white/5 p-4 rounded-2xl border border-white/10">
-                            <i class="fa-solid fa-certificate text-rose-500 text-xl"></i>
-                            <span class="font-bold">Spenden steuerlich absetzbar</span>
-                        </div>
-                        <a href="/contact" class="inline-block px-10 py-4 bg-rose-600 text-white rounded-full font-bold hover:bg-white hover:text-slate-900 transition-all shadow-xl">
-                            Jetzt Spenden-Info anfordern
+                    <div class="flex flex-col sm:flex-row gap-6 items-center">
+                        <a href="/contact" class="inline-block px-10 py-4 bg-white text-slate-900 rounded-full font-bold hover:bg-rose-500 hover:text-white transition-all shadow-xl">
+                            Jetzt Spenden-Info
                         </a>
+                        <div class="flex items-center gap-3 text-slate-400 font-bold text-sm">
+                            <i class="fa-solid fa-check text-emerald-500"></i> Steuerlich absetzbar
+                        </div>
                     </div>
                 </div>
                 
-                {/* --- NEUES BILD --- */}
-                <div class="relative rounded-[48px] overflow-hidden border-4 border-white/10 shadow-2xl aspect-square md:aspect-auto h-full min-h-[400px]">
-                    <img 
-                        src="https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?q=80&w=1200&auto=format&fit=crop" 
-                        class="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000" 
-                        alt="Gemeinsam Wege gehen" 
-                    />
+                <div class="relative group h-full">
+                    <div class="rounded-[48px] overflow-hidden border-4 border-white/5 shadow-2xl aspect-[4/3]">
+                        <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=1200" class="w-full h-full object-cover grayscale opacity-60 group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-700" alt="Kultur & Team" />
+                    </div>
                 </div>
             </div>
         </section>
 
-        {/* --- KONTAKT / ORIENTIERUNG --- */}
-        <section class="px-6 sm:px-10 pb-12">
-            <div class="max-w-7xl mx-auto">
-                <div class="p-10 md:p-16 bg-slate-50 rounded-[48px] border border-slate-100 flex flex-col lg:flex-row items-center gap-12">
-                    <div class="flex-1 text-center lg:text-left">
-                        <h3 class="text-3xl font-display font-bold text-slate-900 mb-6 tracking-tight">
-                            Lass uns <span class="text-rose-500">reden.</span>
-                        </h3>
-                        <p class="text-slate-500 leading-relaxed max-w-2xl font-medium">
-                            Du bist dir noch nicht sicher, wie du dich am besten einbringen kannst? Kein Problem. Komm auf einen Kaffee vorbei oder schreib uns eine Nachricht. Wir finden den Platz, der zu dir passt.
-                        </p>
-                    </div>
-                    <div class="flex flex-col sm:flex-row gap-4 shrink-0">
-                        <a href="/contact" class="px-8 py-4 bg-slate-900 text-white rounded-full font-bold hover:bg-rose-600 transition-all shadow-lg text-center">
-                            Anfrage schicken
-                        </a>
-                        <a href="tel:+43316672248" class="px-8 py-4 bg-white border border-slate-200 text-slate-900 rounded-full font-bold hover:border-slate-900 transition-all flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-phone text-rose-500"></i> Beratung
-                        </a>
-                    </div>
+        {/* --- FOOTER CTA --- */}
+        <section class="reveal px-6 sm:px-10 pb-24">
+            <div class="max-w-7xl mx-auto bg-slate-50 dark:bg-slate-800/30 rounded-[48px] border border-slate-100 dark:border-slate-800 p-12 md:p-20 text-center transition-colors duration-500">
+                <h3 class="text-3xl md:text-5xl font-display font-bold text-slate-900 dark:text-white mb-8 tracking-tight">Komm auf einen Kaffee vorbei.</h3>
+                <p class="text-slate-500 dark:text-slate-400 text-xl mb-12 max-w-2xl mx-auto leading-relaxed font-medium">
+                    Der beste Weg, uns kennenzulernen, ist ein Gespräch. Unverbindlich, ehrlich und auf Augenhöhe.
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <a href="mailto:office@diebruecke.cc" class="px-10 py-5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-full font-bold hover:bg-rose-600 dark:hover:bg-rose-500 dark:hover:text-white transition-all shadow-xl">Schreib uns einfach</a>
+                    <a href="tel:+43316672248" class="px-10 py-5 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white rounded-full font-bold hover:border-slate-900 dark:hover:border-slate-400 transition-all flex items-center justify-center gap-2">
+                         0316 67 22 48
+                    </a>
                 </div>
             </div>
         </section>
 
     </div>
 </MainLayout>
+
+<style>
+    .float-animation { animation: float 6s ease-in-out infinite; }
+    .float-animation-delayed { animation: float 8s ease-in-out infinite; animation-delay: 1.5s; }
+    @keyframes float {
+        0%, 100% { transform: translateY(0) rotate(var(--tw-rotate, 0deg)); }
+        50% { transform: translateY(-25px) rotate(var(--tw-rotate, 0deg)); }
+    }
+    .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease-out; }
+    .reveal.active { opacity: 1; transform: translateY(0); }
+    @keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    .animate-infinite-scroll { animation: scroll 40s linear infinite; width: max-content; display: flex; }
+    html.dark .bg-white { background-color: #0f172a !important; }
+</style>
+
+<script>
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('active');
+            }
+        });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
