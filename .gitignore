@@ -1,18 +1,37 @@
+# --- System & Logs ---
 .DS_Store
+.AppleDouble
+.LSOverride
+*.log
+npm-debug.log*
+
+# --- Dependencies & Build (Global) ---
 node_modules/
+dist/
+.astro/
+
+# --- Environment & Secrets (WICHTIG!) ---
 .env
 .env.*
-dist/
+!.env.example
+*.sql
 
-# Backend Specific
+# --- IDEs ---
+.idea/
+.vscode/
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/launch.json
+
+# --- Backend Specific (Directus local artifacts) ---
 backend/data/
+backend/database/
+backend/uploads/
 backend/extensions/
 !backend/extensions/.keep
-backend/database/
+# Wir behalten backend/docker-compose.yml im Repo für Backups/Referenz
 
-# Frontend Specific
+# --- Frontend Specific ---
 frontend/.astro/
 frontend/dist/
-
-
-*.sql
+# Wir behalten frontend/docker-compose.yml & Dockerfile für das Server-Deployment!
