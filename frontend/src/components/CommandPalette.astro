@@ -20,7 +20,7 @@
         {/* Results Container */}
         <div class="overflow-y-auto p-2 scroll-smooth" id="cp-results">
             
-            {/* --- DYNAMIC RESULTS --- */}
+            {/* --- DYNAMIC RESULTS (API) --- */}
             
             {/* Events */}
             <div id="cp-dynamic-events" class="cp-group mb-2 hidden">
@@ -28,7 +28,7 @@
                 <div class="cp-list-content"></div>
             </div>
 
-            {/* Camps & City Trips (Zusammengefasst als Reisen) */}
+            {/* Camps & City Trips */}
             <div id="cp-dynamic-trips" class="cp-group mb-2 hidden">
                 <h4 class="text-xs font-bold text-orange-500 uppercase tracking-widest px-3 py-2 sticky top-0 bg-white dark:bg-slate-900 z-10 border-b border-orange-100 dark:border-orange-900/20">Camps & Reisen</h4>
                 <div class="cp-list-content"></div>
@@ -53,46 +53,84 @@
             </div>
 
 
-            {/* --- STATIC SETTINGS & NAV --- */}
+            {/* --- STATIC SETTINGS (4 Items Grid) --- */}
             <div class="cp-group mb-4" id="cp-settings">
                 <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest px-3 py-2 flex items-center gap-2">
                     <i class="fa-solid fa-universal-access"></i> Einstellungen
                 </h4>
+                {/* 2x2 Grid für 4 Items */}
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 px-2">
+                    
+                    {/* 1. Kontrast */}
                     <button id="cp-toggle-contrast" class="cp-item flex items-center gap-3 px-3 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 hover:border-rose-500 dark:hover:border-rose-500 cursor-pointer group text-left focus:outline-none focus:ring-2 focus:ring-rose-500 transition-all">
                         <div class="w-8 h-8 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white flex items-center justify-center shadow-sm"><i class="fa-solid fa-circle-half-stroke"></i></div>
                         <div class="flex-1"><span class="block text-sm font-bold text-slate-900 dark:text-white">Kontrast</span></div>
                         <div class="toggle-status text-[10px] font-bold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-600 px-2 py-0.5 rounded text-slate-500">AUS</div>
                     </button>
+                    
+                    {/* 2. Schriftgröße */}
                     <button id="cp-toggle-fontsize" class="cp-item flex items-center gap-3 px-3 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 hover:border-indigo-500 dark:hover:border-indigo-500 cursor-pointer group text-left focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
                         <div class="w-8 h-8 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white flex items-center justify-center shadow-sm"><i class="fa-solid fa-text-height"></i></div>
                         <div class="flex-1"><span class="block text-sm font-bold text-slate-900 dark:text-white">Größe</span></div>
                         <div class="toggle-status text-[10px] font-bold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-600 px-2 py-0.5 rounded text-slate-500">AUS</div>
                     </button>
+
+                    {/* 3. Bewegung */}
+                    <button id="cp-toggle-motion" class="cp-item flex items-center gap-3 px-3 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 hover:border-emerald-500 dark:hover:border-emerald-500 cursor-pointer group text-left focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all">
+                        <div class="w-8 h-8 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white flex items-center justify-center shadow-sm"><i class="fa-solid fa-person-running"></i></div>
+                        <div class="flex-1"><span class="block text-sm font-bold text-slate-900 dark:text-white">Bewegung</span></div>
+                        <div class="toggle-status text-[10px] font-bold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-600 px-2 py-0.5 rounded text-slate-500">AUS</div>
+                    </button>
+
+                    {/* 4. Design (NEU - Der fehlende 4. Punkt) */}
+                    <button id="cp-toggle-theme" class="cp-item flex items-center gap-3 px-3 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 hover:border-amber-500 dark:hover:border-amber-500 cursor-pointer group text-left focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all">
+                        <div class="w-8 h-8 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white flex items-center justify-center shadow-sm">
+                            <i class="fa-solid fa-moon dark:hidden"></i>
+                            <i class="fa-solid fa-sun hidden dark:block"></i>
+                        </div>
+                        <div class="flex-1"><span class="block text-sm font-bold text-slate-900 dark:text-white">Design</span></div>
+                        <div class="toggle-status text-[10px] font-bold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-600 px-2 py-0.5 rounded text-slate-500">AUTO</div>
+                    </button>
                 </div>
             </div>
 
+            {/* --- STATIC NAV --- */}
             <div class="cp-group mb-2" id="cp-static-nav">
                 <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest px-3 py-2 sticky top-0 bg-white dark:bg-slate-900 z-10">Navigation</h4>
+                
                 <a href="/" class="cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group" data-keywords="home start">
                     <div class="w-8 h-8 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center"><i class="fa-solid fa-house"></i></div>
                     <span class="text-slate-700 dark:text-slate-200 font-medium">Startseite</span>
                 </a>
+                
                 <a href="/events" class="cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group" data-keywords="kalender termin">
                     <div class="w-8 h-8 rounded-lg bg-rose-100 text-rose-600 flex items-center justify-center"><i class="fa-regular fa-calendar"></i></div>
                     <span class="text-slate-700 dark:text-slate-200 font-medium">Veranstaltungen</span>
                 </a>
+                
                 <a href="/camps" class="cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group" data-keywords="urlaub reisen">
                     <div class="w-8 h-8 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center"><i class="fa-solid fa-plane"></i></div>
                     <span class="text-slate-700 dark:text-slate-200 font-medium">Camps & Reisen</span>
                 </a>
+                
                 <a href="/projects" class="cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group" data-keywords="projekte">
                     <div class="w-8 h-8 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center"><i class="fa-solid fa-lightbulb"></i></div>
                     <span class="text-slate-700 dark:text-slate-200 font-medium">Projekte</span>
                 </a>
+                
                 <a href="/services" class="cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group" data-keywords="angebot hilfe">
                     <div class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center"><i class="fa-solid fa-hand-holding-heart"></i></div>
                     <span class="text-slate-700 dark:text-slate-200 font-medium">Angebote</span>
+                </a>
+
+                <a href="/about" class="cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group" data-keywords="team verein">
+                    <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center"><i class="fa-solid fa-users"></i></div>
+                    <span class="text-slate-700 dark:text-slate-200 font-medium">Über uns & Team</span>
+                </a>
+
+                <a href="/contact" class="cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group" data-keywords="kontakt email adresse">
+                    <div class="w-8 h-8 rounded-lg bg-slate-200 text-slate-600 flex items-center justify-center"><i class="fa-regular fa-envelope"></i></div>
+                    <span class="text-slate-700 dark:text-slate-200 font-medium">Kontakt</span>
                 </a>
             </div>
         </div>
@@ -129,20 +167,27 @@
     const btnContrast = document.getElementById('cp-toggle-contrast');
     const btnFontSize = document.getElementById('cp-toggle-fontsize');
     const btnMotion = document.getElementById('cp-toggle-motion');
+    const btnTheme = document.getElementById('cp-toggle-theme');
 
     let isOpen = false;
     let searchTimeout;
     let currentSearchController = null;
 
     // --- HELPER ---
-    function updateToggleUI(btn, isActive) {
+    function updateToggleUI(btn, isActive, labelOverride = null) {
         if(!btn) return;
         const status = btn.querySelector('.toggle-status');
         if(status) {
-            status.innerText = isActive ? "AN" : "AUS";
+            status.innerText = labelOverride ? labelOverride : (isActive ? "AN" : "AUS");
+            
+            let activeClass = 'bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900 dark:text-emerald-300 dark:border-emerald-800';
+            if (btn.id === 'cp-toggle-theme' && isActive) {
+                activeClass = 'bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-900 dark:text-amber-300 dark:border-amber-800';
+            }
+
             status.className = `toggle-status text-[10px] font-bold border px-2 py-0.5 rounded ${
                 isActive 
-                ? 'bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900 dark:text-emerald-300 dark:border-emerald-800' 
+                ? activeClass
                 : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-600 text-slate-500'
             }`;
         }
@@ -162,6 +207,8 @@
             document.documentElement.classList.add('reduced-motion');
             updateToggleUI(btnMotion, true);
         }
+        const isDark = document.documentElement.classList.contains('dark');
+        updateToggleUI(btnTheme, isDark, isDark ? "DUNKEL" : "HELL");
     }
     initAccessibility();
 
@@ -174,6 +221,7 @@
         modal.classList.remove('scale-95');
         document.body.style.overflow = 'hidden';
         if(input) { input.value = ''; resetView(); setTimeout(() => input.focus(), 50); }
+        initAccessibility();
         isOpen = true;
     }
 
@@ -186,43 +234,38 @@
         isOpen = false;
     }
 
-    // Zeigt alles "Standardmäßige" wieder an (wenn Input leer)
+    // --- RESET VIEW ---
     function resetView() {
-        // Dynamische Ergebnisse ausblenden
+        // Hide Spinner Forcefully
+        searchIcon?.classList.remove('hidden');
+        loadingIcon?.classList.add('hidden');
+
         [dynamicEvents, dynamicTrips, dynamicProjects, dynamicServices, dynamicTeam].forEach(el => {
             if(el) {
                 el.classList.add('hidden');
                 const list = el.querySelector('.cp-list-content');
-                if(list) list.innerHTML = ''; // Inhalt löschen
+                if(list) list.innerHTML = '';
             }
         });
 
-        // Statische Gruppen wieder einblenden
         if(staticNav) staticNav.classList.remove('hidden');
         if(settingsGroup) settingsGroup.classList.remove('hidden');
-
-        // Alle Items in den statischen Gruppen sichtbar machen
         document.querySelectorAll('.cp-item').forEach(el => el.classList.remove('hidden'));
-        
-        // Icons zurücksetzen
-        searchIcon?.classList.remove('hidden');
-        loadingIcon?.classList.add('hidden');
     }
 
     // --- MAIN SEARCH FUNCTION ---
     async function performSearch(query) {
         if (query.length < 2) {
             resetView();
-            filterStaticItems(query); // Auch bei 1 Zeichen schon statisch filtern
+            filterStaticItems(query);
             return;
         }
 
-        // 1. Abort old request
         if (currentSearchController) currentSearchController.abort();
         currentSearchController = new AbortController();
         const signal = currentSearchController.signal;
 
-        // 2. UI Loading
+        // UI: Loading Start
         searchIcon?.classList.add('hidden');
         loadingIcon?.classList.remove('hidden');
 
@@ -230,7 +273,6 @@
             const baseUrl = 'https://api.diebruecke.social/items';
             const s = encodeURIComponent(query);
             
-            // Parallel Fetching
             const promises = [
                 fetch(`${baseUrl}/events?limit=3&search=${s}&filter[status][_eq]=published&fields=id,title,slug,start_date`, { signal }),
                 fetch(`${baseUrl}/services?limit=3&search=${s}&filter[status][_eq]=published&fields=id,title,slug,icon`, { signal }),
@@ -249,16 +291,19 @@
                 renderProjects(jsonData[2].data);
                 renderTrips([...jsonData[3].data, ...jsonData[4].data]);
                 renderTeam(jsonData[5].data);
-                
-                // Statische Items filtern, damit sie auch zu den Suchergebnissen passen
                 filterStaticItems(query);
             }
 
         } catch (e) {
-            if (e.name !== 'AbortError') console.error("CP Search Error:", e);
+            // Fehlerbehandlung: Nur loggen, wenn es kein Abort war
+            if (e.name !== 'AbortError') {
+                console.warn("CP Search Error (likely CORS on localhost):", e);
+                // NOTBREMSE: Spinner weg bei Fehler!
+                searchIcon?.classList.remove('hidden');
+                loadingIcon?.classList.add('hidden');
+            }
         } finally {
-            // FIX: Loading Icon immer ausblenden, wenn wir fertig sind (oder abgebrochen wurden)
-            // Wir prüfen nur, ob wir der *aktuelle* Controller sind, um Flackern zu vermeiden
+            // Aufräumen nur, wenn wir noch der aktive Controller sind
             if (currentSearchController && currentSearchController.signal === signal) {
                 searchIcon?.classList.remove('hidden');
                 loadingIcon?.classList.add('hidden');
@@ -267,82 +312,48 @@
         }
     }
 
-    // --- RENDER FUNCTIONS ---
-
+    // --- RENDER FUNCTIONS (gekürzt, Logik bleibt gleich) ---
     function renderEvents(items) {
-        if(!dynamicEvents) return;
-        const list = dynamicEvents.querySelector('.cp-list-content');
-        list.innerHTML = '';
-        if (items && items.length > 0) {
-            dynamicEvents.classList.remove('hidden');
-            items.forEach(item => {
-                const dateRaw = item.start_date;
-                const date = dateRaw ? new Date(dateRaw).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' }) : '';
-                addItem(list, `/events/${item.slug}`, item.title, 'bg-rose-500 text-white', date);
-            });
-        } else {
-            dynamicEvents.classList.add('hidden');
-        }
+        fillList(dynamicEvents, items, (item) => {
+            const date = item.start_date ? new Date(item.start_date).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' }) : '';
+            return { href: `/events/${item.slug}`, text: item.title, iconClass: 'bg-rose-500 text-white', iconContent: date, isHtml: false };
+        });
     }
-
     function renderServices(items) {
-        if(!dynamicServices) return;
-        const list = dynamicServices.querySelector('.cp-list-content');
-        list.innerHTML = '';
-        if (items && items.length > 0) {
-            dynamicServices.classList.remove('hidden');
-            items.forEach(item => {
-                const icon = item.icon ? `<i class="fa-solid ${item.icon}"></i>` : '<i class="fa-solid fa-star"></i>';
-                addItem(list, `/services/${item.slug}`, item.title, 'bg-indigo-500 text-white', icon, true);
-            });
-        } else {
-            dynamicServices.classList.add('hidden');
-        }
+        fillList(dynamicServices, items, (item) => ({ 
+            href: `/services/${item.slug}`, text: item.title, iconClass: 'bg-indigo-500 text-white', 
+            iconContent: item.icon ? `<i class="fa-solid ${item.icon}"></i>` : '<i class="fa-solid fa-star"></i>', isHtml: true 
+        }));
     }
-
     function renderProjects(items) {
-        if(!dynamicProjects) return;
-        const list = dynamicProjects.querySelector('.cp-list-content');
-        list.innerHTML = '';
-        if (items && items.length > 0) {
-            dynamicProjects.classList.remove('hidden');
-            items.forEach(item => {
-                addItem(list, `/projects/${item.slug}`, item.title, 'bg-purple-500 text-white', '<i class="fa-solid fa-lightbulb"></i>', true);
-            });
-        } else {
-            dynamicProjects.classList.add('hidden');
-        }
+        fillList(dynamicProjects, items, (item) => ({ 
+            href: `/projects/${item.slug}`, text: item.title, iconClass: 'bg-purple-500 text-white', iconContent: '<i class="fa-solid fa-lightbulb"></i>', isHtml: true 
+        }));
     }
-
     function renderTrips(items) {
-        if(!dynamicTrips) return;
-        const list = dynamicTrips.querySelector('.cp-list-content');
-        list.innerHTML = '';
-        if (items && items.length > 0) {
-            dynamicTrips.classList.remove('hidden');
-            items.forEach(item => {
-                // Heuristik: City Trips haben meistens Datum im Titel oder date_range?
-                // Wir linken pauschal auf /camps/slug, da die Struktur ähnlich ist.
-                const url = `/camps/${item.slug}`; 
-                addItem(list, url, item.title, 'bg-orange-500 text-white', '<i class="fa-solid fa-plane"></i>', true);
-            });
-        } else {
-            dynamicTrips.classList.add('hidden');
-        }
+        fillList(dynamicTrips, items, (item) => ({ 
+            href: `/camps/${item.slug}`, text: item.title, iconClass: 'bg-orange-500 text-white', iconContent: '<i class="fa-solid fa-plane"></i>', isHtml: true 
+        }));
+    }
+    function renderTeam(items) {
+        fillList(dynamicTeam, items, (item) => ({ 
+            href: `/about`, text: `${item.name} (${item.role || 'Team'})`, iconClass: 'bg-emerald-500 text-white', iconContent: '<i class="fa-solid fa-user"></i>', isHtml: true 
+        }));
     }
 
-    function renderTeam(items) {
-        if(!dynamicTeam) return;
-        const list = dynamicTeam.querySelector('.cp-list-content');
+    // Generic Helper um Code zu sparen
+    function fillList(containerGroup, items, mapFn) {
+        if(!containerGroup) return;
+        const list = containerGroup.querySelector('.cp-list-content');
         list.innerHTML = '';
         if (items && items.length > 0) {
-            dynamicTeam.classList.remove('hidden');
+            containerGroup.classList.remove('hidden');
             items.forEach(item => {
-                const role = item.role || 'Team';
-                addItem(list, `/about`, `${item.name} (${role})`, 'bg-emerald-500 text-white', '<i class="fa-solid fa-user"></i>', true);
+                const data = mapFn(item);
+                addItem(list, data.href, data.text, data.iconClass, data.iconContent, data.isHtml);
             });
         } else {
-            dynamicTeam.classList.add('hidden');
+            containerGroup.classList.add('hidden');
         }
     }
 
@@ -365,38 +376,25 @@
         container.appendChild(el);
     }
 
-    // Filtert die STATISCHEN Items (Nav & Settings) basierend auf der Suche
     function filterStaticItems(query) {
         const term = query.toLowerCase().trim();
-        
-        // Wenn Suche leer ist -> Zeige alle statischen Items (Reset)
         if (!term) {
             document.querySelectorAll('.cp-item').forEach(el => el.classList.remove('hidden'));
             if(staticNav) staticNav.classList.remove('hidden');
             if(settingsGroup) settingsGroup.classList.remove('hidden');
             return;
         }
-
-        // Suche läuft -> Filter Items
-        const items = document.querySelectorAll('.cp-item[data-keywords]'); // Nur Items mit Keywords filtern (also Nav + Settings)
+        const items = document.querySelectorAll('.cp-item[data-keywords]');
         items.forEach((item) => {
             const text = (item.textContent + ' ' + (item.getAttribute('data-keywords') || '')).toLowerCase();
-            if (text.includes(term)) {
-                item.classList.remove('hidden');
-            } else {
-                item.classList.add('hidden');
-            }
+            if (text.includes(term)) item.classList.remove('hidden');
+            else item.classList.add('hidden');
         });
-        
-        // Verstecke leere Gruppen
         [staticNav, settingsGroup].forEach(group => {
             if(!group) return;
             const visibleItems = group.querySelectorAll('.cp-item:not(.hidden)');
-            if (visibleItems.length > 0) {
-                group.classList.remove('hidden');
-            } else {
-                group.classList.add('hidden');
-            }
+            if (visibleItems.length > 0) group.classList.remove('hidden');
+            else group.classList.add('hidden');
         });
     }
 
@@ -405,16 +403,19 @@
         const val = e.target.value;
         clearTimeout(searchTimeout);
         
-        // Wenn Input gelöscht wird, sofort Reset
         if(val.length < 2) {
-            if(currentSearchController) currentSearchController.abort();
+            // RESET: Suche abbrechen und Spinner resetten
+            if(currentSearchController) {
+                currentSearchController.abort();
+                currentSearchController = null;
+            }
             searchIcon?.classList.remove('hidden');
             loadingIcon?.classList.add('hidden');
+            
             if(val.length === 0) resetView(); 
-            else filterStaticItems(val); // Bei 1 Zeichen nur statisch filtern
+            else filterStaticItems(val); 
             return;
         }
-
         filterStaticItems(val);
         searchTimeout = setTimeout(() => performSearch(val), 300);
     });
@@ -432,7 +433,7 @@
         
         if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
             e.preventDefault();
-            const items = Array.from(document.querySelectorAll('.cp-item:not(.hidden)')); // Nur sichtbare navigieren
+            const items = Array.from(document.querySelectorAll('.cp-item:not(.hidden)'));
             if(items.length === 0) return;
             const active = document.activeElement;
             let idx = items.indexOf(active);
@@ -460,6 +461,11 @@
         localStorage.setItem('reduced-motion', String(isActive));
         updateToggleUI(btnMotion, isActive);
     });
+    btnTheme?.addEventListener('click', () => {
+        const isDark = document.documentElement.classList.toggle('dark');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        updateToggleUI(btnTheme, isDark, isDark ? "DUNKEL" : "HELL");
+    });
 </script>
 
 <style is:global>
@@ -467,4 +473,11 @@
     html.high-contrast * { text-shadow: none !important; }
     html.high-contrast img, html.high-contrast video { filter: contrast(0.8); }
     html.large-text { font-size: 125%; }
+    
+    html.reduced-motion *, html.reduced-motion *::before, html.reduced-motion *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
 </style>
