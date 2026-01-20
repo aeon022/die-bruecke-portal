@@ -2,8 +2,7 @@
 /* src/components/CommandPalette.astro */
 ---
 
-<div id="command-palette-backdrop" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] hidden flex items-start justify-center pt-[10vh] px-4 transition-opacity duration-200 opacity-0" aria-hidden="true">
-    
+<div id="command-palette-backdrop" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] hidden flex items-start justify-center pt-[10vh] px-4 transition-opacity duration-200 opacity-0">
     <div id="command-palette-modal" role="dialog" aria-modal="true" aria-label="Befehlsmenü" class="bg-white dark:bg-slate-900 w-full max-w-2xl rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden transform scale-95 transition-transform duration-200 flex flex-col max-h-[80vh]">
         
         {/* Search Input */}
@@ -17,121 +16,34 @@
             <span class="hidden sm:inline-block text-[10px] font-bold text-slate-400 border border-slate-200 dark:border-slate-700 px-2 py-1 rounded bg-slate-50 dark:bg-slate-800 absolute right-4">ESC</span>
         </div>
 
-        {/* Results Container */}
+        {/* ... (Der Rest des HTML bleibt identisch wie im vorherigen Schritt) ... */}
         <div class="overflow-y-auto p-2 scroll-smooth" id="cp-results">
-            
-            {/* --- DYNAMIC RESULTS (API) --- */}
-            
-            {/* Events */}
-            <div id="cp-dynamic-events" class="cp-group mb-2 hidden">
-                <h4 class="text-xs font-bold text-rose-500 uppercase tracking-widest px-3 py-2 sticky top-0 bg-white dark:bg-slate-900 z-10 border-b border-rose-100 dark:border-rose-900/20">Veranstaltungen</h4>
-                <div class="cp-list-content"></div>
-            </div>
+            {/* ... Content ... */}
+            <div id="cp-dynamic-events" class="cp-group mb-2 hidden"><h4 class="text-xs font-bold text-rose-500 uppercase tracking-widest px-3 py-2 sticky top-0 bg-white dark:bg-slate-900 z-10 border-b border-rose-100 dark:border-rose-900/20">Veranstaltungen</h4><div class="cp-list-content"></div></div>
+            <div id="cp-dynamic-trips" class="cp-group mb-2 hidden"><h4 class="text-xs font-bold text-orange-500 uppercase tracking-widest px-3 py-2 sticky top-0 bg-white dark:bg-slate-900 z-10 border-b border-orange-100 dark:border-orange-900/20">Camps & Reisen</h4><div class="cp-list-content"></div></div>
+            <div id="cp-dynamic-projects" class="cp-group mb-2 hidden"><h4 class="text-xs font-bold text-purple-500 uppercase tracking-widest px-3 py-2 sticky top-0 bg-white dark:bg-slate-900 z-10 border-b border-purple-100 dark:border-purple-900/20">Projekte</h4><div class="cp-list-content"></div></div>
+            <div id="cp-dynamic-services" class="cp-group mb-2 hidden"><h4 class="text-xs font-bold text-indigo-500 uppercase tracking-widest px-3 py-2 sticky top-0 bg-white dark:bg-slate-900 z-10 border-b border-indigo-100 dark:border-indigo-900/20">Angebote</h4><div class="cp-list-content"></div></div>
+            <div id="cp-dynamic-team" class="cp-group mb-2 hidden"><h4 class="text-xs font-bold text-emerald-500 uppercase tracking-widest px-3 py-2 sticky top-0 bg-white dark:bg-slate-900 z-10 border-b border-emerald-100 dark:border-emerald-900/20">Team</h4><div class="cp-list-content"></div></div>
 
-            {/* Camps & City Trips */}
-            <div id="cp-dynamic-trips" class="cp-group mb-2 hidden">
-                <h4 class="text-xs font-bold text-orange-500 uppercase tracking-widest px-3 py-2 sticky top-0 bg-white dark:bg-slate-900 z-10 border-b border-orange-100 dark:border-orange-900/20">Camps & Reisen</h4>
-                <div class="cp-list-content"></div>
-            </div>
-
-            {/* Projekte */}
-            <div id="cp-dynamic-projects" class="cp-group mb-2 hidden">
-                <h4 class="text-xs font-bold text-purple-500 uppercase tracking-widest px-3 py-2 sticky top-0 bg-white dark:bg-slate-900 z-10 border-b border-purple-100 dark:border-purple-900/20">Projekte</h4>
-                <div class="cp-list-content"></div>
-            </div>
-
-            {/* Services */}
-            <div id="cp-dynamic-services" class="cp-group mb-2 hidden">
-                <h4 class="text-xs font-bold text-indigo-500 uppercase tracking-widest px-3 py-2 sticky top-0 bg-white dark:bg-slate-900 z-10 border-b border-indigo-100 dark:border-indigo-900/20">Angebote</h4>
-                <div class="cp-list-content"></div>
-            </div>
-
-            {/* Team */}
-            <div id="cp-dynamic-team" class="cp-group mb-2 hidden">
-                <h4 class="text-xs font-bold text-emerald-500 uppercase tracking-widest px-3 py-2 sticky top-0 bg-white dark:bg-slate-900 z-10 border-b border-emerald-100 dark:border-emerald-900/20">Team</h4>
-                <div class="cp-list-content"></div>
-            </div>
-
-
-            {/* --- STATIC SETTINGS (4 Items Grid) --- */}
             <div class="cp-group mb-4" id="cp-settings">
-                <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest px-3 py-2 flex items-center gap-2">
-                    <i class="fa-solid fa-universal-access"></i> Einstellungen
-                </h4>
-                {/* 2x2 Grid für 4 Items */}
+                <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest px-3 py-2 flex items-center gap-2"><i class="fa-solid fa-universal-access"></i> Einstellungen</h4>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 px-2">
-                    
-                    {/* 1. Kontrast */}
-                    <button id="cp-toggle-contrast" class="cp-item flex items-center gap-3 px-3 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 hover:border-rose-500 dark:hover:border-rose-500 cursor-pointer group text-left focus:outline-none focus:ring-2 focus:ring-rose-500 transition-all">
-                        <div class="w-8 h-8 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white flex items-center justify-center shadow-sm"><i class="fa-solid fa-circle-half-stroke"></i></div>
-                        <div class="flex-1"><span class="block text-sm font-bold text-slate-900 dark:text-white">Kontrast</span></div>
-                        <div class="toggle-status text-[10px] font-bold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-600 px-2 py-0.5 rounded text-slate-500">AUS</div>
-                    </button>
-                    
-                    {/* 2. Schriftgröße */}
-                    <button id="cp-toggle-fontsize" class="cp-item flex items-center gap-3 px-3 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 hover:border-indigo-500 dark:hover:border-indigo-500 cursor-pointer group text-left focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
-                        <div class="w-8 h-8 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white flex items-center justify-center shadow-sm"><i class="fa-solid fa-text-height"></i></div>
-                        <div class="flex-1"><span class="block text-sm font-bold text-slate-900 dark:text-white">Größe</span></div>
-                        <div class="toggle-status text-[10px] font-bold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-600 px-2 py-0.5 rounded text-slate-500">AUS</div>
-                    </button>
-
-                    {/* 3. Bewegung */}
-                    <button id="cp-toggle-motion" class="cp-item flex items-center gap-3 px-3 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 hover:border-emerald-500 dark:hover:border-emerald-500 cursor-pointer group text-left focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all">
-                        <div class="w-8 h-8 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white flex items-center justify-center shadow-sm"><i class="fa-solid fa-person-running"></i></div>
-                        <div class="flex-1"><span class="block text-sm font-bold text-slate-900 dark:text-white">Bewegung</span></div>
-                        <div class="toggle-status text-[10px] font-bold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-600 px-2 py-0.5 rounded text-slate-500">AUS</div>
-                    </button>
-
-                    {/* 4. Design (NEU - Der fehlende 4. Punkt) */}
-                    <button id="cp-toggle-theme" class="cp-item flex items-center gap-3 px-3 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 hover:border-amber-500 dark:hover:border-amber-500 cursor-pointer group text-left focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all">
-                        <div class="w-8 h-8 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white flex items-center justify-center shadow-sm">
-                            <i class="fa-solid fa-moon dark:hidden"></i>
-                            <i class="fa-solid fa-sun hidden dark:block"></i>
-                        </div>
-                        <div class="flex-1"><span class="block text-sm font-bold text-slate-900 dark:text-white">Design</span></div>
-                        <div class="toggle-status text-[10px] font-bold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-600 px-2 py-0.5 rounded text-slate-500">AUTO</div>
-                    </button>
+                    <button id="cp-toggle-contrast" class="cp-item flex items-center gap-3 px-3 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 hover:border-rose-500 dark:hover:border-rose-500 cursor-pointer group text-left focus:outline-none focus:ring-2 focus:ring-rose-500 transition-all"><div class="w-8 h-8 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white flex items-center justify-center shadow-sm"><i class="fa-solid fa-circle-half-stroke"></i></div><div class="flex-1"><span class="block text-sm font-bold text-slate-900 dark:text-white">Kontrast</span></div><div class="toggle-status text-[10px] font-bold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-600 px-2 py-0.5 rounded text-slate-500">AUS</div></button>
+                    <button id="cp-toggle-fontsize" class="cp-item flex items-center gap-3 px-3 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 hover:border-indigo-500 dark:hover:border-indigo-500 cursor-pointer group text-left focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"><div class="w-8 h-8 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white flex items-center justify-center shadow-sm"><i class="fa-solid fa-text-height"></i></div><div class="flex-1"><span class="block text-sm font-bold text-slate-900 dark:text-white">Größe</span></div><div class="toggle-status text-[10px] font-bold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-600 px-2 py-0.5 rounded text-slate-500">AUS</div></button>
+                    <button id="cp-toggle-motion" class="cp-item flex items-center gap-3 px-3 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 hover:border-emerald-500 dark:hover:border-emerald-500 cursor-pointer group text-left focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all"><div class="w-8 h-8 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white flex items-center justify-center shadow-sm"><i class="fa-solid fa-person-running"></i></div><div class="flex-1"><span class="block text-sm font-bold text-slate-900 dark:text-white">Bewegung</span></div><div class="toggle-status text-[10px] font-bold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-600 px-2 py-0.5 rounded text-slate-500">AUS</div></button>
+                    <button id="cp-toggle-theme" class="cp-item flex items-center gap-3 px-3 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 hover:border-amber-500 dark:hover:border-amber-500 cursor-pointer group text-left focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all"><div class="w-8 h-8 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white flex items-center justify-center shadow-sm"><i class="fa-solid fa-moon dark:hidden"></i><i class="fa-solid fa-sun hidden dark:block"></i></div><div class="flex-1"><span class="block text-sm font-bold text-slate-900 dark:text-white">Design</span></div><div class="toggle-status text-[10px] font-bold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-600 px-2 py-0.5 rounded text-slate-500">AUTO</div></button>
                 </div>
             </div>
 
-            {/* --- STATIC NAV --- */}
             <div class="cp-group mb-2" id="cp-static-nav">
                 <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest px-3 py-2 sticky top-0 bg-white dark:bg-slate-900 z-10">Navigation</h4>
-                
-                <a href="/" class="cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group" data-keywords="home start">
-                    <div class="w-8 h-8 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center"><i class="fa-solid fa-house"></i></div>
-                    <span class="text-slate-700 dark:text-slate-200 font-medium">Startseite</span>
-                </a>
-                
-                <a href="/events" class="cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group" data-keywords="kalender termin">
-                    <div class="w-8 h-8 rounded-lg bg-rose-100 text-rose-600 flex items-center justify-center"><i class="fa-regular fa-calendar"></i></div>
-                    <span class="text-slate-700 dark:text-slate-200 font-medium">Veranstaltungen</span>
-                </a>
-                
-                <a href="/camps" class="cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group" data-keywords="urlaub reisen">
-                    <div class="w-8 h-8 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center"><i class="fa-solid fa-plane"></i></div>
-                    <span class="text-slate-700 dark:text-slate-200 font-medium">Camps & Reisen</span>
-                </a>
-                
-                <a href="/projects" class="cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group" data-keywords="projekte">
-                    <div class="w-8 h-8 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center"><i class="fa-solid fa-lightbulb"></i></div>
-                    <span class="text-slate-700 dark:text-slate-200 font-medium">Projekte</span>
-                </a>
-                
-                <a href="/services" class="cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group" data-keywords="angebot hilfe">
-                    <div class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center"><i class="fa-solid fa-hand-holding-heart"></i></div>
-                    <span class="text-slate-700 dark:text-slate-200 font-medium">Angebote</span>
-                </a>
-
-                <a href="/about" class="cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group" data-keywords="team verein">
-                    <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center"><i class="fa-solid fa-users"></i></div>
-                    <span class="text-slate-700 dark:text-slate-200 font-medium">Über uns & Team</span>
-                </a>
-
-                <a href="/contact" class="cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group" data-keywords="kontakt email adresse">
-                    <div class="w-8 h-8 rounded-lg bg-slate-200 text-slate-600 flex items-center justify-center"><i class="fa-regular fa-envelope"></i></div>
-                    <span class="text-slate-700 dark:text-slate-200 font-medium">Kontakt</span>
-                </a>
+                <a href="/" class="cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group" data-keywords="home start"><div class="w-8 h-8 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center"><i class="fa-solid fa-house"></i></div><span class="text-slate-700 dark:text-slate-200 font-medium">Startseite</span></a>
+                <a href="/events" class="cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group" data-keywords="kalender termin"><div class="w-8 h-8 rounded-lg bg-rose-100 text-rose-600 flex items-center justify-center"><i class="fa-regular fa-calendar"></i></div><span class="text-slate-700 dark:text-slate-200 font-medium">Veranstaltungen</span></a>
+                <a href="/camps" class="cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group" data-keywords="urlaub reisen"><div class="w-8 h-8 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center"><i class="fa-solid fa-plane"></i></div><span class="text-slate-700 dark:text-slate-200 font-medium">Camps & Reisen</span></a>
+                <a href="/projects" class="cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group" data-keywords="projekte"><div class="w-8 h-8 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center"><i class="fa-solid fa-lightbulb"></i></div><span class="text-slate-700 dark:text-slate-200 font-medium">Projekte</span></a>
+                <a href="/services" class="cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group" data-keywords="angebot hilfe"><div class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center"><i class="fa-solid fa-hand-holding-heart"></i></div><span class="text-slate-700 dark:text-slate-200 font-medium">Angebote</span></a>
+                <a href="/about" class="cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group" data-keywords="team verein"><div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center"><i class="fa-solid fa-users"></i></div><span class="text-slate-700 dark:text-slate-200 font-medium">Über uns & Team</span></a>
+                <a href="/contact" class="cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group" data-keywords="kontakt email adresse"><div class="w-8 h-8 rounded-lg bg-slate-200 text-slate-600 flex items-center justify-center"><i class="fa-regular fa-envelope"></i></div><span class="text-slate-700 dark:text-slate-200 font-medium">Kontakt</span></a>
             </div>
         </div>
 

@@ -1,4 +1,5 @@
 ---
+// src/components/home/Events.astro
 interface Props {
   highlightEvent: any;
   upcomingEvents: any[];
@@ -7,18 +8,33 @@ interface Props {
 const { highlightEvent, upcomingEvents } = Astro.props;
 const ASSET_URL = 'https://api.diebruecke.social/assets'; 
 
-// Helper für dieses Modul
+// HELPER: Datum formatieren (SECURE VERSION)
+// Verhindert Abstürze, wenn Directus leere oder falsche Daten liefert
 function formatEventDate(event: any) {
+    if (!event) return "";
     const dateStr = event.date_start || event.start_date || event.date;
     if (!dateStr) return "";
-    const date = new Date(dateStr);
-    const day = date.toLocaleDateString('de-DE', { day: '2-digit', month: 'short' }).toUpperCase();
-    const time = event.time_start ? event.time_start.slice(0, 5) : date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
-    return time === "00:00" ? day : `${day} • ${time}`;
+    
+    try {
+        const date = new Date(dateStr);
+        // Prüfen, ob das Datum gültig ist (sonst crasht .toLocaleDateString)
+        if (isNaN(date.getTime())) return "";
+
+        const day = date.toLocaleDateString('de-DE', { day: '2-digit', month: 'short' });
+        // Sicherer Aufruf von toUpperCase
+        const dayUpper = day ? day.toUpperCase() : "";
+        
+        const time = event.time_start ? event.time_start.slice(0, 5) : date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+        
+        return time === "00:00" ? dayUpper : `${dayUpper} • ${time}`;
+    } catch (e) {
+        return ""; // Im Fehlerfall einfach nichts anzeigen, statt weiße Seite
+    }
 }
 ---
 
-<section aria-labelledby="events-heading" class="px-6 sm:px-10 pb-12 transition-colors duration-300">
+{/* --- BENTO EVENTS HEADER --- */}
+<section aria-labelledby="events-heading" class="px-6 sm:px-10 pb-12 pt-12 transition-colors duration-300">
     <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
             <div class="flex items-center gap-3 mb-4">
@@ -38,6 +54,7 @@ function formatEventDate(event: any) {
     </div>
 </section>
 
+{/* --- BENTO EVENTS GRID --- */}
 <section class="px-6 sm:px-10 pb-24 transition-colors duration-300">
     <div class="max-w-7xl mx-auto">
         <div class="grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-6 h-auto md:h-[700px]">
@@ -50,6 +67,7 @@ function formatEventDate(event: any) {
                     )}
                     <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent"></div>
                     
+                    {/* BATCH: Datum & Tipp */}
                     <div class="absolute top-6 left-6 flex gap-2">
                         <span class="px-3 py-1 rounded-full bg-amber-400 text-slate-900 text-[10px] font-bold uppercase shadow-lg tracking-widest">Tipp</span>
                         <span class="px-3 py-1 rounded-full bg-slate-900/80 backdrop-blur-md text-white text-[10px] font-bold uppercase shadow-lg tracking-widest border border-white/10">
@@ -65,13 +83,14 @@ function formatEventDate(event: any) {
             )}
 
             {/* UPCOMING EVENTS */}
-            {upcomingEvents.map((event, index) => (
+            {upcomingEvents && upcomingEvents.map((event, index) => (
                 <a href={`/events/${event.slug}`} class={`relative group rounded-[32px] overflow-hidden bg-slate-900 border border-slate-900/10 dark:border-slate-800 hover:shadow-xl transition-all min-h-[350px] md:min-h-0 block ${index === 2 ? 'md:col-span-2 md:row-span-1' : 'md:col-span-1 md:row-span-1'}`} aria-label={`Event: ${event.title}`}>
                     {event.image && (
                         <img src={`${ASSET_URL}/${event.image}`} class="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:scale-105 transition duration-1000" alt="" />
                     )}
                     <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/25 to-transparent"></div>
                     
+                    {/* BATCH: Datum */}
                     <div class="absolute top-6 left-6">
                         <span class="px-3 py-1 rounded-full bg-slate-900/80 backdrop-blur-md text-white text-[10px] font-bold uppercase shadow-lg tracking-widest border border-white/10">
                             {formatEventDate(event)}

@@ -4,8 +4,7 @@ import { getEvents, getGlobalSettings } from '../lib/api';
 import { directus } from '../lib/directus';
 import { readItems } from '@directus/sdk';
 
-// COMPONENTS AUS DEM UNTERORDNER IMPORTIEREN
-// Das liest sich jetzt sehr "sprechend"
+// COMPONENTS
 import Hero from '../components/home/Hero.astro';
 import Events from '../components/home/Events.astro';
 import Services from '../components/home/Services.astro';
@@ -30,10 +29,11 @@ const [settings, allEvents, dbServices, dbPartners] = await Promise.all([
   }))
 ]);
 
-// 2. Highlight Logik
+// 2. Event Logik (DIESER BLOCK FEHLTE)
 const today = new Date();
 today.setHours(0,0,0,0);
 
+// a) Highlight finden
 const highlightCandidates = allEvents.filter(e => {
     const eventDate = new Date(e.date_start || e.start_date || e.date); 
     return e.is_highlight === true && eventDate >= today;
@@ -47,16 +47,18 @@ highlightCandidates.sort((a, b) => {
 
 const highlightEvent = highlightCandidates.length > 0 ? highlightCandidates[0] : allEvents[0];
 
+// b) Nächste Events (ohne das Highlight)
 const upcomingEvents = allEvents
-  .filter(e => e.id !== highlightEvent?.id)
+  .filter(e => e.id !== highlightEvent?.id) 
   .filter(e => new Date(e.date_start || e.start_date || e.date) >= today)
   .slice(0, 3);
+
 
 // 3. Hero Daten
 const heroHeadline = settings?.hero_headline || `Kultur verbindet.<br> <span class="pr-2 bg-clip-text text-transparent bg-gradient-to-r from-rose-600 to-orange-400 dark:from-rose-400 dark:to-orange-300">Inklusion</span> stärkt.`;
 const heroSubline = settings?.hero_subline || "Dein Rückenwind für einen Alltag nach deinen Regeln. Wir schaffen den Raum in Graz, in dem Begegnung auf Augenhöhe passiert und Barrieren – ob aus Stein oder im Kopf – einfach keine Rolle spielen.";
 const heroImg = settings?.hero_image 
-  ? `${ASSET_URL}/${settings.hero_image}`
+  ? `${ASSET_URL}/${settings.hero_image}` 
   : 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?q=80&w=2560&auto=format&fit=crop'; 
 ---
 
@@ -80,26 +82,26 @@ const heroImg = settings?.hero_image
     <noscript><style>.home-content{visibility:visible}</style></noscript>
 
     <article class="home-content w-full">
-    
+        
         <Hero 
-            headline={heroHeadline} 
-            subline={heroSubline} 
-            image={heroImg} 
+            headline={heroHeadline}
+            subline={heroSubline}
+            image={heroImg}
         />
 
         <Events 
-            highlightEvent={highlightEvent} 
-            upcomingEvents={upcomingEvents} 
+            highlightEvent={highlightEvent}
+            upcomingEvents={upcomingEvents}
         />
 
         <Services 
-            services={dbServices} 
+            services={dbServices}
         />
 
         <Projects />
 
         <Partners 
-            partners={dbPartners} 
+            partners={dbPartners}
         />
 
         <Pionier />
