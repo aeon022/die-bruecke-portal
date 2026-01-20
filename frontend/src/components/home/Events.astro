@@ -1,0 +1,98 @@
+---
+interface Props {
+  highlightEvent: any;
+  upcomingEvents: any[];
+}
+
+const { highlightEvent, upcomingEvents } = Astro.props;
+const ASSET_URL = 'https://api.diebruecke.social/assets'; 
+
+// Helper für dieses Modul
+function formatEventDate(event: any) {
+    const dateStr = event.date_start || event.start_date || event.date;
+    if (!dateStr) return "";
+    const date = new Date(dateStr);
+    const day = date.toLocaleDateString('de-DE', { day: '2-digit', month: 'short' }).toUpperCase();
+    const time = event.time_start ? event.time_start.slice(0, 5) : date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+    return time === "00:00" ? day : `${day} • ${time}`;
+}
+---
+
+<section aria-labelledby="events-heading" class="px-6 sm:px-10 pb-12 transition-colors duration-300">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div>
+            <div class="flex items-center gap-3 mb-4">
+                <span class="relative flex h-3 w-3">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-3 w-3 bg-rose-500 dark:bg-rose-400"></span>
+                </span>
+                <span class="text-rose-500 dark:text-rose-400 font-bold tracking-widest uppercase text-[10px]">Live aus der Brücke</span>
+            </div>
+            <h2 id="events-heading" class="text-4xl md:text-5xl font-display font-bold text-slate-900 dark:text-white tracking-tighter">
+                Was gerade geht.
+            </h2>
+        </div>
+        <p class="text-slate-400 dark:text-slate-300 font-medium italic text-lg md:text-right">
+            Langweilig wird's woanders. <br class="hidden md:block"> Komm wie du bist.
+        </p>
+    </div>
+</section>
+
+<section class="px-6 sm:px-10 pb-24 transition-colors duration-300">
+    <div class="max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-6 h-auto md:h-[700px]">
+            
+            {/* HIGHLIGHT EVENT */}
+            {highlightEvent && (
+                <a href={`/events/${highlightEvent.slug}`} class="md:col-span-2 md:row-span-2 relative group rounded-[32px] overflow-hidden bg-slate-900 shadow-xl border border-transparent dark:border-slate-800 min-h-[500px] md:min-h-0 block" aria-label={`Highlight Event: ${highlightEvent.title}`}>
+                    {highlightEvent.image && (
+                        <img src={`${ASSET_URL}/${highlightEvent.image}`} class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition duration-1000" alt="" />
+                    )}
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent"></div>
+                    
+                    <div class="absolute top-6 left-6 flex gap-2">
+                        <span class="px-3 py-1 rounded-full bg-amber-400 text-slate-900 text-[10px] font-bold uppercase shadow-lg tracking-widest">Tipp</span>
+                        <span class="px-3 py-1 rounded-full bg-slate-900/80 backdrop-blur-md text-white text-[10px] font-bold uppercase shadow-lg tracking-widest border border-white/10">
+                            {formatEventDate(highlightEvent)}
+                        </span>
+                    </div>
+
+                    <div class="absolute bottom-0 left-0 p-8 md:p-12 text-white w-full">
+                        <h3 class="text-3xl md:text-5xl font-display font-bold leading-tight mb-4 tracking-tight drop-shadow-md">{highlightEvent.title}</h3>
+                        <span class="font-bold flex items-center gap-2 text-rose-400">Mehr erfahren <i class="fa-solid fa-arrow-right text-xs"></i></span>
+                    </div>
+                </a>
+            )}
+
+            {/* UPCOMING EVENTS */}
+            {upcomingEvents.map((event, index) => (
+                <a href={`/events/${event.slug}`} class={`relative group rounded-[32px] overflow-hidden bg-slate-900 border border-slate-900/10 dark:border-slate-800 hover:shadow-xl transition-all min-h-[350px] md:min-h-0 block ${index === 2 ? 'md:col-span-2 md:row-span-1' : 'md:col-span-1 md:row-span-1'}`} aria-label={`Event: ${event.title}`}>
+                    {event.image && (
+                        <img src={`${ASSET_URL}/${event.image}`} class="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:scale-105 transition duration-1000" alt="" />
+                    )}
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/25 to-transparent"></div>
+                    
+                    <div class="absolute top-6 left-6">
+                        <span class="px-3 py-1 rounded-full bg-slate-900/80 backdrop-blur-md text-white text-[10px] font-bold uppercase shadow-lg tracking-widest border border-white/10">
+                            {formatEventDate(event)}
+                        </span>
+                    </div>
+
+                    <div class="relative z-10 p-6 flex flex-col h-full justify-end">
+                        <h3 class="text-xl font-display font-bold text-white group-hover:text-rose-200 transition-colors line-clamp-3 leading-tight tracking-tight drop-shadow-md">{event.title}</h3>
+                    </div>
+                </a>
+            ))}
+            
+            {/* ALLE EVENTS LINK */}
+            <a href="/events" class="md:col-span-1 md:row-span-1 bg-rose-600 rounded-[32px] p-8 flex items-center justify-center text-white group hover:bg-slate-900 transition-all shadow-lg overflow-hidden border border-transparent dark:border-slate-700 min-h-[200px] md:min-h-0">
+                <div class="flex items-center gap-4 text-left">
+                    <i class="fa-solid fa-layer-group text-3xl group-hover:rotate-12 transition-transform shrink-0"></i>
+                        <span class="text-xl font-display font-bold leading-tight tracking-tighter">
+                        Alle <br>Veranstaltungen
+                        </span>
+                </div>
+            </a>
+        </div>
+    </div>
+</section>

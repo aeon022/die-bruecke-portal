@@ -1,0 +1,49 @@
+---
+interface Props {
+  partners: any[];
+}
+
+const { partners } = Astro.props;
+const ASSET_URL = 'https://api.diebruecke.social/assets'; 
+---
+
+<section aria-label="Partner und Fördergeber" class="py-20 border-b border-slate-50 dark:border-slate-900 transition-colors duration-300">
+    <div class="max-w-7xl mx-auto px-6 mb-12 text-center">
+        <span class="text-slate-500 dark:text-slate-400 font-bold tracking-[0.2em] uppercase text-xs border-b-2 border-rose-500/20 pb-2">
+            Ermöglicht durch unsere Partner & Fördergeber
+        </span>
+    </div>
+    
+    <div class="relative flex overflow-x-hidden group">
+        <div class="py-12 animate-marquee whitespace-nowrap flex items-center">
+            {(partners.length > 0 ? partners : [ { name: "Partner Platzhalter", logo: null } ]).map((partner: any) => (
+                <div class="mx-16 w-48 h-20 flex items-center justify-center grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-500">
+                    {partner.logo ? (
+                        <img src={`${ASSET_URL}/${partner.logo}`} alt={partner.name} class="max-w-full max-h-full object-contain" />
+                    ) : (
+                        <span class="text-slate-300 font-bold text-xl">{partner.name}</span>
+                    )}
+                </div>
+            ))}
+        </div>
+        <div class="absolute top-0 py-12 animate-marquee2 whitespace-nowrap flex items-center" aria-hidden="true">
+            {(partners.length > 0 ? partners : [ { name: "Partner Platzhalter", logo: null } ]).map((partner: any) => (
+                <div class="mx-16 w-48 h-20 flex items-center justify-center grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-500">
+                    {partner.logo ? (
+                        <img src={`${ASSET_URL}/${partner.logo}`} alt="" class="max-w-full max-h-full object-contain" />
+                    ) : (
+                        <span class="text-slate-300 font-bold text-xl">{partner.name}</span>
+                    )}
+                </div>
+            ))}
+        </div>
+    </div>
+</section>
+
+<style>
+    @keyframes marquee { 0% { transform: translateX(0%); } 100% { transform: translateX(-100%); } }
+    @keyframes marquee2 { 0% { transform: translateX(100%); } 100% { transform: translateX(0%); } }
+    .animate-marquee { animation: marquee 25s linear infinite; }
+    .animate-marquee2 { animation: marquee2 25s linear infinite; }
+    .group:hover .animate-marquee, .group:hover .animate-marquee2 { animation-play-state: paused; }
+</style>
