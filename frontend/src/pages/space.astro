@@ -28,29 +28,42 @@ const useCases = [
 
 <MainLayout title="Dein Raum | Die Brücke">
     
-    {/* --- HERO SECTION --- */}
+    {/* --- HERO SECTION: SPACE (STABLE 2-LINE LAYERED) --- */}
     <section class="px-4 sm:px-6 pt-6 pb-20 dark:bg-slate-800">
         <div class="relative bg-slate-900 rounded-[48px] overflow-hidden min-h-[60vh] flex items-center px-6 md:px-16 py-24">
             
-            {/* Background Effects */}
-            <div class="absolute top-0 right-0 w-full md:w-2/3 h-full overflow-hidden pointer-events-none">
-                <div class="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-indigo-500/20 rounded-full blur-[120px] animate-pulse-slow"></div>
-                <div class="absolute bottom-[-10%] right-[10%] w-[500px] h-[500px] bg-rose-500/10 rounded-full blur-[100px]"></div>
-                <div class="absolute inset-0 bg-[url('/noise.png')] opacity-20 mix-blend-overlay"></div>
+            {/* DAS BILD: Jetzt als atmosphärischer Layer im Hintergrund rechts */}
+            <div class="absolute top-0 right-0 w-full lg:w-1/2 h-full pointer-events-none overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/60 to-transparent z-10"></div>
+                <img 
+                    src="https://images.unsplash.com/photo-1517457373958-b7bdd4587205?q=80&w=1200" 
+                    alt="Event Space" 
+                    class="w-full h-full object-cover opacity-30 lg:opacity-45 grayscale"
+                />
             </div>
 
-            <div class="max-w-7xl mx-auto w-full relative z-10 grid lg:grid-cols-2 gap-16 items-center">
-                
-                {/* Text Content */}
-                <div>
+            {/* Background Effects */}
+            <div class="absolute top-0 left-0 w-full h-full pointer-events-none">
+                <div class="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-indigo-500/20 rounded-full blur-[120px] animate-pulse-slow"></div>
+                <div class="absolute bottom-[-10%] right-[10%] w-[500px] h-[500px] bg-rose-500/10 rounded-full blur-[100px]"></div>
+                <div class="absolute inset-0 bg-[url('/noise.png')] opacity-10 mix-blend-overlay"></div>
+            </div>
+
+            <div class="max-w-7xl mx-auto w-full relative z-20">
+                {/* max-w-3xl sorgt für den kompakten Stand des Textes */}
+                <div class="max-w-3xl">
                     <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-rose-300 text-xs font-bold uppercase tracking-widest mb-8 backdrop-blur-md">
                         <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
                         Infrastruktur & Technik
                     </div>
                     
-                    <h1 class="text-5xl md:text-7xl lg:text-8xl font-display font-bold text-white mb-8 leading-[0.95] tracking-tight">
-                        Dein Raum für <br/>
-                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-400 to-indigo-400">große Ideen.</span>
+                    {/* TITEL-FIX: 
+                        - text-7xl als Obergrenze
+                        - whitespace-nowrap verhindert den Umbruch in die 3. Zeile
+                    */}
+                    <h1 class="text-4xl md:text-6xl lg:text-7xl font-display font-black text-white mb-8 leading-[0.95] tracking-tighter uppercase">
+                        Dein Raum für <br class="hidden sm:block"/>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-400 to-indigo-400 whitespace-nowrap">große Ideen.</span>
                     </h1>
                     
                     <p class="text-xl text-slate-300 leading-relaxed mb-10 max-w-lg font-medium">
@@ -59,21 +72,9 @@ const useCases = [
                     </p>
                     
                     <div class="flex flex-wrap gap-4">
-                        <a href="#details" class="px-8 py-3 bg-white text-slate-900 rounded-full font-bold hover:bg-rose-500 hover:text-white transition-all shadow-lg hover:shadow-rose-500/20">
+                        <a href="#details" class="px-10 py-5 bg-white text-slate-900 rounded-full font-bold hover:bg-rose-500 hover:text-white transition-all shadow-xl text-lg transform hover:-translate-y-1">
                             Ausstattung ansehen
                         </a>
-                    </div>
-                </div>
-
-                {/* Hero Visual */}
-                <div class="relative hidden lg:block perspective-1000">
-                    <div class="relative z-10 rounded-[40px] overflow-hidden shadow-2xl rotate-2 hover:rotate-0 transition-transform duration-700 border border-white/10 bg-slate-800 aspect-square group">
-                        <img 
-                            src="https://images.unsplash.com/photo-1517457373958-b7bdd4587205?q=80&w=1000&auto=format&fit=crop" 
-                            alt="Event Space" 
-                            class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-700"
-                        />
-                         <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent pointer-events-none"></div>
                     </div>
                 </div>
             </div>
