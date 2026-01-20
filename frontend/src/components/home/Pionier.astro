@@ -1,20 +1,30 @@
+---
+/* src/components/home/Pionier.astro */
+---
 <section class="px-6 sm:px-10 py-32 bg-slate-900 text-white relative overflow-hidden">
+    {/* Subtiler Glow im Hintergrund */}
     <div class="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_50%,rgba(225,29,72,0.05),transparent)] pointer-events-none"></div>
 
     <div class="max-w-7xl mx-auto relative z-10">
         <div class="grid lg:grid-cols-2 gap-20 items-center">
             <div>
                 <span class="text-rose-500 font-bold tracking-widest uppercase text-xs mb-6 block tracking-[0.2em]">Pionier seit 1983</span>
-                <h2 class="text-4xl md:text-6xl font-display font-extrabold mb-8 leading-[1.1] tracking-tighter">42 Jahre Mut zum<br>Miteinander.</h2>
+                <h2 class="text-4xl md:text-6xl font-display font-extrabold mb-8 leading-[1.1] tracking-tighter">
+                    42 Jahre Mut zum<br>Miteinander.
+                </h2>
                 <p class="text-xl text-slate-400 leading-relaxed mb-10">
-                    Als erstes inklusives Zentrum Österreichs haben wir in Graz Pionierarbeit geleistet. Wir verbinden professionelle Begleitung mit offener Begegnung.
+                    Seit über 40 Jahren gehen wir in Graz neue Wege. Wir haben als erste gezeigt, wie echtes Miteinander funktioniert: mit professioneller Unterstützung und viel Raum für echte Begegnungen auf Augenhöhe.
                 </p>
             </div>
             
+            {/* Visuelles Siegel: Erstes Inklusives Zentrum */}
             <div class="flex justify-center relative" aria-hidden="true">
                 <div class="relative flex items-center justify-center">
+                    {/* Animierte Ringe für Aufmerksamkeit */}
                     <div class="absolute w-64 h-64 md:w-80 md:h-80 rounded-full border border-rose-500/20 animate-[ping_3s_linear_infinite]"></div>
                     <div class="absolute w-64 h-64 md:w-80 md:h-80 rounded-full border border-rose-500/40 animate-[ping_2s_linear_infinite]"></div>
+                    
+                    {/* Zentrales Siegel */}
                     <div class="relative w-64 h-64 md:w-80 md:h-80 rounded-full border-4 border-rose-500 flex items-center justify-center p-8 text-center bg-slate-900 shadow-[0_0_50px_rgba(225,29,72,0.2)]">
                         <p class="text-rose-500 font-display font-black text-2xl md:text-3xl leading-tight uppercase tracking-tighter">
                             Erstes<br>Inklusives<br>Zentrum<br>Österreichs

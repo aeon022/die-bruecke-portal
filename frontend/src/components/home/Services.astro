@@ -27,21 +27,31 @@ function cleanText(html: string) {
                 Selbstbestimmung.<br>
                 <span class="text-rose-600 dark:text-rose-400 italic">Gemeinsam gestalten.</span>
             </h2>
-            <p class="text-lg text-slate-500 dark:text-slate-300 font-medium leading-relaxed">Inklusion bedeutet für uns Empowerment. Wir unterstützen dich genau dort, wo du uns brauchst – im Alltag, beim Wohnen oder auf Reisen.</p>
+            <p class="text-lg text-slate-500 dark:text-slate-300 font-medium leading-relaxed">
+                Inklusion heißt für uns: Du entscheidest. Wir unterstützen dich dabei, dein Leben so zu gestalten, wie du es willst – egal ob im Alltag, beim Wohnen oder auf Reisen.
+            </p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-left">
             {services.map((service: any, index: number) => {
                 const colorClass = serviceColors[index % serviceColors.length];
                 return (
-                    <a href={`/services/${service.slug}`} class="group bg-white dark:bg-slate-900 p-8 rounded-[32px] border border-slate-100 dark:border-slate-800 hover:shadow-2xl transition-all duration-500 block">
-                        <div class={`w-12 h-12 rounded-2xl ${colorClass} text-white flex items-center justify-center text-xl mb-6 shadow-lg group-hover:scale-110 transition-transform`}>
-                            <i class={`fa-solid ${service.icon || 'fa-hand-holding-heart'}`}></i>
+                    <a href={`/services/${service.slug}`} class="group bg-white dark:bg-slate-900 p-8 rounded-[32px] border border-slate-100 dark:border-slate-800 hover:shadow-2xl transition-all duration-500 block flex flex-col h-full">
+                        <div class="flex-1">
+                            <div class={`w-12 h-12 rounded-2xl ${colorClass} text-white flex items-center justify-center text-xl mb-6 shadow-lg group-hover:scale-110 transition-transform`}>
+                                <i class={`fa-solid ${service.icon || 'fa-hand-holding-heart'}`}></i>
+                            </div>
+                            <h3 class="text-xl font-display font-bold text-slate-900 dark:text-white mb-3">{service.title}</h3>
+                            <p class="text-slate-500 dark:text-slate-300 text-sm leading-relaxed line-clamp-3 mb-6">
+                                {cleanText(service.description)}
+                            </p>
                         </div>
-                        <h3 class="text-xl font-display font-bold text-slate-900 dark:text-white mb-3">{service.title}</h3>
-                        <p class="text-slate-500 dark:text-slate-300 text-sm leading-relaxed line-clamp-3">
-                            {cleanText(service.description)}
-                        </p>
+                        
+                        {/* Aktions-Link am Ende der Karte */}
+                        <div class="flex items-center gap-2 text-rose-600 dark:text-rose-400 font-bold text-sm group-hover:gap-3 transition-all">
+                            Details ansehen
+                            <i class="fa-solid fa-arrow-right text-xs"></i>
+                        </div>
                     </a>
                 );
             })}
