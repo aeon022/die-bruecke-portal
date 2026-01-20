@@ -46,35 +46,31 @@ const menuItems = [
   <header id="main-header" class="relative flex items-center justify-between px-6 sm:px-10 pt-8 pb-6 transition-[padding,background-color,box-shadow,transform,border-radius,border] duration-300 ease-in-out">
     
     <a href="/" class="flex items-center gap-3 group" aria-label="Zur Startseite">
-      <div id="logo-container" class="w-10 h-10 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/10 flex items-center justify-center shadow-sm group-hover:border-rose-500 transition-all duration-300 overflow-hidden">
+      <div id="logo-container" class="w-10 h-10 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/10 flex items-center justify-center shadow-sm group-hover:border-rose-500 transition-all duration-300 overflow-hidden text-slate-900 dark:text-white">
         {logoUrl ? (
              <img src={logoUrl} alt="Logo" class="w-full h-full object-contain p-1" />
         ) : (
              <div class="w-3 h-3 rounded-sm bg-rose-500"></div>
         )}
       </div>
-      <span class="text-xl font-bold font-display tracking-tight text-slate-900 dark:text-slate-50 brand-text">
+      <span class="text-xl font-bold font-display tracking-tight text-slate-900 dark:text-white brand-text">
         {projectName}
       </span>
     </a>
 
     <div class="flex items-center gap-2 sm:gap-3">
-      {/* Button 1: Projekte (Desktop) */}
       <a href="/projects" class="hidden lg:inline-flex px-5 py-2.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-50 font-bold text-sm hover:bg-rose-50 dark:hover:bg-slate-700 transition border border-slate-200 dark:border-white/5">
         Projekte
       </a>
 
-      {/* Button 2: Über uns (Mobile hidden) */}
       <a href="/about" class="hidden md:inline-flex px-5 py-2.5 rounded-full bg-slate-900 dark:bg-slate-50 text-white dark:text-slate-900 font-bold text-sm shadow-lg hover:bg-rose-600 dark:hover:bg-rose-400 transition hover:-translate-y-0.5">
         Über uns
       </a>
 
-      {/* Button 3: Barrierefreiheit - MIT GLOBAL TOOLTIP ATTRIBUT */}
       <button id="btnAccessibility" data-tooltip="Barrierefreiheit (Taste / oder Strg + K)" class="w-12 h-12 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/5 flex items-center justify-center text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/30 transition cursor-pointer shadow-sm focus:outline-none focus:ring-2 focus:ring-rose-500" type="button" aria-label="Barrierefreiheit Menü öffnen">
          <i class="fa-solid fa-wheelchair text-lg"></i>
       </button>
 
-      {/* Button 4: Theme Toggle - MIT GLOBAL TOOLTIP ATTRIBUT */}
       <button onclick="window.toggleTheme()" id="themeToggle" data-tooltip="Design wechseln" class="w-12 h-12 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/5 flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-700 transition cursor-pointer shadow-sm relative focus:outline-none overflow-hidden group" type="button" aria-label="Design wechseln">
         <span class="theme-moon absolute inset-0 flex items-center justify-center transition-all duration-500 rotate-0 scale-100 opacity-100 dark:rotate-90 dark:scale-0 dark:opacity-0 text-slate-600">
           <i class="fa-solid fa-moon text-lg"></i>
@@ -84,7 +80,6 @@ const menuItems = [
         </span>
       </button>
 
-      {/* Button 5: Burger Menu */}
       <button id="btnOpenNav" class="h-12 pl-3 pr-5 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/5 flex items-center justify-center gap-2 text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-700 transition cursor-pointer shadow-sm relative focus:outline-none group" aria-label="Menü öffnen" aria-expanded="false" aria-controls="navOverlay">
         <div class="relative w-6 h-6 flex items-center justify-center">
             <span class="icon-bars pointer-events-none transition-opacity duration-300 absolute inset-0 flex items-center justify-center">
@@ -138,8 +133,8 @@ const menuItems = [
 </div>
 
 <style is:global>
-  /* Logo Text Override */
-  html.dark .brand-text { color: #f8fafc !important; }
+  /* Base Brand Color */
+  .brand-text { transition: color 300ms ease; }
 
   /* Backdrop & Transitions */
   .nav-backdrop { opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 650ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 650ms; }
@@ -148,57 +143,46 @@ const menuItems = [
   #navOverlay[data-state='closed'] { max-height: 0; opacity: 0; transform: translateY(-10px); pointer-events: none; }
   #navOverlay[data-state='open'] { max-height: calc(100vh - 64px); opacity: 1; transform: translateY(0); pointer-events: auto; overflow-y: auto; }
 
-  /* INITIAL STATE (Header Top - Nicht Sticky) */
   #header-shell.header-shell { padding: 0; transition: padding 300ms ease; }
   
   #main-header { 
-    border-bottom: 0px solid rgba(226, 232, 240, 1); /* Slate 200 */
-    border-top-left-radius: 40px; 
-    border-top-right-radius: 40px; 
-    border-bottom-right-radius: 40px;
-    border-bottom-left-radius: 40px;
+    border-radius: 40px;
+    border: 1px solid transparent;
   }
   html.dark #main-header {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.05);
   }
 
-  /* Sticky Layout Changes */
+  /* STICKY "ISLAND" DESIGN CHANGES */
   #header-shell.is-float { padding: 0.75rem 1rem 0; }
   @media (min-width: 768px) { #header-shell.is-float { padding-left: 2rem; padding-right: 2rem; } }
 
   #main-header.is-shrink { padding-top: 0.85rem !important; padding-bottom: 0.85rem !important; }
   #main-header.is-shrink #logo-container { width: 2.25rem; height: 2.25rem; border-radius: 0.75rem; }
 
-  /* STICKY STYLES (Light Mode - CLEAN) */
+  /* LIGHT MODE STICKY */
   #header-shell.is-float #main-header {
     border-radius: 24px !important; 
-    background-color: #64748b !important; /* Slate-500 */
-    backdrop-filter: blur(12px);
-    border: none !important;
-    box-shadow: none !important;
-  }
-
-  /* TEXT-KORREKTUR für Light Mode Sticky: */
-  #header-shell.is-float .brand-text { 
-      color: white !important; 
-  }
-  
-  /* STICKY STYLES (Dark Mode - CLEAN) */
-  html.dark #header-shell.is-float #main-header {
-    background-color: #0f172a !important; 
+    background-color: rgba(255, 255, 255, 0.8) !important; 
     backdrop-filter: blur(16px);
-    box-shadow: none !important;
-    border: none !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    box-shadow: none !important; /* Schatten entfernt */
   }
+  #header-shell.is-float .brand-text { color: #0f172a !important; }
 
-  /* Overlay Menu */
+  /* DARK MODE STICKY */
+  html.dark #header-shell.is-float #main-header {
+    background-color: rgba(15, 23, 42, 0.8) !important; 
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    box-shadow: none !important; /* Schatten entfernt */
+  }
+  html.dark #header-shell.is-float .brand-text { color: #ffffff !important; }
+
+  /* Menu UI */
   #header-shell.is-float #navOverlay { border-radius: 40px !important; }
-  #header-shell.is-float #navOverlay[data-state='open'] {
-    margin-top: 0.75rem; 
-    box-shadow: 0 18px 45px rgba(15, 23, 42, 0.3);
-  }
+  #header-shell.is-float #navOverlay[data-state='open'] { margin-top: 0.75rem; box-shadow: 0 18px 45px rgba(15, 23, 42, 0.3); }
 
-  /* Burger Animation */
   #btnOpenNav .icon-bars, #btnOpenNav .icon-x { display: inline-flex; transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1), opacity 220ms ease; }
   #btnOpenNav .icon-x { opacity: 0; transform: rotate(-90deg) scale(0.75); }
   #btnOpenNav.is-open .icon-bars { opacity: 0; transform: rotate(90deg) scale(0.75); }
@@ -217,14 +201,12 @@ const menuItems = [
     const logoContainer = document.getElementById('logo-container');
     const btnAccessibility = document.getElementById('btnAccessibility');
 
-    // --- ACCESSIBILITY BUTTON TRIGGER ---
     if (btnAccessibility) {
         btnAccessibility.addEventListener('click', () => {
             document.dispatchEvent(new KeyboardEvent('keydown', { key: '/', bubbles: true }));
         });
     }
 
-    // --- MENU TOGGLE ---
     const toggleMenu = () => {
       const isOpen = navOverlay?.getAttribute('data-state') === 'open';
       navOverlay?.setAttribute('data-state', isOpen ? 'closed' : 'open');
@@ -249,14 +231,18 @@ const menuItems = [
          if(navOverlay.getAttribute('data-state') === 'open') toggleMenu();
     }));
 
-    // --- SCROLL LOGIC ---
     const handleScroll = () => {
         const scrolled = (window.scrollY || 0) > 18;
         headerShell?.classList.toggle('is-float', scrolled);
         mainHeader?.classList.toggle('is-shrink', scrolled);
         if(logoContainer) {
-             if(scrolled) { logoContainer.classList.add('w-8','h-8','rounded-lg'); logoContainer.classList.remove('w-10','h-10','rounded-xl'); }
-             else { logoContainer.classList.remove('w-8','h-8','rounded-lg'); logoContainer.classList.add('w-10','h-10','rounded-xl'); }
+             if(scrolled) { 
+                 logoContainer.classList.add('w-8','h-8','rounded-lg'); 
+                 logoContainer.classList.remove('w-10','h-10','rounded-xl'); 
+             } else { 
+                 logoContainer.classList.remove('w-8','h-8','rounded-lg'); 
+                 logoContainer.classList.add('w-10','h-10','rounded-xl'); 
+             }
         }
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -265,5 +251,4 @@ const menuItems = [
 
   init();
   document.addEventListener('astro:after-swap', init);
-  window.addEventListener('theme-change', () => {});
 </script>
