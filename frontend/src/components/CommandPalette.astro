@@ -11,7 +11,7 @@
             <i class="fa-solid fa-search text-slate-400 text-lg mr-3" id="cp-search-icon"></i>
             <i class="fa-solid fa-circle-notch fa-spin text-rose-500 text-lg mr-3 hidden" id="cp-loading-icon"></i>
             
-            <input type="text" id="cp-input" placeholder="Was möchtest du tun? (Suchen, Einstellungen...)" 
+            <input type="text" id="cp-input" placeholder="Suchen nach Events, Camps, Projekten..." 
                    class="w-full bg-transparent border-none text-xl text-slate-900 dark:text-white placeholder-slate-400 focus:ring-0 focus:outline-none h-10" autocomplete="off" />
             
             <span class="hidden sm:inline-block text-[10px] font-bold text-slate-400 border border-slate-200 dark:border-slate-700 px-2 py-1 rounded bg-slate-50 dark:bg-slate-800 absolute right-4">ESC</span>
@@ -20,116 +20,87 @@
         {/* Results Container */}
         <div class="overflow-y-auto p-2 scroll-smooth" id="cp-results">
             
-            {/* --- 1. DYNAMIC RESULTS (Live Search) --- */}
+            {/* --- DYNAMIC RESULTS --- */}
+            
+            {/* Events */}
             <div id="cp-dynamic-events" class="cp-group mb-2 hidden">
-                <h4 class="text-xs font-bold text-rose-500 uppercase tracking-widest px-3 py-2 sticky top-0 bg-white dark:bg-slate-900 z-10 border-b border-rose-100 dark:border-rose-900/20">
-                    Veranstaltungen
-                </h4>
+                <h4 class="text-xs font-bold text-rose-500 uppercase tracking-widest px-3 py-2 sticky top-0 bg-white dark:bg-slate-900 z-10 border-b border-rose-100 dark:border-rose-900/20">Veranstaltungen</h4>
                 <div class="cp-list-content"></div>
             </div>
 
+            {/* Camps & City Trips (Zusammengefasst als Reisen) */}
+            <div id="cp-dynamic-trips" class="cp-group mb-2 hidden">
+                <h4 class="text-xs font-bold text-orange-500 uppercase tracking-widest px-3 py-2 sticky top-0 bg-white dark:bg-slate-900 z-10 border-b border-orange-100 dark:border-orange-900/20">Camps & Reisen</h4>
+                <div class="cp-list-content"></div>
+            </div>
+
+            {/* Projekte */}
+            <div id="cp-dynamic-projects" class="cp-group mb-2 hidden">
+                <h4 class="text-xs font-bold text-purple-500 uppercase tracking-widest px-3 py-2 sticky top-0 bg-white dark:bg-slate-900 z-10 border-b border-purple-100 dark:border-purple-900/20">Projekte</h4>
+                <div class="cp-list-content"></div>
+            </div>
+
+            {/* Services */}
             <div id="cp-dynamic-services" class="cp-group mb-2 hidden">
-                <h4 class="text-xs font-bold text-indigo-500 uppercase tracking-widest px-3 py-2 sticky top-0 bg-white dark:bg-slate-900 z-10 border-b border-indigo-100 dark:border-indigo-900/20">
-                    Angebote
-                </h4>
+                <h4 class="text-xs font-bold text-indigo-500 uppercase tracking-widest px-3 py-2 sticky top-0 bg-white dark:bg-slate-900 z-10 border-b border-indigo-100 dark:border-indigo-900/20">Angebote</h4>
                 <div class="cp-list-content"></div>
             </div>
 
-            {/* --- 2. SETTINGS (Barrierefreiheit) --- */}
+            {/* Team */}
+            <div id="cp-dynamic-team" class="cp-group mb-2 hidden">
+                <h4 class="text-xs font-bold text-emerald-500 uppercase tracking-widest px-3 py-2 sticky top-0 bg-white dark:bg-slate-900 z-10 border-b border-emerald-100 dark:border-emerald-900/20">Team</h4>
+                <div class="cp-list-content"></div>
+            </div>
+
+
+            {/* --- STATIC SETTINGS & NAV --- */}
             <div class="cp-group mb-4" id="cp-settings">
                 <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest px-3 py-2 flex items-center gap-2">
-                    <i class="fa-solid fa-universal-access"></i> Barrierefreiheit & Ansicht
+                    <i class="fa-solid fa-universal-access"></i> Einstellungen
                 </h4>
-                
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 px-2">
-                    
-                    {/* Kontrast */}
-                    <button id="cp-toggle-contrast" data-keywords="kontrast dunkel hell modus" class="cp-item flex items-center gap-3 px-3 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 hover:border-rose-500 dark:hover:border-rose-500 cursor-pointer group text-left focus:outline-none focus:ring-2 focus:ring-rose-500 transition-all">
+                    <button id="cp-toggle-contrast" class="cp-item flex items-center gap-3 px-3 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 hover:border-rose-500 dark:hover:border-rose-500 cursor-pointer group text-left focus:outline-none focus:ring-2 focus:ring-rose-500 transition-all">
                         <div class="w-8 h-8 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white flex items-center justify-center shadow-sm"><i class="fa-solid fa-circle-half-stroke"></i></div>
-                        <div class="flex-1">
-                            <span class="block text-sm font-bold text-slate-900 dark:text-white">Hoher Kontrast</span>
-                        </div>
-                        <div class="text-[10px] font-bold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-600 px-2 py-0.5 rounded text-slate-500 toggle-status">AUS</div>
+                        <div class="flex-1"><span class="block text-sm font-bold text-slate-900 dark:text-white">Kontrast</span></div>
+                        <div class="toggle-status text-[10px] font-bold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-600 px-2 py-0.5 rounded text-slate-500">AUS</div>
                     </button>
-
-                    {/* Schriftgröße */}
-                    <button id="cp-toggle-fontsize" data-keywords="schrift text größer zoom lesen" class="cp-item flex items-center gap-3 px-3 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 hover:border-indigo-500 dark:hover:border-indigo-500 cursor-pointer group text-left focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
+                    <button id="cp-toggle-fontsize" class="cp-item flex items-center gap-3 px-3 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 hover:border-indigo-500 dark:hover:border-indigo-500 cursor-pointer group text-left focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
                         <div class="w-8 h-8 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white flex items-center justify-center shadow-sm"><i class="fa-solid fa-text-height"></i></div>
-                        <div class="flex-1">
-                            <span class="block text-sm font-bold text-slate-900 dark:text-white">Große Schrift</span>
-                        </div>
-                        <div class="text-[10px] font-bold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-600 px-2 py-0.5 rounded text-slate-500 toggle-status">AUS</div>
+                        <div class="flex-1"><span class="block text-sm font-bold text-slate-900 dark:text-white">Größe</span></div>
+                        <div class="toggle-status text-[10px] font-bold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-600 px-2 py-0.5 rounded text-slate-500">AUS</div>
                     </button>
-
-                     {/* Animationen */}
-                    <button id="cp-toggle-motion" data-keywords="animation bewegung stoppen ruhe" class="cp-item flex items-center gap-3 px-3 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 hover:border-emerald-500 dark:hover:border-emerald-500 cursor-pointer group text-left focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all">
-                        <div class="w-8 h-8 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white flex items-center justify-center shadow-sm"><i class="fa-solid fa-film"></i></div>
-                        <div class="flex-1">
-                            <span class="block text-sm font-bold text-slate-900 dark:text-white">Keine Animation</span>
-                        </div>
-                        <div class="text-[10px] font-bold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-600 px-2 py-0.5 rounded text-slate-500 toggle-status">AUS</div>
-                    </button>
-
-                    {/* Startseite Shortcut */}
-                    <a href="/" data-keywords="home start zurück" class="cp-item flex items-center gap-3 px-3 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-400 cursor-pointer group text-left focus:outline-none focus:ring-2 focus:ring-slate-400 transition-all">
-                        <div class="w-8 h-8 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white flex items-center justify-center shadow-sm"><i class="fa-solid fa-house"></i></div>
-                        <span class="block text-sm font-bold text-slate-900 dark:text-white">Startseite</span>
-                    </a>
-
                 </div>
             </div>
 
-            {/* --- 3. STATIC: NAVIGATION --- */}
             <div class="cp-group mb-2" id="cp-static-nav">
                 <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest px-3 py-2 sticky top-0 bg-white dark:bg-slate-900 z-10">Navigation</h4>
-                
-                <a href="/events" data-keywords="termin konzert workshop programm kalender" class="cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group focus:bg-slate-100 dark:focus:bg-slate-800 focus:outline-none">
-                    <div class="w-8 h-8 rounded-lg bg-rose-100 dark:bg-rose-900/30 text-rose-600 flex items-center justify-center"><i class="fa-regular fa-calendar"></i></div>
-                    <span class="text-slate-700 dark:text-slate-200 font-medium group-hover:text-rose-600">Veranstaltungskalender</span>
+                <a href="/" class="cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group" data-keywords="home start">
+                    <div class="w-8 h-8 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center"><i class="fa-solid fa-house"></i></div>
+                    <span class="text-slate-700 dark:text-slate-200 font-medium">Startseite</span>
                 </a>
-                
-                <a href="/services" data-keywords="angebote hilfe behinderung assistenz freizeit" class="cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group focus:bg-slate-100 dark:focus:bg-slate-800 focus:outline-none">
-                    <div class="w-8 h-8 rounded-lg bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 flex items-center justify-center"><i class="fa-solid fa-hand-holding-heart"></i></div>
-                    <span class="text-slate-700 dark:text-slate-200 font-medium group-hover:text-indigo-600">Angebote & Services</span>
+                <a href="/events" class="cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group" data-keywords="kalender termin">
+                    <div class="w-8 h-8 rounded-lg bg-rose-100 text-rose-600 flex items-center justify-center"><i class="fa-regular fa-calendar"></i></div>
+                    <span class="text-slate-700 dark:text-slate-200 font-medium">Veranstaltungen</span>
                 </a>
-
-                <a href="/about" data-keywords="team geschichte mission wer wir sind leute vorstand" class="cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group focus:bg-slate-100 dark:focus:bg-slate-800 focus:outline-none">
-                    <div class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 flex items-center justify-center"><i class="fa-solid fa-users"></i></div>
-                    <span class="text-slate-700 dark:text-slate-200 font-medium group-hover:text-slate-900 dark:group-hover:text-white">Über uns & Team</span>
+                <a href="/camps" class="cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group" data-keywords="urlaub reisen">
+                    <div class="w-8 h-8 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center"><i class="fa-solid fa-plane"></i></div>
+                    <span class="text-slate-700 dark:text-slate-200 font-medium">Camps & Reisen</span>
                 </a>
-
-                <a href="/projects" data-keywords="projekte kino stagedive kultur inklusion" class="cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group focus:bg-slate-100 dark:focus:bg-slate-800 focus:outline-none">
-                    <div class="w-8 h-8 rounded-lg bg-purple-100 dark:bg-purple-900/30 text-purple-600 flex items-center justify-center"><i class="fa-solid fa-lightbulb"></i></div>
-                    <span class="text-slate-700 dark:text-slate-200 font-medium group-hover:text-purple-600">Projekte</span>
+                <a href="/projects" class="cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group" data-keywords="projekte">
+                    <div class="w-8 h-8 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center"><i class="fa-solid fa-lightbulb"></i></div>
+                    <span class="text-slate-700 dark:text-slate-200 font-medium">Projekte</span>
                 </a>
-
-                <a href="/camps" data-keywords="urlaub reisen ferien camps sommer" class="cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group focus:bg-slate-100 dark:focus:bg-slate-800 focus:outline-none">
-                    <div class="w-8 h-8 rounded-lg bg-orange-100 dark:bg-orange-900/30 text-orange-600 flex items-center justify-center"><i class="fa-solid fa-plane"></i></div>
-                    <span class="text-slate-700 dark:text-slate-200 font-medium group-hover:text-orange-600">Camps & Reisen</span>
-                </a>
-                
-                <a href="/space" data-keywords="raum mieten seminar feiern geburtstag" class="cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group focus:bg-slate-100 dark:focus:bg-slate-800 focus:outline-none">
-                    <div class="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-600 flex items-center justify-center"><i class="fa-solid fa-shop"></i></div>
-                    <span class="text-slate-700 dark:text-slate-200 font-medium group-hover:text-blue-600">Dein Raum (Vermietung)</span>
-                </a>
-                
-                <a href="/contact" data-keywords="kontakt anfahrt telefon email adresse öffnungszeiten" class="cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group focus:bg-slate-100 dark:focus:bg-slate-800 focus:outline-none">
-                    <div class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 flex items-center justify-center"><i class="fa-regular fa-envelope"></i></div>
-                    <span class="text-slate-700 dark:text-slate-200 font-medium group-hover:text-slate-900 dark:group-hover:text-white">Kontakt & Anfahrt</span>
-                </a>
-
-                 <a href="/join" data-keywords="mitmachen spenden ehrenamt job bewerbung zivildienst" class="cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group focus:bg-slate-100 dark:focus:bg-slate-800 focus:outline-none">
-                    <div class="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 flex items-center justify-center"><i class="fa-solid fa-hands-holding-circle"></i></div>
-                    <span class="text-slate-700 dark:text-slate-200 font-medium group-hover:text-emerald-600">Mitmachen & Spenden</span>
+                <a href="/services" class="cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group" data-keywords="angebot hilfe">
+                    <div class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center"><i class="fa-solid fa-hand-holding-heart"></i></div>
+                    <span class="text-slate-700 dark:text-slate-200 font-medium">Angebote</span>
                 </a>
             </div>
-
         </div>
 
         <div class="bg-slate-50 dark:bg-slate-950 px-4 py-3 border-t border-slate-100 dark:border-slate-800 text-[10px] text-slate-400 flex justify-between items-center shrink-0">
             <div class="flex gap-4">
-                <span class="flex items-center gap-1"><kbd class="font-sans bg-white dark:bg-slate-800 px-1 rounded border border-slate-200 dark:border-slate-700">↑↓</kbd> wählen</span>
-                <span class="flex items-center gap-1"><kbd class="font-sans bg-white dark:bg-slate-800 px-1 rounded border border-slate-200 dark:border-slate-700">↵</kbd> bestätigen</span>
+                <span class="flex items-center gap-1"><kbd class="bg-white px-1 rounded border">↑↓</kbd> wählen</span>
+                <span class="flex items-center gap-1"><kbd class="bg-white px-1 rounded border">↵</kbd> bestätigen</span>
             </div>
              <span class="opacity-50">Die Brücke Portal</span>
         </div>
@@ -137,15 +108,22 @@
 </div>
 
 <script>
+    // --- DOM REFERENCES ---
     const backdrop = document.getElementById('command-palette-backdrop');
     const modal = document.getElementById('command-palette-modal');
     const input = document.getElementById('cp-input');
     const searchIcon = document.getElementById('cp-search-icon');
     const loadingIcon = document.getElementById('cp-loading-icon');
 
-    const dynamicServices = document.getElementById('cp-dynamic-services');
+    // Groups
     const dynamicEvents = document.getElementById('cp-dynamic-events');
+    const dynamicTrips = document.getElementById('cp-dynamic-trips');
+    const dynamicProjects = document.getElementById('cp-dynamic-projects');
+    const dynamicServices = document.getElementById('cp-dynamic-services');
+    const dynamicTeam = document.getElementById('cp-dynamic-team');
+    
     const staticNav = document.getElementById('cp-static-nav');
+    const settingsGroup = document.getElementById('cp-settings');
     
     // Toggles
     const btnContrast = document.getElementById('cp-toggle-contrast');
@@ -154,8 +132,23 @@
 
     let isOpen = false;
     let searchTimeout;
+    let currentSearchController = null;
 
-    // --- INIT STATE FROM LOCALSTORAGE ---
+    // --- HELPER ---
+    function updateToggleUI(btn, isActive) {
+        if(!btn) return;
+        const status = btn.querySelector('.toggle-status');
+        if(status) {
+            status.innerText = isActive ? "AN" : "AUS";
+            status.className = `toggle-status text-[10px] font-bold border px-2 py-0.5 rounded ${
+                isActive 
+                ? 'bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900 dark:text-emerald-300 dark:border-emerald-800' 
+                : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-600 text-slate-500'
+            }`;
+        }
+    }
+
+    // --- INIT ---
     function initAccessibility() {
         if (localStorage.getItem('high-contrast') === 'true') {
             document.documentElement.classList.add('high-contrast');
@@ -170,20 +163,6 @@
             updateToggleUI(btnMotion, true);
         }
     }
-    
-    function updateToggleUI(btn, isActive) {
-        if(!btn) return;
-        const status = btn.querySelector('.toggle-status');
-        if(status) {
-            status.innerText = isActive ? "AN" : "AUS";
-            status.className = `toggle-status text-[10px] font-bold border px-2 py-0.5 rounded ${
-                isActive 
-                ? 'bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900 dark:text-emerald-300 dark:border-emerald-800' 
-                : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-600 text-slate-500'
-            }`;
-        }
-    }
-
     initAccessibility();
 
     // --- OPEN / CLOSE ---
@@ -194,12 +173,7 @@
         backdrop.classList.remove('opacity-0');
         modal.classList.remove('scale-95');
         document.body.style.overflow = 'hidden';
-        
-        if(input) {
-            input.value = '';
-            resetView();
-            setTimeout(() => input.focus(), 50);
-        }
+        if(input) { input.value = ''; resetView(); setTimeout(() => input.focus(), 50); }
         isOpen = true;
     }
 
@@ -208,126 +182,203 @@
         backdrop.classList.add('opacity-0');
         modal.classList.add('scale-95');
         document.body.style.overflow = '';
-        setTimeout(() => {
-            backdrop.classList.add('hidden');
-        }, 200);
+        setTimeout(() => { backdrop.classList.add('hidden'); }, 200);
         isOpen = false;
     }
 
-    // --- RESET VIEW ---
+    // Zeigt alles "Standardmäßige" wieder an (wenn Input leer)
     function resetView() {
-        if(dynamicServices) dynamicServices.classList.add('hidden');
-        if(dynamicEvents) dynamicEvents.classList.add('hidden');
-        if(staticNav) staticNav.classList.remove('hidden');
-        
-        const settings = document.getElementById('cp-settings');
-        if(settings) settings.classList.remove('hidden');
+        // Dynamische Ergebnisse ausblenden
+        [dynamicEvents, dynamicTrips, dynamicProjects, dynamicServices, dynamicTeam].forEach(el => {
+            if(el) {
+                el.classList.add('hidden');
+                const list = el.querySelector('.cp-list-content');
+                if(list) list.innerHTML = ''; // Inhalt löschen
+            }
+        });
 
+        // Statische Gruppen wieder einblenden
+        if(staticNav) staticNav.classList.remove('hidden');
+        if(settingsGroup) settingsGroup.classList.remove('hidden');
+
+        // Alle Items in den statischen Gruppen sichtbar machen
         document.querySelectorAll('.cp-item').forEach(el => el.classList.remove('hidden'));
+        
+        // Icons zurücksetzen
+        searchIcon?.classList.remove('hidden');
+        loadingIcon?.classList.add('hidden');
     }
 
-    // --- LIVE SEARCH LOGIC (DIRECTUS) ---
+    // --- MAIN SEARCH FUNCTION ---
     async function performSearch(query) {
-        // Mindestens 2 Zeichen für eine Suche
         if (query.length < 2) {
             resetView();
-            filterStaticItems(query);
+            filterStaticItems(query); // Auch bei 1 Zeichen schon statisch filtern
             return;
         }
 
+        // 1. Abort old request
+        if (currentSearchController) currentSearchController.abort();
+        currentSearchController = new AbortController();
+        const signal = currentSearchController.signal;
+
+        // 2. UI Loading
         searchIcon?.classList.add('hidden');
         loadingIcon?.classList.remove('hidden');
 
         try {
-            // Wir suchen parallel in Events und Services
-            // WICHTIG: Die URL api.diebruecke.social nutzen
-            const [eventsRes, servicesRes] = await Promise.all([
-                // Suche in Events (Titel oder Beschreibung)
-                fetch(`https://api.diebruecke.social/items/events?limit=3&filter[status][_eq]=published&filter[_or][0][title][_icontains]=${encodeURIComponent(query)}&filter[_or][1][description][_icontains]=${encodeURIComponent(query)}&fields=id,title,slug,date_start,date`),
-                
-                // Suche in Services (Titel oder Teaser)
-                fetch(`https://api.diebruecke.social/items/services?limit=3&filter[status][_eq]=published&filter[_or][0][title][_icontains]=${encodeURIComponent(query)}&filter[_or][1][teaser][_icontains]=${encodeURIComponent(query)}&fields=id,title,slug,icon`)
-            ]);
-
-            const eventsData = await eventsRes.json();
-            const servicesData = await servicesRes.json();
-
-            // Ergebnisse rendern
-            renderEvents(eventsData.data || []);
-            renderServices(servicesData.data || []);
+            const baseUrl = 'https://api.diebruecke.social/items';
+            const s = encodeURIComponent(query);
             
-            // Lokale (statische) Items filtern wir zusätzlich
-            filterStaticItems(query);
+            // Parallel Fetching
+            const promises = [
+                fetch(`${baseUrl}/events?limit=3&search=${s}&filter[status][_eq]=published&fields=id,title,slug,start_date`, { signal }),
+                fetch(`${baseUrl}/services?limit=3&search=${s}&filter[status][_eq]=published&fields=id,title,slug,icon`, { signal }),
+                fetch(`${baseUrl}/projects?limit=3&search=${s}&filter[status][_eq]=published&fields=id,title,slug,category`, { signal }),
+                fetch(`${baseUrl}/camps?limit=3&search=${s}&filter[status][_eq]=published&fields=id,title,slug,date_range`, { signal }),
+                fetch(`${baseUrl}/city_trips?limit=3&search=${s}&filter[status][_eq]=published&fields=id,title,slug,date_range`, { signal }),
+                fetch(`${baseUrl}/team?limit=3&search=${s}&filter[status][_eq]=published&fields=id,name,role`, { signal }),
+            ];
+
+            const responses = await Promise.all(promises);
+            const jsonData = await Promise.all(responses.map(r => r.ok ? r.json() : { data: [] }));
+
+            if (!signal.aborted) {
+                renderEvents(jsonData[0].data);
+                renderServices(jsonData[1].data);
+                renderProjects(jsonData[2].data);
+                renderTrips([...jsonData[3].data, ...jsonData[4].data]);
+                renderTeam(jsonData[5].data);
+                
+                // Statische Items filtern, damit sie auch zu den Suchergebnissen passen
+                filterStaticItems(query);
+            }
 
         } catch (e) {
-            console.error("CP Search Error", e);
+            if (e.name !== 'AbortError') console.error("CP Search Error:", e);
         } finally {
-            searchIcon?.classList.remove('hidden');
-            loadingIcon?.classList.add('hidden');
+            // FIX: Loading Icon immer ausblenden, wenn wir fertig sind (oder abgebrochen wurden)
+            // Wir prüfen nur, ob wir der *aktuelle* Controller sind, um Flackern zu vermeiden
+            if (currentSearchController && currentSearchController.signal === signal) {
+                searchIcon?.classList.remove('hidden');
+                loadingIcon?.classList.add('hidden');
+                currentSearchController = null;
+            }
         }
     }
 
-    function renderEvents(events) {
+    // --- RENDER FUNCTIONS ---
+
+    function renderEvents(items) {
         if(!dynamicEvents) return;
         const list = dynamicEvents.querySelector('.cp-list-content');
-        if(!list) return;
         list.innerHTML = '';
-
-        if (events.length > 0) {
+        if (items && items.length > 0) {
             dynamicEvents.classList.remove('hidden');
-            events.forEach(event => {
-                // Datums-Logik (date_start oder date als Fallback)
-                const dateRaw = event.date_start || event.date;
+            items.forEach(item => {
+                const dateRaw = item.start_date;
                 const date = dateRaw ? new Date(dateRaw).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' }) : '';
-                
-                const el = document.createElement('a');
-                el.href = `/events/${event.slug}`;
-                el.className = "cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group focus:bg-slate-100 dark:focus:bg-slate-800 focus:outline-none";
-                el.innerHTML = `
-                    <div class="w-8 h-8 rounded-lg bg-rose-500 text-white flex items-center justify-center shrink-0 text-xs font-bold">${date}</div>
-                    <div class="min-w-0 flex-1">
-                        <span class="block text-slate-700 dark:text-slate-200 font-medium group-hover:text-rose-600 truncate">${event.title}</span>
-                    </div>
-                `;
-                list.appendChild(el);
+                addItem(list, `/events/${item.slug}`, item.title, 'bg-rose-500 text-white', date);
             });
         } else {
             dynamicEvents.classList.add('hidden');
         }
     }
 
-    function renderServices(services) {
+    function renderServices(items) {
         if(!dynamicServices) return;
         const list = dynamicServices.querySelector('.cp-list-content');
-        if(!list) return;
         list.innerHTML = '';
-
-        if (services.length > 0) {
+        if (items && items.length > 0) {
             dynamicServices.classList.remove('hidden');
-            services.forEach(service => {
-                const icon = service.icon ? service.icon.replace('fa-', '') : 'star'; // FontAwesome Hack wenn nötig
-                const fullIconClass = service.icon ? `fa-solid ${service.icon}` : 'fa-solid fa-star';
-
-                const el = document.createElement('a');
-                el.href = `/services/${service.slug}`;
-                el.className = "cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group focus:bg-slate-100 dark:focus:bg-slate-800 focus:outline-none";
-                el.innerHTML = `
-                    <div class="w-8 h-8 rounded-lg bg-indigo-500 text-white flex items-center justify-center shrink-0 text-sm"><i class="${fullIconClass}"></i></div>
-                    <div class="min-w-0 flex-1">
-                        <span class="block text-slate-700 dark:text-slate-200 font-medium group-hover:text-indigo-600 truncate">${service.title}</span>
-                    </div>
-                `;
-                list.appendChild(el);
+            items.forEach(item => {
+                const icon = item.icon ? `<i class="fa-solid ${item.icon}"></i>` : '<i class="fa-solid fa-star"></i>';
+                addItem(list, `/services/${item.slug}`, item.title, 'bg-indigo-500 text-white', icon, true);
             });
         } else {
             dynamicServices.classList.add('hidden');
         }
     }
 
-    function filterStaticItems(query) {
-        const items = document.querySelectorAll('.cp-item[data-keywords]');
-        const term = query.toLowerCase();
+    function renderProjects(items) {
+        if(!dynamicProjects) return;
+        const list = dynamicProjects.querySelector('.cp-list-content');
+        list.innerHTML = '';
+        if (items && items.length > 0) {
+            dynamicProjects.classList.remove('hidden');
+            items.forEach(item => {
+                addItem(list, `/projects/${item.slug}`, item.title, 'bg-purple-500 text-white', '<i class="fa-solid fa-lightbulb"></i>', true);
+            });
+        } else {
+            dynamicProjects.classList.add('hidden');
+        }
+    }
 
+    function renderTrips(items) {
+        if(!dynamicTrips) return;
+        const list = dynamicTrips.querySelector('.cp-list-content');
+        list.innerHTML = '';
+        if (items && items.length > 0) {
+            dynamicTrips.classList.remove('hidden');
+            items.forEach(item => {
+                // Heuristik: City Trips haben meistens Datum im Titel oder date_range?
+                // Wir linken pauschal auf /camps/slug, da die Struktur ähnlich ist.
+                const url = `/camps/${item.slug}`; 
+                addItem(list, url, item.title, 'bg-orange-500 text-white', '<i class="fa-solid fa-plane"></i>', true);
+            });
+        } else {
+            dynamicTrips.classList.add('hidden');
+        }
+    }
+
+    function renderTeam(items) {
+        if(!dynamicTeam) return;
+        const list = dynamicTeam.querySelector('.cp-list-content');
+        list.innerHTML = '';
+        if (items && items.length > 0) {
+            dynamicTeam.classList.remove('hidden');
+            items.forEach(item => {
+                const role = item.role || 'Team';
+                addItem(list, `/about`, `${item.name} (${role})`, 'bg-emerald-500 text-white', '<i class="fa-solid fa-user"></i>', true);
+            });
+        } else {
+            dynamicTeam.classList.add('hidden');
+        }
+    }
+
+    function addItem(container, href, text, iconClass, iconContent, isHtmlIcon = false) {
+        const el = document.createElement('a');
+        el.href = href;
+        el.className = "cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group focus:bg-slate-100 dark:focus:bg-slate-800 focus:outline-none";
+        
+        const iconDiv = document.createElement('div');
+        iconDiv.className = `w-8 h-8 rounded-lg flex items-center justify-center shrink-0 text-xs font-bold ${iconClass}`;
+        if(isHtmlIcon) iconDiv.innerHTML = iconContent;
+        else iconDiv.innerText = iconContent;
+
+        const textDiv = document.createElement('div');
+        textDiv.className = "min-w-0 flex-1";
+        textDiv.innerHTML = `<span class="block text-slate-700 dark:text-slate-200 font-medium group-hover:text-black dark:group-hover:text-white truncate">${text}</span>`;
+
+        el.appendChild(iconDiv);
+        el.appendChild(textDiv);
+        container.appendChild(el);
+    }
+
+    // Filtert die STATISCHEN Items (Nav & Settings) basierend auf der Suche
+    function filterStaticItems(query) {
+        const term = query.toLowerCase().trim();
+        
+        // Wenn Suche leer ist -> Zeige alle statischen Items (Reset)
+        if (!term) {
+            document.querySelectorAll('.cp-item').forEach(el => el.classList.remove('hidden'));
+            if(staticNav) staticNav.classList.remove('hidden');
+            if(settingsGroup) settingsGroup.classList.remove('hidden');
+            return;
+        }
+
+        // Suche läuft -> Filter Items
+        const items = document.querySelectorAll('.cp-item[data-keywords]'); // Nur Items mit Keywords filtern (also Nav + Settings)
         items.forEach((item) => {
             const text = (item.textContent + ' ' + (item.getAttribute('data-keywords') || '')).toLowerCase();
             if (text.includes(term)) {
@@ -336,25 +387,35 @@
                 item.classList.add('hidden');
             }
         });
-
-        // Hide empty groups (Navigation, Settings)
-        [staticNav, document.getElementById('cp-settings')].forEach(group => {
+        
+        // Verstecke leere Gruppen
+        [staticNav, settingsGroup].forEach(group => {
             if(!group) return;
-            // Wir prüfen nur die direkten Kinder .cp-item, die sichtbar sind
-            const visible = group.querySelectorAll('.cp-item:not(.hidden)').length > 0;
-            visible ? group.classList.remove('hidden') : group.classList.add('hidden');
+            const visibleItems = group.querySelectorAll('.cp-item:not(.hidden)');
+            if (visibleItems.length > 0) {
+                group.classList.remove('hidden');
+            } else {
+                group.classList.add('hidden');
+            }
         });
     }
 
-    // --- EVENT LISTENERS ---
+    // --- LISTENERS ---
     input?.addEventListener('input', (e) => {
         const val = e.target.value;
         clearTimeout(searchTimeout);
         
-        // Erstmal lokal filtern für schnelles Feedback
+        // Wenn Input gelöscht wird, sofort Reset
+        if(val.length < 2) {
+            if(currentSearchController) currentSearchController.abort();
+            searchIcon?.classList.remove('hidden');
+            loadingIcon?.classList.add('hidden');
+            if(val.length === 0) resetView(); 
+            else filterStaticItems(val); // Bei 1 Zeichen nur statisch filtern
+            return;
+        }
+
         filterStaticItems(val);
-        
-        // Nach 300ms Inaktivität erst den API Call machen (Debounce)
         searchTimeout = setTimeout(() => performSearch(val), 300);
     });
 
@@ -368,11 +429,10 @@
         }
         if (!isOpen) return;
         if (e.key === 'Escape') closeCP();
-
+        
         if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
             e.preventDefault();
-            // Nur sichtbare Items navigieren
-            const items = Array.from(document.querySelectorAll('.cp-item:not(.hidden)'));
+            const items = Array.from(document.querySelectorAll('.cp-item:not(.hidden)')); // Nur sichtbare navigieren
             if(items.length === 0) return;
             const active = document.activeElement;
             let idx = items.indexOf(active);
@@ -384,43 +444,27 @@
 
     backdrop?.addEventListener('click', (e) => { if (e.target === backdrop) closeCP(); });
 
-    // --- TOGGLE HANDLERS ---
+    // Toggles
     btnContrast?.addEventListener('click', () => {
         const isActive = document.documentElement.classList.toggle('high-contrast');
         localStorage.setItem('high-contrast', String(isActive));
         updateToggleUI(btnContrast, isActive);
     });
-
     btnFontSize?.addEventListener('click', () => {
         const isActive = document.documentElement.classList.toggle('large-text');
         localStorage.setItem('large-text', String(isActive));
         updateToggleUI(btnFontSize, isActive);
     });
-
     btnMotion?.addEventListener('click', () => {
         const isActive = document.documentElement.classList.toggle('reduced-motion');
         localStorage.setItem('reduced-motion', String(isActive));
         updateToggleUI(btnMotion, isActive);
     });
-
 </script>
 
 <style is:global>
-    /* 1. HIGH CONTRAST */
     html.high-contrast { filter: contrast(1.3) saturate(1.1); }
     html.high-contrast * { text-shadow: none !important; }
     html.high-contrast img, html.high-contrast video { filter: contrast(0.8); }
-
-    /* 2. LARGE TEXT (125%) */
     html.large-text { font-size: 125%; }
-    
-    /* 3. REDUCED MOTION */
-    html.reduced-motion *, 
-    html.reduced-motion *::before, 
-    html.reduced-motion *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-        scroll-behavior: auto !important;
-    }
 </style>
