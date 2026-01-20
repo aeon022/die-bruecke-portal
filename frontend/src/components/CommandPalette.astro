@@ -176,7 +176,6 @@
         const status = btn.querySelector('.toggle-status');
         if(status) {
             status.innerText = isActive ? "AN" : "AUS";
-            // WICHTIG: Die Klasse 'toggle-status' muss erhalten bleiben!
             status.className = `toggle-status text-[10px] font-bold border px-2 py-0.5 rounded ${
                 isActive 
                 ? 'bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900 dark:text-emerald-300 dark:border-emerald-800' 
@@ -221,15 +220,15 @@
         if(dynamicEvents) dynamicEvents.classList.add('hidden');
         if(staticNav) staticNav.classList.remove('hidden');
         
-        // Settings immer zeigen
         const settings = document.getElementById('cp-settings');
         if(settings) settings.classList.remove('hidden');
 
         document.querySelectorAll('.cp-item').forEach(el => el.classList.remove('hidden'));
     }
 
-    // --- SEARCH LOGIC ---
+    // --- LIVE SEARCH LOGIC (DIRECTUS) ---
     async function performSearch(query) {
+        // Mindestens 2 Zeichen für eine Suche
         if (query.length < 2) {
             resetView();
             filterStaticItems(query);
@@ -240,16 +239,24 @@
         loadingIcon?.classList.remove('hidden');
 
         try {
+            // Wir suchen parallel in Events und Services
+            // WICHTIG: Die URL api.diebruecke.social nutzen
             const [eventsRes, servicesRes] = await Promise.all([
-                fetch(`https://api.diebruecke.social/items/events?limit=3&filter[status][_eq]=published&filter[_or][0][title][_icontains]=${encodeURIComponent(query)}&filter[_or][1][description][_icontains]=${encodeURIComponent(query)}&fields=id,title,slug,start_date,date`),
+                // Suche in Events (Titel oder Beschreibung)
+                fetch(`https://api.diebruecke.social/items/events?limit=3&filter[status][_eq]=published&filter[_or][0][title][_icontains]=${encodeURIComponent(query)}&filter[_or][1][description][_icontains]=${encodeURIComponent(query)}&fields=id,title,slug,date_start,date`),
+                
+                // Suche in Services (Titel oder Teaser)
                 fetch(`https://api.diebruecke.social/items/services?limit=3&filter[status][_eq]=published&filter[_or][0][title][_icontains]=${encodeURIComponent(query)}&filter[_or][1][teaser][_icontains]=${encodeURIComponent(query)}&fields=id,title,slug,icon`)
             ]);
 
             const eventsData = await eventsRes.json();
             const servicesData = await servicesRes.json();
 
+            // Ergebnisse rendern
             renderEvents(eventsData.data || []);
             renderServices(servicesData.data || []);
+            
+            // Lokale (statische) Items filtern wir zusätzlich
             filterStaticItems(query);
 
         } catch (e) {
@@ -269,7 +276,10 @@
         if (events.length > 0) {
             dynamicEvents.classList.remove('hidden');
             events.forEach(event => {
-                const date = new Date(event.start_date || event.date).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' });
+                // Datums-Logik (date_start oder date als Fallback)
+                const dateRaw = event.date_start || event.date;
+                const date = dateRaw ? new Date(dateRaw).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' }) : '';
+                
                 const el = document.createElement('a');
                 el.href = `/events/${event.slug}`;
                 el.className = "cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group focus:bg-slate-100 dark:focus:bg-slate-800 focus:outline-none";
@@ -295,12 +305,14 @@
         if (services.length > 0) {
             dynamicServices.classList.remove('hidden');
             services.forEach(service => {
-                const icon = service.icon || 'fa-star';
+                const icon = service.icon ? service.icon.replace('fa-', '') : 'star'; // FontAwesome Hack wenn nötig
+                const fullIconClass = service.icon ? `fa-solid ${service.icon}` : 'fa-solid fa-star';
+
                 const el = document.createElement('a');
                 el.href = `/services/${service.slug}`;
                 el.className = "cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group focus:bg-slate-100 dark:focus:bg-slate-800 focus:outline-none";
                 el.innerHTML = `
-                    <div class="w-8 h-8 rounded-lg bg-indigo-500 text-white flex items-center justify-center shrink-0 text-sm"><i class="fa-solid ${icon}"></i></div>
+                    <div class="w-8 h-8 rounded-lg bg-indigo-500 text-white flex items-center justify-center shrink-0 text-sm"><i class="${fullIconClass}"></i></div>
                     <div class="min-w-0 flex-1">
                         <span class="block text-slate-700 dark:text-slate-200 font-medium group-hover:text-indigo-600 truncate">${service.title}</span>
                     </div>
@@ -325,9 +337,10 @@
             }
         });
 
-        // Hide empty groups
+        // Hide empty groups (Navigation, Settings)
         [staticNav, document.getElementById('cp-settings')].forEach(group => {
             if(!group) return;
+            // Wir prüfen nur die direkten Kinder .cp-item, die sichtbar sind
             const visible = group.querySelectorAll('.cp-item:not(.hidden)').length > 0;
             visible ? group.classList.remove('hidden') : group.classList.add('hidden');
         });
@@ -337,7 +350,11 @@
     input?.addEventListener('input', (e) => {
         const val = e.target.value;
         clearTimeout(searchTimeout);
+        
+        // Erstmal lokal filtern für schnelles Feedback
         filterStaticItems(val);
+        
+        // Nach 300ms Inaktivität erst den API Call machen (Debounce)
         searchTimeout = setTimeout(() => performSearch(val), 300);
     });
 
@@ -354,6 +371,7 @@
 
         if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
             e.preventDefault();
+            // Nur sichtbare Items navigieren
             const items = Array.from(document.querySelectorAll('.cp-item:not(.hidden)'));
             if(items.length === 0) return;
             const active = document.activeElement;
@@ -366,8 +384,7 @@
 
     backdrop?.addEventListener('click', (e) => { if (e.target === backdrop) closeCP(); });
 
-    // --- TOGGLE HANDLERS (Ohne auto-close) ---
-    
+    // --- TOGGLE HANDLERS ---
     btnContrast?.addEventListener('click', () => {
         const isActive = document.documentElement.classList.toggle('high-contrast');
         localStorage.setItem('high-contrast', String(isActive));
