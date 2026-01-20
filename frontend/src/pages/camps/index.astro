@@ -3,60 +3,71 @@ import MainLayout from '../../layouts/layout.astro';
 import { directus } from '../../lib/directus';
 import { readItems } from '@directus/sdk';
 
-// 1. Daten aus Directus laden
 const camps = await directus.request(readItems('camps', {
     filter: { status: { _eq: 'published' } },
     sort: ['date_range'] 
 }));
 
 const ASSET_URL = "https://api.diebruecke.social/assets";
-
-// 2. Featured-Logik
 const featuredCamp = camps.find((c: any) => c.is_featured) || camps[0];
+
+// Aggressivere Flaggen-Zuweisung
+const getFlag = (location: string) => {
+    if (!location) return '📍';
+    const loc = location.toLowerCase();
+    if (loc.includes('österreich') || loc.includes('austria')) return '🇦🇹';
+    if (loc.includes('kroatien') || loc.includes('croatia') || loc.includes('istrien')) return '🇭🇷';
+    if (loc.includes('italien') || loc.includes('italy')) return '🇮🇹';
+    if (loc.includes('slowenien') || loc.includes('slovenia')) return '🇸🇮';
+    if (loc.includes('ungarn') || loc.includes('hungary')) return '🇭🇺';
+    if (loc.includes('tschechien') || loc.includes('czech')) return '🇨🇿';
+    if (loc.includes('deutschland') || loc.includes('germany')) return '🇩🇪';
+    return '🌍';
+};
+
+function cleanDesc(html: string) {
+    if (!html) return "";
+    return html.replace(/<[^>]*>?/gm, '').slice(0, 160) + '...';
+}
 ---
 
-<MainLayout title="Camps & Travel | Die Brücke">
+<MainLayout title="Camps & Reisen 2026 | Die Brücke">
     
-    {/* --- HERO SECTION (Featured Camp) --- */}
+    {/* --- HERO SECTION --- */}
     {featuredCamp && (
         <section class="px-4 sm:px-6 pt-6 pb-20">
-            <div class="relative bg-slate-900 rounded-[48px] overflow-hidden min-h-[60vh] flex items-center px-6 md:px-16 py-20">
-                
-                {/* Background Image mit Overlay */}
+            <div class="relative bg-slate-900 rounded-[48px] overflow-hidden min-h-[65vh] flex items-center px-6 md:px-16 py-24 shadow-2xl">
                 <div class="absolute inset-0">
                     {featuredCamp.image && (
-                         <img src={`${ASSET_URL}/${featuredCamp.image}`} class="w-full h-full object-cover opacity-40" alt={featuredCamp.title} />
+                         <img src={`${ASSET_URL}/${featuredCamp.image}`} class="w-full h-full object-cover opacity-40" alt="" />
                     )}
-                    <div class="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/80 to-transparent"></div>
+                    <div class="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-900/80 to-transparent"></div>
                 </div>
 
-                {/* Dekorative Blobs */}
-                <div class="absolute top-[-20%] right-[-10%] w-[700px] h-[700px] bg-rose-500/20 rounded-full blur-[120px] animate-pulse-slow pointer-events-none"></div>
-
                 <div class="relative z-10 max-w-2xl">
-                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/20 border border-rose-500/30 text-rose-400 text-xs font-bold uppercase tracking-widest mb-6">
-                        <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span> Highlight
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/20 border border-rose-500/30 text-rose-400 text-xs font-bold uppercase tracking-widest mb-8">
+                        <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span> Reise Highlight 2026
                     </div>
-                    <h1 class="text-5xl md:text-7xl font-display font-extrabold text-white mb-6 leading-tight">
+                    <h1 class="text-5xl md:text-7xl font-display font-extrabold text-white mb-6 tracking-tight leading-[0.95]">
                         {featuredCamp.title}
                     </h1>
                     
-                    {/* Kurzbeschreibung ohne HTML-Tags für Hero */}
-                    <p class="text-xl text-slate-300 mb-8 leading-relaxed line-clamp-3">
-                        {featuredCamp.description?.replace(/<[^>]*>?/gm, '')}
+                    <p class="text-xl text-slate-300 mb-10 leading-relaxed font-medium">
+                        {cleanDesc(featuredCamp.description)}
                     </p>
                     
-                    <div class="flex flex-wrap gap-6 mb-10 text-sm font-medium text-slate-400">
+                    <div class="flex flex-wrap gap-8 mb-10 text-sm font-bold uppercase tracking-widest text-slate-400">
                         <span class="flex items-center gap-2"><i class="fa-regular fa-calendar text-rose-500"></i> {featuredCamp.date_range}</span>
-                        <span class="flex items-center gap-2"><i class="fa-solid fa-location-dot text-rose-500"></i> {featuredCamp.location}</span>
-                        <span class="flex items-center gap-2"><i class="fa-solid fa-users text-rose-500"></i> {featuredCamp.age_range}</span>
+                        <span class="flex items-center gap-2 text-white">
+                           <span class="text-2xl">{getFlag(featuredCamp.location)}</span> {featuredCamp.location}
+                        </span>
                     </div>
 
                     <div class="flex flex-wrap gap-4">
-                        <a href={`/camps/${featuredCamp.slug}`} class="bg-rose-600 text-white px-8 py-4 rounded-full font-bold hover:bg-rose-700 transition-all shadow-lg shadow-rose-900/20">
+                        <a href={`/camps/${featuredCamp.slug}`} class="bg-rose-600 text-white px-10 py-5 rounded-full font-bold hover:bg-rose-700 transition-all shadow-xl">
                             Details & Anmeldung
                         </a>
-                        <span class="px-8 py-4 border border-slate-700 text-white rounded-full font-bold">
+                        <span class="px-8 py-5 border border-slate-700 text-white rounded-full font-bold backdrop-blur-sm">
                             € {featuredCamp.price},-
                         </span>
                     </div>
@@ -65,100 +76,51 @@ const featuredCamp = camps.find((c: any) => c.is_featured) || camps[0];
         </section>
     )}
 
-    {/* --- LINK ZU CITY TRIPS (NEU) --- */}
-    <section class="px-4 sm:px-6 -mt-10 mb-20 relative z-20">
+    {/* --- LISTE ALLER REISEN 2026 --- */}
+    <section class="px-6 sm:px-10 py-20">
         <div class="max-w-7xl mx-auto">
-            <a href="/city-trips" class="group relative block rounded-[32px] overflow-hidden bg-indigo-900 text-white shadow-2xl hover:shadow-indigo-900/30 transition-all hover:-translate-y-1">
-                
-                {/* Deko-Hintergrund */}
-                <div class="absolute inset-0 bg-gradient-to-r from-indigo-900 to-violet-900 opacity-90 z-10"></div>
-                <div class="absolute right-0 top-0 w-64 h-64 bg-white/5 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2"></div>
-                
-                {/* Inhalt */}
-                <div class="relative z-20 p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8">
-                    <div class="flex-1">
-                        <div class="inline-flex items-center gap-2 text-indigo-300 font-bold uppercase tracking-widest text-xs mb-3">
-                            <i class="fa-solid fa-bus"></i> Tagesausflüge & Kurztrips
-                        </div>
-                        <h3 class="text-3xl md:text-4xl font-display font-bold mb-3 group-hover:text-indigo-200 transition-colors">
-                            Nur kurz weg?
-                        </h3>
-                        <p class="text-indigo-100/80 text-lg max-w-xl leading-relaxed">
-                            Entdecke unsere City Trips. Perfekt für einen Tag voller Erlebnis, Kultur und Spaß – ganz ohne Kofferpacken.
-                        </p>
-                    </div>
-                    
-                    <div class="shrink-0">
-                        <span class="inline-flex items-center gap-3 bg-white text-indigo-900 px-8 py-4 rounded-full font-bold group-hover:bg-indigo-50 transition-colors">
-                            City Trips ansehen <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
-                        </span>
-                    </div>
+            <div class="flex items-end justify-between mb-16 border-b border-slate-100 dark:border-slate-800 pb-8">
+                <div>
+                    <h2 class="text-4xl md:text-5xl font-display font-bold text-slate-900 dark:text-white tracking-tighter">Unsere Reisen 2026.</h2>
+                    <p class="text-slate-500 dark:text-slate-400 text-lg mt-2 font-medium italic">Abenteuer warten auf dich.</p>
                 </div>
-            </a>
-        </div>
-    </section>
-
-        {/* --- LIST SECTION (Alle Camps) --- */}
-    <section class="px-4 sm:px-6 pb-20">
-        <div class="max-w-7xl mx-auto">
-            <h2 class="text-3xl font-display font-bold text-slate-900 mb-12">Alle Reisen 2025</h2>
+            </div>
             
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
                 {camps.map((camp: any) => (
-                    <article class="camp-card group bg-white border border-slate-200 rounded-3xl overflow-hidden hover:shadow-xl transition-all hover:-translate-y-1 flex flex-col h-full">
-                        {/* Bild Link */}
+                    <article class="group bg-white dark:bg-slate-900 rounded-[32px] overflow-hidden border border-slate-100 dark:border-slate-800 hover:shadow-2xl transition-all flex flex-col h-full">
                         <a href={`/camps/${camp.slug}`} class="block relative h-64 overflow-hidden">
                             {camp.image ? (
-                                <img src={`${ASSET_URL}/${camp.image}`} alt={camp.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                                <img src={`${ASSET_URL}/${camp.image}`} alt="" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                             ) : (
-                                <div class="w-full h-full bg-slate-100 flex items-center justify-center text-slate-300"><i class="fa-solid fa-image text-4xl"></i></div>
+                                <div class="w-full h-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-300"><i class="fa-solid fa-plane text-4xl"></i></div>
                             )}
-                            <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-bold text-slate-900 shadow-sm">
-                                € {camp.price}
+                            <div class="absolute top-4 left-4 bg-white/95 backdrop-blur px-3 py-1 rounded-xl text-xs font-bold text-slate-900 shadow-sm flex items-center gap-2">
+                                <span class="text-lg">{getFlag(camp.location)}</span> € {camp.price}
                             </div>
                         </a>
                         
-                        <div class="p-8 flex flex-col flex-grow">
-                            <div class="flex gap-4 text-xs font-bold text-slate-500 uppercase tracking-wider mb-4">
-                                <span><i class="fa-regular fa-calendar text-rose-500 mr-1"></i> {camp.date_range}</span>
+                        <div class="p-8 flex flex-col flex-1">
+                            <div class="text-[10px] font-bold text-rose-500 uppercase tracking-[0.2em] mb-4">
+                                <i class="fa-regular fa-calendar mr-1"></i> {camp.date_range}
                             </div>
                             
-                            <h3 class="camp-title text-2xl font-bold text-slate-900 mb-3">
-                                <a href={`/camps/${camp.slug}`} class="hover:text-rose-600 transition-colors">
-                                    {camp.title}
-                                </a>
+                            <h3 class="text-2xl font-display font-bold text-slate-900 dark:text-white mb-4 group-hover:text-rose-600 transition-colors">
+                                {camp.title}
                             </h3>
                             
-                            {/* Tags */}
-                            {camp.tags && (
-                                <div class="flex flex-wrap gap-2 mb-4">
-                                    {(Array.isArray(camp.tags) ? camp.tags : camp.tags.split(',')).map((tag: string) => (
-                                        <span class="text-xs bg-slate-50 text-slate-500 px-2 py-1 rounded-md border border-slate-100">
-                                            {tag.trim()}
-                                        </span>
-                                    ))}
-                                </div>
-                            )}
-
-                            {/* FASS Info Badge */}
-                            {camp.fass_hours && (
-                                <div class="mb-4 text-xs font-bold text-indigo-500 bg-indigo-50 inline-block px-2 py-1 rounded">
-                                    <i class="fa-solid fa-check mr-1"></i> {camp.fass_hours}h FASS anrechenbar
-                                </div>
-                            )}
-
-                            <div class="camp-desc prose prose-sm text-slate-500 mb-6 line-clamp-3 flex-grow" set:html={camp.description}></div>
+                            <div class="text-slate-500 dark:text-slate-400 leading-relaxed line-clamp-3 mb-8 text-sm flex-1" set:html={camp.description}></div>
                             
-                            <div class="pt-6 border-t border-slate-100 flex items-center justify-between mt-auto">
-                                <div class="flex items-center gap-2 text-sm font-medium text-slate-600">
+                            <div class="pt-6 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                                <div class="flex items-center gap-2 text-xs font-bold text-slate-400">
                                     {camp.free_spots > 0 ? (
                                         <><span class="w-2 h-2 rounded-full bg-emerald-500"></span> {camp.free_spots} Plätze frei</>
                                     ) : (
                                         <><span class="w-2 h-2 rounded-full bg-rose-500"></span> Warteliste</>
                                     )}
                                 </div>
-                                <a href={`/camps/${camp.slug}`} class="text-rose-600 font-bold hover:underline group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
-                                    Details <i class="fa-solid fa-arrow-right text-xs"></i>
+                                <a href={`/camps/${camp.slug}`} class="text-rose-600 font-bold hover:underline inline-flex items-center gap-1 text-sm">
+                                    Ansehen <i class="fa-solid fa-arrow-right text-[10px]"></i>
                                 </a>
                             </div>
                         </div>
@@ -168,22 +130,38 @@ const featuredCamp = camps.find((c: any) => c.is_featured) || camps[0];
         </div>
     </section>
 
-    {/* --- ZUSATZINFOS --- */}
-    <section class="bg-slate-50 border-t border-slate-200 py-24 px-6">
-        <div class="max-w-3xl mx-auto text-center">
-            <h2 class="text-3xl font-display font-bold text-slate-900 mb-6">Wichtige Infos zur Anmeldung</h2>
-            <p class="text-slate-500 mb-10 leading-relaxed italic text-lg">
-                „Die Anmeldung für die Sommerreisen startet meist im Frühjahr. Da die Plätze begrenzt sind, empfehlen wir eine frühzeitige Anfrage. Für FASS-Refundierung erstellen wir gerne die nötigen Bestätigungen.“
-            </p>
-            
-            <a href="/contact" class="inline-flex items-center justify-between px-8 py-5 bg-white rounded-full hover:shadow-xl transition-all border border-slate-200 group max-w-md mx-auto w-full">
-                <span class="font-bold text-slate-900 flex items-center gap-3">
-                    <i class="fa-regular fa-envelope text-rose-500"></i> Noch Fragen? Wir sind da.
-                </span>
-                <span class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center">
-                    <i class="fa-solid fa-chevron-right text-rose-500 group-hover:translate-x-1 transition-transform"></i>
-                </span>
-            </a>
+    {/* --- CITY TRIPS --- */}
+    <section class="px-6 sm:px-10 pb-32">
+        <div class="max-w-7xl mx-auto">
+            <div class="group relative block rounded-[40px] overflow-hidden bg-indigo-900 text-white shadow-2xl transition-all">
+                <div class="absolute inset-0 bg-gradient-to-r from-indigo-950 via-indigo-900 to-indigo-800 opacity-95"></div>
+                <div class="relative z-20 p-10 md:p-16 flex flex-col lg:flex-row items-center justify-between gap-10 text-center lg:text-left">
+                    <div>
+                        <h3 class="text-3xl md:text-5xl font-display font-bold mb-4 tracking-tight">Kurztrip gefällig?</h3>
+                        <p class="text-indigo-100 text-lg max-w-xl font-medium leading-relaxed">
+                            Entdecke unsere <span class="text-white border-b-2 border-indigo-400">City Trips 2026</span>. Erlebe Kultur und Action in kleinen Gruppen – ganz ohne langes Packen.
+                        </p>
+                    </div>
+                    <a href="/city-trips" class="bg-white text-indigo-900 px-10 py-5 rounded-full font-bold shadow-lg hover:bg-indigo-50 transition-colors">
+                        City Trips entdecken <i class="fa-solid fa-bus ml-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {/* --- INFO BOX --- */}
+    <section class="px-4 sm:px-6 pb-24">
+        <div class="max-w-7xl mx-auto bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-[48px] py-20 px-8 md:px-16 overflow-hidden relative shadow-sm text-center">
+            <div class="max-w-3xl mx-auto relative z-10">
+                <h2 class="text-3xl md:text-5xl font-display font-bold text-slate-900 dark:text-white mb-8 tracking-tight">Reise-Sommer 2026</h2>
+                <p class="text-slate-500 dark:text-slate-400 text-lg md:text-xl mb-12 leading-relaxed">
+                    Die Anmeldung für 2026 startet im Frühjahr. Hast du Fragen zur Finanzierung oder zum Ablauf? Wir beraten dich gerne persönlich.
+                </p>
+                <a href="/contact" class="inline-flex items-center gap-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-10 py-5 rounded-full font-bold hover:bg-rose-600 dark:hover:bg-rose-400 dark:hover:text-white transition-all shadow-xl">
+                    Kontakt aufnehmen <i class="fa-solid fa-comments text-lg"></i>
+                </a>
+            </div>
         </div>
     </section>
 
