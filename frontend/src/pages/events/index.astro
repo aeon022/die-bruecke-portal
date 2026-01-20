@@ -8,7 +8,7 @@ const [allEvents, allCategories] = await Promise.all([
     getEventCategories()
 ]);
 
-// --- HELPER: Nächstes Datum berechnen (Muss hier bleiben für Sortierung) ---
+// --- HELPER: Nächstes Datum berechnen ---
 const getNextEventDate = (event: any) => {
     const now = new Date();
     now.setHours(0,0,0,0);
@@ -34,7 +34,6 @@ const getNextEventDate = (event: any) => {
 };
 
 // --- DATEN VORBEREITEN ---
-// 1. Kategorien Lookup bauen
 const catLookup = new Map();
 (allCategories || []).forEach(cat => {
     if (cat.id) {
@@ -43,7 +42,6 @@ const catLookup = new Map();
     }
 });
 
-// 2. Events anreichern
 let eventsWithCats = allEvents.map(event => {
     const rawCats = event.event_categories || [];
     const validNames = rawCats.map(rel => {
@@ -62,7 +60,6 @@ let eventsWithCats = allEvents.map(event => {
     };
 });
 
-// 3. Filtern (nur Zukunft) & Sortieren
 const nowTimestamp = new Date().setHours(0,0,0,0);
 eventsWithCats = eventsWithCats.filter(e => e._displayDate.getTime() >= nowTimestamp);
 eventsWithCats.sort((a, b) => a._displayDate.getTime() - b._displayDate.getTime());
@@ -97,38 +94,54 @@ eventsWithCats.sort((a, b) => a._displayDate.getTime() - b._displayDate.getTime(
                         <span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-400 to-indigo-400">Für Kultur.</span>
                     </h1>
                     <p class="text-xl text-slate-300 leading-relaxed mb-10 max-w-lg font-medium border-l-4 border-rose-500 pl-6">
-                        Von intimen Konzerten bis zu offenen Diskussionsrunden – hier findet Begegnung statt. Entdecke, was Graz bewegt.
+                        Musik, Impro-Theater oder Kabarett – bei uns ist die Bühne für alle da. Entdecke neue Talente, lerne in unseren Workshops dazu oder besuche spannende Kurse. Schau einfach vorbei.
                     </p>
                 </div>
             </div>
         </div>
     </section>
 
-    {/* --- SENTINEL FOR STICKY FILTER --- */}
     <div id="sticky-sentinel" class="absolute left-0 w-full h-px -mt-24 pointer-events-none opacity-0"></div>
 
-    {/* --- NEW COMPONENT --- */}
     <section class="px-0 sm:px-6 pb-24 bg-white dark:bg-slate-950 transition-colors">
         <div class="max-w-7xl mx-auto px-6 sm:px-4">
             <EventCalendar events={eventsWithCats} categories={allCategories} />
         </div>
     </section>
 
-    {/* ... FOOTER TEASERS (bleiben gleich) ... */}
+    {/* --- FOOTER TEASER (FINALE VERSION: SERIEN & STAGEDIVE) --- */}
     <section class="cta-section px-6 sm:px-10 py-24 bg-white dark:bg-slate-950 transition-colors border-t border-slate-100 dark:border-slate-900">
         <div class="max-w-7xl mx-auto">
             <div class="bg-slate-900 rounded-[40px] p-12 md:p-20 text-center relative overflow-hidden shadow-2xl">
-                <div class="relative z-10 max-w-2xl mx-auto">
+                {/* Deko-Effekt */}
+                <div class="absolute top-0 right-0 w-[400px] h-[400px] bg-rose-500/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2"></div>
+                
+                <div class="relative z-10 max-w-3xl mx-auto">
                     <h2 class="text-3xl md:text-5xl font-display font-bold text-white mb-6 tracking-tight">
-                        Hast du eine Idee?
+                        Deine Bühne in Graz.
                     </h2>
                     <p class="text-slate-300 text-lg mb-10 font-medium leading-relaxed">
-                        Wir stellen Räume und Ressourcen für deine Initiative zur Verfügung. Egal ob Workshop, Lesung oder Selbsthilfegruppe – werde Teil des Programms.
+                        Du passt in unsere Serien? Wir suchen laufend neue Talente für 
+                        <span class="text-white">Slams</span>, 
+                        <span class="text-white">Improtheater</span>, 
+                        <span class="text-white">Kabarett</span>, 
+                        <span class="text-white">StadtLandKlang</span> oder 
+                        <span class="text-white">Made in Europe</span>. 
+                        Besonders für junge Künstler:innen bietet unser Projekt 
+                        <a href="/projects/stagedive" class="text-rose-400 hover:text-rose-300 underline underline-offset-4 decoration-rose-500/30 transition-colors">StageDIVE</a> 
+                        den perfekten Startplatz.
                     </p>
-                    <a href="/contact" class="inline-flex items-center gap-2 bg-white text-slate-900 hover:bg-rose-500 hover:text-white px-8 py-4 rounded-full font-bold transition-all shadow-lg hover:shadow-rose-500/25">
-                        Veranstaltung vorschlagen
-                        <i class="fa-solid fa-arrow-right"></i>
-                    </a>
+                    
+                    <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                        <a href="/contact" class="inline-flex items-center gap-2 bg-white text-slate-900 hover:bg-rose-500 hover:text-white px-8 py-4 rounded-full font-bold transition-all shadow-lg hover:shadow-rose-500/25 w-full sm:w-auto">
+                            Jetzt anfragen
+                            <i class="fa-solid fa-paper-plane text-sm ml-1"></i>
+                        </a>
+                        <span class="text-slate-500 font-bold text-sm uppercase tracking-widest px-2">oder</span>
+                        <a href="/projects/stagedive" class="inline-flex items-center gap-2 bg-slate-800 text-white hover:bg-slate-700 px-8 py-4 rounded-full font-bold transition-all border border-slate-700 w-full sm:w-auto">
+                            Mehr zu StageDIVE
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
