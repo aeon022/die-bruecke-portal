@@ -2,7 +2,6 @@
 import { directus } from '../lib/directus';
 import { readSingleton } from '@directus/sdk';
 
-// Daten holen (analog zu layout.astro)
 let projectName = 'Die Brücke';
 let logoUrl = null;
 
@@ -46,16 +45,20 @@ const menuItems = [
   <header id="main-header" class="relative flex items-center justify-between px-6 sm:px-10 pt-8 pb-6 transition-[padding,background-color,box-shadow,transform,border-radius,border] duration-300 ease-in-out">
     
     <a href="/" class="flex items-center gap-3 group" aria-label="Zur Startseite">
-      <div id="logo-container" class="w-10 h-10 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/10 flex items-center justify-center shadow-sm group-hover:border-rose-500 transition-all duration-300 overflow-hidden text-slate-900 dark:text-white">
+      <div id="logo-container" class={`rounded-xl bg-transparent flex items-center justify-center transition-all duration-300 overflow-hidden text-slate-900 dark:text-white ${logoUrl ? 'w-auto h-16 px-5' : 'w-12 h-12'}`}>
         {logoUrl ? (
-             <img src={logoUrl} alt="Logo" class="w-full h-full object-contain p-1" />
+             <img src={logoUrl} alt={projectName} class="h-full w-auto object-contain p-1 logo-img" />
         ) : (
              <div class="w-3 h-3 rounded-sm bg-rose-500"></div>
         )}
       </div>
-      <span class="text-xl font-bold font-display tracking-tight text-slate-900 dark:text-white brand-text">
-        {projectName}
-      </span>
+      
+      {!logoUrl && (
+        <span class="text-xl font-bold font-display tracking-tight text-slate-900 dark:text-white brand-text">
+          {projectName}
+        </span>
+      )}
+      {logoUrl && <span class="sr-only">{projectName}</span>}
     </a>
 
     <div class="flex items-center gap-2 sm:gap-3">
@@ -95,34 +98,34 @@ const menuItems = [
     </div>
   </header>
 
-  <div id="navOverlay" class="-mt-px w-full bg-slate-800 dark:bg-slate-900 text-white border-x border-b border-white/10 dark:border-white/5 rounded-b-[40px] overflow-hidden nav-panel nav-transition shadow-2xl backdrop-blur-md" data-state="closed" aria-hidden="true">
+  <div id="navOverlay" class="-mt-px w-full bg-slate-700/95 dark:bg-slate-800/95 text-white border-x border-b border-white/10 dark:border-white/5 rounded-[40px] overflow-hidden nav-panel nav-transition shadow-2xl backdrop-blur-xl" data-state="closed" aria-hidden="true">
     <div class="max-w-7xl mx-auto w-full px-6 sm:px-10 py-5 flex items-center justify-between border-b border-white/10">
       <div class="flex items-center gap-2">
         <span class="inline-block w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
         <span class="text-[11px] font-bold uppercase tracking-widest text-white/80">Navigation</span>
       </div>
-      <a href="/contact" class="md:hidden text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-white transition">Kontakt</a>
+      <a href="/contact" class="md:hidden text-xs font-bold uppercase tracking-wider text-slate-200 hover:text-white transition">Kontakt</a>
     </div>
 
     <div class="max-w-7xl mx-auto w-full px-6 sm:px-10 py-8">
       <nav class="grid grid-cols-1 md:grid-cols-3 w-full gap-2 md:gap-0">
         {menuItems.map((item) => (
           <a href={item.href} class="group relative p-7 md:p-10 border border-transparent hover:bg-white/5 rounded-3xl md:rounded-none transition duration-300 flex flex-col justify-center min-h-[160px] md:min-h-[180px] md:border-b md:border-r md:[&:nth-child(3n)]:border-r-0 md:[&:nth-child(n+7)]:border-b-0 md:border-white/10">
-            <span class="block text-rose-500 font-bold mb-2 text-xs tracking-widest uppercase">{item.number}</span>
-            <span class="block text-3xl md:text-4xl font-display font-extrabold tracking-tight group-hover:text-rose-500 transition-colors">{item.title}</span>
-            <span class="block mt-3 text-slate-400 text-sm group-hover:text-white transition-colors font-medium max-w-xs leading-relaxed">{item.desc}</span>
-            <i class="fa-solid fa-arrow-right absolute bottom-8 right-8 text-xl text-white/10 group-hover:text-rose-500 group-hover:-rotate-45 transition-all duration-300"></i>
+            <span class="block text-rose-400 font-bold mb-2 text-xs tracking-widest uppercase">{item.number}</span>
+            <span class="block text-3xl md:text-4xl font-display font-extrabold tracking-tight group-hover:text-rose-400 transition-colors uppercase">{item.title}</span>
+            <span class="block mt-3 text-slate-100 text-sm group-hover:text-white transition-colors font-medium max-w-xs leading-relaxed">{item.desc}</span>
+            <i class="fa-solid fa-arrow-right absolute bottom-8 right-8 text-xl text-white/10 group-hover:text-rose-400 group-hover:-rotate-45 transition-all duration-300"></i>
           </a>
         ))}
       </nav>
     </div>
 
     <div class="px-6 sm:px-10 py-6 border-t border-white/10">
-      <div class="max-w-7xl mx-auto w-full flex flex-col md:flex-row justify-between items-start md:items-center gap-6 md:gap-4 text-slate-300/80 text-sm font-medium">
-        <span class="flex items-center gap-2"><i class="fa-solid fa-location-dot text-rose-500"></i> Grabenstraße 39a, 8010 Graz</span>
+      <div class="max-w-7xl mx-auto w-full flex flex-col md:flex-row justify-between items-start md:items-center gap-6 md:gap-4 text-slate-100/80 text-sm font-medium">
+        <span class="flex items-center gap-2"><i class="fa-solid fa-location-dot text-rose-400"></i> Grabenstraße 39a, 8010 Graz</span>
         <div class="flex flex-wrap gap-6">
            {socials.map((social) => (
-              <a href={social.href} target="_blank" aria-label={social.label} class="text-slate-400 hover:text-white transition-colors">
+              <a href={social.href} target="_blank" aria-label={social.label} class="text-slate-200 hover:text-white transition-colors">
                   <i class={`fa-brands ${social.icon} text-lg`}></i>
               </a>
            ))}
@@ -133,6 +136,11 @@ const menuItems = [
 </div>
 
 <style is:global>
+  /* LOGO AUTO-INVERT IM DARKMODE */
+  html.dark .logo-img {
+    filter: brightness(0) invert(1);
+  }
+
   /* Base Brand Color */
   .brand-text { transition: color 300ms ease; }
 
@@ -141,7 +149,7 @@ const menuItems = [
   #navBackdrop[data-state='open'] { opacity: 1; visibility: visible; pointer-events: auto; transition: opacity 650ms cubic-bezier(0.22, 1, 0.36, 1); }
   .nav-transition { transition: max-height 650ms cubic-bezier(0.22, 1, 0.36, 1), opacity 650ms cubic-bezier(0.22, 1, 0.36, 1), transform 650ms cubic-bezier(0.22, 1, 0.36, 1); }
   #navOverlay[data-state='closed'] { max-height: 0; opacity: 0; transform: translateY(-10px); pointer-events: none; }
-  #navOverlay[data-state='open'] { max-height: calc(100vh - 64px); opacity: 1; transform: translateY(0); pointer-events: auto; overflow-y: auto; }
+  #navOverlay[data-state='open'] { max-height: calc(100vh - 80px); opacity: 1; transform: translateY(0); pointer-events: auto; overflow-y: auto; }
 
   #header-shell.header-shell { padding: 0; transition: padding 300ms ease; }
   
@@ -158,7 +166,9 @@ const menuItems = [
   @media (min-width: 768px) { #header-shell.is-float { padding-left: 2rem; padding-right: 2rem; } }
 
   #main-header.is-shrink { padding-top: 0.85rem !important; padding-bottom: 0.85rem !important; }
-  #main-header.is-shrink #logo-container { width: 2.25rem; height: 2.25rem; border-radius: 0.75rem; }
+  
+  /* Shrink Logik für das Logo Bild */
+  #main-header.is-shrink #logo-container { height: 2.85rem; border-radius: 0.75rem; transition: all 0.3s ease-in-out;}
 
   /* LIGHT MODE STICKY */
   #header-shell.is-float #main-header {
@@ -166,7 +176,7 @@ const menuItems = [
     background-color: rgba(255, 255, 255, 0.8) !important; 
     backdrop-filter: blur(16px);
     border: 1px solid rgba(0, 0, 0, 0.1) !important;
-    box-shadow: none !important; /* Schatten entfernt */
+    box-shadow: none !important;
   }
   #header-shell.is-float .brand-text { color: #0f172a !important; }
 
@@ -175,18 +185,25 @@ const menuItems = [
     background-color: rgba(15, 23, 42, 0.8) !important; 
     backdrop-filter: blur(16px);
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    box-shadow: none !important; /* Schatten entfernt */
+    box-shadow: none !important;
   }
   html.dark #header-shell.is-float .brand-text { color: #ffffff !important; }
 
-  /* Menu UI */
-  #header-shell.is-float #navOverlay { border-radius: 40px !important; }
-  #header-shell.is-float #navOverlay[data-state='open'] { margin-top: 0.75rem; box-shadow: 0 18px 45px rgba(15, 23, 42, 0.3); }
+  /* FIX: NAV OVERLAY IM STICKY MODUS (Floating Island Look) */
+  #header-shell.is-float #navOverlay {
+    margin-top: 0.75rem; 
+    border-radius: 32px !important; 
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.3) !important;
+    background-color: rgba(71, 85, 105, 0.96); /* Slate 600 */
+  }
+
+  html.dark #header-shell.is-float #navOverlay {
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    background-color: rgba(51, 65, 85, 0.96); /* Slate 700 */
+  }
 
   #btnOpenNav .icon-bars, #btnOpenNav .icon-x { display: inline-flex; transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1), opacity 220ms ease; }
-  #btnOpenNav .icon-x { opacity: 0; transform: rotate(-90deg) scale(0.75); }
-  #btnOpenNav.is-open .icon-bars { opacity: 0; transform: rotate(90deg) scale(0.75); }
-  #btnOpenNav.is-open .icon-x { opacity: 1; transform: rotate(0deg) scale(1); }
 
   @media (prefers-reduced-motion: reduce) { .nav-backdrop, .nav-transition { transition: none !important; } }
 </style>
@@ -235,15 +252,6 @@ const menuItems = [
         const scrolled = (window.scrollY || 0) > 18;
         headerShell?.classList.toggle('is-float', scrolled);
         mainHeader?.classList.toggle('is-shrink', scrolled);
-        if(logoContainer) {
-             if(scrolled) { 
-                 logoContainer.classList.add('w-8','h-8','rounded-lg'); 
-                 logoContainer.classList.remove('w-10','h-10','rounded-xl'); 
-             } else { 
-                 logoContainer.classList.remove('w-8','h-8','rounded-lg'); 
-                 logoContainer.classList.add('w-10','h-10','rounded-xl'); 
-             }
-        }
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll();
