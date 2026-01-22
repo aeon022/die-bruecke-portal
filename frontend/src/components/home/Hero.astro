@@ -13,18 +13,22 @@ const { headline, subline, image } = Astro.props;
 
     <div class="max-w-[1600px] mx-auto w-full grid grid-cols-12 gap-8 lg:gap-0 relative h-full items-center">
 
-        {/* 1. TEXT CONTENT */}
-        {/* z-30 ist WICHTIG: Damit liegt der Text ÜBER dem Bild, wenn dieses nach links wächst */}
+        {/* 1. TEXT CONTENT - Zurück auf col-span-5 damit es weit über das Bild ragt */}
         <div class="relative z-30 col-span-12 lg:col-span-5 pointer-events-none">
 
+            {/* BADGE: Nur Seit 1983 mit Blink-Effekt */}
             <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-slate-700 text-xs font-bold text-rose-500 dark:text-rose-400 mb-8 uppercase tracking-widest shadow-sm whitespace-nowrap pointer-events-auto">
-                <span class="text-[10px] mb-0.5">●</span> Seit 1983
+                <span class="relative flex h-2 w-2 mb-0.5">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
+                </span>
+                Seit 1983
             </div>
 
-            <h1 class="text-5xl sm:text-6xl xl:text-8xl font-display font-extrabold text-slate-900 dark:text-white tracking-tighter leading-[0.95] mb-8 drop-shadow-sm lg:drop-shadow-none group-hover/hero:text-slate-900 transition-colors duration-500 [&_*:not(.text-transparent)]:dark:text-white whitespace-nowrap" set:html={headline}></h1>
+            <h1 class="text-5xl sm:text-6xl xl:text-8xl font-display font-extrabold text-slate-900 dark:text-white tracking-tighter leading-[0.95] mb-8 drop-shadow-sm lg:drop-shadow-none group-hover/hero:text-slate-900 transition-colors duration-500 [&_*:not(.text-transparent)]:dark:text-white whitespace-nowrap pointer-events-auto" set:html={headline}></h1>
 
-            {/* Text läuft breiter ins Bild (max-w-4xl + 120% Breite) */}
-            <p class="text-xl text-slate-600 dark:text-slate-200 leading-relaxed border-l-4 border-rose-500 pl-6 font-medium mb-10 max-w-4xl lg:w-[110%] line-clamp-4 group-hover/hero:text-slate-900 dark:group-hover/hero:text-white transition-colors duration-500 pointer-events-auto drop-shadow-sm">
+            {/* SUBLINE: "Die Brücke ist dein Rückenwind..." */}
+            <p class="text-xl text-slate-600 dark:text-slate-200 leading-relaxed border-l-4 border-rose-500 pl-6 font-medium mb-10 max-w-4xl lg:w-[120%] line-clamp-4 group-hover/hero:text-slate-900 dark:group-hover/hero:text-white transition-colors duration-500 pointer-events-auto drop-shadow-sm">
                 {subline}
             </p>
 
@@ -38,12 +42,9 @@ const { headline, subline, image } = Astro.props;
             </div>
         </div>
 
-        {/* 2. BILD CONTAINER */}
-        {/* 'group/image' hier definiert den Hover-Bereich NUR für das Bild */}
+        {/* 2. BILD CONTAINER - Zurück auf col-span-7 */}
         <div class="relative col-span-12 lg:col-span-7 h-[50vh] lg:h-[75vh] z-10 pointer-events-auto group/image">
             
-            {/* ABSOLUTE POSITIONING: Nagelt das Bild rechts fest. */}
-            {/* Animation reagiert jetzt auf 'group-hover/image', also nur wenn man das Bild berührt */}
             <div class="absolute right-0 top-0 bottom-0 h-full rounded-[40px] lg:rounded-[80px] overflow-hidden shadow-2xl bg-slate-900 ring-4 ring-white dark:ring-slate-800
                         w-full group-hover/image:w-[130%] transition-[width] duration-[1.0s] ease-out">
 
@@ -53,22 +54,18 @@ const { headline, subline, image } = Astro.props;
                     class="absolute inset-0 w-full h-full object-cover object-center scale-105 group-hover/image:scale-100 transition-transform duration-[2s]"
                 />
 
-                {/* VIGNETTE */}
                 <div class="absolute inset-0 bg-[radial-gradient(circle_at_70%_40%,rgba(244,63,94,0.1),transparent_60%)]"></div>
                 
-                {/* HOVER EFFEKT: Mittlere Stärke (40%) - Nur bei Bild-Hover */}
                 <div class="absolute inset-0 bg-slate-900/40 opacity-0 group-hover/image:opacity-100 transition-opacity duration-700 backdrop-blur-[1px]"></div>
 
                 {/* WATERMARK */}
                 <div class="absolute -bottom-10 -right-10 pointer-events-none select-none opacity-50 group-hover/image:opacity-80 transition-opacity duration-700">
-                    <p class="text-[120px] sm:text-[160px] xl:text-[220px] font-display font-black tracking-tighter leading-none text-white/10">
-                        BRÜCKE
+                    <p class="text-[120px] sm:text-[160px] xl:text-[220px] font-display font-black tracking-tighter leading-none text-white/10 uppercase">
+                        Brücke
                     </p>
                 </div>
 
-                {/* EDGE LIGHT */}
                 <div class="absolute inset-0 ring-1 ring-inset ring-white/10 pointer-events-none"></div>
-
             </div>
         </div>
 
