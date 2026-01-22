@@ -115,7 +115,7 @@ export async function getEventBySlug(slug: string) {
     return all.find((e: any) => e.slug === slug) || null;
 }
 
-// --- HIER WAREN DIE FEHLENDEN FUNKTIONEN ---
+// --- Services Products Global Settings ---
 
 export async function getServices() {
     try {
@@ -147,9 +147,9 @@ export async function getGlobalSettings() {
 }
 
 
-/**
- * Holt alle Archiv-Einträge für die Zeitreise.
- */
+
+// Holt alle Archiv-Einträge für die Zeitreise.
+
 export async function getArchiv() {
     try {
         const response = await directus.request(
@@ -164,4 +164,46 @@ export async function getArchiv() {
         console.error('Fehler beim Laden des Archivs:', error);
         return [];
     }
+}
+
+// Holt die Blog-Einträge für die News-Seite.
+export async function getBlogPosts() {
+    try {
+        const response = await directus.request(
+            readItems('blog', {
+                fields: ['id', 'slug', 'title', 'author', 'main_image', 'excerpt', 'content', 'tags', 'date_created'],
+                filter: { status: { _eq: 'published' } },
+                sort: ['-date_created'],
+                limit: -1,
+            })
+        );
+        return response;
+    } catch (error) {
+        console.error('Fehler beim Laden des Blogs:', error);
+        return [];
+    }
+}
+
+// Blog Logik
+export async function getSidebarEvent() {
+    const response = await directus.request(
+        readItems('events', {
+            fields: ['title', 'slug', 'description', 'image'],
+            filter: { status: { _eq: 'published' }, is_highlight: { _contains: 'true' } },
+            limit: 1,
+            sort: ['-start_date']
+        })
+    );
+    return response[0];
+}
+
+export async function getSidebarService(type: string) {
+    const response = await directus.request(
+        readItems('services', {
+            fields: ['title', 'teaser', 'slug', 'button_text'],
+            filter: { status: { _eq: 'published' }, type: { _eq: type } },
+            limit: 1
+        })
+    );
+    return response[0];
 }

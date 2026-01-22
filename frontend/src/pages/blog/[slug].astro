@@ -1,0 +1,224 @@
+---
+import MainLayout from '../../layouts/layout.astro';
+import BlogShare from '../../components/blog/BlogShare.astro';
+import RelatedPosts from '../../components/blog/RelatedPosts.astro';
+import BlogSocials from '../../components/blog/BlogSocials.astro';
+import { getBlogPosts } from '../../lib/api';
+
+export async function getStaticPaths() {
+    const posts = await getBlogPosts();
+    return (posts || []).map((post: any) => ({
+        params: { slug: post.slug },
+        props: { post },
+    }));
+}
+
+const { slug } = Astro.params;
+let { post } = Astro.props;
+
+if (!post) {
+    const allPosts = await getBlogPosts();
+    post = allPosts.find((p: any) => p.slug === slug);
+}
+
+if (!post) return Astro.redirect('/blog');
+
+// --- TOC LOGIK ---
+let modifiedContent = post.content;
+const headings = [];
+const h2Regex = /<h2[^>]*>(.*?)<\/h2>/g;
+let match;
+let i = 0;
+while ((match = h2Regex.exec(post.content)) !== null) {
+    const title = match[1].replace(/<[^>]*>/g, '');
+    const id = `section-${i}`;
+    headings.push({ title, id });
+    modifiedContent = modifiedContent.replace(match[0], `<h2 id="${id}">${match[1]}</h2>`);
+    i++;
+}
+
+const words = post.content.split(' ').length;
+const readingTime = Math.ceil(words / 200);
+const ASSET_URL = import.meta.env.DIRECTUS_URL + '/assets';
+const currentUrl = Astro.url.href;
+
+// WICHTIG: Sicherstellen, dass die Kategorie ein String ist
+const currentCategory = post.category || 'Aktion';
+
+const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('de-DE', {
+        day: '2-digit', month: 'long', year: 'numeric'
+    });
+};
+---
+
+<MainLayout title={`${post.title} | Journal`}>
+    <div class="fixed top-0 left-0 w-full h-1.5 z-[100] pointer-events-none">
+        <div id="progress-bar" class="h-full bg-rose-500 w-0 transition-all duration-150 ease-out shadow-[0_0_10px_rgba(244,63,94,0.5)]"></div>
+    </div>
+
+    <main class="bg-white dark:bg-slate-950 transition-colors duration-500">
+        <header class="pt-24 pb-16 px-6">
+            <div class="max-w-4xl mx-auto text-center">
+                <nav class="mb-12">
+                    <a href="/blog" class="inline-flex items-center gap-3 text-slate-400 hover:text-rose-500 font-black uppercase text-[10px] tracking-[0.4em] transition-colors group font-mono">
+                        <i class="fa-solid fa-arrow-left group-hover:-translate-x-2 transition-transform text-[8px]"></i>
+                        Zurück zum Journal
+                    </a>
+                </nav>
+                <h1 class="text-5xl md:text-6xl lg:text-7xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tighter leading-[0.95] mb-8">
+                    {post.title}
+                </h1>
+                <div class="flex items-center justify-center gap-4 text-[10px] font-black uppercase tracking-widest text-slate-400">
+                    <span>{formatDate(post.date_created)}</span>
+                    <span class="w-1 h-1 rounded-full bg-slate-300"></span>
+                    <span class="text-rose-500">{currentCategory}</span>
+                </div>
+            </div>
+        </header>
+
+        <section class="max-w-7xl mx-auto px-6 mb-24">
+            <div class="rounded-[48px] overflow-hidden aspect-video shadow-2xl ring-1 ring-slate-200 dark:ring-slate-800">
+                <img src={`${ASSET_URL}/${post.main_image}`} class="w-full h-full object-cover" alt={post.title} />
+            </div>
+        </section>
+
+        <section class="max-w-7xl mx-auto px-6 pb-32">
+            <div class="flex flex-col lg:flex-row gap-12 xl:gap-24 items-start">
+                
+                {/* --- LEFT SIDEBAR --- */}
+                <aside class="hidden lg:block w-[240px] shrink-0 sticky top-32 space-y-10">
+                    {/* NEU: Kategorie Anzeige in der Sidebar */}
+                    <div class="px-2">
+                        <span class="block text-[10px] font-black uppercase tracking-[0.3em] text-rose-500 mb-2 font-mono">Kategorie //</span>
+                        <div class="inline-flex items-center gap-2 bg-slate-100 dark:bg-slate-900 px-4 py-2 rounded-xl border border-slate-200 dark:border-white/5">
+                            <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
+                            <span class="text-xs font-black uppercase tracking-widest text-slate-900 dark:text-white">{currentCategory}</span>
+                        </div>
+                    </div>
+
+                    {headings.length > 0 && (
+                        <div class="bg-slate-50 dark:bg-slate-900/50 p-6 rounded-[32px] border border-slate-100 dark:border-white/5 shadow-sm">
+                            <span class="block text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 mb-6 font-mono font-bold italic">Inhalt //</span>
+                            <ul class="space-y-4">
+                                {headings.map(h => (
+                                    <li>
+                                        <a href={`#${h.id}`} class="text-[11px] font-bold text-slate-600 dark:text-slate-400 leading-snug hover:text-rose-500 transition-colors flex gap-2 group">
+                                            <span class="text-rose-500 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">→</span>
+                                            <span>{h.title}</span>
+                                        </a>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+                    
+                    <div class="px-2">
+                        <span class="block text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 mb-4 font-mono font-bold italic">Details</span>
+                        <p class="text-xs font-bold text-slate-500 italic mb-4 leading-relaxed">Lesezeit: ca. {readingTime} Min.</p>
+                        <div class="flex flex-wrap gap-2">
+                            {post.tags?.map((tag: string) => (
+                                <span class="text-[9px] font-bold text-rose-500 uppercase bg-rose-500/5 px-3 py-1.5 rounded-full border border-rose-500/10 whitespace-nowrap">#{tag}</span>
+                            ))}
+                        </div>
+                    </div>
+                </aside>
+
+                {/* --- MAIN CONTENT --- */}
+                <article class="flex-1 min-w-0">
+                    <div class="prose prose-lg dark:prose-invert prose-slate prose-headings:font-display prose-headings:uppercase prose-headings:tracking-tighter prose-headings:font-black prose-a:text-rose-500 prose-img:rounded-[32px] max-w-none prose-p:leading-relaxed prose-p:text-slate-600 dark:prose-p:text-slate-400">
+                        <div set:html={modifiedContent} />
+                    </div>
+                    <BlogShare title={post.title} url={currentUrl} />
+                    <RelatedPosts currentSlug={post.slug} />
+                </article>
+
+                {/* --- RIGHT SIDEBAR --- */}
+                <aside class="hidden lg:block w-[280px] shrink-0 sticky top-32 space-y-12">
+                    {/* WICHTIG: data-category gibt den Wert an das Script weiter */}
+                    <div id="dynamic-cta-box" data-category={currentCategory} class="p-8 bg-slate-900 rounded-[40px] text-white shadow-2xl relative overflow-hidden group border border-white/5 transition-transform hover:scale-[1.02] duration-500">
+                        <div class="absolute -right-8 -top-8 w-32 h-32 bg-rose-500/20 rounded-full blur-3xl group-hover:bg-rose-500/40 transition-all duration-700"></div>
+                        <span id="cta-label" class="text-[9px] font-black uppercase tracking-[0.3em] text-rose-500 block mb-6 relative z-10 font-mono italic">Empfehlung //</span>
+                        <h4 id="cta-title" class="text-2xl font-display font-black uppercase leading-[1.1] mb-4 relative z-10">...</h4>
+                        <p id="cta-text" class="text-[13px] text-slate-400 mb-8 leading-relaxed relative z-10">...</p>
+                        <a id="cta-link" href="#" class="block w-full py-4 bg-rose-500 hover:bg-white hover:text-slate-950 text-center rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all relative z-10 shadow-lg shadow-rose-500/20 font-bold">
+                            Mehr erfahren
+                        </a>
+                    </div>
+                    <BlogSocials />
+                </aside>
+            </div>
+        </section>
+    </main>
+</MainLayout>
+
+<script>
+    // Die Daten für das JavaScript
+    const ctaOptions = {
+        'Kultur': [
+            { title: 'Vernissage 2026', text: 'Besuche unsere nächste inklusive Ausstellung im Atelier.', link: '/events', btn: 'Zum Event', label: 'Event Highlight //' },
+            { title: 'Inklusives Atelier', text: 'Entdecke unsere künstlerische Ader und werde Teil des Teams.', link: '/services/atelier', btn: 'Zum Atelier', label: 'Projekt-Fokus //' }
+        ],
+        'Soziales': [
+            { title: 'FASS Beratung', text: 'Individuelle Unterstützung und Beratung für Familien.', link: '/services/fass-fed', btn: 'Beratung anfordern', label: 'Service-Info //' },
+            { title: 'FED Dienste', text: 'Entlastung im Alltag durch unseren mobilen Dienst.', link: '/services/fass-fed', btn: 'Mehr erfahren', label: 'Support //' }
+        ],
+        'Aktion': [
+            { title: 'City Trip Wien', text: 'Ein Wochenende voller Kultur und Spaß in der Hauptstadt.', link: '/camps', btn: 'Jetzt buchen', label: 'City Trip //' },
+            { title: 'Sommer-Camps', text: 'Unsere legendären Urlaubsaktionen für 2026.', link: '/camps', btn: 'Alle Termine', label: 'Urlaubsaktion //' }
+        ]
+    };
+
+    function updateCTA() {
+        const box = document.getElementById('dynamic-cta-box');
+        if (!box) return;
+
+        // Hier holen wir die Kategorie aus dem HTML Attribut
+        const category = box.getAttribute('data-category') || 'Aktion';
+        
+        // Suche die passenden Optionen (Fallback auf 'Aktion')
+        const options = ctaOptions[category] || ctaOptions['Aktion'];
+        
+        // Zufälliges Element wählen
+        const randomItem = options[Math.floor(Math.random() * options.length)];
+
+        // UI updaten
+        const label = document.getElementById('cta-label');
+        const title = document.getElementById('cta-title');
+        const text = document.getElementById('cta-text');
+        const link = document.getElementById('cta-link') as HTMLAnchorElement;
+
+        if(label) label.innerText = randomItem.label;
+        if(title) title.innerText = randomItem.title;
+        if(text) text.innerText = randomItem.text;
+        if(link) {
+            link.innerText = randomItem.btn;
+            link.href = randomItem.link;
+        }
+    }
+
+    function updateProgress() {
+        const bar = document.getElementById('progress-bar');
+        if (!bar) return;
+        const winScroll = document.documentElement.scrollTop;
+        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrolled = (winScroll / height) * 100;
+        bar.style.width = scrolled + "%";
+    }
+
+    // Initialisierung beim Laden
+    updateCTA();
+    window.addEventListener('scroll', updateProgress);
+
+    // WICHTIG: Re-Initialisierung für Astro's View Transitions
+    document.addEventListener('astro:after-swap', () => {
+        updateCTA();
+        window.addEventListener('scroll', updateProgress);
+    });
+</script>
+
+<style is:global>
+    html { scroll-behavior: smooth; }
+    /* Großer Puffer für Überschriften damit sie nicht unter dem Header kleben */
+    h2 { scroll-margin-top: 160px !important; }
+</style>

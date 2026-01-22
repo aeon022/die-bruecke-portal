@@ -10,16 +10,19 @@
             <i class="fa-solid fa-search text-slate-400 text-lg mr-3" id="cp-search-icon"></i>
             <i class="fa-solid fa-circle-notch fa-spin text-rose-500 text-lg mr-3 hidden" id="cp-loading-icon"></i>
             
-            <input type="text" id="cp-input" placeholder="Suchen nach Events, Camps, Projekten..." 
+            <input type="text" id="cp-input" placeholder="Suchen nach Events, Journal, Projekten..." 
                    class="w-full bg-transparent border-none text-xl text-slate-900 dark:text-white placeholder-slate-400 focus:ring-0 focus:outline-none h-10" autocomplete="off" />
             
             <span class="hidden sm:inline-block text-[10px] font-bold text-slate-400 border border-slate-200 dark:border-slate-700 px-2 py-1 rounded bg-slate-50 dark:bg-slate-800 absolute right-4">ESC</span>
         </div>
 
-        {/* ... (Der Rest des HTML bleibt identisch wie im vorherigen Schritt) ... */}
         <div class="overflow-y-auto p-2 scroll-smooth" id="cp-results">
-            {/* ... Content ... */}
+            {/* Content Groups */}
             <div id="cp-dynamic-events" class="cp-group mb-2 hidden"><h4 class="text-xs font-bold text-rose-500 uppercase tracking-widest px-3 py-2 sticky top-0 bg-white dark:bg-slate-900 z-10 border-b border-rose-100 dark:border-rose-900/20">Veranstaltungen</h4><div class="cp-list-content"></div></div>
+            
+            {/* NEU: Journal Gruppe */}
+            <div id="cp-dynamic-blog" class="cp-group mb-2 hidden"><h4 class="text-xs font-bold text-rose-600 uppercase tracking-widest px-3 py-2 sticky top-0 bg-white dark:bg-slate-900 z-10 border-b border-rose-100 dark:border-rose-900/20">Journal / Aktuelles</h4><div class="cp-list-content"></div></div>
+            
             <div id="cp-dynamic-trips" class="cp-group mb-2 hidden"><h4 class="text-xs font-bold text-orange-500 uppercase tracking-widest px-3 py-2 sticky top-0 bg-white dark:bg-slate-900 z-10 border-b border-orange-100 dark:border-orange-900/20">Camps & Reisen</h4><div class="cp-list-content"></div></div>
             <div id="cp-dynamic-projects" class="cp-group mb-2 hidden"><h4 class="text-xs font-bold text-purple-500 uppercase tracking-widest px-3 py-2 sticky top-0 bg-white dark:bg-slate-900 z-10 border-b border-purple-100 dark:border-purple-900/20">Projekte</h4><div class="cp-list-content"></div></div>
             <div id="cp-dynamic-services" class="cp-group mb-2 hidden"><h4 class="text-xs font-bold text-indigo-500 uppercase tracking-widest px-3 py-2 sticky top-0 bg-white dark:bg-slate-900 z-10 border-b border-indigo-100 dark:border-indigo-900/20">Angebote</h4><div class="cp-list-content"></div></div>
@@ -37,13 +40,18 @@
 
             <div class="cp-group mb-2" id="cp-static-nav">
                 <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest px-3 py-2 sticky top-0 bg-white dark:bg-slate-900 z-10">Navigation</h4>
-                <a href="/" class="cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group" data-keywords="home start"><div class="w-8 h-8 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center"><i class="fa-solid fa-house"></i></div><span class="text-slate-700 dark:text-slate-200 font-medium">Startseite</span></a>
-                <a href="/events" class="cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group" data-keywords="kalender termin"><div class="w-8 h-8 rounded-lg bg-rose-100 text-rose-600 flex items-center justify-center"><i class="fa-regular fa-calendar"></i></div><span class="text-slate-700 dark:text-slate-200 font-medium">Veranstaltungen</span></a>
-                <a href="/camps" class="cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group" data-keywords="urlaub reisen"><div class="w-8 h-8 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center"><i class="fa-solid fa-plane"></i></div><span class="text-slate-700 dark:text-slate-200 font-medium">Camps & Reisen</span></a>
-                <a href="/projects" class="cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group" data-keywords="projekte"><div class="w-8 h-8 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center"><i class="fa-solid fa-lightbulb"></i></div><span class="text-slate-700 dark:text-slate-200 font-medium">Projekte</span></a>
-                <a href="/services" class="cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group" data-keywords="angebot hilfe"><div class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center"><i class="fa-solid fa-hand-holding-heart"></i></div><span class="text-slate-700 dark:text-slate-200 font-medium">Angebote</span></a>
-                <a href="/about" class="cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group" data-keywords="team verein"><div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center"><i class="fa-solid fa-users"></i></div><span class="text-slate-700 dark:text-slate-200 font-medium">Über uns & Team</span></a>
-                <a href="/contact" class="cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group" data-keywords="kontakt email adresse"><div class="w-8 h-8 rounded-lg bg-slate-200 text-slate-600 flex items-center justify-center"><i class="fa-regular fa-envelope"></i></div><span class="text-slate-700 dark:text-slate-200 font-medium">Kontakt</span></a>
+                <a href="/" class="cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group" data-keywords="home start"><div class="w-8 h-8 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center"><i class="fa-solid fa-house text-xs"></i></div><span class="text-slate-700 dark:text-slate-200 font-medium">Startseite</span></a>
+                
+                {/* NEU: Statische Links für Journal & Archiv */}
+                <a href="/blog" class="cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group" data-keywords="journal blog geschichten aktuell zeitung"><div class="w-8 h-8 rounded-lg bg-rose-100 text-rose-600 flex items-center justify-center"><i class="fa-solid fa-newspaper text-xs"></i></div><span class="text-slate-700 dark:text-slate-200 font-medium">Journal & Blog</span></a>
+                <a href="/archiv" class="cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group" data-keywords="archiv geschichte download alt dokumente"><div class="w-8 h-8 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center"><i class="fa-solid fa-box-archive text-xs"></i></div><span class="text-slate-700 dark:text-slate-200 font-medium">Archiv</span></a>
+                
+                <a href="/events" class="cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group" data-keywords="kalender termin"><div class="w-8 h-8 rounded-lg bg-rose-100 text-rose-600 flex items-center justify-center"><i class="fa-regular fa-calendar text-xs"></i></div><span class="text-slate-700 dark:text-slate-200 font-medium">Veranstaltungen</span></a>
+                <a href="/camps" class="cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group" data-keywords="urlaub reisen"><div class="w-8 h-8 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center"><i class="fa-solid fa-plane text-xs"></i></div><span class="text-slate-700 dark:text-slate-200 font-medium">Camps & Reisen</span></a>
+                <a href="/projects" class="cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group" data-keywords="projekte"><div class="w-8 h-8 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center"><i class="fa-solid fa-lightbulb text-xs"></i></div><span class="text-slate-700 dark:text-slate-200 font-medium">Projekte</span></a>
+                <a href="/services" class="cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group" data-keywords="angebot hilfe"><div class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center"><i class="fa-solid fa-hand-holding-heart text-xs"></i></div><span class="text-slate-700 dark:text-slate-200 font-medium">Angebote</span></a>
+                <a href="/about" class="cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group" data-keywords="team verein"><div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center"><i class="fa-solid fa-users text-xs"></i></div><span class="text-slate-700 dark:text-slate-200 font-medium">Über uns & Team</span></a>
+                <a href="/contact" class="cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group" data-keywords="kontakt email adresse"><div class="w-8 h-8 rounded-lg bg-slate-200 text-slate-600 flex items-center justify-center"><i class="fa-regular fa-envelope text-xs"></i></div><span class="text-slate-700 dark:text-slate-200 font-medium">Kontakt</span></a>
             </div>
         </div>
 
@@ -67,6 +75,7 @@
 
     // Groups
     const dynamicEvents = document.getElementById('cp-dynamic-events');
+    const dynamicBlog = document.getElementById('cp-dynamic-blog'); // Neu
     const dynamicTrips = document.getElementById('cp-dynamic-trips');
     const dynamicProjects = document.getElementById('cp-dynamic-projects');
     const dynamicServices = document.getElementById('cp-dynamic-services');
@@ -148,11 +157,10 @@
 
     // --- RESET VIEW ---
     function resetView() {
-        // Hide Spinner Forcefully
         searchIcon?.classList.remove('hidden');
         loadingIcon?.classList.add('hidden');
 
-        [dynamicEvents, dynamicTrips, dynamicProjects, dynamicServices, dynamicTeam].forEach(el => {
+        [dynamicEvents, dynamicBlog, dynamicTrips, dynamicProjects, dynamicServices, dynamicTeam].forEach(el => {
             if(el) {
                 el.classList.add('hidden');
                 const list = el.querySelector('.cp-list-content');
@@ -177,7 +185,6 @@
         currentSearchController = new AbortController();
         const signal = currentSearchController.signal;
 
-        // UI: Loading Start
         searchIcon?.classList.add('hidden');
         loadingIcon?.classList.remove('hidden');
 
@@ -192,6 +199,7 @@
                 fetch(`${baseUrl}/camps?limit=3&search=${s}&filter[status][_eq]=published&fields=id,title,slug,date_range`, { signal }),
                 fetch(`${baseUrl}/city_trips?limit=3&search=${s}&filter[status][_eq]=published&fields=id,title,slug,date_range`, { signal }),
                 fetch(`${baseUrl}/team?limit=3&search=${s}&filter[status][_eq]=published&fields=id,name,role`, { signal }),
+                fetch(`${baseUrl}/blog?limit=3&search=${s}&filter[status][_eq]=published&fields=id,title,slug,date_created`, { signal }), // NEU
             ];
 
             const responses = await Promise.all(promises);
@@ -203,19 +211,17 @@
                 renderProjects(jsonData[2].data);
                 renderTrips([...jsonData[3].data, ...jsonData[4].data]);
                 renderTeam(jsonData[5].data);
+                renderBlog(jsonData[6].data); // NEU
                 filterStaticItems(query);
             }
 
         } catch (e) {
-            // Fehlerbehandlung: Nur loggen, wenn es kein Abort war
             if (e.name !== 'AbortError') {
-                console.warn("CP Search Error (likely CORS on localhost):", e);
-                // NOTBREMSE: Spinner weg bei Fehler!
+                console.warn("CP Search Error:", e);
                 searchIcon?.classList.remove('hidden');
                 loadingIcon?.classList.add('hidden');
             }
         } finally {
-            // Aufräumen nur, wenn wir noch der aktive Controller sind
             if (currentSearchController && currentSearchController.signal === signal) {
                 searchIcon?.classList.remove('hidden');
                 loadingIcon?.classList.add('hidden');
@@ -224,13 +230,21 @@
         }
     }
 
-    // --- RENDER FUNCTIONS (gekürzt, Logik bleibt gleich) ---
+    // --- RENDER FUNCTIONS ---
     function renderEvents(items) {
         fillList(dynamicEvents, items, (item) => {
             const date = item.start_date ? new Date(item.start_date).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' }) : '';
             return { href: `/events/${item.slug}`, text: item.title, iconClass: 'bg-rose-500 text-white', iconContent: date, isHtml: false };
         });
     }
+
+    function renderBlog(items) { // NEU
+        fillList(dynamicBlog, items, (item) => ({ 
+            href: `/blog/${item.slug}`, text: item.title, iconClass: 'bg-rose-600 text-white', 
+            iconContent: '<i class="fa-solid fa-newspaper text-[10px]"></i>', isHtml: true 
+        }));
+    }
+
     function renderServices(items) {
         fillList(dynamicServices, items, (item) => ({ 
             href: `/services/${item.slug}`, text: item.title, iconClass: 'bg-indigo-500 text-white', 
@@ -253,7 +267,7 @@
         }));
     }
 
-    // Generic Helper um Code zu sparen
+    // Generic Helper
     function fillList(containerGroup, items, mapFn) {
         if(!containerGroup) return;
         const list = containerGroup.querySelector('.cp-list-content');
@@ -272,10 +286,10 @@
     function addItem(container, href, text, iconClass, iconContent, isHtmlIcon = false) {
         const el = document.createElement('a');
         el.href = href;
-        el.className = "cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group focus:bg-slate-100 dark:focus:bg-slate-800 focus:outline-none";
+        el.className = "cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group focus:bg-slate-100 dark:focus:bg-slate-800 focus:outline-none transition-colors";
         
         const iconDiv = document.createElement('div');
-        iconDiv.className = `w-8 h-8 rounded-lg flex items-center justify-center shrink-0 text-xs font-bold ${iconClass}`;
+        iconDiv.className = `w-8 h-8 rounded-lg flex items-center justify-center shrink-0 text-xs font-bold ${iconClass} shadow-sm`;
         if(isHtmlIcon) iconDiv.innerHTML = iconContent;
         else iconDiv.innerText = iconContent;
 
@@ -316,7 +330,6 @@
         clearTimeout(searchTimeout);
         
         if(val.length < 2) {
-            // RESET: Suche abbrechen und Spinner resetten
             if(currentSearchController) {
                 currentSearchController.abort();
                 currentSearchController = null;

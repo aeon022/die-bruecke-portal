@@ -1,0 +1,79 @@
+---
+/* Globale Social Links für das Journal */
+const socials = [
+    {
+        name: 'Instagram',
+        handle: '@die.bruecke.graz',
+        url: 'https://www.instagram.com/die.bruecke.graz/',
+        icon: 'fa-brands fa-instagram',
+        hover: 'group-hover:text-rose-500 group-hover:rotate-12'
+    },
+    {
+        name: 'Facebook',
+        handle: 'brueckegraz',
+        url: 'https://www.facebook.com/brueckegraz',
+        icon: 'fa-brands fa-facebook-f',
+        hover: 'group-hover:text-[#1877F2] group-hover:-translate-y-1'
+    },
+    {
+        name: 'LinkedIn',
+        handle: 'diebruecke',
+        url: 'https://www.linkedin.com/company/diebruecke/',
+        icon: 'fa-brands fa-linkedin-in',
+        hover: 'group-hover:text-[#0A66C2] group-hover:-translate-y-1'
+    },
+    {
+        name: 'YouTube',
+        handle: 'brueckegraz',
+        url: 'https://www.youtube.com/user/brueckegraz',
+        icon: 'fa-brands fa-youtube',
+        hover: 'group-hover:text-[#FF0000] group-hover:scale-110'
+    },
+    {
+        name: 'X',
+        handle: 'brueckegraz',
+        url: 'https://x.com/brueckegraz',
+        icon: 'fa-brands fa-x-twitter',
+        hover: 'group-hover:text-black dark:group-hover:text-white'
+    }
+];
+---
+
+<div class="px-2">
+    <span class="block text-[10px] font-black uppercase tracking-widest text-slate-300 dark:text-slate-700 mb-8 font-mono italic">Verbunden //</span>
+    
+    <div class="space-y-7">
+        {socials.map((social) => (
+            <a 
+                href={social.url} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                class="flex items-center justify-between group cursor-pointer transition-all"
+            >
+                <div class="flex flex-col">
+                    <span class="text-[10px] font-black text-slate-500 group-hover:text-rose-500 transition-colors uppercase tracking-widest leading-none mb-1">
+                        {social.name}
+                    </span>
+                    <span class="text-[9px] text-slate-400 lowercase font-medium">
+                        {social.handle}
+                    </span>
+                </div>
+                <i class={`${social.icon} text-slate-300 transition-all duration-300 text-lg ${social.hover}`}></i>
+            </a>
+        ))}
+
+        {/* NEWSLETTER SEPARATOR */}
+        <div class="pt-8 border-t border-slate-100 dark:border-slate-900 mt-8">
+            <a 
+                href="mailto:office@bruecke-graz.at" 
+                class="flex items-center justify-between group cursor-pointer"
+            >
+                <div class="flex flex-col">
+                    <span class="text-[10px] font-black text-slate-500 group-hover:text-rose-500 transition-colors uppercase tracking-widest leading-none mb-1">Newsletter</span>
+                    <span class="text-[9px] text-slate-400 lowercase font-medium italic">Direkt ins Postfach</span>
+                </div>
+                <i class="fa-solid fa-paper-plane text-slate-300 group-hover:text-rose-500 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all duration-300 text-sm"></i>
+            </a>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,56 @@
+---
+import { getBlogPosts } from '../../lib/api';
+
+const { currentSlug } = Astro.props;
+const allPosts = await getBlogPosts();
+
+// Den aktuellen Post ausschließen und die Liste mischen
+const related = allPosts
+    .filter((p: any) => p.slug !== currentSlug)
+    .sort(() => Math.random() - 0.5)
+    .slice(0, 3);
+
+const ASSET_URL = import.meta.env.DIRECTUS_URL + '/assets';
+
+const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('de-DE', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric'
+    });
+};
+---
+
+{related.length > 0 && (
+    <section class="mt-32 pt-24 border-t border-slate-100 dark:border-slate-900">
+        <div class="flex items-center justify-between mb-12">
+            <h3 class="text-3xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tighter">
+                Mehr zum <span class="text-rose-500 italic">Schmökern.</span>
+            </h3>
+            <a href="/blog" class="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-rose-500 transition-colors">
+                Alle Beiträge <i class="fa-solid fa-chevron-right ml-2 text-[8px]"></i>
+            </a>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8">
+            {related.map((post: any) => (
+                <a href={`/blog/${post.slug}/`} class="group block">
+                    <div class="relative aspect-video rounded-3xl overflow-hidden mb-6 shadow-md">
+                        <img 
+                            src={`${ASSET_URL}/${post.main_image}?key=system-medium-cover`} 
+                            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
+                            alt={post.title}
+                        />
+                        <div class="absolute inset-0 bg-rose-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    </div>
+                    <span class="text-[10px] font-black uppercase tracking-widest text-rose-500 block mb-2">
+                        {formatDate(post.date_created)}
+                    </span>
+                    <h4 class="text-xl font-display font-black text-slate-900 dark:text-white uppercase leading-tight group-hover:text-rose-500 transition-colors line-clamp-2">
+                        {post.title}
+                    </h4>
+                </a>
+            ))}
+        </div>
+    </section>
+)}
