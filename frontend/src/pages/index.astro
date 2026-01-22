@@ -8,6 +8,7 @@ import { readItems } from '@directus/sdk';
 import Hero from '../components/home/Hero.astro';
 import Events from '../components/home/Events.astro';
 import Services from '../components/home/Services.astro';
+import Foundation from '../components/home/Foundation.astro';
 import Projects from '../components/home/Projects.astro';
 import Partners from '../components/home/Partners.astro';
 import Pionier from '../components/home/Pionier.astro';
@@ -97,6 +98,9 @@ const heroImg = settings?.hero_image
         <Services 
             services={dbServices}
         />
+
+        {/* NEU: Das Fundament/Leitbild direkt nach den Services */}
+        <Foundation />
 
         <Projects />
 

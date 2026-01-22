@@ -145,3 +145,23 @@ export async function getGlobalSettings() {
         return null;
     }
 }
+
+
+/**
+ * Holt alle Archiv-Einträge für die Zeitreise.
+ */
+export async function getArchiv() {
+    try {
+        const response = await directus.request(
+            readItems('archiv', {
+                // In deiner api.ts bei getArchiv()
+                fields: ['id', 'slug', 'title', 'description', 'teaser', 'info_text', 'year', 'image', 'aspect', 'category'],
+                limit: -1,
+            })
+        );
+        return response;
+    } catch (error) {
+        console.error('Fehler beim Laden des Archivs:', error);
+        return [];
+    }
+}

@@ -33,7 +33,7 @@ const history = [
 <MainLayout title="Über uns | Die Brücke">
     
     <div class="home-content">
-        {/* --- ARCHIVE HERO --- */}
+        {/* --- HERO --- */}
         <section class="relative px-6 sm:px-10 pt-40 pb-32 bg-white dark:bg-slate-950 overflow-hidden transition-colors duration-500">
             <div class="absolute inset-0 pointer-events-none opacity-[0.03] dark:opacity-[0.07]">
                 <svg class="w-full h-full" width="100%" height="100%">
@@ -45,9 +45,13 @@ const history = [
             </div>
 
             <div class="max-w-7xl mx-auto relative z-10">
-                <div class="flex items-center gap-6 mb-16">
-                    <div class="h-[2px] w-12 bg-rose-500"></div>
-                    <span class="text-[10px] font-bold uppercase tracking-[0.4em] text-slate-400 dark:text-slate-500">Seit 1983</span>
+                {/* NEU: Pulsierendes Badge wie auf der Startseite */}
+                <div class="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-[10px] font-black text-rose-500 uppercase tracking-[0.2em] mb-12 shadow-sm">
+                    <span class="relative flex h-2 w-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
+                    </span>
+                    Seit 1983
                 </div>
                 
                 <div class="grid lg:grid-cols-12 gap-4 items-start">
@@ -78,13 +82,7 @@ const history = [
                                 <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-rose-500 mb-2 block">Die Adresse</span>
                                 <p class="text-lg font-bold text-slate-900 dark:text-white">Grabenstraße 39a <br/> 8010 Graz, Österreich</p>
                             </div>
-                            <div class="inline-flex items-center gap-4 px-6 py-4 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl rotate-2 hover:rotate-0 transition-transform duration-500 shadow-sm">
-                                <span class="text-2xl">☕</span>
-                                <p class="text-[11px] font-bold text-slate-600 dark:text-slate-400 leading-tight uppercase tracking-tight text-left">
-                                    Enthält keine Spuren von Mitleid. <br/>
-                                    <span class="text-slate-900 dark:text-white">Nur echtes Leben.</span>
-                                </p>
-                            </div>
+                            
                         </div>
                     </div>
                 </div>
@@ -95,37 +93,67 @@ const history = [
             </div>
         </section>
             
-        {/* --- WERTE --- */}
-        <section class="px-6 sm:px-10 py-32 bg-white dark:bg-slate-950 transition-colors duration-500">
-            <div class="max-w-7xl mx-auto text-center">
-                <h2 class="text-4xl md:text-6xl font-display font-extrabold text-slate-900 dark:text-white tracking-tighter mb-20">
-                    Worauf wir <span class="text-rose-600">bauen.</span>
-                </h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
-                    {[
-                        { title: "Menschlichkeit", icon: "fa-heart", color: "bg-rose-500", text: "Wir sehen dich. Immer auf Augenhöhe. Seit 1983 ist Empathie unser wichtigstes Werkzeug." },
-                        { title: "Selbstbestimmung", icon: "fa-hand-fist", color: "bg-indigo-600", text: "Dein Weg. Unser Backup. Wir bevormunden nicht, wir begleiten professionell." },
-                        { title: "Kultur & Begegnung", icon: "fa-music", color: "bg-lime-500", text: "Kunst zum Anfassen. Wir schaffen den Raum, in dem Unterschiede verschwinden." }
-                    ].map(card => (
-                        <div class="group h-[400px] [perspective:1000px]">
-                            <div class="relative h-full w-full rounded-[48px] shadow-xl transition-all duration-500 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)] cursor-pointer">
-                                <div class="absolute inset-0 h-full w-full rounded-[48px] bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 flex flex-col items-center justify-center p-10 [backface-visibility:hidden]">
-                                    <div class={`w-20 h-20 ${card.color} text-white rounded-3xl flex items-center justify-center text-3xl mb-6 shadow-lg`}>
-                                        <i class={`fa-solid ${card.icon}`}></i>
-                                    </div>
-                                    <h3 class="text-2xl font-display font-bold text-slate-900 dark:text-white">{card.title}</h3>
-                                    <p class="text-slate-400 dark:text-slate-500 mt-4 font-bold uppercase text-[10px] tracking-widest">Mehr erfahren</p>
-                                </div>
-                                <div class="absolute inset-0 h-full w-full rounded-[48px] bg-slate-900 dark:bg-slate-800 border border-slate-800 dark:border-slate-700 p-10 text-white [transform:rotateY(180deg)] [backface-visibility:hidden] flex flex-col items-center justify-center text-center">
-                                    <h3 class="text-2xl font-display font-bold mb-4">{card.title}</h3>
-                                    <p class="text-slate-300 leading-relaxed font-medium">{card.text}</p>
-                                </div>
+        {/* --- WERTE: REDUZIERT & FOKUSSIERT --- */}
+<section class="px-6 sm:px-10 py-32 bg-white dark:bg-slate-950 transition-colors duration-500">
+    <div class="max-w-7xl mx-auto text-center">
+        <h2 class="text-4xl md:text-6xl font-display font-black text-slate-900 dark:text-white tracking-tighter mb-24 uppercase">
+            Worauf wir <span class="text-rose-600 italic">bauen.</span>
+        </h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-10 text-left">
+            {[
+                { 
+                    title: "Menschlichkeit", 
+                    icon: "fa-heart", 
+                    accent: "border-rose-500/20",
+                    iconBg: "bg-rose-500",
+                    text: "Wir verwalten keine Akten, wir begleiten Menschen. Unbürokratisch, herzlich und immer auf Augenhöhe. Seit 1983 ist echtes Miteinander unser Fundament." 
+                },
+                { 
+                    title: "Selbstbestimmung", 
+                    icon: "fa-wind", // Wind-Icon für "Rückenwind"
+                    accent: "border-slate-200",
+                    iconBg: "bg-slate-900",
+                    text: "Dein Weg. Unser Rückenwind. Wir bevormunden nicht, wir unterstützen dich professionell dabei, dein Leben nach deinen eigenen Regeln zu gestalten." 
+                },
+                { 
+                    title: "Kultur & Begegnung", 
+                    icon: "fa-masks-theater", 
+                    accent: "border-slate-200",
+                    iconBg: "bg-rose-600",
+                    text: "Ein Haus voller Leben. Wir schaffen den Raum in Graz, in dem Kunst und Kultur Barrieren einfach verschwinden lassen. Mittendrin statt nur dabei." 
+                }
+            ].map(card => (
+                <div class="group h-[420px] [perspective:1000px]">
+                    <div class="relative h-full w-full rounded-[48px] transition-all duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)] cursor-pointer shadow-sm hover:shadow-2xl hover:shadow-rose-500/5">
+                        
+                        {/* FRONT: Clean & Kompetent */}
+                        <div class="absolute inset-0 h-full w-full rounded-[48px] bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 flex flex-col items-center justify-center p-12 [backface-visibility:hidden]">
+                            <div class={`w-20 h-20 ${card.iconBg} text-white rounded-[28px] flex items-center justify-center text-3xl mb-8 shadow-lg group-hover:scale-110 transition-transform duration-500`}>
+                                <i class={`fa-solid ${card.icon}`}></i>
+                            </div>
+                            <h3 class="text-2xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tight">{card.title}</h3>
+                            
+                            <div class="mt-8 flex items-center gap-2 text-rose-500 font-black text-[10px] uppercase tracking-[0.2em] opacity-50 group-hover:opacity-100 transition-opacity">
+                                <span>Details</span>
+                                <i class="fa-solid fa-chevron-right text-[8px]"></i>
                             </div>
                         </div>
-                    ))}
+
+                        {/* BACK: Die Botschaft */}
+                        <div class="absolute inset-0 h-full w-full rounded-[48px] bg-slate-900 dark:bg-slate-800 p-12 text-white [transform:rotateY(180deg)] [backface-visibility:hidden] flex flex-col items-center justify-center text-center border border-slate-800">
+                            <h3 class="text-xl font-display font-black mb-6 uppercase tracking-tight text-rose-500">{card.title}</h3>
+                            <p class="text-slate-300 leading-relaxed font-medium text-lg">
+                                {card.text}
+                            </p>
+                        </div>
+                        
+                    </div>
                 </div>
-            </div>
-        </section>
+            ))}
+        </div>
+    </div>
+</section>
 
         {/* --- TIMELINE --- */}
         <section class="px-6 sm:px-10 py-32 bg-slate-50 dark:bg-slate-900 relative overflow-hidden transition-colors duration-500">
@@ -155,153 +183,288 @@ const history = [
             </div>
         </section>
 
-        {/* --- STATS --- */}
-        <section class="px-6 sm:px-10 py-32 bg-slate-900 text-white relative overflow-hidden">
-            <div class="absolute top-0 right-0 w-1/2 h-full bg-rose-600/5 skew-x-12 translate-x-1/4"></div>
-            <div class="max-w-7xl mx-auto relative z-10">
-                <div class="grid lg:grid-cols-2 gap-20 items-center">
-                    <div>
-                        <h2 class="text-5xl md:text-7xl font-display font-black mb-8 tracking-tighter">
-                            42 Jahre <br><span class="text-rose-500">Eigensinn & Mut.</span>
+        {/* --- STATS: FLUID TYPOGRAPHY & SCHÄRFERES WORDING --- */}
+        <section class="px-6 sm:px-10 py-24 md:py-32 bg-slate-900 text-white relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-full md:w-1/2 h-full bg-rose-600/5 skew-x-12 translate-x-1/4 pointer-events-none"></div>
+
+            <div class="max-w-7xl mx-auto relative z-10 text-left">
+                <div class="grid lg:grid-cols-2 gap-12 md:gap-20 items-center">
+                    
+                    <div class="max-w-2xl">
+                        <h2 class="text-5xl md:text-7xl font-display font-black mb-8 tracking-tighter uppercase leading-[0.9]">
+                            42 Jahre <br><span class="text-rose-500 italic text-4xl md:text-7xl">Eigensinn & Mut.</span>
                         </h2>
-                        <p class="text-xl text-slate-400 leading-relaxed mb-10 max-w-xl">
-                            Wir sind kein Standard-Dienstleister. Wir sind eine Gemeinschaft, die zeigt, dass Inklusion dann am besten funktioniert, wenn man sie gemeinsam feiert – auf der Bühne genauso wie im echten Leben.
+                        <p class="text-lg md:text-xl text-slate-400 leading-relaxed max-w-xl font-medium">
+                            Wir verwalten keine Fälle, wir gestalten Lebensräume. Die Brücke ist der Beweis, dass Inklusion dann am besten funktioniert, wenn man sie gemeinsam feiert – auf der Bühne und im echten Leben.
                         </p>
                     </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                        <div class="bg-white/5 p-10 rounded-[40px] border border-white/10 group hover:border-rose-500/50 transition-all">
-                            <span class="block text-5xl font-display font-black text-white mb-2 group-hover:scale-110 transition-transform">Unzählige</span>
-                            <span class="text-[11px] font-bold uppercase text-rose-500 underline decoration-rose-500/30 underline-offset-4 tracking-widest">Brückenbauer:innen</span>
-                            <p class="text-slate-400 text-sm mt-4 font-medium leading-relaxed">Menschen, die seit 1983 in der Grabenstraße Barrieren einreißen.</p>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
+                        
+                        {/* Card 1: Fokus auf Menschen statt "Unzählige" */}
+                        <div class="bg-white/5 p-6 sm:p-8 lg:p-10 rounded-[32px] md:rounded-[40px] border border-white/10 group hover:border-rose-500/50 transition-all">
+                            {/* clamp() sorgt dafür, dass die Schrift flüssig mit der Fenstergröße schrumpft */}
+                            <span class="block text-[clamp(2rem,8vw,3rem)] font-display font-black text-white mb-1 leading-none group-hover:scale-105 transition-transform origin-left uppercase">Echt</span>
+                            <span class="text-[10px] font-bold uppercase text-rose-500 tracking-widest block mb-4 italic">Seit der ersten Stunde</span>
+                            <p class="text-slate-400 text-sm font-medium leading-snug">Über 40 Jahre Graz. Über 40 Jahre Brüche im System und echte Begegnungen auf Augenhöhe.</p>
                         </div>
-                        <div class="bg-white/5 p-10 rounded-[40px] border border-white/10 group hover:border-indigo-500/50 transition-all">
-                            <span class="block text-6xl font-display font-black text-white mb-2 group-hover:scale-110 transition-transform">80</span>
-                            <span class="text-[11px] font-bold uppercase text-indigo-400 tracking-widest">Kultur-Highlights</span>
-                            <p class="text-slate-400 text-sm mt-4 font-medium leading-relaxed">Konzerte, Impro, Kabarett und mehr – jedes Jahr live bei uns.</p>
+
+                        {/* Card 2: Fokus auf Action statt nur Zahl */}
+                        <div class="bg-white/5 p-6 sm:p-8 lg:p-10 rounded-[32px] md:rounded-[40px] border border-white/10 group hover:border-white/30 transition-all">
+                            <span class="block text-[clamp(2.5rem,10vw,4rem)] font-display font-black text-white mb-1 leading-none group-hover:scale-105 transition-transform origin-left">80+</span>
+                            <span class="text-[10px] font-bold uppercase text-slate-400 tracking-widest block mb-4 italic">Kultur-Momente</span>
+                            <p class="text-slate-400 text-sm font-medium leading-snug">Von SofaKino bis StageDIVE. Jedes Jahr schaffen wir Räume, in denen Unterschiede keine Rolle spielen.</p>
                         </div>
-                        <div class="bg-rose-600 p-10 rounded-[40px] shadow-2xl col-span-1 sm:col-span-2 flex flex-col md:flex-row items-center gap-8 group hover:scale-[1.02] transition-transform">
-                            <div class="text-6xl font-display font-black text-white">5x</div>
-                            <div class="text-center md:text-left">
-                                <span class="text-[11px] font-bold uppercase text-rose-200 block mb-1 tracking-widest">Wöchentliche Action</span>
-                                <p class="text-white font-bold text-lg leading-tight">So oft sind wir im Schnitt mit der Freizeitassistenz unterwegs. Graz ist unser Spielplatz.</p>
+
+                        {/* Card 3: Fokus auf "Rückenwind" */}
+                        <div class="bg-rose-600 p-6 sm:p-8 lg:p-10 rounded-[32px] md:rounded-[40px] shadow-2xl col-span-1 sm:col-span-2 flex flex-col sm:flex-row items-start sm:items-center gap-6 group hover:scale-[1.01] transition-transform">
+                            <div class="text-6xl md:text-7xl font-display font-black text-white shrink-0 leading-none">5x</div>
+                            <div class="text-left">
+                                <span class="text-[10px] font-bold uppercase text-rose-200 block mb-2 tracking-widest italic">Wöchentlicher Rückenwind</span>
+                                <p class="text-white font-bold text-lg leading-tight">So oft sind wir im Schnitt mit der Freizeitassistenz in Graz unterwegs. Wir liefern den Support für deinen eigenen Weg.</p>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>
         </section>
 
-        {/* --- TEAM SECTION --- */}
-        <section class="px-6 sm:px-10 py-32 bg-white dark:bg-slate-950 transition-colors duration-500">
-            <div class="max-w-7xl mx-auto">
-                <div class="mb-24">
-                    <span class="text-rose-500 font-bold tracking-widest uppercase text-xs mb-4 block underline decoration-rose-500 decoration-2 underline-offset-8">Struktur & Köpfe</span>
-                    <h2 class="text-4xl md:text-6xl font-display font-extrabold text-slate-900 dark:text-white tracking-tighter leading-tight text-reveal">
-                        Menschen mit <br>
-                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 via-indigo-500 to-indigo-600">
-                            Haltung & Herz.
-                        </span>
-                    </h2>
-                </div>
-
-                {/* Vorstand */}
-                <div class="mb-32">
-                    <div class="flex items-center gap-6 mb-12">
-                        <h3 class="text-2xl font-display font-bold text-slate-900 dark:text-white shrink-0">Der Vorstand</h3>
-                        <div class="h-px bg-slate-100 dark:bg-slate-800 flex-1 transition-colors"></div>
-                        <span class="text-slate-400 text-[10px] font-bold uppercase tracking-[0.2em]">Strategische Führung</span>
-                    </div>
-
-                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-                        {boardMembers.map(member => (
-                            <div class="group">
-                                <div class="aspect-square rounded-[32px] overflow-hidden bg-slate-100 dark:bg-slate-900 mb-4 border border-slate-200 dark:border-slate-800 shadow-sm group-hover:shadow-xl transition-all duration-500 flex items-center justify-center relative">
-                                    {member.image ? (
-                                        <img src={`${ASSET_URL}/${member.image}?key=system-medium-cover`} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt={member.name} />
-                                    ) : (
-                                        <span class="text-2xl font-display font-black text-slate-300 dark:text-slate-700 group-hover:text-rose-500 transition-colors uppercase">
-                                            {member.name.split(' ').map(n => n[0]).join('')}
-                                        </span>
-                                    )}
-                                </div>
-                                <h4 class="text-sm font-bold text-slate-900 dark:text-white leading-tight mb-1">{member.name}</h4>
-                                <p class="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-tighter leading-none">{member.role}</p>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Operatives Team */}
-                <div>
-                    <div class="flex items-center gap-6 mb-12">
-                        <h3 class="text-2xl font-display font-bold text-slate-900 dark:text-white shrink-0">Das Team</h3>
-                        <div class="h-px bg-slate-100 dark:bg-slate-800 flex-1 transition-colors"></div>
-                    </div>
-
-                    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-10">
-                        {leadership.map(member => (
-                            <div class="group text-center">
-                                <div class="relative w-32 h-32 md:w-40 md:h-40 mx-auto mb-6">
-                                    <div class="absolute inset-0 rounded-full bg-gradient-to-tr from-rose-500 to-indigo-600 animate-spin-slow opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                                    <div class="absolute inset-1 rounded-full overflow-hidden border-4 border-white dark:border-slate-800 bg-slate-50 dark:bg-slate-900 flex items-center justify-center relative transition-colors">
-                                        {member.image ? (
-                                            <img src={`${ASSET_URL}/${member.image}?key=system-medium-cover`} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt={member.name} />
-                                        ) : (
-                                            <span class="text-3xl font-display font-black text-slate-200 dark:text-slate-700 group-hover:text-slate-400 transition-colors uppercase">
-                                                {member.name.split(' ').map(n => n[0]).join('')}
-                                            </span>
-                                        )}
-                                    </div>
-                                </div>
-                                <h4 class="text-lg font-bold text-slate-900 dark:text-white mb-1 leading-tight">{member.name}</h4>
-                                <p class="text-slate-500 dark:text-slate-500 text-[10px] font-bold uppercase tracking-widest">{member.role}</p>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        {/* --- JOIN US --- */}
+        {/* --- DAS MANIFEST: KOMPAKT & EDITORIAL MIT PDF-LINK --- */}
         <section class="px-6 sm:px-10 py-24 bg-white dark:bg-slate-950 transition-colors duration-500">
+            <div class="max-w-6xl mx-auto">
+                
+                {/* Subtile Einleitung */}
+                <div class="flex items-center gap-6 mb-16">
+                    <div class="h-[1px] w-12 bg-rose-500"></div>
+                    <span class="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">Das Manifest</span>
+                </div>
+
+                <div class="grid lg:grid-cols-12 gap-12 lg:gap-20 items-end mb-24">
+                    <div class="lg:col-span-8">
+                        <h2 class="text-4xl md:text-6xl font-display font-black text-slate-900 dark:text-white tracking-tighter leading-[0.9] uppercase">
+                            Haltung ist bei uns <br/>
+                            <span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-indigo-600 italic">kein Standard.</span>
+                        </h2>
+                    </div>
+                    <div class="lg:col-span-4">
+                        <p class="text-slate-500 dark:text-slate-400 font-medium leading-relaxed border-l border-slate-100 dark:border-slate-800 pl-6 text-sm">
+                            Seit 1983 brechen wir starre Strukturen auf, um Platz für echte Lebensentwürfe zu machen. Ohne Wenn und Aber.
+                        </p>
+                    </div>
+                </div>
+
+                {/* Die 3 Pfeiler */}
+                <div class="grid md:grid-cols-3 gap-12 lg:gap-16 border-t border-slate-50 dark:border-slate-900 pt-16 mb-20">
+                    <div class="space-y-4">
+                        <span class="text-rose-500 font-mono text-[10px]">01 —</span>
+                        <h3 class="text-xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tight">Radikale Begegnung</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+                            Wir verwalten keine Fälle, wir gestalten Lebensräume. Inklusion passiert bei uns zwanglos zwischen Kultur und Alltag.
+                        </p>
+                    </div>
+
+                    <div class="space-y-4">
+                        <span class="text-rose-500 font-mono text-[10px]">02 —</span>
+                        <h3 class="text-xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tight">Kultur als Brücke</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+                            Teilhabe ist ein Grundrecht. Wir nutzen Kunst, um Barrieren in den Köpfen einfach verschwinden zu lassen.
+                        </p>
+                    </div>
+
+                    <div class="space-y-4">
+                        <span class="text-rose-500 font-mono text-[10px]">03 —</span>
+                        <h3 class="text-xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tight">Echter Rückenwind</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+                            Wir fördern Autonomie. Wir begleiten dich professionell auf deinem Weg, ohne dich zu bevormunden.
+                        </p>
+                    </div>
+                </div>
+
+                {/* DER "MEHR" BUTTON FÜR DAS PDF */}
+                <div class="flex justify-start">
+                    <a 
+                        href="/path-to-your-leitbild.pdf" 
+                        target="_blank"
+                        class="group inline-flex items-center gap-4 px-8 py-4 bg-slate-50 dark:bg-slate-900 hover:bg-rose-500 transition-all duration-500 rounded-full border border-slate-100 dark:border-slate-800 hover:border-rose-500 shadow-sm"
+                    >
+                        <span class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-900 dark:text-white group-hover:text-white">Das ganze Leitbild lesen</span>
+                        <div class="w-8 h-8 rounded-full bg-white dark:bg-slate-800 flex items-center justify-center group-hover:translate-x-2 transition-transform shadow-sm">
+                            <i class="fa-solid fa-arrow-down-long text-xs text-rose-500"></i>
+                        </div>
+                    </a>
+                </div>
+
+            </div>
+        </section>
+
+
+        {/* --- TEAM SECTION: HALTUNG & HERZ --- */}
+<section class="px-6 sm:px-10 py-32 bg-white dark:bg-slate-950 transition-colors duration-500">
+    <div class="max-w-7xl mx-auto text-left">
+        <div class="mb-24">
+            <span class="text-rose-500 font-bold tracking-widest uppercase text-xs mb-4 block underline decoration-rose-500 decoration-2 underline-offset-8">Struktur & Köpfe</span>
+            <h2 class="text-4xl md:text-6xl font-display font-black text-slate-900 dark:text-white tracking-tighter leading-[0.9] uppercase">
+                Menschen mit <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-rose-600">
+                    Haltung & Herz.
+                </span>
+            </h2>
+        </div>
+
+        {/* Vorstand: Die Strategischen Brückenbauer */}
+        <div class="mb-32">
+            <div class="flex items-center gap-6 mb-12">
+                <h3 class="text-2xl font-display font-black text-slate-900 dark:text-white shrink-0 uppercase tracking-tight">Der Vorstand</h3>
+                <div class="h-px bg-slate-100 dark:bg-slate-800 flex-1 transition-colors"></div>
+                <span class="text-slate-400 text-[10px] font-bold uppercase tracking-[0.2em] hidden sm:block">Strategische Führung</span>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6">
+                {boardMembers.map(member => (
+                    <div class="group">
+                        <div class="aspect-square rounded-[32px] overflow-hidden bg-slate-50 dark:bg-slate-900 mb-4 border border-slate-100 dark:border-slate-800 shadow-sm group-hover:shadow-xl group-hover:border-rose-500/20 transition-all duration-500 flex items-center justify-center relative">
+                            {member.image ? (
+                                <img src={`${ASSET_URL}/${member.image}?key=system-medium-cover`} class="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" alt={member.name} />
+                            ) : (
+                                <span class="text-2xl font-display font-black text-slate-300 dark:text-slate-700 group-hover:text-rose-500 transition-colors uppercase">
+                                    {member.name.split(' ').map(n => n[0]).join('')}
+                                </span>
+                            )}
+                        </div>
+                        <h4 class="text-sm font-bold text-slate-900 dark:text-white leading-tight mb-1">{member.name}</h4>
+                        <p class="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-tighter leading-none italic">{member.role}</p>
+                    </div>
+                ))}
+            </div>
+        </div>
+
+        {/* Operatives Team: Das Herz der Grabenstraße */}
+        <div>
+            <div class="flex items-center gap-6 mb-12">
+                <h3 class="text-2xl font-display font-black text-slate-900 dark:text-white shrink-0 uppercase tracking-tight">Das Team</h3>
+                <div class="h-px bg-slate-100 dark:bg-slate-800 flex-1 transition-colors"></div>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-x-8 gap-y-12">
+                {leadership.map(member => (
+                    <div class="group text-center">
+                        <div class="relative w-28 h-28 sm:w-32 sm:h-32 md:w-40 md:h-40 mx-auto mb-6">
+                            {/* Gradient-Ring: Indigo durch Slate/Rose ersetzt für weniger Stress */}
+                            <div class="absolute inset-0 rounded-full bg-gradient-to-tr from-rose-500 to-slate-400 animate-spin-slow opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                            <div class="absolute inset-1 rounded-full overflow-hidden border-4 border-white dark:border-slate-800 bg-slate-50 dark:bg-slate-900 flex items-center justify-center relative transition-colors shadow-inner">
+                                {member.image ? (
+                                    <img src={`${ASSET_URL}/${member.image}?key=system-medium-cover`} class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt={member.name} />
+                                ) : (
+                                    <span class="text-3xl font-display font-black text-slate-200 dark:text-slate-700 group-hover:text-rose-500 transition-colors uppercase">
+                                        {member.name.split(' ').map(n => n[0]).join('')}
+                                    </span>
+                                )}
+                            </div>
+                        </div>
+                        <h4 class="text-lg font-bold text-slate-900 dark:text-white mb-1 leading-tight tracking-tight uppercase">{member.name}</h4>
+                        <p class="text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest italic">{member.role}</p>
+                    </div>
+                ))}
+            </div>
+        </div>
+    </div>
+</section>
+
+        {/* --- JOIN US: WARMER GLOW & KLARE HALTUNG --- */}
+        <section class="px-6 sm:px-10 py-24 bg-white dark:bg-slate-950 transition-colors duration-500 text-left">
             <div class="max-w-7xl mx-auto">
-                <a href="/join" class="group relative bg-indigo-600 rounded-[48px] p-10 md:p-14 overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-10 shadow-xl hover:shadow-indigo-200 dark:hover:shadow-none transition-all duration-500">
-                    <div class="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(255,255,255,0.1),transparent)] pointer-events-none"></div>
+                <a href="/join" class="group relative bg-slate-900 rounded-[48px] p-10 md:p-14 overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-10 shadow-2xl hover:shadow-rose-500/10 transition-all duration-500 border border-white/5">
+                    
+                    {/* SUBTILER GRADIENT GLOW (Rose zu Indigo passend zum Hero) */}
+                    <div class="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(244,63,94,0.15),rgba(79,70,229,0.05),transparent)] pointer-events-none"></div>
+                    
                     <div class="relative z-10 flex flex-col lg:flex-row items-center gap-10 text-center lg:text-left">
-                        <div class="w-20 h-20 rounded-3xl bg-white/10 flex items-center justify-center text-white text-3xl border border-white/20 group-hover:rotate-6 transition-transform">
+                        {/* ICON: Jetzt mit dem Rose-Indigo Verlauf */}
+                        <div class="w-20 h-20 rounded-3xl bg-white/5 flex items-center justify-center text-transparent bg-clip-text bg-gradient-to-br from-rose-500 to-indigo-500 text-3xl border border-white/10 group-hover:rotate-6 group-hover:scale-110 transition-all duration-500 shadow-inner">
                             <i class="fa-solid fa-rocket"></i>
                         </div>
+                        
                         <div>
-                            <h2 class="text-3xl md:text-4xl font-display font-bold text-white mb-3 tracking-tight">Werde ein Brückenpfeiler.</h2>
-                            <p class="text-indigo-100 max-w-xl font-medium text-lg leading-relaxed">
-                                Inklusion braucht Menschen, die mit anpacken. Ob Ehrenamt, Praktikum oder Zivildienst – dein Engagement stärkt unser gemeinsames Fundament.
+                            <h2 class="text-3xl md:text-5xl font-display font-black text-white mb-4 tracking-tighter uppercase leading-none">
+                                Werde ein <br class="hidden sm:block" /> <span class="text-rose-500 italic">Brückenpfeiler.</span>
+                            </h2>
+                            <p class="text-slate-400 max-w-xl font-medium text-lg leading-relaxed">
+                                Inklusion ist kein Projekt, sondern eine Haltung. Wir suchen Menschen, die mit anpacken – egal ob im Ehrenamt, Praktikum oder Zivildienst. Dein Engagement ist der Rückenwind für unser gemeinsames Fundament.
                             </p>
                         </div>
                     </div>
-                    <div class="relative z-10 shrink-0">
-                        <span class="px-10 py-5 bg-white text-indigo-600 rounded-full font-bold group-hover:bg-slate-900 group-hover:text-white transition-all inline-flex items-center gap-3 shadow-lg">
-                            Mitmachen & Bewegen <i class="fa-solid fa-arrow-right"></i>
+
+                    <div class="relative z-10 shrink-0 w-full lg:w-auto">
+                        <span class="px-10 py-5 bg-white text-slate-900 rounded-full font-black uppercase tracking-widest text-xs group-hover:bg-rose-600 group-hover:text-white transition-all inline-flex items-center justify-center gap-3 shadow-xl w-full lg:w-auto transform group-hover:-translate-y-1">
+                            Mitmachen & Bewegen <i class="fa-solid fa-arrow-right text-[10px]"></i>
                         </span>
                     </div>
                 </a>
             </div>
         </section>
 
-        {/* --- FINAL STATEMENT --- */}
+        {/* --- FINAL STATEMENT: ELEGANT TYPOGRAPHIC REVEAL --- */}
         <section class="px-6 sm:px-10 py-40 bg-white dark:bg-slate-950 text-center overflow-hidden transition-colors duration-500">
             <div class="max-w-4xl mx-auto">
-                <div class="reveal-blur space-y-8">
+                <div class="space-y-8">
                     <span class="text-rose-500 font-display font-black text-8xl opacity-20 block leading-none select-none">”</span>
-                    <h3 class="text-4xl md:text-6xl font-display font-black text-slate-900 dark:text-white tracking-tighter leading-tight">
+                    
+                    <h3 class="text-4xl md:text-6xl font-display font-black text-slate-900 dark:text-white tracking-tighter leading-tight uppercase">
                         Inklusion ist fertig, wenn wir aufhören, <br/>
-                        <span class="italic text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-indigo-600">darüber zu reden.</span>
+                        <span class="reveal-focus italic text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-indigo-600">
+                            darüber zu reden.
+                        </span>
                     </h3>
+                    
                     <p class="text-slate-400 dark:text-slate-500 font-bold uppercase tracking-[0.4em] text-xs pt-8">
                         Bis dahin sind wir hier.
                     </p>
                 </div>
             </div>
         </section>
+
+        <style>
+            .reveal-focus {
+                display: inline-block;
+                filter: blur(15px);
+                letter-spacing: 0.2em;
+                opacity: 0;
+                transform: translateY(10px);
+                transition: 
+                    filter 1.5s cubic-bezier(0.22, 1, 0.36, 1),
+                    letter-spacing 1.8s cubic-bezier(0.22, 1, 0.36, 1),
+                    opacity 1.2s ease-out,
+                    transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+            }
+
+            .reveal-focus.active {
+                filter: blur(0);
+                letter-spacing: normal;
+                opacity: 1;
+                transform: translateY(0);
+            }
+        </style>
+
+        <script>
+            function initFinalStatement() {
+                const target = document.querySelector('.reveal-focus');
+                if (!target) return;
+
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            target.classList.add('active');
+                        }
+                    });
+                }, { threshold: 0.5 });
+
+                observer.observe(target);
+            }
+
+            initFinalStatement();
+            document.addEventListener('astro:after-swap', initFinalStatement);
+        </script>
 
         {/* --- EXIT SECTION --- */}
         <section class="bg-white dark:bg-slate-950 pb-32 text-center transition-colors duration-500">
