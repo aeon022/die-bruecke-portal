@@ -112,11 +112,12 @@ const menuItems = [
 
     <div class="flex items-center gap-2 sm:gap-3">
       
-      <button id="btnAccessibility" data-tooltip="Barrierefreiheit" class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/5 flex items-center justify-center text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/30 transition cursor-pointer shadow-sm focus:outline-none focus:ring-2 focus:ring-rose-500" type="button" aria-label="Barrierefreiheit">
+      <button id="btnAccessibility" data-tooltip="Barrierefreiheit anzeigen mit Shift + / oder Strg + K" class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/5 flex items-center justify-center text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/30 transition cursor-pointer shadow-sm focus:outline-none focus:ring-2 focus:ring-rose-500" type="button" aria-label="Barrierefreiheit">
          <i class="fa-solid fa-wheelchair text-base md:text-lg"></i>
       </button>
 
-      <button onclick="window.toggleTheme()" id="themeToggle" data-tooltip="Design" class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/5 flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-700 transition cursor-pointer shadow-sm relative focus:outline-none overflow-hidden group" type="button" aria-label="Design wechseln">
+      {/* Button mit ID für das Script */}
+      <button id="themeToggle" data-tooltip="Design Hell/Dunkel" class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/5 flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-700 transition cursor-pointer shadow-sm relative focus:outline-none overflow-hidden group" type="button" aria-label="Design wechseln">
         <span class="theme-moon absolute inset-0 flex items-center justify-center transition-all duration-500 rotate-0 scale-100 opacity-100 dark:rotate-90 dark:scale-0 dark:opacity-0 text-slate-600">
           <i class="fa-solid fa-moon text-base md:text-lg"></i>
         </span>
@@ -283,7 +284,72 @@ const menuItems = [
 </style>
 
 <script>
+  // Diese Funktion kümmert sich um die Logik
+  function setupThemeLogic() {
+      const themeToggle = document.getElementById('themeToggle');
+      const systemMedia = window.matchMedia('(prefers-color-scheme: dark)');
+
+      // 1. INITIAL: Was sollen wir beim Laden anzeigen?
+      // Prio 1: Gespeicherter Wert (falls vorhanden)
+      // Prio 2: Systemeinstellung
+      const storedTheme = localStorage.getItem('theme');
+      
+      if (storedTheme === 'dark' || (!storedTheme && systemMedia.matches)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+
+      // 2. SYSTEM-LISTENER (Der Fix):
+      // Wir hören IMMER auf Systemänderungen, auch wenn localStorage existiert.
+      // Wenn du am Mac den Modus wechselst, überschreiben wir die Webseite sofort.
+      // Um Doppel-Events zu vermeiden, entfernen wir erst alte Listener (falls nötig),
+      // aber hier definieren wir die Funktion neu, das ist sauberer.
+      
+      // Wir definieren die Funktion separat, um sie sauber binden zu können
+      const handleSystemChange = (e) => {
+          if (e.matches) {
+              document.documentElement.classList.add('dark');
+              localStorage.setItem('theme', 'dark'); // Wir aktualisieren auch den Speicher
+          } else {
+              document.documentElement.classList.remove('dark');
+              localStorage.setItem('theme', 'light');
+          }
+      };
+
+      // Alten Listener entfernen (Trick via Property, um Event-Duplizierung bei Astro-Swap zu vermeiden)
+      if (window._themeListener) {
+          systemMedia.removeEventListener('change', window._themeListener);
+      }
+      // Neuen Listener setzen und global speichern
+      window._themeListener = handleSystemChange;
+      systemMedia.addEventListener('change', handleSystemChange);
+
+
+      // 3. BUTTON CLICK (Manuell)
+      if (themeToggle) {
+        // Button klonen um alte EventListener loszuwerden (Astro Best Practice)
+        const newToggle = themeToggle.cloneNode(true);
+        themeToggle.parentNode.replaceChild(newToggle, themeToggle);
+        
+        newToggle.addEventListener('click', () => {
+            const html = document.documentElement;
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                html.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+      }
+  }
+
+  // --- STANDARD INITIALISIERUNG ---
   function init() {
+    setupThemeLogic();
+
+    // Restliche Header Logik (Nav, Scroll etc.)
     const btnOpenNav = document.getElementById('btnOpenNav');
     const navOverlay = document.getElementById('navOverlay');
     const navBackdrop = document.getElementById('navBackdrop');
@@ -292,7 +358,10 @@ const menuItems = [
     const btnAccessibility = document.getElementById('btnAccessibility');
 
     if (btnAccessibility) {
-        btnAccessibility.addEventListener('click', () => {
+        // Klonen um Event-Stacking zu verhindern
+        const newBtn = btnAccessibility.cloneNode(true);
+        btnAccessibility.parentNode.replaceChild(newBtn, btnAccessibility);
+        newBtn.addEventListener('click', () => {
             document.dispatchEvent(new KeyboardEvent('keydown', { key: '/', bubbles: true }));
         });
     }
@@ -304,9 +373,9 @@ const menuItems = [
       navBackdrop?.setAttribute('data-state', newState);
       btnOpenNav?.setAttribute('aria-expanded', !isOpen);
       
-      // Icon Animation
-      const bars = btnOpenNav?.querySelector('.icon-bars');
-      const x = btnOpenNav?.querySelector('.icon-x');
+      const bars = document.querySelector('#btnOpenNav .icon-bars'); // Selektor sicherer machen
+      const x = document.querySelector('#btnOpenNav .icon-x');
+      
       if (bars && x) {
           bars.style.opacity = isOpen ? '1' : '0';
           bars.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
@@ -315,7 +384,6 @@ const menuItems = [
       }
     };
 
-    // Event Listener Cleaning & Re-adding
     if (btnOpenNav) {
       const nBtn = btnOpenNav.cloneNode(true);
       btnOpenNav.parentNode.replaceChild(nBtn, btnOpenNav);
@@ -328,20 +396,28 @@ const menuItems = [
       nDrop.addEventListener('click', toggleMenu);
     }
     
-    // Close on link click
     navOverlay?.querySelectorAll('a').forEach(l => l.addEventListener('click', () => {
          if(navOverlay.getAttribute('data-state') === 'open') toggleMenu();
     }));
 
+    // Scroll Logic
     const handleScroll = () => {
         const scrolled = (window.scrollY || 0) > 20;
         headerShell?.classList.toggle('is-float', scrolled);
         mainHeader?.classList.toggle('is-shrink', scrolled);
     };
+    
+    // EventListener bereinigen (falls vorhanden) und neu setzen
+    window.removeEventListener('scroll', window._headerScrollListener);
+    window._headerScrollListener = handleScroll;
     window.addEventListener('scroll', handleScroll, { passive: true });
+    
     handleScroll();
   }
 
+  // Starten
   init();
+  
+  // Astro Swap Support (für View Transitions)
   document.addEventListener('astro:after-swap', init);
 </script>
