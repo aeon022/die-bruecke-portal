@@ -1,5 +1,5 @@
----
 /* Sektion: Worauf wir bauen (Das Fundament der Brücke) */
+---
 ---
 
 <section class="px-6 sm:px-10 py-24 md:py-32 bg-slate-50 dark:bg-slate-950/50 transition-colors duration-500">
@@ -23,12 +23,8 @@
             </div>
 
             <div class="lg:col-span-4 pb-2">
-                {/* FIX: 
-                    - border-l-0 auf mobil (dafür border-t-2 oder einfach weglassen)
-                    - pl-0 auf mobil
-                    - md:border-l-2 und md:pl-6 erst ab Tablet/Desktop
-                */}
-                <p class="text-slate-600 dark:text-slate-400 font-medium leading-relaxed border-l-0 md:border-l-2 border-rose-500/30 md:border-slate-200 md:dark:border-slate-800 pl-0 md:pl-6 pt-4 md:pt-0">
+                {/* FIX: Border Logik für Mobil/Desktop getrennt */}
+                <p class="text-slate-600 dark:text-slate-400 font-medium leading-relaxed border-t-2 md:border-t-0 md:border-l-2 border-rose-500/30 md:border-slate-200 md:dark:border-slate-800 pt-4 md:pt-0 pl-0 md:pl-6">
                     Seit über vier Jahrzehnten schaffen wir nicht nur Raum für Inklusion, sondern stellen sicher, dass sie menschlich und selbstverständlich ist.
                 </p>
             </div>
@@ -38,7 +34,7 @@
             
             {/* 1. MENSCHLICHKEIT */}
             <div class="group">
-                <span class="block text-6xl font-display font-black text-slate-200 dark:text-slate-800 mb-6 group-hover:text-rose-500/20 transition-colors">01</span>
+                <span class="block text-6xl font-display font-black text-slate-200 dark:text-slate-800 mb-6 group-hover:text-rose-500/20 transition-colors duration-300">01</span>
                 <h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-4 uppercase tracking-tight">Menschlichkeit</h3>
                 <p class="text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
                     Bei uns steht von Anfang an der Mensch mit seinen individuellen Bedürfnissen und Anforderungen im Mittelpunkt. Unbürokratisch, herzlich und echt.
@@ -47,7 +43,7 @@
 
             {/* 2. SELBSTBESTIMMUNG */}
             <div class="group">
-                <span class="block text-6xl font-display font-black text-slate-200 dark:text-slate-800 mb-6 group-hover:text-rose-500/20 transition-colors">02</span>
+                <span class="block text-6xl font-display font-black text-slate-200 dark:text-slate-800 mb-6 group-hover:text-rose-500/20 transition-colors duration-300">02</span>
                 <h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-4 uppercase tracking-tight">Selbstbestimmung</h3>
                 <p class="text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
                     Dein Recht nach Artikel 19 UN-BRK ist unser Auftrag. Wir begleiten dich professionell und auf Augenhöhe – dein Weg ist unser <span class="text-rose-500 font-bold">Rückenwind</span>.
@@ -56,7 +52,7 @@
 
             {/* 3. KULTUR & BEGEGNUNG */}
             <div class="group">
-                <span class="block text-6xl font-display font-black text-slate-200 dark:text-slate-800 mb-6 group-hover:text-rose-500/20 transition-colors">03</span>
+                <span class="block text-6xl font-display font-black text-slate-200 dark:text-slate-800 mb-6 group-hover:text-rose-500/20 transition-colors duration-300">03</span>
                 <h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-4 uppercase tracking-tight">Kultur & Begegnung</h3>
                 <p class="text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
                     Kunst zum Erleben. Wir schaffen Räume, in denen Unterschiede verschwinden und du einfach mitten drinnen bist. Ohne Barrieren in den Köpfen.
@@ -65,18 +61,27 @@
 
         </div>
 
-        {/* AHA-EFFEKT: Archiv-Teaser */}
-        <div class="mt-24 p-8 md:p-12 rounded-[40px] bg-slate-900 dark:bg-white text-white dark:text-slate-900 flex flex-col md:flex-row items-center justify-between gap-8 overflow-hidden relative group/archive">
+        {/* AHA-EFFEKT: Archiv-Teaser (FIXED DARK MODE) */}
+        <div class="mt-24 p-8 md:p-12 rounded-[40px] bg-slate-900 dark:bg-slate-800 border border-transparent dark:border-white/10 text-white flex flex-col md:flex-row items-center justify-between gap-8 overflow-hidden relative group/archive transition-colors duration-500 shadow-2xl shadow-slate-200/50 dark:shadow-none">
+            
+            {/* Glow Effect für Dark Mode */}
+            <div class="absolute top-0 right-0 w-64 h-64 bg-rose-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+
             <div class="relative z-10">
-                <h4 class="text-3xl font-display font-black uppercase mb-2">Die Archiv-Gschicht.</h4>
-                <p class="text-slate-400 dark:text-slate-500 font-medium max-w-xl">
+                <h4 class="text-3xl font-display font-black uppercase mb-2 text-white">Die Archiv-Gschicht.</h4>
+                <p class="text-slate-400 font-medium max-w-xl">
                     Willst du sehen, wie alles angefangen hat? Tauche ein in über 40 Jahre Brücke-Geschichte, Konzerte und Projekte.
                 </p>
             </div>
-            <a href="/archiv" class="relative z-10 px-8 py-4 bg-rose-600 text-white rounded-full font-bold hover:bg-rose-500 transition-all whitespace-nowrap">
+            
+            <a href="/archiv" class="relative z-10 px-8 py-4 bg-rose-600 text-white rounded-full font-bold hover:bg-white hover:text-slate-900 transition-all duration-300 whitespace-nowrap shadow-lg">
                 Zum Archiv
             </a>
-            <span class="absolute right-10 -bottom-10 text-[120px] font-display font-black text-white/5 dark:text-slate-900/5 select-none pointer-events-none group-hover/archive:-translate-y-5 transition-transform duration-700">1983</span>
+            
+            {/* Jahreszahl im Hintergrund */}
+            <span class="absolute right-10 -bottom-10 text-[120px] font-display font-black text-white/5 dark:text-white/5 select-none pointer-events-none group-hover/archive:-translate-y-5 transition-transform duration-700">
+                1983
+            </span>
         </div>
 
     </div>
