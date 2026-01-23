@@ -3,7 +3,11 @@ import MainLayout from '../layouts/layout.astro';
 import { directus } from '../lib/directus';
 import { readSingleton } from '@directus/sdk';
 
-// 1. Daten laden
+// 1. Environment Variables & Konstanten
+const GOOGLE_KEY = import.meta.env.PUBLIC_GOOGLE_MAPS_KEY;
+const LAT_LNG = "47.0849,15.4348"; // Koordinaten für Static Map Zentrierung
+
+// 2. Daten laden
 let settings;
 try {
     settings = await directus.request(readSingleton('global_settings'));
@@ -79,7 +83,7 @@ const departments = [
                 <span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-600 to-slate-600 dark:to-slate-400">für dich da.</span>
             </h1>
             <p class="text-xl text-slate-500 dark:text-slate-400 max-w-2xl font-medium leading-relaxed">
-                Du hast Fragen zu unseren Angeboten, möchtest Tickets reservieren oder brauchst Unterstützung? 
+                Du hast Fragen zu unseren Angeboten, möchtest Tickets reservieren oder brauchst Unterstützung?
                 Schreib uns, ruf an oder komm einfach vorbei.
             </p>
         </div>
@@ -103,8 +107,11 @@ const departments = [
                             referrerpolicy="no-referrer-when-downgrade">
                         </iframe>
 
-                        <div id="map-placeholder" class="absolute inset-0 bg-cover bg-center flex flex-col items-center justify-center p-6 text-center transition-all cursor-pointer hover:bg-slate-300/50 dark:hover:bg-slate-700/50" 
-                             style="background-image: url('https://maps.googleapis.com/maps/api/staticmap?center=Grabenstraße+39a,Graz&zoom=15&size=800x400&maptype=roadmap&style=feature:all|saturation:-100&key=YOUR_API_KEY_PLACEHOLDER'); background-color: #cbd5e1;">
+                        {/* STATIC MAP PLACEHOLDER MIT API KEY */}
+                        <div id="map-placeholder" 
+                             data-key={GOOGLE_KEY}
+                             class="absolute inset-0 bg-cover bg-center flex flex-col items-center justify-center p-6 text-center transition-all cursor-pointer hover:bg-slate-300/50 dark:hover:bg-slate-700/50" 
+                             style={`background-image: url('https://maps.googleapis.com/maps/api/staticmap?center=${LAT_LNG}&zoom=15&size=800x400&maptype=roadmap&markers=color:red%7C${LAT_LNG}&style=feature:all|saturation:-100&key=${GOOGLE_KEY}'); background-color: #cbd5e1;`}>
                              
                             {/* Overlay Pattern */}
                             <div class="absolute inset-0 bg-slate-200 dark:bg-slate-800 opacity-50" style="background-image: radial-gradient(#94a3b8 1px, transparent 1px); background-size: 20px 20px;"></div>
@@ -242,6 +249,12 @@ const departments = [
                             <textarea id="message" name="message" rows="5" required class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all dark:text-white" placeholder="Wie können wir helfen?"></textarea>
                         </div>
 
+                        {/* HONEYPOT FELD (Neu) */}
+                        <div class="hidden" aria-hidden="true">
+                            <label for="website_check">Bitte dieses Feld leer lassen</label>
+                            <input type="text" name="website_check" id="website_check" tabindex="-1" autocomplete="off">
+                        </div>
+
                         <div class="pt-4">
                             <button type="submit" id="submit-btn" class="w-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-lg rounded-2xl py-4 hover:bg-rose-600 dark:hover:bg-rose-400 dark:hover:text-white transition-all shadow-lg hover:shadow-rose-500/25 transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
                                 <span>Nachricht absenden</span>
@@ -263,7 +276,7 @@ const departments = [
                                             <i class="fa-solid fa-chevron-down text-xs"></i>
                                         </span>
                                     </summary>
-                                    <div class="px-6 pb-6 text-slate-500 dark:text-slate-400 leading-relaxed text-sm animate-fade-in">
+                                    <div class="px-6 pb-6 text-slate-500 dark:text-slate-400 leading-relaxed text-sm animate-fade-in border-t border-slate-50 dark:border-slate-800/50 pt-4">
                                         {faq.answer || faq.a}
                                     </div>
                                 </details>
@@ -277,18 +290,18 @@ const departments = [
         </div>
     </section>
 
-    {/* ... DEPARTMENTS & JOIN US (Gleich wie vorher) ... */}
-    <section class="px-6 sm:px-10 py-24 bg-slate-900 text-white rounded-[48px] dark:border dark:border-slate-800">
+    {/* ... DEPARTMENTS ... */}
+    <section class="px-6 sm:px-10 py-24 bg-slate-900 text-white rounded-[48px] dark:border dark:border-slate-800 my-6">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-5xl font-display font-bold mb-4 tracking-tight">Der direkte Draht</h2>
+                <h2 class="text-3xl md:text-5xl font-display font-black mb-4 tracking-tight uppercase">Der direkte Draht</h2>
                 <p class="text-slate-400 font-medium tracking-wide uppercase text-xs">Damit du gleich bei der richtigen Person landest.</p>
             </div>
 
             <div class="grid md:grid-cols-3 gap-8">
                 {departments.map(dept => (
                     <div class="bg-white/5 border border-white/10 rounded-3xl p-8 hover:bg-white/10 transition-colors text-center group">
-                        <div class="w-16 h-16 rounded-2xl bg-slate-800 flex items-center justify-center mx-auto mb-6 text-2xl group-hover:scale-110 transition-transform text-rose-500 shadow-lg">
+                        <div class="w-16 h-16 rounded-2xl bg-slate-800 flex items-center justify-center mx-auto mb-6 text-2xl group-hover:scale-110 transition-transform text-rose-500 shadow-lg shadow-black/20">
                             <i class={`fa-solid ${dept.icon}`}></i>
                         </div>
                         <h3 class="text-xl font-display font-bold mb-3">{dept.title}</h3>
@@ -305,23 +318,27 @@ const departments = [
         </div>
     </section>
 
+    {/* --- CTA: MITMACHEN (DESIGN UPDATE) --- */}
     <section class="px-6 sm:px-10 py-24 bg-white dark:bg-slate-950 transition-colors duration-300">
         <div class="max-w-7xl mx-auto">
-            <a href="/join" class="group relative bg-indigo-600 rounded-[48px] p-10 md:p-14 overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-10 shadow-xl hover:shadow-indigo-200 dark:hover:shadow-none transition-all duration-500">
-                <div class="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(255,255,255,0.1),transparent)] pointer-events-none"></div>
+            <a href="/join" class="group relative bg-slate-900 rounded-[40px] p-10 md:p-14 overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-10 shadow-2xl shadow-slate-200 dark:shadow-none border border-white/10 hover:scale-[1.01] transition-all duration-500">
+                {/* Glow Effect */}
+                <div class="absolute -right-20 -top-20 w-96 h-96 bg-rose-500/20 rounded-full blur-[100px] group-hover:bg-rose-500/30 transition-colors duration-700 pointer-events-none"></div>
+
                 <div class="relative z-10 flex flex-col lg:flex-row items-center gap-10 text-center lg:text-left">
-                    <div class="w-20 h-20 rounded-3xl bg-white/10 flex items-center justify-center text-white text-3xl border border-white/20 group-hover:rotate-6 transition-transform">
+                    <div class="w-24 h-24 rounded-3xl bg-white/5 flex items-center justify-center text-rose-500 text-4xl border border-white/10 group-hover:rotate-12 transition-transform shadow-inner shadow-black/20">
                         <i class="fa-solid fa-rocket"></i>
                     </div>
                     <div>
-                        <h2 class="text-3xl md:text-4xl font-display font-bold text-white mb-3 tracking-tight">Werde ein Brückenpfeiler.</h2>
-                        <p class="text-indigo-100 max-w-xl font-medium text-lg leading-relaxed">
+                        <span class="text-[10px] font-black uppercase tracking-[0.3em] text-rose-500 mb-2 block font-mono">Support us //</span>
+                        <h2 class="text-3xl md:text-5xl font-display font-black text-white mb-4 tracking-tight uppercase leading-none">Werde ein <br> Brückenpfeiler.</h2>
+                        <p class="text-slate-400 max-w-xl font-medium text-lg leading-relaxed">
                             Inklusion braucht Menschen, die mit anpacken. Ob Ehrenamt, Praktikum oder Zivildienst – dein Engagement stärkt unser gemeinsames Fundament.
                         </p>
                     </div>
                 </div>
                 <div class="relative z-10 shrink-0">
-                    <span class="px-10 py-5 bg-white text-indigo-600 rounded-full font-bold group-hover:bg-slate-900 group-hover:text-white transition-all inline-flex items-center gap-3 shadow-lg">
+                    <span class="px-10 py-5 bg-rose-600 text-white rounded-2xl font-black uppercase tracking-widest text-xs group-hover:bg-white group-hover:text-slate-900 transition-all inline-flex items-center gap-3 shadow-lg shadow-rose-900/20">
                         Mitmachen & Bewegen <i class="fa-solid fa-arrow-right"></i>
                     </span>
                 </div>
@@ -384,11 +401,14 @@ const departments = [
     function initMapLogic() {
         const placeholder = document.getElementById('map-placeholder');
         const iframe = document.getElementById('google-map');
-        const address = "Die Brücke Graz Grabenstraße 39a";
-        const mapUrl = `https://maps.google.com/maps?q=${encodeURIComponent(address)}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
-
+        
         if (placeholder && iframe) {
             placeholder.addEventListener('click', () => {
+                const apiKey = placeholder.dataset.key; // Key aus Data-Attribut holen
+                const query = "Die Brücke Graz Grabenstraße 39a";
+                // Offizielle Google Maps Embed API URL mit Key
+                const mapUrl = `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${encodeURIComponent(query)}`;
+                
                 iframe.setAttribute('src', mapUrl);
                 iframe.classList.remove('hidden');
                 placeholder.style.display = 'none';
@@ -398,7 +418,7 @@ const departments = [
 
     // 2. Form Logic (SEND TO API)
     function initFormLogic() {
-        const form = document.getElementById('contact-form') as HTMLFormElement;
+        const form = document.getElementById('contact-form');
         const msgBox = document.getElementById('form-message');
         const submitBtn = document.getElementById('submit-btn');
 
