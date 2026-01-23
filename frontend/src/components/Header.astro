@@ -4,25 +4,66 @@ import { readSingleton } from '@directus/sdk';
 
 let projectName = 'Die Brücke';
 let logoUrl = null;
+let settings;
+
+// Standard-Werte (Fallback)
+let contactAddress = 'Grabenstraße 39a, 8010 Graz';
 
 try {
-  const settings = await directus.request(readSingleton('global_settings'));
+  settings = await directus.request(readSingleton('global_settings'));
   if (settings) {
     projectName = settings.project_name || 'Die Brücke';
     if (settings.logo) {
       logoUrl = `https://api.diebruecke.social/assets/${settings.logo}`;
+    }
+    if (settings.address) {
+      contactAddress = settings.address;
     }
   }
 } catch (error) {
   console.error("Header: Fehler beim Laden der Settings", error);
 }
 
-const socials = [
-  { icon: 'fa-facebook-f', href: 'https://www.facebook.com/brueckegraz', label: 'Facebook' },
-  { icon: 'fa-instagram', href: 'https://www.instagram.com/die.bruecke.graz', label: 'Instagram' },
-  { icon: 'fa-linkedin-in', href: '#', label: 'LinkedIn' },
-  { icon: 'fa-youtube', href: '#', label: 'YouTube' },
+// SOCIAL MEDIA LOGIK (Dynamisch aus Directus)
+const rawSocials = [
+    { 
+        key: 'social_facebook', 
+        icon: 'fa-facebook-f', 
+        label: 'Facebook',
+        fallback: 'https://www.facebook.com/brueckegraz' 
+    },
+    { 
+        key: 'social_instagram', 
+        icon: 'fa-instagram', 
+        label: 'Instagram',
+        fallback: 'https://www.instagram.com/die.bruecke.graz'
+    },
+    { 
+        key: 'social_x', 
+        icon: 'fa-x-twitter', 
+        label: 'X (Twitter)',
+        fallback: null 
+    },
+    { 
+        key: 'social_youtube', 
+        icon: 'fa-youtube', 
+        label: 'YouTube',
+        fallback: null
+    },
+    { 
+        key: 'social_linkedin', 
+        icon: 'fa-linkedin-in', 
+        label: 'LinkedIn',
+        fallback: null
+    }
 ];
+
+// Filtere nur aktive Links
+const activeSocials = rawSocials.map(s => {
+    const url = settings?.[s.key] || s.fallback;
+    return url ? { ...s, href: url } : null;
+}).filter(Boolean);
+
 
 // NEUES MENÜ-KONZEPT (12 Punkte)
 const menuItems = [
@@ -70,8 +111,7 @@ const menuItems = [
     </a>
 
     <div class="flex items-center gap-2 sm:gap-3">
-      {/* Buttons "Blog" und "Über uns" entfernt für cleaneren Look */}
-
+      
       <button id="btnAccessibility" data-tooltip="Barrierefreiheit" class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/5 flex items-center justify-center text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/30 transition cursor-pointer shadow-sm focus:outline-none focus:ring-2 focus:ring-rose-500" type="button" aria-label="Barrierefreiheit">
          <i class="fa-solid fa-wheelchair text-base md:text-lg"></i>
       </button>
@@ -113,11 +153,6 @@ const menuItems = [
     </div>
 
     <div class="max-w-7xl mx-auto w-full px-6 sm:px-10 py-6">
-      {/* GRID LOGIK:
-         - Mobile: 1 Spalte
-         - Tablet (md): 2 Spalten
-         - Desktop (lg): 4 Spalten (für 12 Items)
-      */}
       <nav class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 w-full">
         {menuItems.map((item) => (
           <a 
@@ -168,11 +203,18 @@ const menuItems = [
       </nav>
     </div>
 
+    {/* FOOTER BEREICH IM HEADER OVERLAY (DYNAMISCH) */}
     <div class="px-6 sm:px-10 py-5 border-t border-white/10 bg-black/10">
       <div class="max-w-7xl mx-auto w-full flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-slate-300 text-xs font-medium">
-        <span class="flex items-center gap-2"><i class="fa-solid fa-location-dot text-rose-500"></i> Grabenstraße 39a, 8010 Graz</span>
+        
+        {/* Adresse aus Directus */}
+        <span class="flex items-center gap-2">
+            <i class="fa-solid fa-location-dot text-rose-500"></i> {contactAddress}
+        </span>
+
+        {/* Socials aus Directus */}
         <div class="flex gap-6">
-           {socials.map((social) => (
+           {activeSocials.map((social) => (
               <a href={social.href} target="_blank" aria-label={social.label} class="hover:text-white transition-colors">
                   <i class={`fa-brands ${social.icon} text-base`}></i>
               </a>

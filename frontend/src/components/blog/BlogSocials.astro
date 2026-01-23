@@ -1,71 +1,109 @@
 ---
-/* Globale Social Links für das Journal */
-const socials = [
+import { directus } from '../../lib/directus'; 
+import { readSingleton } from '@directus/sdk';
+
+// 1. Daten laden
+let settings;
+try {
+    settings = await directus.request(readSingleton('global_settings'));
+} catch (error) {
+    console.error("BlogSocials: Konnte Global Settings nicht laden", error);
+}
+
+// 2. Helper: Handle aus URL extrahieren (macht aus https://instagram.com/user -> @user)
+const getHandle = (urlStr) => {
+    if (!urlStr) return '';
+    try {
+        const url = new URL(urlStr);
+        // Entfernt führende/blinde Slashes und nimmt den Pfad
+        const path = url.pathname.replace(/^\/|\/$/g, '');
+        return path ? `@${path}` : 'Link';
+    } catch (e) {
+        return 'Social Link';
+    }
+};
+
+// 3. Konfiguration der Netzwerke (Mapping Directus-Feld -> Icon/Style)
+const networks = [
     {
+        key: 'social_instagram',
         name: 'Instagram',
-        handle: '@die.bruecke.graz',
-        url: 'https://www.instagram.com/die.bruecke.graz/',
         icon: 'fa-brands fa-instagram',
         hover: 'group-hover:text-rose-500 group-hover:rotate-12'
     },
     {
+        key: 'social_facebook',
         name: 'Facebook',
-        handle: 'brueckegraz',
-        url: 'https://www.facebook.com/brueckegraz',
         icon: 'fa-brands fa-facebook-f',
         hover: 'group-hover:text-[#1877F2] group-hover:-translate-y-1'
     },
     {
+        key: 'social_linkedin',
         name: 'LinkedIn',
-        handle: 'diebruecke',
-        url: 'https://www.linkedin.com/company/diebruecke/',
         icon: 'fa-brands fa-linkedin-in',
         hover: 'group-hover:text-[#0A66C2] group-hover:-translate-y-1'
     },
     {
+        key: 'social_youtube',
         name: 'YouTube',
-        handle: 'brueckegraz',
-        url: 'https://www.youtube.com/user/brueckegraz',
         icon: 'fa-brands fa-youtube',
         hover: 'group-hover:text-[#FF0000] group-hover:scale-110'
     },
     {
+        key: 'social_x',
         name: 'X',
-        handle: 'brueckegraz',
-        url: 'https://x.com/brueckegraz',
         icon: 'fa-brands fa-x-twitter',
         hover: 'group-hover:text-black dark:group-hover:text-white'
     }
 ];
+
+// 4. Aktive Liste generieren (Nur Links, die in Directus existieren)
+const activeSocials = networks.map(net => {
+    const url = settings?.[net.key];
+    if (!url) return null;
+    
+    return {
+        ...net,
+        url: url,
+        handle: getHandle(url)
+    };
+}).filter(Boolean);
+
+// E-Mail aus Settings holen
+const contactEmail = settings?.email || 'office@diebruecke.cc';
 ---
 
 <div class="px-2">
     <span class="block text-[10px] font-black uppercase tracking-widest text-slate-300 dark:text-slate-700 mb-8 font-mono italic">Verbunden</span>
     
     <div class="space-y-7">
-        {socials.map((social) => (
-            <a 
-                href={social.url} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                class="flex items-center justify-between group cursor-pointer transition-all"
-            >
-                <div class="flex flex-col">
-                    <span class="text-[10px] font-black text-slate-500 group-hover:text-rose-500 transition-colors uppercase tracking-widest leading-none mb-1">
-                        {social.name}
-                    </span>
-                    <span class="text-[9px] text-slate-400 lowercase font-medium">
-                        {social.handle}
-                    </span>
-                </div>
-                <i class={`${social.icon} text-slate-300 transition-all duration-300 text-lg ${social.hover}`}></i>
-            </a>
-        ))}
+        {activeSocials.length > 0 ? (
+            activeSocials.map((social) => (
+                <a 
+                    href={social.url} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    class="flex items-center justify-between group cursor-pointer transition-all"
+                >
+                    <div class="flex flex-col">
+                        <span class="text-[10px] font-black text-slate-500 group-hover:text-rose-500 transition-colors uppercase tracking-widest leading-none mb-1">
+                            {social.name}
+                        </span>
+                        <span class="text-[9px] text-slate-400 lowercase font-medium truncate max-w-[120px]">
+                            {social.handle}
+                        </span>
+                    </div>
+                    <i class={`${social.icon} text-slate-300 transition-all duration-300 text-lg ${social.hover}`}></i>
+                </a>
+            ))
+        ) : (
+            <p class="text-xs text-slate-400 italic">Folge uns bald hier.</p>
+        )}
 
-        {/* NEWSLETTER SEPARATOR */}
+        {/* NEWSLETTER / MAIL SEPARATOR */}
         <div class="pt-8 border-t border-slate-100 dark:border-slate-900 mt-8">
             <a 
-                href="mailto:office@bruecke-graz.at" 
+                href={`mailto:${contactEmail}`}
                 class="flex items-center justify-between group cursor-pointer"
             >
                 <div class="flex flex-col">
