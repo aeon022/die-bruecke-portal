@@ -3,31 +3,26 @@ import MainLayout from '../../layouts/layout.astro';
 import BlogShare from '../../components/blog/BlogShare.astro';
 import RelatedPosts from '../../components/blog/RelatedPosts.astro';
 import BlogSocials from '../../components/blog/BlogSocials.astro';
-// NEU: Galerie Import
 import ImageGallery from '../../components/common/ImageGallery.astro';
 import { getBlogPosts, getSidebarEvent, getSidebarService } from '../../lib/api';
 
-// WICHTIG: Damit Astro weiß, dass es statische Seiten sind (wie im Archiv)
+// WICHTIG: false = Live-Modus. Neue Beiträge gehen sofort ohne Neustart!
 export const prerender = false;
 
-export async function getStaticPaths() {
-  const posts = await getBlogPosts();
-  return (posts || []).map((post: any) => ({
-    params: { slug: post.slug },
-    props: { post },
-  }));
-}
+// Im Live-Modus brauchen wir kein getStaticPaths mehr!
 
 const { slug } = Astro.params;
-let { post } = Astro.props;
 
+// 1. Post live aus der API suchen
+const allPosts = await getBlogPosts();
+const post = allPosts?.find((p: any) => p.slug === slug);
+
+// 2. Wenn nicht gefunden -> 404 oder Redirect
 if (!post) {
-  const allPosts = await getBlogPosts();
-  post = allPosts.find((p: any) => p.slug === slug);
+  return Astro.redirect('/blog'); // Oder auf eine 404 Seite
 }
 
-if (!post) return Astro.redirect('/blog');
-
+// --- AB HIER BLEIBT DEIN CODE GLEICH ---
 // --- TOC LOGIK ---
 let modifiedContent = post.content;
 const headings: { title: string; id: string }[] = [];
@@ -58,7 +53,7 @@ const sidebarEvent =
     ? await getSidebarEvent({ mode: 'highlight', limit: 10, random: true })
     : logicCategory === 'aktion'
       ? await getSidebarEvent({ mode: 'latest', limit: 10, random: true })
-      : await getSidebarEvent({ mode: 'latest', limit: 5, random: true }); // Fallback Event
+      : await getSidebarEvent({ mode: 'latest', limit: 5, random: true });
 
 const sidebarService = await getSidebarService(logicCategory);
 
@@ -72,34 +67,39 @@ const formatDate = (dateString: string) => {
 ---
 
 <MainLayout title={`${post.title} | Journal`}>
+  {/* ... (Rest deines Layouts bleibt exakt gleich wie vorher) ... */}
   <div class="fixed top-0 left-0 w-full h-1.5 z-[100] pointer-events-none">
-    <div id="progress-bar" class="h-full bg-rose-500 w-0 transition-all duration-150 ease-out shadow-[0_0_10px_rgba(244,63,94,0.5)]"></div>
+     {/* ... Code ab hier kopieren ... */}
+     <div id="progress-bar" class="h-full bg-rose-500 w-0 transition-all duration-150 ease-out shadow-[0_0_10px_rgba(244,63,94,0.5)]"></div>
   </div>
-
-  <main class="bg-white dark:bg-slate-950 transition-colors duration-500 rounded-[48px] m-2 md:m-4 border border-slate-200 dark:border-slate-800 shadow-2xl min-h-screen relative overflow-hidden">    <header class="pt-24 pb-16 px-6">
-    {/* Background Glow für mehr Tiefe im Darkmode (wie auf Index) */}
-    <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-rose-500/5 rounded-full blur-[120px] pointer-events-none -translate-y-1/2 translate-x-1/2"></div>
-    <div class="max-w-4xl mx-auto text-center">
-        <nav class="mb-12">
-          <a href="/blog" class="inline-flex items-center gap-3 text-slate-400 hover:text-rose-500 font-black uppercase text-[10px] tracking-[0.4em] transition-colors group font-mono">
-            <i class="fa-solid fa-arrow-left group-hover:-translate-x-2 transition-transform text-[8px]"></i>
-            Zurück zum Journal
-          </a>
-        </nav>
-        <h1 class="text-5xl md:text-6xl lg:text-7xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tighter leading-[0.95] mb-8">
-          {post.title}
-        </h1>
-        <div class="flex items-center justify-center gap-4 text-[10px] font-black uppercase tracking-widest text-slate-400">
-          <span>{formatDate(post.date_created)}</span>
-          <span class="w-1 h-1 rounded-full bg-slate-300"></span>
-          <span class="text-rose-500">{displayCategory}</span>
+  
+  {/* ÄNDERUNG: overflow-hidden zu overflow-clip geändert (oder ganz weglassen), damit sticky funktioniert */}
+  <main class="bg-white dark:bg-slate-950 transition-colors duration-500 rounded-[48px] m-2 md:m-4 border border-slate-200 dark:border-slate-800 shadow-2xl min-h-screen relative overflow-clip">
+     
+     {/* ... Füge hier den gesamten restlichen HTML-Code deiner Datei ein ... */}
+     <header class="pt-24 pb-16 px-6">
+        <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-rose-500/5 rounded-full blur-[120px] pointer-events-none -translate-y-1/2 translate-x-1/2"></div>
+        <div class="max-w-4xl mx-auto text-center">
+            <nav class="mb-12">
+               <a href="/blog" class="inline-flex items-center gap-3 text-slate-400 hover:text-rose-500 font-black uppercase text-[10px] tracking-[0.4em] transition-colors group font-mono">
+                <i class="fa-solid fa-arrow-left group-hover:-translate-x-2 transition-transform text-[8px]"></i>
+                Zurück zum Journal
+              </a>
+            </nav>
+            <h1 class="text-5xl md:text-6xl lg:text-7xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tighter leading-[0.95] mb-8">
+              {post.title}
+            </h1>
+            <div class="flex items-center justify-center gap-4 text-[10px] font-black uppercase tracking-widest text-slate-400">
+              <span>{formatDate(post.date_created)}</span>
+              <span class="w-1 h-1 rounded-full bg-slate-300"></span>
+              <span class="text-rose-500">{displayCategory}</span>
+            </div>
         </div>
-      </div>
     </header>
 
     <section class="max-w-7xl mx-auto px-6 mb-24">
       <div class="rounded-[48px] overflow-hidden aspect-video shadow-2xl ring-1 ring-slate-200 dark:ring-slate-800">
-        <img src={`${ASSET_URL}/${post.main_image}`} class="w-full h-full object-cover" alt={post.title} />
+         <img src={`${ASSET_URL}/${post.main_image}`} class="w-full h-full object-cover" alt={post.title} />
       </div>
     </section>
 
@@ -108,7 +108,8 @@ const formatDate = (dateString: string) => {
       <div class="flex flex-col lg:flex-row gap-12 xl:gap-24 items-start">
 
         {/* --- LEFT SIDEBAR --- */}
-        <aside class="hidden lg:block w-[240px] shrink-0 sticky top-32 space-y-10 mb-12">
+        {/* ÄNDERUNG: h-fit hinzugefügt */}
+        <aside class="hidden lg:block w-[240px] shrink-0 sticky top-32 h-fit space-y-10 mb-12">
           <div class="px-2">
             <span class="block text-[10px] font-black uppercase tracking-[0.3em] text-rose-500 mb-2 font-mono font-bold">Kategorie</span>
             <div class="inline-flex items-center gap-2 bg-slate-100 dark:bg-slate-900 px-4 py-2 rounded-xl border border-slate-200 dark:border-white/5">
@@ -150,14 +151,13 @@ const formatDate = (dateString: string) => {
             <div set:html={modifiedContent} />
           </div>
 
-          {/* --- NEU: GALERIE EINGEFÜGT --- */}
           <ImageGallery gallery={post.gallery} />
-
           <BlogShare title={post.title} url={currentUrl} />
         </article>
 
         {/* --- RIGHT SIDEBAR --- */}
-        <aside class="hidden lg:block w-[280px] shrink-0 sticky top-32 space-y-12 mb-12">
+        {/* ÄNDERUNG: h-fit hinzugefügt */}
+        <aside class="hidden lg:block w-[280px] shrink-0 sticky top-32 h-fit space-y-12 mb-12">
           <div
             id="dynamic-cta-box"
             data-category={logicCategory}
@@ -165,6 +165,7 @@ const formatDate = (dateString: string) => {
             data-service={sidebarService ? JSON.stringify(sidebarService) : null}
             class="p-8 bg-slate-700 rounded-[40px] text-white shadow-2xl relative overflow-hidden group border border-white/5 transition-transform hover:scale-[1.02] duration-500"
           >
+            {/* ... CTA Content bleibt gleich ... */}
             <div class="absolute -right-8 -top-8 w-32 h-32 bg-rose-500/20 rounded-full blur-3xl group-hover:bg-rose-500/40 transition-all duration-700"></div>
             <span id="cta-label" class="text-[9px] font-black uppercase tracking-[0.3em] text-rose-500 block mb-6 relative z-10 font-mono italic font-bold">Empfehlung</span>
             <h4 id="cta-title" class="text-2xl font-display font-black uppercase leading-[1.1] mb-4 relative z-10">...</h4>
@@ -177,14 +178,9 @@ const formatDate = (dateString: string) => {
         </aside>
       </div>
     </section>
-
-    {/* --- FULL WIDTH RELATED POSTS --- */}
-    <section class="max-w-7xl mx-auto px-6 pt-12 pb-24 mt-6">
-      <RelatedPosts currentSlug={post.slug} />
-    </section>
   </main>
 </MainLayout>
-
+{/* ... Script und Style am Ende bleiben gleich ... */}
 <script>
   function safeParseJSON(value) {
     try {
@@ -198,19 +194,12 @@ const formatDate = (dateString: string) => {
 
 function truncateText(str, max = 100) {
     if (!str) return "";
-    
-    // 1. HTML Tags entfernen (wie bisher)
     let clean = str.replace(/<[^>]*>/g, "");
-
-    // 2. NEU: HTML Entities decodieren (macht aus &ndash; ein –)
     const parser = new DOMParser();
     const decoded = parser.parseFromString(clean, 'text/html').body.textContent || "";
-
-    // 3. Leerzeichen säubern
     clean = decoded.replace(/\s+/g, " ").trim();
-    
     return clean.length > max ? clean.substring(0, max) + "…" : clean;
-  }
+}
 
   function updateCTA() {
     const box = document.getElementById("dynamic-cta-box");
@@ -266,7 +255,6 @@ function truncateText(str, max = 100) {
         }
       ].filter(Boolean),
 
-      // Alias für Soziales
       soziales: [
         serviceOption("Unser Service"),
         {
