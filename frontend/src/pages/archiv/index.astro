@@ -8,11 +8,19 @@ const ASSET_URL = import.meta.env.DIRECTUS_URL + '/assets';
 ---
 
 <MainLayout title="Das Archiv | Verein Die Brücke">
-    <main class="bg-white dark:bg-slate-950 transition-colors duration-500 overflow-hidden">
+    {/* FIX: 
+        1. rounded-[48px]: Runde Ecken für den Main-Container
+        2. m-2 md:m-4: Abstand zum Bildschirmrand
+        3. border...: Rahmen für Darkmode Kontrast
+    */}
+    <main class="bg-white dark:bg-slate-950 transition-colors duration-500 overflow-hidden rounded-[48px] m-2 md:m-4 border border-slate-200 dark:border-slate-800 shadow-2xl min-h-screen relative">
+        
+        {/* Darkmode Glow Effect */}
+        <div class="absolute top-0 right-0 w-[800px] h-[800px] bg-rose-500/5 rounded-full blur-[120px] pointer-events-none -translate-y-1/2 translate-x-1/2"></div>
         
         {/* --- HERO SECTION --- */}
-        <section class="px-4 sm:px-6 pt-6 pb-12">
-            <div class="relative bg-slate-900 rounded-[48px] overflow-hidden min-h-[60vh] flex items-center px-6 md:px-16 py-24 shadow-2xl">
+        <section class="px-4 sm:px-6 pt-6 pb-12 relative z-10">
+            <div class="relative bg-slate-900 rounded-[40px] overflow-hidden min-h-[60vh] flex items-center px-6 md:px-16 py-24 shadow-2xl">
                 <div class="absolute inset-0 overflow-hidden pointer-events-none">
                     <div class="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] bg-rose-600/10 rounded-full blur-[120px]"></div>
                     <div class="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-indigo-600/10 rounded-full blur-[120px]"></div>
@@ -49,7 +57,7 @@ const ASSET_URL = import.meta.env.DIRECTUS_URL + '/assets';
         </nav>
 
         {/* --- BENTO GRID --- */}
-        <section class="px-6 sm:px-10 py-24 bg-white dark:bg-slate-950">
+        <section class="px-6 sm:px-10 py-24 bg-white dark:bg-slate-950 relative z-10">
             <div class="max-w-[1600px] mx-auto">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12 auto-rows-[300px] md:auto-rows-[350px]" id="archiv-grid">
                     {archivItems?.map((item: any) => (
@@ -58,7 +66,7 @@ const ASSET_URL = import.meta.env.DIRECTUS_URL + '/assets';
                             class={`archiv-card group relative rounded-[64px] overflow-hidden transition-all duration-700 bg-slate-50 dark:bg-slate-900 block
                             ${item.aspect === 'wide' ? 'md:col-span-2 md:row-span-2' : ''} 
                             ${item.aspect === 'tall' ? 'md:row-span-2' : ''}
-                            hover:shadow-2xl hover:-translate-y-2`}
+                            hover:shadow-2xl hover:-translate-y-2 border border-transparent dark:border-white/5`}
                             data-year={item.year}
                         >
                             <div class="absolute inset-0 pointer-events-none">

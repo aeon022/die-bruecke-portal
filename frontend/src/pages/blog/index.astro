@@ -18,10 +18,11 @@ const formatDate = (dateString: string) => {
 ---
 
 <MainLayout title="Journal | Verein Die Brücke">
-    <main class="bg-slate-50 dark:bg-slate-950 transition-colors duration-500">
-        
+    <main class="bg-slate-50 dark:bg-slate-950 transition-colors duration-500 relative overflow-hidden rounded-[48px] m-2 md:m-4 border border-slate-200 dark:border-slate-800 shadow-2xl min-h-screen">        
+        {/* Background Glow Effect für Darkmode Tiefe */}
+        <div class="absolute top-0 right-0 w-[800px] h-[800px] bg-rose-500/5 rounded-full blur-[120px] pointer-events-none -translate-y-1/2 translate-x-1/2"></div>
        {/* --- HEADER --- */}
-        <section class="max-w-7xl mx-auto px-6 pt-24 pb-12">
+        <section class="max-w-7xl mx-auto px-6 pt-24 pb-12 relative z-10">
             <div class="flex items-center gap-4 mb-6">
                 <div class="flex items-center gap-3">
                     <span class="relative flex h-2 w-2">
@@ -43,16 +44,27 @@ const formatDate = (dateString: string) => {
 
         {/* --- FEATURED POST (HERO) --- */}
         {featuredPost && (
-            <section class="max-w-7xl mx-auto px-6 mb-32">
-                <a href={`/blog/${featuredPost.slug}/`} class="group grid lg:grid-cols-12 bg-white dark:bg-slate-900 rounded-[48px] overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-700">
-                    <div class="lg:col-span-7 overflow-hidden h-[400px] lg:h-[600px]">
+            <section class="max-w-7xl mx-auto px-6 mb-32 relative z-10">
+                {/* FIX: 
+                    - [transform:translateZ(0)] repariert den Safari/Chrome Bug, bei dem overflow-hidden
+                      ignoriert wird, wenn Kinder eine Transformation haben.
+                    - isolate: Erstellt einen neuen Stacking Context.
+                */}
+                <a href={`/blog/${featuredPost.slug}/`} class="group grid lg:grid-cols-12 bg-white dark:bg-slate-900 rounded-[48px] overflow-hidden shadow-xl hover:shadow-2xl dark:shadow-black/50 border border-slate-100 dark:border-slate-800 transition-all duration-700 hover:-translate-y-1 isolate [transform:translateZ(0)]">
+                    
+                    {/* BILD BEREICH */}
+                    <div class="lg:col-span-7 overflow-hidden h-[400px] lg:h-[600px] relative">
                         <img 
                             src={`${ASSET_URL}/${featuredPost.main_image}?key=system-large-cover`} 
                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[2s]" 
                             alt={featuredPost.title}
                         />
+                        {/* Overlay Gradient */}
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/20 to-transparent pointer-events-none"></div>
                     </div>
-                    <div class="lg:col-span-5 p-12 md:p-20 flex flex-col justify-center">
+
+                    {/* TEXT BEREICH */}
+                    <div class="lg:col-span-5 p-12 md:p-20 flex flex-col justify-center border-t lg:border-t-0 lg:border-l border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 relative z-10">
                         <div class="flex items-center gap-4 mb-8 text-[10px] font-black uppercase tracking-widest text-slate-400">
                             <span>{formatDate(featuredPost.date_created)}</span>
                             <span class="w-1 h-1 rounded-full bg-rose-500"></span>
@@ -64,8 +76,8 @@ const formatDate = (dateString: string) => {
                         <p class="text-lg text-slate-600 dark:text-slate-400 leading-relaxed mb-10 line-clamp-3">
                             {featuredPost.excerpt}
                         </p>
-                        <span class="inline-flex items-center gap-3 text-rose-500 font-black uppercase tracking-widest text-xs">
-                            Beitrag lesen <i class="fa-solid fa-arrow-right group-hover:translate-x-2 transition-transform"></i>
+                        <span class="inline-flex items-center gap-3 text-rose-500 font-black uppercase tracking-widest text-xs group-hover:translate-x-2 transition-transform">
+                            Beitrag lesen <i class="fa-solid fa-arrow-right"></i>
                         </span>
                     </div>
                 </a>
@@ -73,27 +85,34 @@ const formatDate = (dateString: string) => {
         )}
 
         {/* --- POST GRID --- */}
-        <section class="max-w-7xl mx-auto px-6 pb-40">
+        <section class="max-w-7xl mx-auto px-6 pb-40 relative z-10">
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-12">
                 {otherPosts.map(post => (
-                    <a href={`/blog/${post.slug}/`} class="group">
-                        <div class="relative rounded-[32px] overflow-hidden aspect-[4/5] mb-8 shadow-lg">
+                    <a href={`/blog/${post.slug}/`} class="group block h-full">
+                        {/* FIX für Bilder: 
+                           - border border-transparent dark:border-white/10 
+                           Damit sich dunkle Bilder vom dunklen Hintergrund abheben.
+                        */}
+                        <div class="relative rounded-[32px] overflow-hidden aspect-[4/5] mb-8 shadow-lg border border-transparent dark:border-white/5 transition-all duration-500 group-hover:shadow-xl group-hover:border-rose-500/20">
                             <img 
                                 src={`${ASSET_URL}/${post.main_image}?key=system-medium-cover`} 
                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[1.5s]" 
                                 alt={post.title}
                             />
-                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                         </div>
-                        <div class="flex items-center gap-3 mb-4 text-[10px] font-black uppercase tracking-widest text-slate-400">
-                            <span>{formatDate(post.date_created)}</span>
+                        
+                        <div class="px-2">
+                            <div class="flex items-center gap-3 mb-4 text-[10px] font-black uppercase tracking-widest text-slate-400">
+                                <span>{formatDate(post.date_created)}</span>
+                            </div>
+                            <h3 class="text-2xl font-display font-black text-slate-900 dark:text-white uppercase leading-tight mb-4 group-hover:text-rose-500 transition-colors">
+                                {post.title}
+                            </h3>
+                            <p class="text-slate-600 dark:text-slate-400 text-sm line-clamp-2 leading-relaxed opacity-80 group-hover:opacity-100 transition-opacity">
+                                {post.excerpt}
+                            </p>
                         </div>
-                        <h3 class="text-2xl font-display font-black text-slate-900 dark:text-white uppercase leading-tight mb-4 group-hover:text-rose-500 transition-colors">
-                            {post.title}
-                        </h3>
-                        <p class="text-slate-600 dark:text-slate-400 text-sm line-clamp-2 leading-relaxed">
-                            {post.excerpt}
-                        </p>
                     </a>
                 ))}
             </div>

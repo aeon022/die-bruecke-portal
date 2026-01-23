@@ -76,9 +76,10 @@ const formatDate = (dateString: string) => {
     <div id="progress-bar" class="h-full bg-rose-500 w-0 transition-all duration-150 ease-out shadow-[0_0_10px_rgba(244,63,94,0.5)]"></div>
   </div>
 
-  <main class="bg-white dark:bg-slate-950 transition-colors duration-500">
-    <header class="pt-24 pb-16 px-6">
-      <div class="max-w-4xl mx-auto text-center">
+  <main class="bg-white dark:bg-slate-950 transition-colors duration-500 rounded-[48px] m-2 md:m-4 border border-slate-200 dark:border-slate-800 shadow-2xl min-h-screen relative overflow-hidden">    <header class="pt-24 pb-16 px-6">
+    {/* Background Glow für mehr Tiefe im Darkmode (wie auf Index) */}
+    <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-rose-500/5 rounded-full blur-[120px] pointer-events-none -translate-y-1/2 translate-x-1/2"></div>
+    <div class="max-w-4xl mx-auto text-center">
         <nav class="mb-12">
           <a href="/blog" class="inline-flex items-center gap-3 text-slate-400 hover:text-rose-500 font-black uppercase text-[10px] tracking-[0.4em] transition-colors group font-mono">
             <i class="fa-solid fa-arrow-left group-hover:-translate-x-2 transition-transform text-[8px]"></i>
