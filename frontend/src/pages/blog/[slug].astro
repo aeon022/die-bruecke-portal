@@ -153,68 +153,95 @@ const formatDate = (dateString: string) => {
 </MainLayout>
 
 <script>
-    // Die Daten für das JavaScript
-    const ctaOptions = {
-        'Kultur': [
-            { title: 'Vernissage 2026', text: 'Besuche unsere nächste inklusive Ausstellung im Atelier.', link: '/events', btn: 'Zum Event', label: 'Event Highlight //' },
-            { title: 'Inklusives Atelier', text: 'Entdecke unsere künstlerische Ader und werde Teil des Teams.', link: '/services/atelier', btn: 'Zum Atelier', label: 'Projekt-Fokus //' }
-        ],
-        'Soziales': [
-            { title: 'FASS Beratung', text: 'Individuelle Unterstützung und Beratung für Familien.', link: '/services/fass-fed', btn: 'Beratung anfordern', label: 'Service-Info //' },
-            { title: 'FED Dienste', text: 'Entlastung im Alltag durch unseren mobilen Dienst.', link: '/services/fass-fed', btn: 'Mehr erfahren', label: 'Support //' }
-        ],
-        'Aktion': [
-            { title: 'City Trip Wien', text: 'Ein Wochenende voller Kultur und Spaß in der Hauptstadt.', link: '/camps', btn: 'Jetzt buchen', label: 'City Trip //' },
-            { title: 'Sommer-Camps', text: 'Unsere legendären Urlaubsaktionen für 2026.', link: '/camps', btn: 'Alle Termine', label: 'Urlaubsaktion //' }
-        ]
-    };
-
     function updateCTA() {
         const box = document.getElementById('dynamic-cta-box');
         if (!box) return;
 
-        // Hier holen wir die Kategorie aus dem HTML Attribut
-        const category = box.getAttribute('data-category') || 'Aktion';
+        // 1. Daten aus den Attributen abrufen
+        const category = (box.getAttribute('data-category') || 'aktion').toLowerCase().trim();
+        const rawEvent = box.getAttribute('data-event');
+        const rawService = box.getAttribute('data-service');
         
-        // Suche die passenden Optionen (Fallback auf 'Aktion')
-        const options = ctaOptions[category] || ctaOptions['Aktion'];
-        
-        // Zufälliges Element wählen
+        // 2. JSON sicher parsen
+        let dbEvent = null;
+        let dbService = null;
+        try {
+            if (rawEvent) dbEvent = JSON.parse(rawEvent);
+            if (rawService) dbService = JSON.parse(rawService);
+        } catch (e) {
+            console.error("Fehler beim Parsen der Sidebar-Daten", e);
+        }
+
+        // 3. Die Optionen definieren (Echte Daten bevorzugen)
+        const ctaOptions = {
+            'kultur': [
+                // Wenn ein echtes Event da ist, nimm es!
+                dbEvent ? { 
+                    title: dbEvent.title, 
+                    text: dbEvent.description ? dbEvent.description.replace(/<[^>]*>/g, '').substring(0, 100) + '...' : 'Besuche unser nächstes Event.', 
+                    link: `/events/${dbEvent.slug}`, 
+                    btn: 'Zum Event', 
+                    label: 'Event Highlight //' 
+                } : null,
+                // Fallback falls kein Highlight-Event in Directus gefunden wurde
+                { title: 'Inklusives Atelier', text: 'Entdecke deine künstlerische Ader in unserem Atelier.', link: '/services/atelier', btn: 'Mehr erfahren', label: 'Kultur-Projekt //' }
+            ].filter(Boolean),
+
+            'soziales': [
+                // Wenn ein echter Service da ist, nimm ihn!
+                dbService ? { 
+                    title: dbService.title, 
+                    text: dbService.teaser || 'Wir unterstützen dich im Alltag.', 
+                    link: `/services/${dbService.slug}`, 
+                    btn: dbService.button_text || 'Details', 
+                    label: 'Service-Fokus //' 
+                } : null,
+                { title: 'FASS Beratung', text: 'Unterstützung für Familien und Angehörige.', link: '/services/fass-fed', btn: 'Beratung', label: 'Support //' }
+            ].filter(Boolean),
+
+            'aktion': [
+                { title: 'City Trip Wien', text: 'Ein Wochenende voller Kultur in der Hauptstadt.', link: '/camps', btn: 'Jetzt buchen', label: 'City Trip //' },
+                { title: 'Sommer-Camps 2026', text: 'Unsere legendären Urlaubsaktionen für den Sommer.', link: '/camps', btn: 'Alle Termine', label: 'Urlaub //' }
+            ]
+        };
+
+        // 4. Auswahl treffen
+        const options = ctaOptions[category] || ctaOptions['aktion'];
         const randomItem = options[Math.floor(Math.random() * options.length)];
 
-        // UI updaten
-        const label = document.getElementById('cta-label');
-        const title = document.getElementById('cta-title');
-        const text = document.getElementById('cta-text');
-        const link = document.getElementById('cta-link') as HTMLAnchorElement;
+        // 5. DOM updaten
+        const labelEl = document.getElementById('cta-label');
+        const titleEl = document.getElementById('cta-title');
+        const textEl = document.getElementById('cta-text');
+        const linkEl = document.getElementById('cta-link');
 
-        if(label) label.innerText = randomItem.label;
-        if(title) title.innerText = randomItem.title;
-        if(text) text.innerText = randomItem.text;
-        if(link) {
-            link.innerText = randomItem.btn;
-            link.href = randomItem.link;
+        if (randomItem) {
+            if (labelEl) labelEl.innerText = randomItem.label;
+            if (titleEl) titleEl.innerText = randomItem.title;
+            if (textEl) textEl.innerText = randomItem.text;
+            if (linkEl) {
+                linkEl.innerText = randomItem.btn;
+                linkEl.href = randomItem.link;
+            }
         }
     }
 
-    function updateProgress() {
+    // Initialisierung & Scroll-Progress
+    function initSidebar() {
+        updateCTA();
         const bar = document.getElementById('progress-bar');
-        if (!bar) return;
-        const winScroll = document.documentElement.scrollTop;
-        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        const scrolled = (winScroll / height) * 100;
-        bar.style.width = scrolled + "%";
+        const updateProgress = () => {
+            if (!bar) return;
+            const winScroll = window.scrollY;
+            const height = document.documentElement.scrollHeight - window.innerHeight;
+            const scrolled = (winScroll / height) * 100;
+            bar.style.width = scrolled + "%";
+        };
+        window.addEventListener('scroll', updateProgress);
     }
 
-    // Initialisierung beim Laden
-    updateCTA();
-    window.addEventListener('scroll', updateProgress);
-
-    // WICHTIG: Re-Initialisierung für Astro's View Transitions
-    document.addEventListener('astro:after-swap', () => {
-        updateCTA();
-        window.addEventListener('scroll', updateProgress);
-    });
+    initSidebar();
+    document.addEventListener('astro:after-swap', initSidebar);
 </script>
 
 <style is:global>
