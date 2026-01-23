@@ -1,16 +1,66 @@
 ---
+import { directus } from '../lib/directus';
+import { readSingleton } from '@directus/sdk';
+
 const currentYear = new Date().getFullYear();
 
-// SOCIAL MEDIA CONFIG
-const socials = [
-  { icon: 'fa-facebook-f', href: 'https://www.facebook.com/brueckegraz', label: 'Facebook' },
-  { icon: 'fa-instagram', href: 'https://www.instagram.com/die.bruecke.graz', label: 'Instagram' },
-  { icon: 'fa-linkedin-in', href: '#', label: 'LinkedIn' },
-  { icon: 'fa-youtube', href: '#', label: 'YouTube' },
-  { icon: 'fa-x-twitter', href: '#', label: 'X' },
+// 1. Globale Daten laden
+let settings;
+try {
+    settings = await directus.request(readSingleton('global_settings'));
+} catch (error) {
+    console.error("Footer: Konnte Global Settings nicht laden", error);
+}
+
+// 2. Kontakt-Daten (Mit Fallback)
+const contactInfo = {
+    address: settings?.address || "Grabenstraße 39a, 8010 Graz",
+    phone: settings?.phone || "+43 316 67 22 48",
+    email: settings?.email || "office@diebruecke.cc",
+    zvr: settings?.zvr_number || "747612623"
+};
+
+// 3. Social Media Logik
+const rawSocials = [
+    { 
+        key: 'social_facebook', 
+        icon: 'fa-facebook-f', 
+        label: 'Facebook',
+        fallback: 'https://www.facebook.com/brueckegraz' 
+    },
+    { 
+        key: 'social_instagram', 
+        icon: 'fa-instagram', 
+        label: 'Instagram',
+        fallback: 'https://www.instagram.com/die.bruecke.graz'
+    },
+    { 
+        key: 'social_x', 
+        icon: 'fa-x-twitter', 
+        label: 'X (Twitter)',
+        fallback: null 
+    },
+    { 
+        key: 'social_youtube', 
+        icon: 'fa-youtube', 
+        label: 'YouTube',
+        fallback: null
+    },
+    { 
+        key: 'social_linkedin', 
+        icon: 'fa-linkedin-in', 
+        label: 'LinkedIn',
+        fallback: null
+    }
 ];
 
-// SÄULE 2: ANGEBOTE
+const activeSocials = rawSocials.map(s => {
+    const url = settings?.[s.key] || s.fallback;
+    return url ? { ...s, href: url } : null;
+}).filter(Boolean);
+
+
+// 4. Navigation
 const offers = [
   { name: 'Kultur & Tickets', href: '/events' },
   { name: 'Services & Alltag', href: '/services' },
@@ -18,11 +68,10 @@ const offers = [
   { name: 'Beratung & Info', href: '/info' },
 ];
 
-// SÄULE 3: VEREIN
 const association = [
   { name: 'Über uns', href: '/about' },
   { name: 'Team & Kontakt', href: '/contact' },
-  { name: 'Partner & Förderer', href: '/supporters' },
+  { name: 'Mitmachen', href: '/join' },
   { name: 'Raumvermietung', href: '/space' },
 ];
 
@@ -32,49 +81,74 @@ const legals = [
 ];
 ---
 
-<footer class="mt-auto relative">
-    <div class="bg-slate-900 border-t border-slate-800 rounded-t-[48px] overflow-hidden ring-1 ring-slate-950/10 shadow-2xl shadow-slate-950/15 relative">
+<footer class="mt-auto relative group/footer">
+    
+    {/* DEKORATION OBEN */}
+    <div class="absolute -top-12 left-1/2 -translate-x-1/2 w-[90%] h-12 bg-slate-200/50 dark:bg-slate-900/50 blur-3xl rounded-t-full pointer-events-none"></div>
+
+    {/* HAUPT-CONTAINER */}
+    <div class="bg-slate-50 dark:bg-slate-950 border-t border-slate-200 dark:border-white/5 rounded-t-[48px] overflow-hidden relative transition-colors duration-300">
         
         {/* Ambient Light */}
-        <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-900/20 rounded-full blur-[120px] pointer-events-none -translate-y-1/2 translate-x-1/2"></div>
-        <div class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-rose-900/10 rounded-full blur-[100px] pointer-events-none translate-y-1/2 -translate-x-1/4"></div>
+        <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-indigo-500/5 dark:bg-indigo-500/5 rounded-full blur-[120px] pointer-events-none -translate-y-1/2 translate-x-1/3"></div>
+        <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-rose-500/5 dark:bg-rose-500/5 rounded-full blur-[100px] pointer-events-none translate-y-1/2 -translate-x-1/4"></div>
 
-        <div class="max-w-7xl mx-auto px-6 sm:px-10 py-16 lg:py-20 relative z-10">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
+        <div class="max-w-7xl mx-auto px-6 sm:px-10 py-16 lg:py-24 relative z-10">
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8 mb-16">
                 
-                {/* 1. MARKE & SOCIALS */}
-                <div class="space-y-6">
-                    <a href="/" class="block text-2xl font-display font-bold text-white tracking-tight">
-                        Die Brücke<span class="text-rose-500">.</span>
-                    </a>
-                    <p class="text-slate-400 text-sm leading-relaxed max-w-xs">
-                        Inklusion, Kultur und Begegnung mitten in Graz. 
-                        Wir sind das Backup für deine Unabhängigkeit.
-                    </p>
-                    
-                    {/* SOCIAL ICONS LOOP */}
-                    <div class="flex flex-wrap gap-3">
-                        {socials.map((social) => (
-                            <a 
-                                href={social.href} 
-                                target="_blank" 
-                                aria-label={social.label} 
-                                class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:bg-rose-600 hover:text-white transition-all duration-300 hover:-translate-y-1 shadow-lg shadow-transparent hover:shadow-rose-900/50"
-                            >
-                                <i class={`fa-brands ${social.icon}`}></i>
-                            </a>
-                        ))}
+                {/* 1. MARKE & KONTAKT (Spalte 1-4) */}
+                <div class="lg:col-span-4 space-y-8">
+                    <div>
+                        <a href="/" class="inline-block text-3xl font-display font-black text-slate-900 dark:text-white tracking-tight hover:opacity-80 transition-opacity">
+                            Die Brücke<span class="text-rose-600">.</span>
+                        </a>
+                        <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mt-4 max-w-sm font-medium">
+                            Inklusion, Kultur und Begegnung mitten in Graz. 
+                            Wir sind das Backup für deine Unabhängigkeit.
+                        </p>
                     </div>
+
+                    <div class="space-y-3">
+                        <a href={`mailto:${contactInfo.email}`} class="flex items-center gap-3 text-slate-700 dark:text-slate-300 hover:text-rose-600 dark:hover:text-white transition-colors group">
+                            <span class="w-8 h-8 rounded-full bg-white border border-slate-200 dark:border-none dark:bg-white/5 flex items-center justify-center text-rose-500 group-hover:scale-110 transition-transform shadow-sm dark:shadow-none">
+                                <i class="fa-regular fa-envelope"></i>
+                            </span>
+                            <span class="text-sm font-bold">{contactInfo.email}</span>
+                        </a>
+                        <a href={`tel:${contactInfo.phone.replace(/\s/g, '')}`} class="flex items-center gap-3 text-slate-700 dark:text-slate-300 hover:text-rose-600 dark:hover:text-white transition-colors group">
+                            <span class="w-8 h-8 rounded-full bg-white border border-slate-200 dark:border-none dark:bg-white/5 flex items-center justify-center text-rose-500 group-hover:scale-110 transition-transform shadow-sm dark:shadow-none">
+                                <i class="fa-solid fa-phone"></i>
+                            </span>
+                            <span class="text-sm font-bold">{contactInfo.phone}</span>
+                        </a>
+                    </div>
+
+                    {/* SOCIAL ICONS (DYNAMISCH) */}
+                    {activeSocials.length > 0 && (
+                        <div class="flex gap-3">
+                            {activeSocials.map((social) => (
+                                <a 
+                                    href={social.href} 
+                                    target="_blank" 
+                                    aria-label={social.label} 
+                                    class="w-10 h-10 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 flex items-center justify-center text-slate-500 dark:text-slate-400 hover:bg-rose-600 hover:text-white hover:border-rose-500 dark:hover:bg-rose-600 dark:hover:text-white dark:hover:border-rose-500 transition-all duration-300 hover:-translate-y-1 shadow-sm hover:shadow-lg"
+                                >
+                                    <i class={`fa-brands ${social.icon}`}></i>
+                                </a>
+                            ))}
+                        </div>
+                    )}
                 </div>
 
-                {/* 2. ANGEBOTE */}
-                <div>
-                    <h3 class="font-display font-bold text-white mb-6">Angebote</h3>
-                    <ul class="space-y-3">
+                {/* 2. ANGEBOTE (Spalte 5-7) */}
+                <div class="lg:col-span-2 lg:col-start-6">
+                    <h3 class="font-display font-bold text-slate-900 dark:text-white mb-6 tracking-wide text-sm uppercase">Angebote</h3>
+                    <ul class="space-y-4">
                         {offers.map((link) => (
                             <li>
-                                <a href={link.href} class="text-slate-400 hover:text-rose-400 transition-colors text-sm font-medium flex items-center gap-2 group">
-                                    <span class="w-1 h-1 rounded-full bg-slate-600 group-hover:bg-rose-500 transition-colors"></span>
+                                <a href={link.href} class="text-slate-600 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 transition-colors text-sm font-medium flex items-center gap-2 group">
+                                    <i class="fa-solid fa-chevron-right text-[10px] text-slate-400 dark:text-slate-600 group-hover:text-rose-500 transition-colors opacity-0 group-hover:opacity-100 -ml-4 group-hover:ml-0 duration-300"></i>
                                     {link.name}
                                 </a>
                             </li>
@@ -82,14 +156,14 @@ const legals = [
                     </ul>
                 </div>
 
-                {/* 3. VEREIN */}
-                <div>
-                    <h3 class="font-display font-bold text-white mb-6">Verein</h3>
-                    <ul class="space-y-3">
+                {/* 3. VEREIN (Spalte 8-9) */}
+                <div class="lg:col-span-2">
+                    <h3 class="font-display font-bold text-slate-900 dark:text-white mb-6 tracking-wide text-sm uppercase">Der Verein</h3>
+                    <ul class="space-y-4">
                         {association.map((link) => (
                             <li>
-                                <a href={link.href} class="text-slate-400 hover:text-indigo-400 transition-colors text-sm font-medium flex items-center gap-2 group">
-                                    <span class="w-1 h-1 rounded-full bg-slate-600 group-hover:bg-indigo-500 transition-colors"></span>
+                                <a href={link.href} class="text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors text-sm font-medium flex items-center gap-2 group">
+                                    <i class="fa-solid fa-chevron-right text-[10px] text-slate-400 dark:text-slate-600 group-hover:text-indigo-500 transition-colors opacity-0 group-hover:opacity-100 -ml-4 group-hover:ml-0 duration-300"></i>
                                     {link.name}
                                 </a>
                             </li>
@@ -97,58 +171,69 @@ const legals = [
                     </ul>
                 </div>
 
-                {/* 4. CTA */}
-                <div class="bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50">
-                    <h3 class="font-display font-bold text-white mb-3">Werde Brückenpfeiler</h3>
-                    <p class="text-slate-400 text-sm mb-5 leading-relaxed">
-                        Dein Einsatz zählt. Ob Spende, Ehrenamt oder Besucher:in – bau mit uns an der Zukunft.
-                    </p>
-                    <a href="/join" class="inline-flex items-center justify-center w-full bg-white hover:bg-indigo-50 text-slate-900 font-bold py-3 rounded-xl transition-all duration-300 text-sm group">
-                        Jetzt mitmachen <i class="fa-solid fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform text-rose-500"></i>
-                    </a>
+                {/* 4. CTA: WERDE BRÜCKENPFEILER */}
+                <div class="lg:col-span-3">
+                    <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 backdrop-blur-sm relative overflow-hidden group shadow-lg shadow-slate-200/50 dark:shadow-none transition-colors duration-300">
+                        {/* Glow Effect */}
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-rose-500/10 rounded-full blur-2xl -mr-10 -mt-10 group-hover:bg-rose-500/20 transition-colors duration-500"></div>
+                        
+                        <h3 class="font-display font-bold text-slate-900 dark:text-white mb-2 relative z-10">Werde Brückenpfeiler</h3>
+                        <p class="text-slate-600 dark:text-slate-400 text-xs mb-6 leading-relaxed relative z-10 font-medium">
+                            Dein Einsatz zählt. Ob Spende, Ehrenamt oder Zivildienst – bau mit uns an der Zukunft.
+                        </p>
+                        
+                        {/* CTA Button: Dark/Light Optimized */}
+                        <a href="/join" class="inline-flex items-center justify-center w-full bg-slate-900 hover:bg-rose-600 dark:bg-white dark:hover:bg-rose-500 dark:text-slate-950 dark:hover:text-white text-white font-black uppercase tracking-widest py-3 rounded-xl transition-all duration-300 text-xs shadow-lg group/btn relative z-10">
+                            <span>Jetzt mitmachen</span>
+                            <i class="fa-solid fa-arrow-right ml-2 group-hover/btn:translate-x-1 transition-transform text-white dark:text-rose-600 dark:group-hover/btn:text-white"></i>
+                        </a>
+                    </div>
                 </div>
 
             </div>
 
             {/* BOTTOM BAR */}
-            <div class="mt-16 pt-8 border-t border-slate-800 flex flex-col lg:flex-row justify-between items-center gap-6 lg:gap-4">
+            <div class="pt-8 border-t border-slate-200 dark:border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
                 
                 {/* COPYRIGHT & ADDRESS */}
-                <div class="text-slate-500 text-xs flex flex-col md:flex-row gap-1 md:gap-4 text-center md:text-left items-center md:items-start">
+                <div class="text-slate-500 dark:text-slate-500 text-xs font-medium flex flex-col md:flex-row gap-2 md:gap-6 text-center md:text-left items-center md:items-start">
                     <span>&copy; {currentYear} Die Brücke.</span>
-                    <span class="hidden md:inline text-slate-700">|</span>
-                    <span>ZVR: 747612623</span>
-                    <span class="hidden md:inline text-slate-700">|</span>
-                    <span class="flex items-center gap-2 justify-center md:justify-start">
-                        <i class="fa-solid fa-location-dot text-rose-500/70"></i> Grabenstraße 39a, Graz
+                    <span class="hidden md:inline text-slate-300 dark:text-slate-800">|</span>
+                    <span>ZVR: {contactInfo.zvr}</span>
+                    <span class="hidden md:inline text-slate-300 dark:text-slate-800">|</span>
+                    <span class="flex items-center gap-1.5 justify-center md:justify-start hover:text-rose-600 dark:hover:text-rose-400 transition-colors cursor-default">
+                        <i class="fa-solid fa-location-dot"></i> {contactInfo.address}
                     </span>
                 </div>
 
-                {/* SHORTCUT HINT (Barrierefreiheit) */}
-                <div class="hidden md:flex items-center gap-4 text-xs font-medium text-slate-400 bg-slate-800/50 px-4 py-2 rounded-full border border-slate-700/50">
-                    <span class="flex items-center gap-2">
-                        <i class="fa-regular fa-keyboard"></i>
-                        Shortcuts:
-                    </span>
-                    <span class="flex items-center gap-1">
-                        <kbd class="font-sans bg-slate-900 px-1.5 py-0.5 rounded border border-slate-600 text-[10px] shadow-sm text-slate-200">Ctrl</kbd>
-                        <span>+</span>
-                        <kbd class="font-sans bg-slate-900 px-1.5 py-0.5 rounded border border-slate-600 text-[10px] shadow-sm text-slate-200">K</kbd>
-                    </span>
-                    <span class="text-slate-500">oder</span>
-                    <kbd class="font-sans bg-slate-900 px-2 py-0.5 rounded border border-slate-600 text-[10px] shadow-sm min-w-[20px] text-center text-slate-200">/</kbd>
-                </div>
-                
-                {/* LEGAL LINKS */}
-                <div class="flex gap-6">
+                {/* ACTION LINKS */}
+                <div class="flex items-center gap-6">
                     {legals.map((legal) => (
-                        <a href={legal.href} class="text-slate-500 hover:text-white text-xs font-bold uppercase tracking-wider transition-colors">
+                        <a href={legal.href} class="text-slate-500 hover:text-rose-600 dark:hover:text-white text-xs font-bold uppercase tracking-wider transition-colors">
                             {legal.name}
                         </a>
                     ))}
+                    
+                    {/* SCROLL TO TOP */}
+                    <button 
+                        id="scroll-top"
+                        aria-label="Nach oben scrollen"
+                        class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-400 hover:bg-slate-100 hover:text-slate-900 dark:bg-white/5 dark:border-white/5 dark:hover:bg-white/10 dark:hover:text-white flex items-center justify-center transition-all cursor-pointer shadow-sm dark:shadow-none"
+                    >
+                        <i class="fa-solid fa-arrow-up"></i>
+                    </button>
                 </div>
             </div>
             
         </div>
     </div>
 </footer>
+
+<script>
+    const scrollBtn = document.getElementById('scroll-top');
+    if(scrollBtn) {
+        scrollBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
+</script>
