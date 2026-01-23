@@ -3,26 +3,31 @@ import MainLayout from '../../layouts/layout.astro';
 import BlogShare from '../../components/blog/BlogShare.astro';
 import RelatedPosts from '../../components/blog/RelatedPosts.astro';
 import BlogSocials from '../../components/blog/BlogSocials.astro';
+// NEU: Galerie Import
 import ImageGallery from '../../components/common/ImageGallery.astro';
 import { getBlogPosts, getSidebarEvent, getSidebarService } from '../../lib/api';
 
-// WICHTIG: false = Live-Modus. Neue Beiträge gehen sofort ohne Neustart!
+// WICHTIG: Damit Astro weiß, dass es statische Seiten sind (wie im Archiv)
 export const prerender = false;
 
-// Im Live-Modus brauchen wir kein getStaticPaths mehr!
-
-const { slug } = Astro.params;
-
-// 1. Post live aus der API suchen
-const allPosts = await getBlogPosts();
-const post = allPosts?.find((p: any) => p.slug === slug);
-
-// 2. Wenn nicht gefunden -> 404 oder Redirect
-if (!post) {
-  return Astro.redirect('/blog'); // Oder auf eine 404 Seite
+export async function getStaticPaths() {
+  const posts = await getBlogPosts();
+  return (posts || []).map((post: any) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
 }
 
-// --- AB HIER BLEIBT DEIN CODE GLEICH ---
+const { slug } = Astro.params;
+let { post } = Astro.props;
+
+if (!post) {
+  const allPosts = await getBlogPosts();
+  post = allPosts.find((p: any) => p.slug === slug);
+}
+
+if (!post) return Astro.redirect('/blog');
+
 // --- TOC LOGIK ---
 let modifiedContent = post.content;
 const headings: { title: string; id: string }[] = [];
@@ -53,7 +58,7 @@ const sidebarEvent =
     ? await getSidebarEvent({ mode: 'highlight', limit: 10, random: true })
     : logicCategory === 'aktion'
       ? await getSidebarEvent({ mode: 'latest', limit: 10, random: true })
-      : await getSidebarEvent({ mode: 'latest', limit: 5, random: true });
+      : await getSidebarEvent({ mode: 'latest', limit: 5, random: true }); // Fallback Event
 
 const sidebarService = await getSidebarService(logicCategory);
 
@@ -67,37 +72,34 @@ const formatDate = (dateString: string) => {
 ---
 
 <MainLayout title={`${post.title} | Journal`}>
-  {/* ... (Rest deines Layouts bleibt exakt gleich wie vorher) ... */}
   <div class="fixed top-0 left-0 w-full h-1.5 z-[100] pointer-events-none">
-     {/* ... Code ab hier kopieren ... */}
-     <div id="progress-bar" class="h-full bg-rose-500 w-0 transition-all duration-150 ease-out shadow-[0_0_10px_rgba(244,63,94,0.5)]"></div>
+    <div id="progress-bar" class="h-full bg-rose-500 w-0 transition-all duration-150 ease-out shadow-[0_0_10px_rgba(244,63,94,0.5)]"></div>
   </div>
-  
-  <main class="bg-white dark:bg-slate-950 transition-colors duration-500 rounded-[48px] m-2 md:m-4 border border-slate-200 dark:border-slate-800 shadow-2xl min-h-screen relative overflow-hidden">
-     {/* ... Füge hier den gesamten restlichen HTML-Code deiner Datei ein ... */}
-     <header class="pt-24 pb-16 px-6">
-        <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-rose-500/5 rounded-full blur-[120px] pointer-events-none -translate-y-1/2 translate-x-1/2"></div>
-        <div class="max-w-4xl mx-auto text-center">
-            <nav class="mb-12">
-               <a href="/blog" class="inline-flex items-center gap-3 text-slate-400 hover:text-rose-500 font-black uppercase text-[10px] tracking-[0.4em] transition-colors group font-mono">
-                <i class="fa-solid fa-arrow-left group-hover:-translate-x-2 transition-transform text-[8px]"></i>
-                Zurück zum Journal
-              </a>
-            </nav>
-            <h1 class="text-5xl md:text-6xl lg:text-7xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tighter leading-[0.95] mb-8">
-              {post.title}
-            </h1>
-            <div class="flex items-center justify-center gap-4 text-[10px] font-black uppercase tracking-widest text-slate-400">
-              <span>{formatDate(post.date_created)}</span>
-              <span class="w-1 h-1 rounded-full bg-slate-300"></span>
-              <span class="text-rose-500">{displayCategory}</span>
-            </div>
+
+  <main class="bg-white dark:bg-slate-950 transition-colors duration-500 rounded-[48px] m-2 md:m-4 border border-slate-200 dark:border-slate-800 shadow-2xl min-h-screen relative overflow-hidden">    <header class="pt-24 pb-16 px-6">
+    {/* Background Glow für mehr Tiefe im Darkmode (wie auf Index) */}
+    <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-rose-500/5 rounded-full blur-[120px] pointer-events-none -translate-y-1/2 translate-x-1/2"></div>
+    <div class="max-w-4xl mx-auto text-center">
+        <nav class="mb-12">
+          <a href="/blog" class="inline-flex items-center gap-3 text-slate-400 hover:text-rose-500 font-black uppercase text-[10px] tracking-[0.4em] transition-colors group font-mono">
+            <i class="fa-solid fa-arrow-left group-hover:-translate-x-2 transition-transform text-[8px]"></i>
+            Zurück zum Journal
+          </a>
+        </nav>
+        <h1 class="text-5xl md:text-6xl lg:text-7xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tighter leading-[0.95] mb-8">
+          {post.title}
+        </h1>
+        <div class="flex items-center justify-center gap-4 text-[10px] font-black uppercase tracking-widest text-slate-400">
+          <span>{formatDate(post.date_created)}</span>
+          <span class="w-1 h-1 rounded-full bg-slate-300"></span>
+          <span class="text-rose-500">{displayCategory}</span>
         </div>
+      </div>
     </header>
 
     <section class="max-w-7xl mx-auto px-6 mb-24">
       <div class="rounded-[48px] overflow-hidden aspect-video shadow-2xl ring-1 ring-slate-200 dark:ring-slate-800">
-         <img src={`${ASSET_URL}/${post.main_image}`} class="w-full h-full object-cover" alt={post.title} />
+        <img src={`${ASSET_URL}/${post.main_image}`} class="w-full h-full object-cover" alt={post.title} />
       </div>
     </section>
 
@@ -148,7 +150,9 @@ const formatDate = (dateString: string) => {
             <div set:html={modifiedContent} />
           </div>
 
+          {/* --- NEU: GALERIE EINGEFÜGT --- */}
           <ImageGallery gallery={post.gallery} />
+
           <BlogShare title={post.title} url={currentUrl} />
         </article>
 
@@ -180,7 +184,7 @@ const formatDate = (dateString: string) => {
     </section>
   </main>
 </MainLayout>
-{/* ... Script und Style am Ende bleiben gleich ... */}
+
 <script>
   function safeParseJSON(value) {
     try {
@@ -194,12 +198,19 @@ const formatDate = (dateString: string) => {
 
 function truncateText(str, max = 100) {
     if (!str) return "";
+    
+    // 1. HTML Tags entfernen (wie bisher)
     let clean = str.replace(/<[^>]*>/g, "");
+
+    // 2. NEU: HTML Entities decodieren (macht aus &ndash; ein –)
     const parser = new DOMParser();
     const decoded = parser.parseFromString(clean, 'text/html').body.textContent || "";
+
+    // 3. Leerzeichen säubern
     clean = decoded.replace(/\s+/g, " ").trim();
+    
     return clean.length > max ? clean.substring(0, max) + "…" : clean;
-}
+  }
 
   function updateCTA() {
     const box = document.getElementById("dynamic-cta-box");
@@ -255,6 +266,7 @@ function truncateText(str, max = 100) {
         }
       ].filter(Boolean),
 
+      // Alias für Soziales
       soziales: [
         serviceOption("Unser Service"),
         {
