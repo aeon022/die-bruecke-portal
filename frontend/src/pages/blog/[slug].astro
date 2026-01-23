@@ -48,15 +48,13 @@ const displayCategory = post.category || 'Journal';
 const logicCategory = post.category ? post.category.toLowerCase().trim() : 'aktion';
 
 // --- DATEN AUS API (KATEGORIEBASIERT) ---
-// Events nur bei kultur/aktion anzeigen
 const sidebarEvent =
   logicCategory === 'kultur'
     ? await getSidebarEvent({ mode: 'highlight', limit: 10, random: true })
     : logicCategory === 'aktion'
       ? await getSidebarEvent({ mode: 'latest', limit: 10, random: true })
-      : null;
+      : await getSidebarEvent({ mode: 'latest', limit: 5, random: true }); // Fallback Event
 
-// Service passend zur Kategorie (sozial/verein/kultur/aktion)
 const sidebarService = await getSidebarService(logicCategory);
 
 const formatDate = (dateString: string) => {
@@ -99,13 +97,14 @@ const formatDate = (dateString: string) => {
       </div>
     </section>
 
+    {/* --- MAIN ARTICLE & SIDEBARS --- */}
     <section class="max-w-7xl mx-auto px-6">
       <div class="flex flex-col lg:flex-row gap-12 xl:gap-24 items-start">
 
         {/* --- LEFT SIDEBAR --- */}
         <aside class="hidden lg:block w-[240px] shrink-0 sticky top-32 space-y-10 mb-12">
           <div class="px-2">
-            <span class="block text-[10px] font-black uppercase tracking-[0.3em] text-rose-500 mb-2 font-mono">Kategorie //</span>
+            <span class="block text-[10px] font-black uppercase tracking-[0.3em] text-rose-500 mb-2 font-mono font-bold">Kategorie //</span>
             <div class="inline-flex items-center gap-2 bg-slate-100 dark:bg-slate-900 px-4 py-2 rounded-xl border border-slate-200 dark:border-white/5">
               <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
               <span class="text-xs font-black uppercase tracking-widest text-slate-900 dark:text-white">{displayCategory}</span>
@@ -118,7 +117,7 @@ const formatDate = (dateString: string) => {
               <ul class="space-y-4">
                 {headings.map(h => (
                   <li>
-                    <a href={`#${h.id}`} class="text-[11px] font-bold text-slate-600 dark:text-slate-400 hover:text-rose-500 transition-colors flex gap-2 group">
+                    <a href={`#${h.id}`} class="text-[11px] font-bold text-slate-600 dark:text-slate-400 leading-snug hover:text-rose-500 transition-colors flex gap-2 group">
                       <span class="text-rose-500 opacity-0 group-hover:opacity-100 transition-opacity">→</span>
                       <span>{h.title}</span>
                     </a>
@@ -127,11 +126,21 @@ const formatDate = (dateString: string) => {
               </ul>
             </div>
           )}
+          
+          <div class="px-2">
+            <span class="block text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 mb-4 font-mono font-bold italic font-bold">Details</span>
+            <p class="text-xs font-bold text-slate-500 italic mb-4 leading-relaxed">Lesezeit: ca. {readingTime} Min.</p>
+            <div class="flex flex-wrap gap-2">
+              {post.tags?.map((tag: string) => (
+                <span class="text-[9px] font-bold text-rose-500 uppercase bg-rose-500/5 px-3 py-1.5 rounded-full border border-rose-500/10 whitespace-nowrap">#{tag}</span>
+              ))}
+            </div>
+          </div>
         </aside>
 
         {/* --- ARTICLE AREA --- */}
         <article class="flex-1 min-w-0">
-          <div class="prose prose-lg dark:prose-invert prose-slate prose-headings:font-display prose-headings:uppercase prose-headings:tracking-tighter prose-headings:font-black prose-a:text-rose-500 prose-img:rounded-[32px] max-w-none prose-p:leading-relaxed prose-p:text-slate-600 dark:prose-p:text-slate-400 mb-6">
+          <div class="prose prose-lg dark:prose-invert prose-slate prose-headings:font-display prose-headings:uppercase prose-headings:tracking-tighter prose-headings:font-black prose-a:text-rose-500 prose-img:rounded-[32px] max-w-none prose-p:leading-relaxed prose-p:text-slate-600 dark:prose-p:text-slate-400 mb-12">
             <div set:html={modifiedContent} />
           </div>
           <BlogShare title={post.title} url={currentUrl} />
@@ -147,8 +156,8 @@ const formatDate = (dateString: string) => {
             class="p-8 bg-slate-900 rounded-[40px] text-white shadow-2xl relative overflow-hidden group border border-white/5 transition-transform hover:scale-[1.02] duration-500"
           >
             <div class="absolute -right-8 -top-8 w-32 h-32 bg-rose-500/20 rounded-full blur-3xl group-hover:bg-rose-500/40 transition-all duration-700"></div>
-            <span id="cta-label" class="text-[9px] font-black uppercase tracking-[0.3em] text-rose-500 block mb-6 relative z-10 font-mono italic">Empfehlung //</span>
-            <h4 id="cta-title" class="text-2xl font-display font-black uppercase leading-[1.1] mb-4 relative z-10">Lade...</h4>
+            <span id="cta-label" class="text-[9px] font-black uppercase tracking-[0.3em] text-rose-500 block mb-6 relative z-10 font-mono italic font-bold">Empfehlung //</span>
+            <h4 id="cta-title" class="text-2xl font-display font-black uppercase leading-[1.1] mb-4 relative z-10">...</h4>
             <p id="cta-text" class="text-[13px] text-slate-400 mb-8 leading-relaxed relative z-10">...</p>
             <a id="cta-link" href="#" class="block w-full py-4 bg-rose-500 hover:bg-white hover:text-slate-950 text-center rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all relative z-10 shadow-lg shadow-rose-500/20 font-bold">
               Mehr erfahren
@@ -159,113 +168,112 @@ const formatDate = (dateString: string) => {
       </div>
     </section>
 
-    {/* --- COMPACT FOOTER AREA --- */}
-    <section class="max-w-7xl mx-auto px-6 pt-8 pb-24 mt-2">
+    {/* --- FULL WIDTH RELATED POSTS --- */}
+    <section class="max-w-7xl mx-auto px-6 pt-12 pb-24 border-t border-slate-100 dark:border-white/5 mt-12">
       <RelatedPosts currentSlug={post.slug} />
     </section>
   </main>
 </MainLayout>
 
 <script>
+  function safeParseJSON(value) {
+    try {
+      if (!value || value === "null") return null;
+      return JSON.parse(value);
+    } catch (e) {
+      console.warn("CTA JSON parse failed:", e);
+      return null;
+    }
+  }
+
+  function truncateText(str, max = 100) {
+    if (!str) return "";
+    const clean = str.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
+    return clean.length > max ? clean.substring(0, max) + "…" : clean;
+  }
+
   function updateCTA() {
-    const box = document.getElementById('dynamic-cta-box');
+    const box = document.getElementById("dynamic-cta-box");
     if (!box) return;
 
-    const category = box.dataset.category || 'aktion';
-    const dbEvent = box.dataset.event ? JSON.parse(box.dataset.event) : null;
-    const dbService = box.dataset.service ? JSON.parse(box.dataset.service) : null;
+    const category = (box.dataset.category || "aktion").toLowerCase().trim();
+    const dbEvent = safeParseJSON(box.dataset.event);
+    const dbService = safeParseJSON(box.dataset.service);
+
+    const eventOption = (labelText) => {
+      if (!dbEvent?.slug) return null;
+      return {
+        title: dbEvent.title || "Event",
+        text: truncateText(dbEvent.description, 100) || "Besuche unser nächstes Event.",
+        link: `/events/${dbEvent.slug}`,
+        btn: "Zum Event",
+        label: labelText,
+      };
+    };
+
+    const serviceOption = (labelText) => {
+      if (!dbService?.slug) return null;
+      return {
+        title: dbService.title || "Angebot",
+        text: truncateText(dbService.teaser, 110) || "Wir unterstützen dich im Alltag.",
+        link: `/services/${dbService.slug}`,
+        btn: dbService.button_text || "Details",
+        label: labelText,
+      };
+    };
 
     const ctaOptions = {
       kultur: [
-        dbEvent
-          ? {
-              title: dbEvent.title,
-              text: dbEvent.description
-                ? dbEvent.description.replace(/<[^>]*>/g, '').substring(0, 110) + '…'
-                : 'Besuche unser nächstes Event.',
-              link: `/events/${dbEvent.slug}`,
-              btn: 'Zum Event',
-              label: 'Highlight Event //',
-            }
-          : null,
+        eventOption("Aktuelles Event //"),
         {
-          title: 'Programm entdecken',
-          text: 'Konzerte, Workshops & Begegnung – schau rein was als nächstes passiert.',
-          link: '/events',
-          btn: 'Alle Events',
-          label: 'Kultur //',
+          title: "Programm entdecken",
+          text: "Konzerte, Workshops & Begegnung – schau rein was als nächstes passiert.",
+          link: "/events",
+          btn: "Alle Events",
+          label: "Kultur //",
         },
+        serviceOption("Projekt-Fokus //")
       ].filter(Boolean),
 
       sozial: [
-        dbService
-          ? {
-              title: dbService.title,
-              text: dbService.teaser || 'Wir unterstützen dich im Alltag.',
-              link: `/services/${dbService.slug}`,
-              btn: dbService.button_text || 'Details',
-              label: 'Service //',
-            }
-          : null,
+        serviceOption("Unser Service //"),
         {
-          title: 'City Trips & Camps',
-          text: 'Gemeinsam unterwegs – barrierearm, organisiert und richtig schön.',
-          link: '/camps',
-          btn: 'Zu den Reisen',
-          label: 'Unterwegs //',
-        },
-        {
-          title: 'Infozentrum',
-          text: 'Beratung, Behördenwege, Anträge – wir sind deine erste Anlaufstelle in Graz.',
-          link: '/info',
-          btn: 'Infos ansehen',
-          label: 'Support //',
-        },
+          title: "Beratung & Hilfe",
+          text: "Unterstützung im Alltag, Behördenwege oder einfach ein offenes Ohr.",
+          link: "/services",
+          btn: "Mehr erfahren",
+          label: "Support //",
+        }
       ].filter(Boolean),
 
-      verein: [
+      // Alias für Soziales
+      soziales: [
+        serviceOption("Unser Service //"),
         {
-          title: 'Mitglied werden',
-          text: 'Unterstütze unsere Arbeit langfristig und werde Teil des Vereins.',
-          link: '/about',
-          btn: 'Mehr erfahren',
-          label: 'Verein //',
-        },
-        {
-          title: 'Spenden',
-          text: 'Jeder Beitrag hilft – für Projekte, Reisen und Unterstützung im Alltag.',
-          link: '/contact',
-          btn: 'Kontakt',
-          label: 'Helfen //',
-        },
-      ],
+          title: "Beratung & Hilfe",
+          text: "Unterstützung im Alltag, Behördenwege oder einfach ein offenes Ohr.",
+          link: "/services",
+          btn: "Mehr erfahren",
+          label: "Support //",
+        }
+      ].filter(Boolean),
 
       aktion: [
-        dbEvent
-          ? {
-              title: dbEvent.title,
-              text: dbEvent.description
-                ? dbEvent.description.replace(/<[^>]*>/g, '').substring(0, 110) + '…'
-                : 'Schau dir das aktuellste Event an.',
-              link: `/events/${dbEvent.slug}`,
-              btn: 'Zum Event',
-              label: 'Aktuell //',
-            }
-          : null,
+        eventOption("Demnächst //"),
         {
-          title: 'City Trip Wien',
-          text: 'Ein Wochenende voller Kultur – gemeinsam und barrierearm unterwegs.',
-          link: '/camps',
-          btn: 'Details',
-          label: 'Trip //',
+          title: "City Trip Wien",
+          text: "Ein Wochenende voller Kultur in der Hauptstadt – gemeinsam unterwegs.",
+          link: "/camps",
+          btn: "Jetzt buchen",
+          label: "City Trip //",
         },
         {
-          title: 'Sommer-Camps',
-          text: 'Unsere Urlaubsaktionen – organisiert, inklusiv, voller schöner Momente.',
-          link: '/camps',
-          btn: 'Alle Termine',
-          label: 'Urlaub //',
-        },
+          title: "Sommer-Camps 2026",
+          text: "Unsere legendären Urlaubsaktionen – jetzt Termine sichern.",
+          link: "/camps",
+          btn: "Alle Reisen",
+          label: "Urlaub //",
+        }
       ].filter(Boolean),
     };
 
@@ -273,11 +281,10 @@ const formatDate = (dateString: string) => {
     const randomItem = options[Math.floor(Math.random() * options.length)];
 
     if (randomItem) {
-      document.getElementById('cta-label').innerText = randomItem.label;
-      document.getElementById('cta-title').innerText = randomItem.title;
-      document.getElementById('cta-text').innerText = randomItem.text;
-
-      const linkEl = document.getElementById('cta-link');
+      document.getElementById("cta-label").innerText = randomItem.label;
+      document.getElementById("cta-title").innerText = randomItem.title;
+      document.getElementById("cta-text").innerText = randomItem.text;
+      const linkEl = document.getElementById("cta-link");
       linkEl.innerText = randomItem.btn;
       linkEl.href = randomItem.link;
     }
@@ -285,21 +292,18 @@ const formatDate = (dateString: string) => {
 
   function initPageScripts() {
     updateCTA();
-
-    const bar = document.getElementById('progress-bar');
+    const bar = document.getElementById("progress-bar");
     const updateProgress = () => {
       if (!bar) return;
-      const winScroll = window.scrollY;
-      const height = document.documentElement.scrollHeight - window.innerHeight;
-      const scrolled = (winScroll / height) * 100;
-      bar.style.width = scrolled + '%';
+      const scrolled = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+      bar.style.width = scrolled + "%";
     };
-
-    window.addEventListener('scroll', updateProgress);
+    window.addEventListener("scroll", updateProgress, { passive: true });
+    updateProgress();
   }
 
   initPageScripts();
-  document.addEventListener('astro:after-swap', initPageScripts);
+  document.addEventListener("astro:after-swap", initPageScripts);
 </script>
 
 <style is:global>

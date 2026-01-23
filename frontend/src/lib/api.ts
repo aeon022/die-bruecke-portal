@@ -195,40 +195,58 @@ export async function getBlogPosts() {
  * - nutzt statusFilter (DEV zeigt auch nicht-published)
  * - lädt mehrere Events (limit) damit random Sinn macht
  */
+// Blog Sidebar Event - Highlight random ODER aktuellste Events
 export async function getSidebarEvent(options?: {
   mode?: 'highlight' | 'latest';
   limit?: number;
   random?: boolean;
 }) {
-  const mode = options?.mode ?? 'highlight';
-  const limit = options?.limit ?? 8;
-  const random = options?.random ?? true;
-
   try {
+    const mode = options?.mode ?? 'latest';
+    const limit = options?.limit ?? 10;
+    const random = options?.random ?? true;
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
     const response = await directus.request(
       readItems('events', {
-        fields: ['title', 'slug', 'description', 'image', 'is_highlight', 'start_date', 'time_start'],
+        fields: ['title', 'slug', 'description', 'image', 'is_highlight', 'start_date'],
         filter: {
-          ...statusFilter,
-          ...(mode === 'highlight' ? { is_highlight: { _eq: true } } : {}),
+          ...(import.meta.env.PROD ? { status: { _eq: 'published' } } : {}),
         },
-        // ✅ sortiert neueste zuerst (für latest) bzw. Highlights auch sinnvoll
-        sort: ['-start_date'],
-        limit,
+        sort: ['start_date'],
+        limit: -1 // Wir holen alle verfügbaren für die manuelle Filterung
       })
     );
 
-    if (!response?.length) {
-      // Wenn keine Highlights vorhanden -> fallback auf latest
-      if (mode === 'highlight') {
-        return await getSidebarEvent({ mode: 'latest', limit: 8, random: true });
-      }
-      return null;
+    let pool = (response || []).filter((e: any) => {
+      const dateStr = e.start_date || e.date_start || e.date;
+      if (!dateStr) return false;
+      const d = new Date(dateStr);
+      return d >= today;
+    });
+
+    // WICHTIG: Manuelle Filterung auf Highlights, da Checkboxen als Arrays gespeichert sein können
+    if (mode === 'highlight') {
+      pool = pool.filter(e => 
+        e.is_highlight === true || 
+        (Array.isArray(e.is_highlight) && e.is_highlight.includes('true'))
+      );
     }
 
-    return random ? pickRandom(response) : response[0];
+    // Fallback: Wenn keine Highlights/Zukünftigen da sind, nimm die aktuellsten
+    if (!pool.length) pool = response || [];
+
+    const shortlist = pool.slice(0, limit);
+    if (!shortlist.length) return null;
+
+    return random
+      ? shortlist[Math.floor(Math.random() * shortlist.length)]
+      : shortlist[0];
+
   } catch (e) {
-    console.error('Sidebar Event API Fehler:', e);
+    console.error("Sidebar Event API Fehler:", e);
     return null;
   }
 }
