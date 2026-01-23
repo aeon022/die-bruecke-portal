@@ -75,9 +75,17 @@ const departments = [
     {/* --- HERO --- */}
     <section class="relative px-6 sm:px-10 pt-32 pb-20 bg-white dark:bg-slate-950 rounded-t-[32px] md:rounded-t-[64px] overflow-hidden transition-colors duration-300">
         <div class="max-w-7xl mx-auto relative z-10">
-            <span class="inline-block px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-widest mb-6">
-                Erreichbarkeit
-            </span>
+            <div class="flex items-center gap-4 mb-6">
+                <span class="inline-block px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-widest border border-slate-200 dark:border-slate-700">
+                    Erreichbarkeit
+                </span>
+                
+                {/* STATUS BADGE CONTAINER (Wird per JS gefüllt) */}
+                <div id="opening-status" class="hidden animate-fade-in">
+                    {/* JavaScript injects content here */}
+                </div>
+            </div>
+
             <h1 class="text-5xl md:text-7xl lg:text-8xl font-display font-extrabold text-slate-900 dark:text-white tracking-tighter mb-8 leading-[0.9]">
                 Wir sind <br>
                 <span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-600 to-slate-600 dark:to-slate-400">für dich da.</span>
@@ -143,6 +151,18 @@ const departments = [
                                 <a href="http://googleusercontent.com/maps.google.com/maps?q=Die+Brücke+Graz+Grabenstraße+39a" target="_blank" class="inline-flex items-center gap-2 text-sm font-bold text-rose-600 dark:text-rose-400 mt-4 hover:underline">
                                     In Google Maps öffnen <i class="fa-solid fa-arrow-up-right-from-square"></i>
                                 </a>
+
+                                {/* NEU: Action Buttons Container */}
+                                <div class="flex flex-wrap gap-4 mt-6 border-b border-slate-100 dark:border-slate-800 pb-6 mb-6">
+                                    <a href="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2718.026724395214!2d15.43345831561725!3d47.08502597915357!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x476e35970c776099%3A0x6295772393080e76!2sDie%20Br%C3%BCcke!5e0!3m2!1sde!2sat!4v1614167823456!5m2!1sde!2sat6" target="_blank" class="inline-flex items-center gap-2 text-xs font-bold text-rose-600 dark:text-rose-400 hover:underline">
+                                        <i class="fa-solid fa-map-location-dot"></i> Karte öffnen
+                                    </a>
+                                    {/* FIX: cursor-pointer hinzugefügt */}
+                                    <button id="vcard-btn" class="inline-flex items-center gap-2 text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 transition-colors cursor-pointer">
+                                        <i class="fa-regular fa-address-card"></i> Ins Adressbuch
+                                    </button>
+                                </div>
+
                             </div>
                         </div>
 
@@ -171,6 +191,24 @@ const departments = [
                                 </div>
                             </div>
                         </div>
+
+                        {/* NEU: ÖFFI LINK & APP INFO */}
+                        <div class="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800/50">
+                            <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3">Routenplaner</p>
+                            <div class="flex flex-col sm:flex-row gap-3">
+                                
+                                {/* 1. ROUTE: Google Maps im "Transit Modus" */}
+                                <a href="https://www.google.com/maps/dir/?api=1&destination=Grabenstraße+39a,+Graz&travelmode=transit" target="_blank" class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-emerald-500 hover:text-white dark:hover:bg-emerald-600 transition-all text-xs font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wide group">
+                                    <i class="fa-solid fa-route group-hover:scale-110 transition-transform"></i> Route berechnen
+                                </a>
+                                
+                                {/* 2. APP: Link zur Graz Mobil App Info */}
+                                <a href="https://www.holding-graz.at/de/unternehmen/unsere-app-angebote/" target="_blank" class="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-emerald-500 hover:text-emerald-500 dark:hover:border-emerald-400 dark:hover:text-emerald-400 transition-all text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">
+                                    <i class="fa-solid fa-mobile-screen"></i> Graz Mobil App
+                                </a>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 
@@ -249,7 +287,7 @@ const departments = [
                             <textarea id="message" name="message" rows="5" required class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all dark:text-white" placeholder="Wie können wir helfen?"></textarea>
                         </div>
 
-                        {/* HONEYPOT FELD (Neu) */}
+                        {/* HONEYPOT FELD */}
                         <div class="hidden" aria-hidden="true">
                             <label for="website_check">Bitte dieses Feld leer lassen</label>
                             <input type="text" name="website_check" id="website_check" tabindex="-1" autocomplete="off">
@@ -397,16 +435,47 @@ const departments = [
 })} />
 
 <script>
-    // 1. Google Maps Logic
+    // 1. Live-Status (Client-Side Logic)
+    function updateOpeningStatus() {
+        const container = document.getElementById('opening-status');
+        if (!container) return;
+
+        const now = new Date();
+        const day = now.getDay(); // 0 = So, 1 = Mo ...
+        const hour = now.getHours();
+        let isOpen = false;
+
+        // Mo-Do (1-4): 9-16 Uhr, Fr (5): 9-13 Uhr
+        if (day >= 1 && day <= 4 && hour >= 9 && hour < 16) isOpen = true;
+        if (day === 5 && hour >= 9 && hour < 13) isOpen = true;
+
+        if (isOpen) {
+            container.innerHTML = `
+                <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-xs font-bold uppercase tracking-widest border border-emerald-200 dark:border-emerald-800">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Jetzt geöffnet
+                </span>
+            `;
+        } else {
+            // RED & PULSING for CLOSED
+            container.innerHTML = `
+                <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-400 text-xs font-bold uppercase tracking-widest border border-rose-200 dark:border-rose-800">
+                    <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span> Gerade geschlossen
+                </span>
+            `;
+        }
+        container.classList.remove('hidden');
+    }
+
+    // 2. Google Maps Logic
     function initMapLogic() {
         const placeholder = document.getElementById('map-placeholder');
         const iframe = document.getElementById('google-map');
         
         if (placeholder && iframe) {
             placeholder.addEventListener('click', () => {
-                const apiKey = placeholder.dataset.key; // Key aus Data-Attribut holen
+                const apiKey = placeholder.dataset.key;
                 const query = "Die Brücke Graz Grabenstraße 39a";
-                // Offizielle Google Maps Embed API URL mit Key
+                // FIX: Korrekte Google Embed URL
                 const mapUrl = `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${encodeURIComponent(query)}`;
                 
                 iframe.setAttribute('src', mapUrl);
@@ -416,7 +485,7 @@ const departments = [
         }
     }
 
-    // 2. Form Logic (SEND TO API)
+    // 3. Form Logic (SEND TO API)
     function initFormLogic() {
         const form = document.getElementById('contact-form');
         const msgBox = document.getElementById('form-message');
@@ -437,7 +506,6 @@ const departments = [
                 const data = Object.fromEntries(formData.entries());
 
                 try {
-                    // Call Astro API Endpoint
                     const response = await fetch('/api/contact', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -447,12 +515,10 @@ const departments = [
                     const result = await response.json();
 
                     if(response.ok) {
-                        // Success
                         msgBox.innerHTML = `<i class="fa-solid fa-check-circle"></i> ${result.message}`;
                         msgBox.className = "p-4 rounded-xl text-sm font-bold mb-4 bg-emerald-100 text-emerald-800 border border-emerald-200 block";
                         form.reset();
                     } else {
-                        // Error from API
                         throw new Error(result.message || 'Fehler beim Senden');
                     }
 
@@ -461,7 +527,6 @@ const departments = [
                     msgBox.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> ${error.message || 'Verbindungsfehler. Bitte versuche es später.'}`;
                     msgBox.className = "p-4 rounded-xl text-sm font-bold mb-4 bg-rose-100 text-rose-800 border border-rose-200 block";
                 } finally {
-                    // Reset Button
                     submitBtn.innerHTML = originalBtnText;
                     submitBtn.removeAttribute('disabled');
                 }
@@ -469,10 +534,44 @@ const departments = [
         }
     }
 
-    // Init
+    // 4. vCard Logic (EventListener statt onclick)
+    function initVCardLogic() {
+        const btn = document.getElementById('vcard-btn');
+        if(btn) {
+            btn.addEventListener('click', () => {
+                const vCardData = [
+                    "BEGIN:VCARD",
+                    "VERSION:3.0",
+                    "N:;Die Brücke;;;",
+                    "FN:Die Brücke Graz",
+                    "ORG:Die Brücke - soziokulturelles Zentrum;",
+                    "TEL;type=WORK;type=VOICE;type=pref:+43316672248",
+                    "EMAIL:office@diebruecke.cc",
+                    "ADR;type=WORK:;;Grabenstraße 39a;Graz;;8010;Austria",
+                    "URL:https://diebruecke.cc",
+                    "NOTE:Bürozeiten: Mo-Do 9-16, Fr 9-13 Uhr",
+                    "END:VCARD"
+                ].join("\n");
+
+                const blob = new Blob([vCardData], { type: "text/vcard" });
+                const url = URL.createObjectURL(blob);
+                
+                const link = document.createElement("a");
+                link.href = url;
+                link.setAttribute("download", "Die_Bruecke_Graz.vcf");
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            });
+        }
+    }
+
+    // Init All
     const init = () => {
+        updateOpeningStatus();
         initMapLogic();
         initFormLogic();
+        initVCardLogic(); // <--- NEU HINZUGEFÜGT
     }
     
     init();
