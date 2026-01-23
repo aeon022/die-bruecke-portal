@@ -3,7 +3,7 @@ import MainLayout from '../../layouts/layout.astro';
 import BlogShare from '../../components/blog/BlogShare.astro';
 import RelatedPosts from '../../components/blog/RelatedPosts.astro';
 import BlogSocials from '../../components/blog/BlogSocials.astro';
-import { getBlogPosts } from '../../lib/api';
+import { getBlogPosts, getSidebarEvent, getSidebarService } from '../../lib/api';
 
 export async function getStaticPaths() {
     const posts = await getBlogPosts();
@@ -22,6 +22,10 @@ if (!post) {
 }
 
 if (!post) return Astro.redirect('/blog');
+
+// --- DATEN AUS API ---
+const sidebarEvent = await getSidebarEvent();
+const sidebarService = await getSidebarService('sozial');
 
 // --- TOC LOGIK ---
 let modifiedContent = post.content;
@@ -42,8 +46,8 @@ const readingTime = Math.ceil(words / 200);
 const ASSET_URL = import.meta.env.DIRECTUS_URL + '/assets';
 const currentUrl = Astro.url.href;
 
-// WICHTIG: Sicherstellen, dass die Kategorie ein String ist
-const currentCategory = post.category || 'Aktion';
+const displayCategory = post.category || 'Journal';
+const logicCategory = post.category ? post.category.trim().toLowerCase() : 'aktion';
 
 const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('de-DE', {
@@ -72,7 +76,7 @@ const formatDate = (dateString: string) => {
                 <div class="flex items-center justify-center gap-4 text-[10px] font-black uppercase tracking-widest text-slate-400">
                     <span>{formatDate(post.date_created)}</span>
                     <span class="w-1 h-1 rounded-full bg-slate-300"></span>
-                    <span class="text-rose-500">{currentCategory}</span>
+                    <span class="text-rose-500">{displayCategory}</span>
                 </div>
             </div>
         </header>
@@ -83,17 +87,17 @@ const formatDate = (dateString: string) => {
             </div>
         </section>
 
-        <section class="max-w-7xl mx-auto px-6 pb-32">
+        {/* --- MAIN CONTENT SECTION (Sidebars begrenzt) --- */}
+        <section class="max-w-7xl mx-auto px-6 pb-12">
             <div class="flex flex-col lg:flex-row gap-12 xl:gap-24 items-start">
                 
                 {/* --- LEFT SIDEBAR --- */}
-                <aside class="hidden lg:block w-[240px] shrink-0 sticky top-32 space-y-10">
-                    {/* NEU: Kategorie Anzeige in der Sidebar */}
+                <aside class="hidden lg:block w-[240px] shrink-0 sticky top-32 space-y-10 mb-20">
                     <div class="px-2">
                         <span class="block text-[10px] font-black uppercase tracking-[0.3em] text-rose-500 mb-2 font-mono">Kategorie //</span>
                         <div class="inline-flex items-center gap-2 bg-slate-100 dark:bg-slate-900 px-4 py-2 rounded-xl border border-slate-200 dark:border-white/5">
                             <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
-                            <span class="text-xs font-black uppercase tracking-widest text-slate-900 dark:text-white">{currentCategory}</span>
+                            <span class="text-xs font-black uppercase tracking-widest text-slate-900 dark:text-white">{displayCategory}</span>
                         </div>
                     </div>
 
@@ -124,19 +128,23 @@ const formatDate = (dateString: string) => {
                     </div>
                 </aside>
 
-                {/* --- MAIN CONTENT --- */}
+                {/* --- ARTICLE AREA --- */}
                 <article class="flex-1 min-w-0">
-                    <div class="prose prose-lg dark:prose-invert prose-slate prose-headings:font-display prose-headings:uppercase prose-headings:tracking-tighter prose-headings:font-black prose-a:text-rose-500 prose-img:rounded-[32px] max-w-none prose-p:leading-relaxed prose-p:text-slate-600 dark:prose-p:text-slate-400">
+                    <div class="prose prose-lg dark:prose-invert prose-slate prose-headings:font-display prose-headings:uppercase prose-headings:tracking-tighter prose-headings:font-black prose-a:text-rose-500 prose-img:rounded-[32px] max-w-none prose-p:leading-relaxed prose-p:text-slate-600 dark:prose-p:text-slate-400 mb-12">
                         <div set:html={modifiedContent} />
                     </div>
                     <BlogShare title={post.title} url={currentUrl} />
-                    <RelatedPosts currentSlug={post.slug} />
                 </article>
 
                 {/* --- RIGHT SIDEBAR --- */}
-                <aside class="hidden lg:block w-[280px] shrink-0 sticky top-32 space-y-12">
-                    {/* WICHTIG: data-category gibt den Wert an das Script weiter */}
-                    <div id="dynamic-cta-box" data-category={currentCategory} class="p-8 bg-slate-900 rounded-[40px] text-white shadow-2xl relative overflow-hidden group border border-white/5 transition-transform hover:scale-[1.02] duration-500">
+                <aside class="hidden lg:block w-[280px] shrink-0 sticky top-32 space-y-12 mb-20">
+                    <div 
+                        id="dynamic-cta-box" 
+                        data-category={logicCategory}
+                        data-event={JSON.stringify(sidebarEvent)}
+                        data-service={JSON.stringify(sidebarService)}
+                        class="p-8 bg-slate-900 rounded-[40px] text-white shadow-2xl relative overflow-hidden group border border-white/5 transition-transform hover:scale-[1.02] duration-500"
+                    >
                         <div class="absolute -right-8 -top-8 w-32 h-32 bg-rose-500/20 rounded-full blur-3xl group-hover:bg-rose-500/40 transition-all duration-700"></div>
                         <span id="cta-label" class="text-[9px] font-black uppercase tracking-[0.3em] text-rose-500 block mb-6 relative z-10 font-mono italic">Empfehlung //</span>
                         <h4 id="cta-title" class="text-2xl font-display font-black uppercase leading-[1.1] mb-4 relative z-10">...</h4>
@@ -149,6 +157,11 @@ const formatDate = (dateString: string) => {
                 </aside>
             </div>
         </section>
+
+        {/* --- FULL WIDTH RELATED POSTS (Unterhalb der Sidebars) --- */}
+        <section class="max-w-7xl mx-auto px-6 pb-32 ">
+            <RelatedPosts currentSlug={post.slug} />
+        </section>
     </main>
 </MainLayout>
 
@@ -157,46 +170,31 @@ const formatDate = (dateString: string) => {
         const box = document.getElementById('dynamic-cta-box');
         if (!box) return;
 
-        // 1. Daten aus den Attributen abrufen
         const category = (box.getAttribute('data-category') || 'aktion').toLowerCase().trim();
-        const rawEvent = box.getAttribute('data-event');
-        const rawService = box.getAttribute('data-service');
+        const dbEvent = JSON.parse(box.getAttribute('data-event') || 'null');
+        const dbService = JSON.parse(box.getAttribute('data-service') || 'null');
         
-        // 2. JSON sicher parsen
-        let dbEvent = null;
-        let dbService = null;
-        try {
-            if (rawEvent) dbEvent = JSON.parse(rawEvent);
-            if (rawService) dbService = JSON.parse(rawService);
-        } catch (e) {
-            console.error("Fehler beim Parsen der Sidebar-Daten", e);
-        }
-
-        // 3. Die Optionen definieren (Echte Daten bevorzugen)
         const ctaOptions = {
             'kultur': [
-                // Wenn ein echtes Event da ist, nimm es!
                 dbEvent ? { 
                     title: dbEvent.title, 
                     text: dbEvent.description ? dbEvent.description.replace(/<[^>]*>/g, '').substring(0, 100) + '...' : 'Besuche unser nächstes Event.', 
                     link: `/events/${dbEvent.slug}`, 
                     btn: 'Zum Event', 
-                    label: 'Event Highlight //' 
+                    label: 'Aktuelles Event //' 
                 } : null,
-                // Fallback falls kein Highlight-Event in Directus gefunden wurde
                 { title: 'Inklusives Atelier', text: 'Entdecke deine künstlerische Ader in unserem Atelier.', link: '/services/atelier', btn: 'Mehr erfahren', label: 'Kultur-Projekt //' }
             ].filter(Boolean),
 
             'soziales': [
-                // Wenn ein echter Service da ist, nimm ihn!
                 dbService ? { 
                     title: dbService.title, 
                     text: dbService.teaser || 'Wir unterstützen dich im Alltag.', 
                     link: `/services/${dbService.slug}`, 
                     btn: dbService.button_text || 'Details', 
-                    label: 'Service-Fokus //' 
+                    label: 'Unser Service //' 
                 } : null,
-                { title: 'FASS Beratung', text: 'Unterstützung für Familien und Angehörige.', link: '/services/fass-fed', btn: 'Beratung', label: 'Support //' }
+                { title: 'FASS Beratung', text: 'Unterstützung für Familien und Angehörige.', link: '/services/fass-fed', btn: 'Beratung', label: 'Hilfe & Support //' }
             ].filter(Boolean),
 
             'aktion': [
@@ -205,47 +203,35 @@ const formatDate = (dateString: string) => {
             ]
         };
 
-        // 4. Auswahl treffen
         const options = ctaOptions[category] || ctaOptions['aktion'];
         const randomItem = options[Math.floor(Math.random() * options.length)];
 
-        // 5. DOM updaten
-        const labelEl = document.getElementById('cta-label');
-        const titleEl = document.getElementById('cta-title');
-        const textEl = document.getElementById('cta-text');
-        const linkEl = document.getElementById('cta-link');
-
         if (randomItem) {
-            if (labelEl) labelEl.innerText = randomItem.label;
-            if (titleEl) titleEl.innerText = randomItem.title;
-            if (textEl) textEl.innerText = randomItem.text;
-            if (linkEl) {
-                linkEl.innerText = randomItem.btn;
-                linkEl.href = randomItem.link;
-            }
+            document.getElementById('cta-label').innerText = randomItem.label;
+            document.getElementById('cta-title').innerText = randomItem.title;
+            document.getElementById('cta-text').innerText = randomItem.text;
+            const linkEl = document.getElementById('cta-link');
+            linkEl.innerText = randomItem.btn;
+            linkEl.href = randomItem.link;
         }
     }
 
-    // Initialisierung & Scroll-Progress
-    function initSidebar() {
+    function initHeaderScripts() {
         updateCTA();
         const bar = document.getElementById('progress-bar');
         const updateProgress = () => {
             if (!bar) return;
-            const winScroll = window.scrollY;
-            const height = document.documentElement.scrollHeight - window.innerHeight;
-            const scrolled = (winScroll / height) * 100;
+            const scrolled = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
             bar.style.width = scrolled + "%";
         };
         window.addEventListener('scroll', updateProgress);
     }
 
-    initSidebar();
-    document.addEventListener('astro:after-swap', initSidebar);
+    initHeaderScripts();
+    document.addEventListener('astro:after-swap', initHeaderScripts);
 </script>
 
 <style is:global>
     html { scroll-behavior: smooth; }
-    /* Großer Puffer für Überschriften damit sie nicht unter dem Header kleben */
     h2 { scroll-margin-top: 160px !important; }
 </style>

@@ -184,26 +184,35 @@ export async function getBlogPosts() {
     }
 }
 
-// Blog Logik
+// Blog Logik - Einfach das aktuellste Event holen (ohne Checkbox-Filter)
 export async function getSidebarEvent() {
-    const response = await directus.request(
-        readItems('events', {
-            fields: ['title', 'slug', 'description', 'image'],
-            filter: { status: { _eq: 'published' }, is_highlight: { _contains: 'true' } },
-            limit: 1,
-            sort: ['-start_date']
-        })
-    );
-    return response[0];
+    try {
+        const response = await directus.request(
+            readItems('events', {
+                fields: ['title', 'slug', 'description', 'image'],
+                filter: { status: { _eq: 'published' } },
+                limit: 1,
+                sort: ['-start_date'] // Das zeitlich nächste/aktuellste zuerst
+            })
+        );
+        return response[0] || null;
+    } catch (e) {
+        console.error("Sidebar Event API Fehler:", e);
+        return null;
+    }
 }
 
 export async function getSidebarService(type: string) {
-    const response = await directus.request(
-        readItems('services', {
-            fields: ['title', 'teaser', 'slug', 'button_text'],
-            filter: { status: { _eq: 'published' }, type: { _eq: type } },
-            limit: 1
-        })
-    );
-    return response[0];
+    try {
+        const response = await directus.request(
+            readItems('services', {
+                fields: ['title', 'teaser', 'slug', 'button_text'],
+                filter: { status: { _eq: 'published' }, type: { _eq: type } },
+                limit: 1
+            })
+        );
+        return response[0] || null;
+    } catch (e) {
+        return null;
+    }
 }
