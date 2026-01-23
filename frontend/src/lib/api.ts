@@ -156,7 +156,21 @@ export async function getArchiv() {
   try {
     const response = await directus.request(
       readItems('archiv', {
-        fields: ['id', 'slug', 'title', 'description', 'teaser', 'info_text', 'year', 'image', 'aspect', 'category'],
+        fields: [
+          'id', 
+          'slug', 
+          'title', 
+          'description', 
+          'teaser', 
+          'info_text', 
+          'year', 
+          'image', 
+          'aspect',
+          // WICHTIG: Holt die Verknüpfung UND das eigentliche Bild-Objekt
+          'gallery.directus_files_id.*', 
+          'gallery.*', 
+          'category'
+        ],
         limit: -1,
       })
     );
@@ -171,8 +185,20 @@ export async function getArchiv() {
 export async function getBlogPosts() {
   try {
     const response = await directus.request(
-      readItems('blog', {
-        fields: ['id', 'slug', 'title', 'author', 'main_image', 'excerpt', 'content', 'tags', 'date_created', 'category'],
+      readItems('blog', { // HINWEIS: Stelle sicher, dass deine Collection in Directus wirklich 'blog' heißt (vorher war es 'posts')
+        fields: [
+          'id', 
+          'slug', 
+          'title', 
+          'author', 
+          'main_image', 
+          'excerpt', 
+          'content', 
+          'tags', 
+          'date_created', 
+          'category', 
+          'gallery.directus_files_id.*'
+        ],
         filter: { status: { _eq: 'published' } },
         sort: ['-date_created'],
         limit: -1,

@@ -1,0 +1,72 @@
+---
+import 'photoswipe/style.css';
+
+interface Props {
+  gallery: any[]; 
+}
+
+const { gallery } = Astro.props;
+const ASSET_URL = import.meta.env.DIRECTUS_URL + '/assets';
+
+if (!gallery || gallery.length === 0) {
+  return;
+}
+---
+
+<div class="mt-16 mb-16 not-prose w-full">
+  <div class="flex items-center gap-4 mb-8">
+    <span class="h-px flex-1 bg-slate-200 dark:bg-slate-800"></span>
+    <h3 class="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Galerie</h3>
+    <span class="h-px flex-1 bg-slate-200 dark:bg-slate-800"></span>
+  </div>
+  
+  <div id="gallery-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+    {gallery.map((item: any) => {
+      const file = item.directus_files_id || item;
+      if (!file?.id) return null;
+      
+      // FIX: Wir nehmen hier das Originalbild (ohne ?key=...), 
+      // damit Breite und Höhe exakt zu file.width/height passen.
+      const largeImage = `${ASSET_URL}/${file.id}`; 
+      
+      return (
+        <a 
+          href={largeImage}
+          data-pswp-width={file.width}
+          data-pswp-height={file.height}
+          target="_blank"
+          class="group relative aspect-[4/3] rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-900 shadow-sm border border-slate-100 dark:border-white/5 cursor-zoom-in block"
+        >
+          {/* Das Thumbnail darf ruhig zugeschnitten/kleiner sein */}
+          <img 
+            src={`${ASSET_URL}/${file.id}?key=system-large-cover`} 
+            alt={file.title || "Galerie Bild"} 
+            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+            loading="lazy"
+          />
+          <div class="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/10 transition-colors duration-500"></div>
+          
+          <div class="absolute top-4 right-4 bg-black/20 backdrop-blur-md p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+             <i class="fa-solid fa-expand text-white text-[10px]"></i>
+          </div>
+        </a>
+      );
+    })}
+  </div>
+</div>
+
+<script>
+  import PhotoSwipeLightbox from 'photoswipe/lightbox';
+
+  function initLightbox() {
+    const lightbox = new PhotoSwipeLightbox({
+      gallery: '#gallery-grid',
+      children: 'a',
+      pswpModule: () => import('photoswipe')
+    });
+    lightbox.init();
+  }
+
+  initLightbox();
+  document.addEventListener('astro:after-swap', initLightbox);
+</script>

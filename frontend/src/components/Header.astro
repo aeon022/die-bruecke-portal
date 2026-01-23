@@ -22,19 +22,27 @@ const socials = [
   { icon: 'fa-instagram', href: 'https://www.instagram.com/die.bruecke.graz', label: 'Instagram' },
   { icon: 'fa-linkedin-in', href: '#', label: 'LinkedIn' },
   { icon: 'fa-youtube', href: '#', label: 'YouTube' },
-  { icon: 'fa-x-twitter', href: '#', label: 'X' },
 ];
 
+// NEUES MENÜ-KONZEPT (12 Punkte)
 const menuItems = [
-  { number: '01', title: 'Kalender', href: '/events', desc: 'Alle Termine, Konzerte & Workshops.' },
-  { number: '02', title: 'Angebote', href: '/services', desc: 'Alltagsbegleitung & Assistenz.' },
-  { number: '03', title: 'Camps & Reisen', href: '/camps', desc: 'Urlaub, Reisen & Abenteuer.' },
-  { number: '04', title: 'Info-Point', href: '/info', desc: 'Beratung, Rechte & Offenes Haus.' },
-  { number: '05', title: 'Dein Raum', href: '/space', desc: 'Mieten für Feiern & Seminare.' },
-  { number: '06', title: 'Projekte', href: '/projects', desc: 'SofaKINO, StageDive & Co.' },
-  { number: '07', title: 'Über uns', href: '/about', desc: 'Das Team, Geschichte & Mission.' },
-  { number: '08', title: 'Mitmachen', href: '/join', desc: 'Ehrenamt, Spenden & Zivildienst.' },
-  { number: '09', title: 'Kontakt', href: '/contact', desc: 'Öffnungszeiten, Anfahrt & Hallo.' },
+  // ZEILE 1: Kern-Angebot
+  { number: '01', title: 'Kalender', href: '/events', desc: 'Termine & Kultur.' },
+  { number: '02', title: 'Angebote', href: '/services', desc: 'Begleitung & Alltag.' },
+  { number: '03', title: 'Camps', href: '/camps', desc: 'Reisen & Urlaub.' },
+  { number: '04', title: 'Projekte', href: '/projects', desc: 'Kunst & Inklusion.' },
+  
+  // ZEILE 2: Orte & Info
+  { number: '05', title: 'Info-Point', href: '/info', desc: 'Beratung & Service.' },
+  { number: '06', title: 'Dein Raum', href: '/space', desc: 'Vermietung & Feiern.' },
+  { number: '07', title: 'Über uns', href: '/about', desc: 'Team & Mission.' },
+  { number: '08', title: 'Mitmachen', href: '/join', desc: 'Jobs & Ehrenamt.' },
+
+  // ZEILE 3: Content & Shop
+  { number: '09', title: 'Journal', href: '/blog', desc: 'Blog & Neuigkeiten.', highlight: true },
+  { number: '10', title: 'Archiv', href: '/archiv', desc: '40 Jahre Zeitreise.' },
+  { number: '11', title: 'Shop', href: '#', desc: 'Merch & Handwerk.', badge: 'Bald', disabled: true },
+  { number: '12', title: 'Kontakt', href: '/contact', desc: 'Anfahrt & Hallo.' },
 ];
 ---
 
@@ -42,10 +50,10 @@ const menuItems = [
 
 <div id="header-shell" class="sticky top-0 z-[90] header-shell">
   
-  <header id="main-header" class="relative flex items-center justify-between px-6 sm:px-10 pt-8 pb-6 transition-[padding,background-color,box-shadow,transform,border-radius,border] duration-300 ease-in-out">
+  <header id="main-header" class="relative flex items-center justify-between px-4 sm:px-6 pt-6 pb-4 md:px-10 md:pt-8 md:pb-6 transition-[padding,background-color,box-shadow,transform,border-radius,border] duration-300 ease-in-out">
     
     <a href="/" class="flex items-center gap-3 group" aria-label="Zur Startseite">
-      <div id="logo-container" class={`rounded-xl bg-transparent flex items-center justify-center transition-all duration-300 overflow-hidden text-slate-900 dark:text-white ${logoUrl ? 'w-auto h-16 px-5' : 'w-12 h-12'}`}>
+      <div id="logo-container" class={`rounded-xl bg-transparent flex items-center justify-center transition-all duration-300 overflow-hidden text-slate-900 dark:text-white ${logoUrl ? 'w-auto h-14 md:h-16 px-2 md:px-5' : 'w-12 h-12'}`}>
         {logoUrl ? (
              <img src={logoUrl} alt={projectName} class="h-full w-auto object-contain p-1 logo-img" />
         ) : (
@@ -62,71 +70,111 @@ const menuItems = [
     </a>
 
     <div class="flex items-center gap-2 sm:gap-3">
-      <a href="/blog" class="hidden lg:inline-flex px-5 py-2.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-50 font-bold text-sm hover:bg-rose-50 dark:hover:bg-slate-700 transition border border-slate-200 dark:border-white/5">
-        Blog
-      </a>
+      {/* Buttons "Blog" und "Über uns" entfernt für cleaneren Look */}
 
-      <a href="/about" class="hidden md:inline-flex px-5 py-2.5 rounded-full bg-slate-900 dark:bg-slate-50 text-white dark:text-slate-900 font-bold text-sm shadow-lg hover:bg-rose-600 dark:hover:bg-rose-400 transition hover:-translate-y-0.5">
-        Über uns
-      </a>
-
-      <button id="btnAccessibility" data-tooltip="Barrierefreiheit (Taste / oder Strg + K)" class="w-12 h-12 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/5 flex items-center justify-center text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/30 transition cursor-pointer shadow-sm focus:outline-none focus:ring-2 focus:ring-rose-500" type="button" aria-label="Barrierefreiheit Menü öffnen">
-         <i class="fa-solid fa-wheelchair text-lg"></i>
+      <button id="btnAccessibility" data-tooltip="Barrierefreiheit" class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/5 flex items-center justify-center text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/30 transition cursor-pointer shadow-sm focus:outline-none focus:ring-2 focus:ring-rose-500" type="button" aria-label="Barrierefreiheit">
+         <i class="fa-solid fa-wheelchair text-base md:text-lg"></i>
       </button>
 
-      <button onclick="window.toggleTheme()" id="themeToggle" data-tooltip="Design wechseln" class="w-12 h-12 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/5 flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-700 transition cursor-pointer shadow-sm relative focus:outline-none overflow-hidden group" type="button" aria-label="Design wechseln">
+      <button onclick="window.toggleTheme()" id="themeToggle" data-tooltip="Design" class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/5 flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-700 transition cursor-pointer shadow-sm relative focus:outline-none overflow-hidden group" type="button" aria-label="Design wechseln">
         <span class="theme-moon absolute inset-0 flex items-center justify-center transition-all duration-500 rotate-0 scale-100 opacity-100 dark:rotate-90 dark:scale-0 dark:opacity-0 text-slate-600">
-          <i class="fa-solid fa-moon text-lg"></i>
+          <i class="fa-solid fa-moon text-base md:text-lg"></i>
         </span>
         <span class="theme-sun absolute inset-0 flex items-center justify-center transition-all duration-500 -rotate-90 scale-0 opacity-0 dark:rotate-0 dark:scale-100 dark:opacity-100 text-yellow-400">
-          <i class="fa-solid fa-sun text-lg"></i>
+          <i class="fa-solid fa-sun text-base md:text-lg"></i>
         </span>
       </button>
 
-      <button id="btnOpenNav" class="h-12 pl-3 pr-5 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/5 flex items-center justify-center gap-2 text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-700 transition cursor-pointer shadow-sm relative focus:outline-none group" aria-label="Menü öffnen" aria-expanded="false" aria-controls="navOverlay">
+      <button id="btnOpenNav" class="h-10 md:h-12 pl-3 pr-4 md:pr-5 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/5 flex items-center justify-center gap-2 text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-700 transition cursor-pointer shadow-sm relative focus:outline-none group" aria-label="Menü öffnen" aria-expanded="false" aria-controls="navOverlay">
         <div class="relative w-6 h-6 flex items-center justify-center">
             <span class="icon-bars pointer-events-none transition-opacity duration-300 absolute inset-0 flex items-center justify-center">
-              <i class="fa-solid fa-bars text-xl group-hover:scale-110 transition-transform"></i>
+              <i class="fa-solid fa-bars text-lg md:text-xl group-hover:scale-110 transition-transform"></i>
             </span>
             <span class="icon-x pointer-events-none absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-300">
-              <i class="fa-solid fa-xmark text-xl text-rose-500"></i>
+              <i class="fa-solid fa-xmark text-lg md:text-xl text-rose-500"></i>
             </span>
         </div>
-        <span class="font-bold text-sm tracking-wide">Menü</span>
+        <span class="font-bold text-xs md:text-sm tracking-wide">Menü</span>
       </button>
 
     </div>
   </header>
 
   <div id="navOverlay" class="-mt-px w-full bg-slate-700/95 dark:bg-slate-800/95 text-white border-x border-b border-white/10 dark:border-white/5 rounded-[40px] overflow-hidden nav-panel nav-transition shadow-2xl backdrop-blur-xl" data-state="closed" aria-hidden="true">
+    
     <div class="max-w-7xl mx-auto w-full px-6 sm:px-10 py-5 flex items-center justify-between border-b border-white/10">
       <div class="flex items-center gap-2">
         <span class="inline-block w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
         <span class="text-[11px] font-bold uppercase tracking-widest text-white/80">Navigation</span>
       </div>
-      <a href="/contact" class="md:hidden text-xs font-bold uppercase tracking-wider text-slate-200 hover:text-white transition">Kontakt</a>
+      <div class="text-[10px] font-mono text-white/40 uppercase">
+        Die Brücke © {new Date().getFullYear()}
+      </div>
     </div>
 
-    <div class="max-w-7xl mx-auto w-full px-6 sm:px-10 py-8">
-      <nav class="grid grid-cols-1 md:grid-cols-3 w-full gap-2 md:gap-0">
+    <div class="max-w-7xl mx-auto w-full px-6 sm:px-10 py-6">
+      {/* GRID LOGIK:
+         - Mobile: 1 Spalte
+         - Tablet (md): 2 Spalten
+         - Desktop (lg): 4 Spalten (für 12 Items)
+      */}
+      <nav class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 w-full">
         {menuItems.map((item) => (
-          <a href={item.href} class="group relative p-7 md:p-10 border border-transparent hover:bg-white/5 rounded-3xl md:rounded-none transition duration-300 flex flex-col justify-center min-h-[160px] md:min-h-[180px] md:border-b md:border-r md:[&:nth-child(3n)]:border-r-0 md:[&:nth-child(n+7)]:border-b-0 md:border-white/10">
-            <span class="block text-rose-400 font-bold mb-2 text-xs tracking-widest uppercase">{item.number}</span>
-            <span class="block text-3xl md:text-4xl font-display font-extrabold tracking-tight group-hover:text-rose-400 transition-colors uppercase">{item.title}</span>
-            <span class="block mt-3 text-slate-100 text-sm group-hover:text-white transition-colors font-medium max-w-xs leading-relaxed">{item.desc}</span>
-            <i class="fa-solid fa-arrow-right absolute bottom-8 right-8 text-xl text-white/10 group-hover:text-rose-400 group-hover:-rotate-45 transition-all duration-300"></i>
+          <a 
+            href={item.disabled ? '#' : item.href} 
+            class={`
+              group relative p-6 md:p-8 
+              border border-transparent hover:bg-white/5 
+              rounded-2xl md:rounded-none transition duration-300 
+              flex flex-col justify-center min-h-[140px] md:min-h-[160px]
+              
+              /* Border Logic für Tablet (2 Cols) */
+              md:border-b md:border-r md:border-white/10
+              md:[&:nth-child(2n)]:border-r-0 
+              md:[&:nth-child(n+11)]:border-b-0
+
+              /* Border Logic Reset & Override für Desktop (4 Cols) */
+              lg:[&:nth-child(2n)]:border-r 
+              lg:[&:nth-child(4n)]:border-r-0
+              lg:[&:nth-child(n+9)]:border-b-0
+              
+              ${item.disabled ? 'opacity-50 cursor-not-allowed hover:bg-transparent' : ''}
+            `}
+          >
+            <div class="flex justify-between items-start mb-2">
+               <span class={`font-bold text-xs tracking-widest uppercase ${item.highlight ? 'text-rose-400' : 'text-slate-400 group-hover:text-rose-400 transition-colors'}`}>
+                 {item.number}
+               </span>
+               {item.badge && (
+                 <span class="bg-rose-500/20 text-rose-300 text-[9px] font-bold px-2 py-0.5 rounded-full border border-rose-500/20 uppercase tracking-wider">
+                   {item.badge}
+                 </span>
+               )}
+            </div>
+
+            <span class="block text-2xl md:text-3xl font-display font-extrabold tracking-tight group-hover:text-rose-400 transition-colors uppercase leading-none mb-2">
+              {item.title}
+            </span>
+            
+            <span class="block text-slate-300 text-xs md:text-sm group-hover:text-white transition-colors font-medium max-w-[90%] leading-snug">
+              {item.desc}
+            </span>
+            
+            {!item.disabled && (
+               <i class="fa-solid fa-arrow-right absolute bottom-6 right-6 text-sm text-white/10 group-hover:text-rose-400 group-hover:-rotate-45 transition-all duration-300"></i>
+            )}
           </a>
         ))}
       </nav>
     </div>
 
-    <div class="px-6 sm:px-10 py-6 border-t border-white/10">
-      <div class="max-w-7xl mx-auto w-full flex flex-col md:flex-row justify-between items-start md:items-center gap-6 md:gap-4 text-slate-100/80 text-sm font-medium">
-        <span class="flex items-center gap-2"><i class="fa-solid fa-location-dot text-rose-400"></i> Grabenstraße 39a, 8010 Graz</span>
-        <div class="flex flex-wrap gap-6">
+    <div class="px-6 sm:px-10 py-5 border-t border-white/10 bg-black/10">
+      <div class="max-w-7xl mx-auto w-full flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-slate-300 text-xs font-medium">
+        <span class="flex items-center gap-2"><i class="fa-solid fa-location-dot text-rose-500"></i> Grabenstraße 39a, 8010 Graz</span>
+        <div class="flex gap-6">
            {socials.map((social) => (
-              <a href={social.href} target="_blank" aria-label={social.label} class="text-slate-200 hover:text-white transition-colors">
-                  <i class={`fa-brands ${social.icon} text-lg`}></i>
+              <a href={social.href} target="_blank" aria-label={social.label} class="hover:text-white transition-colors">
+                  <i class={`fa-brands ${social.icon} text-base`}></i>
               </a>
            ))}
         </div>
@@ -137,74 +185,58 @@ const menuItems = [
 
 <style is:global>
   /* LOGO AUTO-INVERT IM DARKMODE */
-  html.dark .logo-img {
-    filter: brightness(0) invert(1);
-  }
-
-  /* Base Brand Color */
+  html.dark .logo-img { filter: brightness(0) invert(1); }
   .brand-text { transition: color 300ms ease; }
 
-  /* Backdrop & Transitions */
-  .nav-backdrop { opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 650ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 650ms; }
-  #navBackdrop[data-state='open'] { opacity: 1; visibility: visible; pointer-events: auto; transition: opacity 650ms cubic-bezier(0.22, 1, 0.36, 1); }
-  .nav-transition { transition: max-height 650ms cubic-bezier(0.22, 1, 0.36, 1), opacity 650ms cubic-bezier(0.22, 1, 0.36, 1), transform 650ms cubic-bezier(0.22, 1, 0.36, 1); }
-  #navOverlay[data-state='closed'] { max-height: 0; opacity: 0; transform: translateY(-10px); pointer-events: none; }
-  #navOverlay[data-state='open'] { max-height: calc(100vh - 80px); opacity: 1; transform: translateY(0); pointer-events: auto; overflow-y: auto; }
+  /* Nav Backdrop & Overlay Animation */
+  .nav-backdrop { opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 500ms ease, visibility 0s linear 500ms; }
+  #navBackdrop[data-state='open'] { opacity: 1; visibility: visible; pointer-events: auto; transition: opacity 500ms ease; }
+  
+  .nav-transition { transition: max-height 600ms cubic-bezier(0.16, 1, 0.3, 1), opacity 500ms ease, transform 600ms cubic-bezier(0.16, 1, 0.3, 1); }
+  #navOverlay[data-state='closed'] { max-height: 0; opacity: 0; transform: translateY(-8px); pointer-events: none; }
+  #navOverlay[data-state='open'] { max-height: 90vh; opacity: 1; transform: translateY(0); pointer-events: auto; overflow-y: auto; }
 
   #header-shell.header-shell { padding: 0; transition: padding 300ms ease; }
   
-  #main-header { 
-    border-radius: 40px;
-    border: 1px solid transparent;
-  }
-  html.dark #main-header {
-    border: 1px solid rgba(255, 255, 255, 0.05);
-  }
+  #main-header { border-radius: 40px; border: 1px solid transparent; }
+  html.dark #main-header { border: 1px solid rgba(255, 255, 255, 0.05); }
 
-  /* STICKY "ISLAND" DESIGN CHANGES */
+  /* STICKY "ISLAND" DESIGN */
   #header-shell.is-float { padding: 0.75rem 1rem 0; }
   @media (min-width: 768px) { #header-shell.is-float { padding-left: 2rem; padding-right: 2rem; } }
 
-  #main-header.is-shrink { padding-top: 0.85rem !important; padding-bottom: 0.85rem !important; }
-  
-  /* Shrink Logik für das Logo Bild */
-  #main-header.is-shrink #logo-container { height: 2.85rem; border-radius: 0.75rem; transition: all 0.3s ease-in-out;}
+  #main-header.is-shrink { padding-top: 0.75rem !important; padding-bottom: 0.75rem !important; }
+  #main-header.is-shrink #logo-container { height: 2.5rem; transition: all 0.3s ease-in-out; }
 
   /* LIGHT MODE STICKY */
   #header-shell.is-float #main-header {
     border-radius: 24px !important; 
-    background-color: rgba(255, 255, 255, 0.8) !important; 
-    backdrop-filter: blur(16px);
-    border: 1px solid rgba(0, 0, 0, 0.1) !important;
-    box-shadow: none !important;
+    background-color: rgba(255, 255, 255, 0.85) !important; 
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(0, 0, 0, 0.08) !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.03) !important;
   }
   #header-shell.is-float .brand-text { color: #0f172a !important; }
 
   /* DARK MODE STICKY */
   html.dark #header-shell.is-float #main-header {
-    background-color: rgba(15, 23, 42, 0.8) !important; 
-    backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    box-shadow: none !important;
+    background-color: rgba(15, 23, 42, 0.85) !important; 
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
   }
   html.dark #header-shell.is-float .brand-text { color: #ffffff !important; }
 
-  /* FIX: NAV OVERLAY IM STICKY MODUS (Floating Island Look) */
+  /* NAV OVERLAY IM STICKY MODUS */
   #header-shell.is-float #navOverlay {
     margin-top: 0.75rem; 
-    border-radius: 32px !important; 
+    border-radius: 24px !important; 
     border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.3) !important;
-    background-color: rgba(71, 85, 105, 0.96); /* Slate 600 */
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
+    background-color: rgba(51, 65, 85, 0.98); 
   }
+  
+  html.dark #header-shell.is-float #navOverlay { background-color: rgba(30, 41, 59, 0.98); }
 
-  html.dark #header-shell.is-float #navOverlay {
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    background-color: rgba(51, 65, 85, 0.96); /* Slate 700 */
-  }
-
-  #btnOpenNav .icon-bars, #btnOpenNav .icon-x { display: inline-flex; transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1), opacity 220ms ease; }
-
+  #btnOpenNav .icon-bars, #btnOpenNav .icon-x { display: inline-flex; transition: transform 400ms ease, opacity 200ms ease; }
   @media (prefers-reduced-motion: reduce) { .nav-backdrop, .nav-transition { transition: none !important; } }
 </style>
 
@@ -215,7 +247,6 @@ const menuItems = [
     const navBackdrop = document.getElementById('navBackdrop');
     const headerShell = document.getElementById('header-shell');
     const mainHeader = document.getElementById('main-header');
-    const logoContainer = document.getElementById('logo-container');
     const btnAccessibility = document.getElementById('btnAccessibility');
 
     if (btnAccessibility) {
@@ -226,12 +257,23 @@ const menuItems = [
 
     const toggleMenu = () => {
       const isOpen = navOverlay?.getAttribute('data-state') === 'open';
-      navOverlay?.setAttribute('data-state', isOpen ? 'closed' : 'open');
-      navBackdrop?.setAttribute('data-state', isOpen ? 'closed' : 'open');
+      const newState = isOpen ? 'closed' : 'open';
+      navOverlay?.setAttribute('data-state', newState);
+      navBackdrop?.setAttribute('data-state', newState);
       btnOpenNav?.setAttribute('aria-expanded', !isOpen);
-      btnOpenNav?.classList.toggle('is-open', !isOpen);
+      
+      // Icon Animation
+      const bars = btnOpenNav?.querySelector('.icon-bars');
+      const x = btnOpenNav?.querySelector('.icon-x');
+      if (bars && x) {
+          bars.style.opacity = isOpen ? '1' : '0';
+          bars.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+          x.style.opacity = isOpen ? '0' : '1';
+          x.style.transform = isOpen ? 'rotate(-180deg)' : 'rotate(0deg)';
+      }
     };
 
+    // Event Listener Cleaning & Re-adding
     if (btnOpenNav) {
       const nBtn = btnOpenNav.cloneNode(true);
       btnOpenNav.parentNode.replaceChild(nBtn, btnOpenNav);
@@ -244,12 +286,13 @@ const menuItems = [
       nDrop.addEventListener('click', toggleMenu);
     }
     
+    // Close on link click
     navOverlay?.querySelectorAll('a').forEach(l => l.addEventListener('click', () => {
          if(navOverlay.getAttribute('data-state') === 'open') toggleMenu();
     }));
 
     const handleScroll = () => {
-        const scrolled = (window.scrollY || 0) > 18;
+        const scrolled = (window.scrollY || 0) > 20;
         headerShell?.classList.toggle('is-float', scrolled);
         mainHeader?.classList.toggle('is-shrink', scrolled);
     };
