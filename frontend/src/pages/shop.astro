@@ -1,0 +1,75 @@
+---
+import MainLayout from '../layouts/layout.astro';
+
+// Metadaten für SEO
+const title = "Shop | Coming Soon";
+const description = "Bald verfügbar: Der Shop der Brücke. Handwerk, Merch und Gutes tun.";
+---
+
+<MainLayout title={title}>
+  {/* ÄNDERUNGEN: 
+      - pb-64 (Mobil) = Viel Abstand
+      - md:pb-96 (Desktop) = Extrem viel Abstand (ca. 400px) zum Footer
+  */}
+  <div class="relative min-h-[90vh] flex flex-col items-center justify-center overflow-hidden px-6 pt-32 pb-64 md:pt-48 md:pb-96">
+    
+    {/* Hintergrund-Effekte */}
+    <div class="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-rose-500/10 rounded-full blur-[120px] pointer-events-none animate-pulse"></div>
+    <div class="absolute bottom-0 right-0 w-[600px] h-[600px] bg-blue-500/5 rounded-full blur-[100px] pointer-events-none"></div>
+
+    <main class="relative z-10 max-w-4xl mx-auto w-full text-center">
+      
+      {/* Badge */}
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-500 mb-8 animate-bounce">
+        <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+        <span class="text-[10px] font-black uppercase tracking-[0.2em]">Work in Progress</span>
+      </div>
+
+      {/* Headline */}
+      <h1 class="text-5xl md:text-7xl lg:text-8xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tighter leading-[0.9] mb-8">
+        Gutes Zeug.<br/>
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-orange-500">Bald Online.</span>
+      </h1>
+
+      <p class="text-lg md:text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed mb-12">
+        Wir bauen gerade an unserem Online-Shop. Bald findest du hier <span class="text-slate-900 dark:text-white font-bold">handgefertigte Unikate</span> aus unseren Werkstätten und exklusiven <span class="text-slate-900 dark:text-white font-bold">Brücke-Merch</span>.
+      </p>
+
+      {/* Email Catcher (Simuliert) */}
+      <div class="max-w-md mx-auto relative group">
+        <div class="absolute -inset-1 bg-gradient-to-r from-rose-500 to-orange-500 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+        <form onsubmit="event.preventDefault(); alert('Danke! Wir geben dir Bescheid.');" class="relative flex gap-2 bg-white dark:bg-slate-900 p-2 rounded-2xl ring-1 ring-slate-200 dark:ring-white/10 shadow-xl">
+            <input 
+              type="email" 
+              placeholder="Deine E-Mail für den Launch..." 
+              class="w-full bg-transparent border-none text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-0 text-sm font-medium px-4"
+              required
+            />
+            <button type="submit" class="bg-rose-500 hover:bg-rose-600 text-white rounded-xl px-6 py-3 font-bold uppercase text-[10px] tracking-widest transition-colors shrink-0">
+              Benachrichtigen
+            </button>
+        </form>
+        <p class="text-[10px] text-slate-400 mt-4 uppercase tracking-wider font-mono">Kein Spam. Versprochen.</p>
+      </div>
+
+      {/* Teaser Grid (Unscharfe Produkte) */}
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-24 opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-700 pb-24">
+        {[1, 2, 3, 4].map((i) => (
+            <div class="aspect-square rounded-3xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-white/5 flex items-center justify-center relative overflow-hidden group/item">
+                <div class="absolute inset-0 bg-slate-200 dark:bg-slate-700 blur-xl scale-75 group-hover/item:blur-none group-hover/item:scale-100 transition-all duration-500"></div>
+                <span class="relative z-10 text-4xl text-slate-300 dark:text-slate-600 group-hover/item:text-rose-500 transition-colors">
+                    {i === 1 && <i class="fa-solid fa-shirt"></i>}
+                    {i === 2 && <i class="fa-solid fa-mug-hot"></i>}
+                    {i === 3 && <i class="fa-solid fa-bag-shopping"></i>}
+                    {i === 4 && <i class="fa-solid fa-palette"></i>}
+                </span>
+                <div class="absolute bottom-4 left-0 w-full text-center">
+                   <span class="text-[9px] font-black uppercase tracking-widest bg-slate-900 text-white px-2 py-1 rounded">Mystery Item</span>
+                </div>
+            </div>
+        ))}
+      </div>
+
+    </main>
+  </div>
+</MainLayout>
