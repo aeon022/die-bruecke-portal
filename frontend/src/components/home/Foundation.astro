@@ -2,11 +2,11 @@
 /* Sektion: Worauf wir bauen (Das Fundament der Brücke) */
 ---
 
-<section class="px-6 sm:px-10 py-32 bg-slate-50 dark:bg-slate-950/50 transition-colors duration-500">
+<section class="px-6 sm:px-10 py-24 md:py-32 bg-slate-50 dark:bg-slate-950/50 transition-colors duration-500">
     <div class="max-w-7xl mx-auto">
         
-        <div class="grid grid-cols-12 gap-12 items-end mb-20">
-            <div class="col-span-12 lg:col-span-8">
+        <div class="flex flex-col lg:grid lg:grid-cols-12 gap-8 md:gap-12 items-end mb-16 md:mb-20">
+            <div class="lg:col-span-8">
                 {/* Pulsierendes Badge */}
                 <div class="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-[10px] font-black text-rose-500 uppercase tracking-[0.2em] mb-8 shadow-sm">
                     <span class="relative flex h-2 w-2">
@@ -16,13 +16,19 @@
                     Unser Fundament
                 </div>
                 
-                <h2 class="text-5xl md:text-7xl font-display font-black text-slate-900 dark:text-white tracking-tighter leading-none uppercase">
+                <h2 class="text-5xl md:text-7xl font-display font-black text-slate-900 dark:text-white tracking-tighter leading-[0.9] uppercase">
                     Worauf wir <br/>
                     <span class="text-rose-500">bauen.</span>
                 </h2>
             </div>
-            <div class="col-span-12 lg:col-span-4 pb-2">
-                <p class="text-slate-500 dark:text-slate-400 font-medium leading-relaxed border-l-2 border-slate-200 dark:border-slate-800 pl-6">
+
+            <div class="lg:col-span-4 pb-2">
+                {/* FIX: 
+                    - border-l-0 auf mobil (dafür border-t-2 oder einfach weglassen)
+                    - pl-0 auf mobil
+                    - md:border-l-2 und md:pl-6 erst ab Tablet/Desktop
+                */}
+                <p class="text-slate-600 dark:text-slate-400 font-medium leading-relaxed border-l-0 md:border-l-2 border-rose-500/30 md:border-slate-200 md:dark:border-slate-800 pl-0 md:pl-6 pt-4 md:pt-0">
                     Seit über vier Jahrzehnten schaffen wir nicht nur Raum für Inklusion, sondern stellen sicher, dass sie menschlich und selbstverständlich ist.
                 </p>
             </div>
@@ -59,7 +65,7 @@
 
         </div>
 
-        {/* AHA-EFFEKT: Der Archiv-Teaser am Ende der Sektion */}
+        {/* AHA-EFFEKT: Archiv-Teaser */}
         <div class="mt-24 p-8 md:p-12 rounded-[40px] bg-slate-900 dark:bg-white text-white dark:text-slate-900 flex flex-col md:flex-row items-center justify-between gap-8 overflow-hidden relative group/archive">
             <div class="relative z-10">
                 <h4 class="text-3xl font-display font-black uppercase mb-2">Die Archiv-Gschicht.</h4>
@@ -70,7 +76,6 @@
             <a href="/archiv" class="relative z-10 px-8 py-4 bg-rose-600 text-white rounded-full font-bold hover:bg-rose-500 transition-all whitespace-nowrap">
                 Zum Archiv
             </a>
-            {/* Dezentes Wasserzeichen im Hintergrund des Buttons */}
             <span class="absolute right-10 -bottom-10 text-[120px] font-display font-black text-white/5 dark:text-slate-900/5 select-none pointer-events-none group-hover/archive:-translate-y-5 transition-transform duration-700">1983</span>
         </div>
 

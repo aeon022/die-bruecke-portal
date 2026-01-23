@@ -34,64 +34,67 @@ const history = [
     
     <div class="home-content">
         {/* --- HERO --- */}
-        <section class="relative px-6 sm:px-10 pt-40 pb-32 bg-white dark:bg-slate-950 overflow-hidden transition-colors duration-500">
-            <div class="absolute inset-0 pointer-events-none opacity-[0.03] dark:opacity-[0.07]">
-                <svg class="w-full h-full" width="100%" height="100%">
-                    <pattern id="archive-grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                        <circle cx="2" cy="2" r="1" fill="currentColor" />
-                    </pattern>
-                    <rect width="100%" height="100%" fill="url(#archive-grid)" />
-                </svg>
+<section class="relative px-6 sm:px-10 pt-32 md:pt-40 pb-32 bg-white dark:bg-slate-950 overflow-hidden transition-colors duration-500">
+    <div class="absolute inset-0 pointer-events-none opacity-[0.03] dark:opacity-[0.07]">
+        <svg class="w-full h-full" width="100%" height="100%">
+            <pattern id="archive-grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                <circle cx="2" cy="2" r="1" fill="currentColor" />
+            </pattern>
+            <rect width="100%" height="100%" fill="url(#archive-grid)" />
+        </svg>
+    </div>
+
+    <div class="max-w-7xl mx-auto relative z-10">
+        <div class="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-[10px] font-black text-rose-500 uppercase tracking-[0.2em] mb-12 shadow-sm">
+            <span class="relative flex h-2 w-2">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
+            </span>
+            Seit 1983
+        </div>
+        
+        <div class="grid lg:grid-cols-12 gap-4 items-start">
+            <div class="lg:col-span-11 xl:col-span-10">
+                {/* FIX: 
+                   - text-5xl als Startwert für Mobile
+                   - hyphens-auto für extrem schmale Screens
+                   - leading-none statt 0.8 auf Mobile, um Überschneidungen zu vermeiden
+                */}
+                <h1 class="text-5xl sm:text-6xl md:text-8xl lg:text-[10rem] font-display font-black text-slate-900 dark:text-white tracking-tighter leading-[0.9] sm:leading-[0.85] lg:leading-[0.8] mb-12 hyphens-auto sm:hyphens-none">
+                    Unabhängigkeit. <br class="hidden sm:block"/>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-indigo-600 pr-4">Ist keine</span> <br class="hidden sm:block"/>
+                    Einzelleistung.
+                </h1>
+            </div>
+        </div>
+
+        <div class="w-full h-px bg-slate-100 dark:bg-slate-800 my-16"></div>
+
+        <div class="grid md:grid-cols-12 gap-12 lg:gap-24">
+            <div class="md:col-span-7 lg:col-span-6">
+                <h2 class="text-3xl font-bold text-slate-900 dark:text-white leading-tight tracking-tight mb-8">
+                    Wir sind die Brücke in deine Unabhängigkeit.
+                </h2>
+                <p class="text-xl text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
+                    Ein Haus voller Kultur, Begleitung und echter Begegnungen. Seit über 42 Jahren sind wir der Ort in Graz, an dem Autonomie und Gemeinschaft keine Widersprüche sind. Wir verwalten keine Fälle, wir gestalten Lebensräume – radikal menschlich, einfach echt.
+                </p>
             </div>
 
-            <div class="max-w-7xl mx-auto relative z-10">
-                {/* NEU: Pulsierendes Badge wie auf der Startseite */}
-                <div class="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-[10px] font-black text-rose-500 uppercase tracking-[0.2em] mb-12 shadow-sm">
-                    <span class="relative flex h-2 w-2">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
-                    </span>
-                    Seit 1983
-                </div>
-                
-                <div class="grid lg:grid-cols-12 gap-4 items-start">
-                    <div class="lg:col-span-11 xl:col-span-10">
-                        <h1 class="text-6xl md:text-8xl lg:text-[10rem] font-display font-black text-slate-900 dark:text-white tracking-tighter leading-[0.8] mb-12">
-                            Unabhängigkeit. <br/>
-                            <span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-indigo-600 pr-4">Ist keine</span> <br/>
-                            Einzelleistung.
-                        </h1>
-                    </div>
-                </div>
-
-                <div class="w-full h-px bg-slate-100 dark:bg-slate-800 my-16"></div>
-
-                <div class="grid md:grid-cols-12 gap-12 lg:gap-24">
-                    <div class="md:col-span-7 lg:col-span-6">
-                        <h2 class="text-3xl font-bold text-slate-900 dark:text-white leading-tight tracking-tight mb-8">
-                            Wir sind die Brücke in deine Unabhängigkeit.
-                        </h2>
-                        <p class="text-xl text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
-                            Ein Haus voller Kultur, Begleitung und echter Begegnungen. Seit über 42 Jahren sind wir der Ort in Graz, an dem Autonomie und Gemeinschaft keine Widersprüche sind. Wir verwalten keine Fälle, wir gestalten Lebensräume – radikal menschlich, einfach echt.
-                        </p>
-                    </div>
-
-                    <div class="md:col-span-5 lg:col-span-6 flex flex-col justify-between items-start md:items-end text-left md:text-right">
-                        <div class="space-y-8">
-                            <div>
-                                <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-rose-500 mb-2 block">Die Adresse</span>
-                                <p class="text-lg font-bold text-slate-900 dark:text-white">Grabenstraße 39a <br/> 8010 Graz, Österreich</p>
-                            </div>
-                            
-                        </div>
+            <div class="md:col-span-5 lg:col-span-6 flex flex-col justify-between items-start md:items-end text-left md:text-right">
+                <div class="space-y-8">
+                    <div>
+                        <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-rose-500 mb-2 block">Die Adresse</span>
+                        <p class="text-lg font-bold text-slate-900 dark:text-white">Grabenstraße 39a <br/> 8010 Graz, Österreich</p>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <div class="absolute right-[-5%] top-1/2 -translate-y-1/2 hidden 2xl:block opacity-[0.02] dark:opacity-[0.05] pointer-events-none select-none">
-                <span class="text-[18rem] font-black uppercase origin-center rotate-90 inline-block whitespace-nowrap tracking-widest text-slate-900 dark:text-white">VEREIN</span>
-            </div>
-        </section>
+    <div class="absolute right-[-5%] top-1/2 -translate-y-1/2 hidden 2xl:block opacity-[0.02] dark:opacity-[0.05] pointer-events-none select-none">
+        <span class="text-[18rem] font-black uppercase origin-center rotate-90 inline-block whitespace-nowrap tracking-widest text-slate-900 dark:text-white">VEREIN</span>
+    </div>
+</section>
             
         {/* --- WERTE: REDUZIERT & FOKUSSIERT --- */}
 <section class="px-6 sm:px-10 py-32 bg-white dark:bg-slate-950 transition-colors duration-500">

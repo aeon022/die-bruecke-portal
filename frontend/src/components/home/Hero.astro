@@ -9,15 +9,15 @@ const { headline, subline, image } = Astro.props;
 ---
 
 {/* --- HERO SECTION --- */}
-<section class="relative z-10 w-full min-h-[85vh] flex items-center overflow-hidden px-8 sm:px-16 lg:px-24 py-20 lg:py-0 group/hero bg-gradient-to-br from-slate-50 via-white to-rose-50/30 dark:from-slate-950 dark:via-slate-950 dark:to-rose-950/20 transition-colors duration-500 rounded-[40px] mb-10">
+<section class="relative z-10 w-full min-h-[85vh] flex items-center overflow-hidden px-6 sm:px-16 lg:px-24 py-12 lg:py-0 group/hero bg-gradient-to-br from-slate-50 via-white to-rose-50/30 dark:from-slate-950 dark:via-slate-950 dark:to-rose-950/20 transition-colors duration-500 rounded-[40px] mb-10">
 
     <div class="max-w-[1600px] mx-auto w-full grid grid-cols-12 gap-8 lg:gap-0 relative h-full items-center">
 
-        {/* 1. TEXT CONTENT - Zurück auf col-span-5 damit es weit über das Bild ragt */}
+        {/* 1. TEXT CONTENT */}
         <div class="relative z-30 col-span-12 lg:col-span-5 pointer-events-none">
 
-            {/* BADGE: Nur Seit 1983 mit Blink-Effekt */}
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-slate-700 text-xs font-bold text-rose-500 dark:text-rose-400 mb-8 uppercase tracking-widest shadow-sm whitespace-nowrap pointer-events-auto">
+            {/* BADGE */}
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-slate-700 text-xs font-bold text-rose-500 dark:text-rose-400 mb-6 sm:mb-8 uppercase tracking-widest shadow-sm whitespace-nowrap pointer-events-auto">
                 <span class="relative flex h-2 w-2 mb-0.5">
                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
                     <span class="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
@@ -25,24 +25,26 @@ const { headline, subline, image } = Astro.props;
                 Seit 1983
             </div>
 
-            <h1 class="text-5xl sm:text-6xl xl:text-8xl font-display font-extrabold text-slate-900 dark:text-white tracking-tighter leading-[0.95] mb-8 drop-shadow-sm lg:drop-shadow-none group-hover/hero:text-slate-900 transition-colors duration-500 [&_*:not(.text-transparent)]:dark:text-white whitespace-nowrap pointer-events-auto" set:html={headline}></h1>
+            {/* FIX: whitespace-nowrap nur ab Tablet (sm), damit es mobil nicht rausragt */}
+            <h1 class="text-4xl sm:text-6xl xl:text-8xl font-display font-extrabold text-slate-900 dark:text-white tracking-tighter leading-[0.95] mb-6 sm:mb-8 drop-shadow-sm lg:drop-shadow-none group-hover/hero:text-slate-900 transition-colors duration-500 [&_*:not(.text-transparent)]:dark:text-white sm:whitespace-nowrap pointer-events-auto" set:html={headline}></h1>
 
-            {/* SUBLINE: "Die Brücke ist dein Rückenwind..." */}
-            <p class="text-xl text-slate-600 dark:text-slate-200 leading-relaxed border-l-4 border-rose-500 pl-6 font-medium mb-10 max-w-4xl lg:w-[120%] line-clamp-4 group-hover/hero:text-slate-900 dark:group-hover/hero:text-white transition-colors duration-500 pointer-events-auto drop-shadow-sm">
+            {/* FIX: max-w-sm für iPhone, pl-4 statt pl-6 für mehr Platz */}
+            <p class="text-lg sm:text-xl text-slate-600 dark:text-slate-200 leading-relaxed border-l-4 border-rose-500 pl-4 sm:pl-6 font-medium mb-8 sm:mb-10 max-w-sm sm:max-w-4xl lg:w-[120%] line-clamp-4 group-hover/hero:text-slate-900 dark:group-hover/hero:text-white transition-colors duration-500 pointer-events-auto drop-shadow-sm">
                 {subline}
             </p>
 
-            <div class="flex flex-wrap gap-4 whitespace-nowrap pointer-events-auto">
-                <a href="/events" class="bg-rose-600 text-white px-8 py-4 rounded-full font-bold hover:bg-slate-900 dark:hover:bg-white dark:hover:text-slate-900 transition-all shadow-lg shadow-rose-500/20 hover:-translate-y-1">
+            {/* FIX: flex-col für Buttons untereinander auf Mobile */}
+            <div class="flex flex-col sm:flex-row gap-4 pointer-events-auto">
+                <a href="/events" class="bg-rose-600 text-white px-8 py-3.5 sm:py-4 rounded-full font-bold hover:bg-slate-900 dark:hover:bg-white dark:hover:text-slate-900 transition-all shadow-lg shadow-rose-500/20 hover:-translate-y-1 text-center text-sm sm:text-base">
                     Event Kalender
                 </a>
-                <a href="/about" class="bg-transparent text-slate-900 dark:text-white border-2 border-slate-200 dark:border-slate-700 px-8 py-4 rounded-full font-bold hover:border-rose-500 dark:hover:border-rose-500 transition-all hover:-translate-y-1">
+                <a href="/about" class="bg-transparent text-slate-900 dark:text-white border-2 border-slate-200 dark:border-slate-700 px-8 py-3.5 sm:py-4 rounded-full font-bold hover:border-rose-500 dark:hover:border-rose-500 transition-all hover:-translate-y-1 text-center text-sm sm:text-base">
                     Über uns
                 </a>
             </div>
         </div>
 
-        {/* 2. BILD CONTAINER - Zurück auf col-span-7 */}
+        {/* 2. BILD CONTAINER - EXAKT DEIN ORIGINAL CODE OHNE VERÄNDERUNG AM EFFEKT */}
         <div class="relative col-span-12 lg:col-span-7 h-[50vh] lg:h-[75vh] z-10 pointer-events-auto group/image">
             
             <div class="absolute right-0 top-0 bottom-0 h-full rounded-[40px] lg:rounded-[80px] overflow-hidden shadow-2xl bg-slate-900 ring-4 ring-white dark:ring-slate-800
