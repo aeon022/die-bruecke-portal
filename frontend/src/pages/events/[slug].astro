@@ -1,6 +1,7 @@
 ---
 import MainLayout from '../../layouts/layout.astro';
 import { getEventBySlug, getEvents } from '../../lib/api';
+import { Image } from 'astro:assets'; 
 import pkg from 'rrule';
 const { RRule } = pkg;
 
@@ -15,6 +16,9 @@ const allEvents = await getEvents();
 if (!event) {
   return Astro.redirect('/404');
 }
+
+// --- ASSET URL ---
+const ASSET_URL = 'https://api.diebruecke.social/assets';
 
 // --- HERO IMAGE LOGIK ---
 const heroImage = event.hero_image || event.image;
@@ -33,7 +37,6 @@ const pretixLink =
   (event.pretix_slug ? 'https://pretix.eu/diebruecke/' + event.pretix_slug + '/' : null);
 
 const ticketsLeft = normalizeInt(event.tickets_left);
-const pretixState = event.pretix_sync_state || null;
 
 // Ticket CTA Fallback
 const ticketUrl = pretixLink || '/contact';
@@ -123,7 +126,6 @@ const weekday = displayDate.toLocaleDateString('de-DE', { weekday: 'long' });
 
 const relatedEvents = allEvents.filter((e: any) => e.id !== event.id).slice(0, 3);
 
-const ASSET_URL = 'https://api.diebruecke.social/assets';
 const getCatName = (cat: any) => cat.event_categories_id?.name || cat.event_categories_id?.title || 'Event';
 
 const formatGCalDate = (date: Date) => date.toISOString().replace(/-|:|\.\d\d\d/g, '');
@@ -152,18 +154,33 @@ const shareLinkedIn = 'https://www.linkedin.com/sharing/share-offsite/?url=' + e
 ---
 
 <MainLayout title={event.title}>
-  {/* HERO SECTION: Für Reader Mode als dekorativ markiert */}
+  
+  {/* --- HERO SECTION --- */}
   <section class="relative h-[50vh] lg:h-[70vh] min-h-[400px] overflow-hidden bg-slate-900 group" aria-hidden="true">
+    
+    {/* 1. Blur Hintergrund (Performance: tiny thumbnail) */}
     {heroImage && (
-      <div class="absolute inset-0 opacity-40 blur-3xl scale-110">
-        <img src={ASSET_URL + '/' + heroImage} class="w-full h-full object-cover" alt="" />
+      <div class="absolute inset-0 opacity-40 blur-3xl scale-110 pointer-events-none">
+        <Image 
+            src={`${ASSET_URL}/${heroImage}`} 
+            width={100} 
+            height={60} 
+            class="w-full h-full object-cover" 
+            alt="" 
+            fetchpriority="low"
+        />
       </div>
     )}
 
+    {/* 2. Main Hero Image (Performance: Eager & Priority) */}
     {heroImage ? (
-      <img
-        src={ASSET_URL + '/' + heroImage}
-        alt=""
+      <Image
+        src={`${ASSET_URL}/${heroImage}`}
+        alt={event.title}
+        width={1600}
+        height={900}
+        loading="eager"
+        fetchpriority="high"
         class="absolute inset-0 w-full h-full object-cover relative z-10 transition-transform duration-[3s] group-hover:scale-105"
       />
     ) : (
@@ -171,17 +188,15 @@ const shareLinkedIn = 'https://www.linkedin.com/sharing/share-offsite/?url=' + e
         <i class="fa-regular fa-image text-8xl text-white/20"></i>
       </div>
     )}
+    
     <div class="absolute inset-0 bg-gradient-to-t from-slate-50 via-slate-50/10 to-transparent dark:from-slate-950 dark:via-slate-900/40 z-20"></div>
   </section>
 
-  {/* MAIN CONTENT AREA: Als Article deklariert für Reader Mode */}
+  {/* MAIN CONTENT AREA */}
   <article class="relative z-30 -mt-24 sm:-mt-32 px-4 sm:px-6 md:px-10 pb-24">
     <div class="max-w-7xl mx-auto">
       <div class="bg-white dark:bg-slate-900 rounded-[40px] shadow-2xl shadow-slate-200/50 dark:shadow-black/50 border border-slate-100 dark:border-slate-800 overflow-visible transition-colors duration-300">
         
-        {/* Verstecktes Bild für Reader-Vorschau */}
-        {heroImage && <img src={ASSET_URL + '/' + heroImage} class="sr-only" alt={event.title} />}
-
         <div class="grid lg:grid-cols-12 gap-0 items-start relative">
           
           {/* LINKER CONTENT BLOCK */}
@@ -215,7 +230,7 @@ const shareLinkedIn = 'https://www.linkedin.com/sharing/share-offsite/?url=' + e
                   {event.title}
                 </h1>
                 
-                {/* Semantische Meta-Daten für Reader */}
+                {/* Semantische Meta-Daten */}
                 <div class="flex flex-col gap-2 mb-10 text-slate-500 dark:text-slate-400 font-medium no-screen-only">
                    <p class="flex items-center gap-2">
                      <i class="fa-regular fa-calendar text-rose-500 no-print"></i>
@@ -234,8 +249,16 @@ const shareLinkedIn = 'https://www.linkedin.com/sharing/share-offsite/?url=' + e
             ></div>
           </div>
 
-          {/* ASIDE: Facts & Tickets (no-print für saubere Leseansicht) */}
-          <aside class="lg:col-span-4 bg-slate-50/80 dark:bg-slate-900/50 backdrop-blur-md border-t lg:border-t-0 lg:border-l border-slate-100 dark:border-slate-800 p-8 md:p-14 w-full rounded-tr-[40px] rounded-br-[40px] lg:sticky lg:top-32 lg:max-h-[calc(100vh-4rem)] overflow-y-auto custom-scrollbar no-print">
+          {/* --- ASIDE: Facts & Tickets & Sticky Logic --- */}
+          
+          {/* 1. SENTINEL: Der unsichtbare Marker für den Sticky-Effekt */}
+          <div id="sidebar-sentinel" class="absolute top-0 right-0 h-32 w-1 pointer-events-none opacity-0"></div>
+
+          {/* 2. SIDEBAR mit ID und Transition Classes */}
+          <aside 
+            id="event-sidebar"
+            class="lg:col-span-4 bg-slate-50/80 dark:bg-slate-900/50 backdrop-blur-md border-t lg:border-t-0 lg:border-l border-slate-100 dark:border-slate-800 p-8 md:p-14 w-full rounded-tr-[40px] rounded-br-[40px] lg:sticky lg:top-32 lg:max-h-[calc(100vh-4rem)] overflow-y-auto custom-scrollbar no-print transition-all duration-500 ease-out"
+          >
             <h3 class="text-sm font-bold uppercase tracking-widest text-slate-400 mb-8">Hard Facts</h3>
 
             <div class="space-y-8 mb-12">
@@ -371,7 +394,7 @@ const shareLinkedIn = 'https://www.linkedin.com/sharing/share-offsite/?url=' + e
     </div>
   </article>
 
-  {/* RELATED EVENTS: no-print und aria-hidden für Reader Mode */}
+  {/* RELATED EVENTS */}
   {relatedEvents.length > 0 && (
     <section class="px-6 sm:px-10 pb-24 bg-white dark:bg-slate-950 transition-colors no-print" aria-hidden="true">
       <div class="max-w-7xl mx-auto">
@@ -395,8 +418,11 @@ const shareLinkedIn = 'https://www.linkedin.com/sharing/share-offsite/?url=' + e
             >
               <div class="aspect-[16/10] rounded-2xl overflow-hidden mb-6 relative">
                 {rel.image ? (
-                  <img
-                    src={ASSET_URL + '/' + rel.image}
+                  /* PERFORMANCE: Image Komponente für Thumbnails */
+                  <Image
+                    src={`${ASSET_URL}/${rel.image}`}
+                    width={600}
+                    height={400}
                     class="w-full h-full object-cover group-hover:scale-110 transition duration-700"
                     alt={rel.title}
                   />
@@ -426,6 +452,7 @@ const shareLinkedIn = 'https://www.linkedin.com/sharing/share-offsite/?url=' + e
 </MainLayout>
 
 <script>
+  // --- EXISTING LOGIC: INSTAGRAM COPY ---
   const btnInsta = document.getElementById('share-insta');
 
   function copyLink(btn) {
@@ -446,6 +473,29 @@ const shareLinkedIn = 'https://www.linkedin.com/sharing/share-offsite/?url=' + e
 
   if (btnInsta) {
     btnInsta.addEventListener('click', () => copyLink(btnInsta));
+  }
+
+  // --- NEU: STICKY SIDEBAR LOGIK MIT RUNDEN ECKEN ---
+  const sidebar = document.getElementById('event-sidebar');
+  const sentinel = document.getElementById('sidebar-sentinel');
+
+  // Nur ausführen, wenn wir auf Desktop sind (und Elemente existieren)
+  if (sidebar && sentinel) {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            // Wenn der Sentinel oben raus scrollt (nicht mehr intersecting), ist die Sidebar sticky
+            if (!entry.isIntersecting && entry.boundingClientRect.top < 0) {
+                sidebar.classList.add('is-stuck');
+            } else {
+                sidebar.classList.remove('is-stuck');
+            }
+        });
+    }, { 
+        threshold: 0,
+        rootMargin: "-100px 0px 0px 0px" // Triggerpunkt anpassen
+    });
+    
+    observer.observe(sentinel);
   }
 </script>
 
@@ -474,11 +524,23 @@ const shareLinkedIn = 'https://www.linkedin.com/sharing/share-offsite/?url=' + e
     background-color: #475569;
   }
 
-  /* WICHTIG: Reader Mode Hilfsklasse */
   @media screen {
     .no-screen-only { display: none; }
   }
   @media print {
     .no-print { display: none !important; }
+  }
+
+  /* --- NEU: STICKY STATE STYLE --- */
+  .is-stuck {
+      /* Wenn sticky: Links oben und unten abrunden */
+      border-top-left-radius: 40px;
+      border-bottom-left-radius: 40px;
+      
+      /* Optional: Kleiner Schatten für "Floating" Effekt */
+      box-shadow: -5px 0 20px -5px rgba(0,0,0,0.05);
+      
+      /* Rand Links anpassen für sauberen Look */
+      border-left: 1px solid rgba(255,255,255,0.1); 
   }
 </style>

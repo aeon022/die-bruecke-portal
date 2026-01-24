@@ -1,10 +1,10 @@
 ---
 import MainLayout from '../../layouts/layout.astro';
 import { getBlogPosts } from '../../lib/api';
+import { Image } from 'astro:assets'; // <--- NEU
 
 const posts = await getBlogPosts();
 const [featuredPost, ...otherPosts] = posts;
-
 const ASSET_URL = import.meta.env.DIRECTUS_URL + '/assets';
 
 // Formatierung für das Datum
@@ -45,17 +45,17 @@ const formatDate = (dateString: string) => {
         {/* --- FEATURED POST (HERO) --- */}
         {featuredPost && (
             <section class="max-w-7xl mx-auto px-6 mb-32 relative z-10">
-                {/* FIX: 
-                    - [transform:translateZ(0)] repariert den Safari/Chrome Bug, bei dem overflow-hidden
-                      ignoriert wird, wenn Kinder eine Transformation haben.
-                    - isolate: Erstellt einen neuen Stacking Context.
-                */}
-                <a href={`/blog/${featuredPost.slug}/`} class="group grid lg:grid-cols-12 bg-white dark:bg-slate-900 rounded-[48px] overflow-hidden shadow-xl hover:shadow-2xl dark:shadow-black/50 border border-slate-100 dark:border-slate-800 transition-all duration-700 hover:-translate-y-1 isolate [transform:translateZ(0)]">
+               <a href={`/blog/${featuredPost.slug}/`} class="group grid lg:grid-cols-12 bg-white dark:bg-slate-900 rounded-[48px] overflow-hidden shadow-xl hover:shadow-2xl dark:shadow-black/50 border border-slate-100 dark:border-slate-800 transition-all duration-700 hover:-translate-y-1 isolate [transform:translateZ(0)]">
                     
                     {/* BILD BEREICH */}
                     <div class="lg:col-span-7 overflow-hidden h-[400px] lg:h-[600px] relative">
-                        <img 
-                            src={`${ASSET_URL}/${featuredPost.main_image}?key=system-large-cover`} 
+                        {/* PERFORMANCE: Eager Loading, hohe Priorität */}
+                        <Image 
+                            src={`${ASSET_URL}/${featuredPost.main_image}`} 
+                            width={1200}
+                            height={800}
+                            loading="eager"
+                            fetchpriority="high"
                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[2s]" 
                             alt={featuredPost.title}
                         />
@@ -89,13 +89,12 @@ const formatDate = (dateString: string) => {
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-12">
                 {otherPosts.map(post => (
                     <a href={`/blog/${post.slug}/`} class="group block h-full">
-                        {/* FIX für Bilder: 
-                           - border border-transparent dark:border-white/10 
-                           Damit sich dunkle Bilder vom dunklen Hintergrund abheben.
-                        */}
                         <div class="relative rounded-[32px] overflow-hidden aspect-[4/5] mb-8 shadow-lg border border-transparent dark:border-white/5 transition-all duration-500 group-hover:shadow-xl group-hover:border-rose-500/20">
-                            <img 
-                                src={`${ASSET_URL}/${post.main_image}?key=system-medium-cover`} 
+                            {/* PERFORMANCE: Lazy Loading für Grid-Items */}
+                            <Image 
+                                src={`${ASSET_URL}/${post.main_image}`} 
+                                width={600}
+                                height={750}
                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[1.5s]" 
                                 alt={post.title}
                             />

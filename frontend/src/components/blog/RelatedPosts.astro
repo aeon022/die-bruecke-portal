@@ -1,5 +1,6 @@
 ---
 import { getBlogPosts } from '../../lib/api';
+import { Image } from 'astro:assets'; // <--- NEU
 
 const { currentSlug } = Astro.props;
 const allPosts = await getBlogPosts();
@@ -36,8 +37,11 @@ const formatDate = (dateString: string) => {
             {related.map((post: any) => (
                 <a href={`/blog/${post.slug}/`} class="group block">
                     <div class="relative aspect-video rounded-3xl overflow-hidden mb-6 shadow-md">
-                        <img 
-                            src={`${ASSET_URL}/${post.main_image}?key=system-medium-cover`} 
+                        {/* PERFORMANCE: Lazy Load für Related Posts */}
+                        <Image 
+                            src={`${ASSET_URL}/${post.main_image}`} 
+                            width={400}
+                            height={225}
                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
                             alt={post.title}
                         />

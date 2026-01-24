@@ -4,17 +4,28 @@ import node from '@astrojs/node';
 import react from '@astrojs/react';
 import tailwindcss from '@tailwindcss/vite';
 import vue from '@astrojs/vue';
-import PinyAstro from '@pinegrow/piny-astro'; // <-- Das ist neu
+import PinyAstro from '@pinegrow/piny-astro';
 
 export default defineConfig({
   output: 'server',
   adapter: node({ mode: 'standalone' }),
 
+  // --- NEU: HIER BEGINNT DER IMAGE BLOCK ---
+  image: {
+    domains: [
+      'images.unsplash.com',
+      'images.pexels.com',     // Für das aktuelle Platzhalter-Bild
+      'api.diebruecke.social'  // Für deine echten Bilder aus Directus
+    ],
+    // Optional: Falls Bilder lokal nicht geladen werden, hilft manchmal:
+    // remotePatterns: [{ protocol: 'https' }],
+  },
+  // --- ENDE IMAGE BLOCK ---
+
   integrations: [
     react(),
     vue(),
     PinyAstro({
-        // Hot Reloading für .astro Dateien aktivieren (Standard)
         hotReload: true, 
     }),
   ],

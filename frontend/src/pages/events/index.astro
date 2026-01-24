@@ -103,26 +103,20 @@ eventsWithCats.sort((a, b) => a._displayDate.getTime() - b._displayDate.getTime(
 
     <div id="sticky-sentinel" class="absolute left-0 w-full h-px -mt-24 pointer-events-none opacity-0"></div>
 
-    {/* --- CALENDAR SECTION (FIXED: Design for Dark Mode) --- */}
-    {/* --- CALENDAR SECTION (FIXED) --- */}
+    {/* --- CALENDAR SECTION --- */}
     <section class="px-4 sm:px-6 pb-24 bg-white dark:bg-slate-900 transition-colors duration-300">
         <div class="max-w-7xl mx-auto">
-            {/* FIXES:
-               1. overflow-hidden: Schneidet eckige Inhalte ab.
-               2. shadow-xl & border: Hebt den Kasten vom Hintergrund ab.
-               3. relative z-10: Stellt sicher, dass er über Hintergründen liegt.
-            */}
-            <div class="relative z-10 bg-white dark:bg-slate-900 rounded-[32px] md:rounded-[48px] p-2 md:p-8 overflow-hidden border border-slate-100 dark:border-slate-800 shadow-2xl shadow-slate-200/50 dark:shadow-black/40 transition-all duration-300">
+            {/* FIX: overflow-hidden entfernt! Nur so kann 'position: sticky' im Child (Filterbar) funktionieren. */}
+            <div class="relative z-10 bg-white dark:bg-slate-900 rounded-[32px] md:rounded-[48px] p-2 md:p-8 border border-slate-100 dark:border-slate-800 shadow-2xl shadow-slate-200/50 dark:shadow-black/40 transition-all duration-300">
                 <EventCalendar events={eventsWithCats} categories={allCategories} />
             </div>
         </div>
     </section>
 
-    {/* --- FOOTER TEASER (FINALE VERSION: SERIEN & STAGEDIVE) --- */}
+    {/* --- FOOTER TEASER --- */}
     <section class="cta-section px-6 sm:px-10 py-24 bg-white dark:bg-slate-900 transition-colors border-t border-slate-100 dark:border-slate-900">
         <div class="max-w-7xl mx-auto">
             <div class="bg-slate-900 rounded-[40px] p-12 md:p-20 text-center relative overflow-hidden shadow-2xl">
-                {/* Deko-Effekt */}
                 <div class="absolute top-0 right-0 w-[400px] h-[400px] bg-rose-500/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2"></div>
                 
                 <div class="relative z-10 max-w-3xl mx-auto">

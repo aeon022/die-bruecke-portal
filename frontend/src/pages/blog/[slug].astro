@@ -5,11 +5,9 @@ import RelatedPosts from '../../components/blog/RelatedPosts.astro';
 import BlogSocials from '../../components/blog/BlogSocials.astro';
 import ImageGallery from '../../components/common/ImageGallery.astro';
 import { getBlogPosts, getSidebarEvent, getSidebarService } from '../../lib/api';
+import { Image } from 'astro:assets';
 
-// WICHTIG: false = Live-Modus. Neue Beiträge gehen sofort ohne Neustart!
 export const prerender = false;
-
-// Im Live-Modus brauchen wir kein getStaticPaths mehr!
 
 const { slug } = Astro.params;
 
@@ -19,10 +17,9 @@ const post = allPosts?.find((p: any) => p.slug === slug);
 
 // 2. Wenn nicht gefunden -> 404 oder Redirect
 if (!post) {
-  return Astro.redirect('/blog'); // Oder auf eine 404 Seite
+  return Astro.redirect('/blog');
 }
 
-// --- AB HIER BLEIBT DEIN CODE GLEICH ---
 // --- TOC LOGIK ---
 let modifiedContent = post.content;
 const headings: { title: string; id: string }[] = [];
@@ -47,7 +44,7 @@ const currentUrl = Astro.url.href;
 const displayCategory = post.category || 'Journal';
 const logicCategory = post.category ? post.category.toLowerCase().trim() : 'aktion';
 
-// --- DATEN AUS API (KATEGORIEBASIERT) ---
+// --- DATEN AUS API ---
 const sidebarEvent =
   logicCategory === 'kultur'
     ? await getSidebarEvent({ mode: 'highlight', limit: 10, random: true })
@@ -67,22 +64,18 @@ const formatDate = (dateString: string) => {
 ---
 
 <MainLayout title={`${post.title} | Journal`}>
-  {/* ... (Rest deines Layouts bleibt exakt gleich wie vorher) ... */}
   <div class="fixed top-0 left-0 w-full h-1.5 z-[100] pointer-events-none">
-     {/* ... Code ab hier kopieren ... */}
      <div id="progress-bar" class="h-full bg-rose-500 w-0 transition-all duration-150 ease-out shadow-[0_0_10px_rgba(244,63,94,0.5)]"></div>
   </div>
   
-  {/* ÄNDERUNG: overflow-hidden zu overflow-clip geändert (oder ganz weglassen), damit sticky funktioniert */}
   <main class="bg-white dark:bg-slate-950 transition-colors duration-500 rounded-[48px] m-2 md:m-4 border border-slate-200 dark:border-slate-800 shadow-2xl min-h-screen relative overflow-clip">
      
-     {/* ... Füge hier den gesamten restlichen HTML-Code deiner Datei ein ... */}
      <header class="pt-24 pb-16 px-6">
         <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-rose-500/5 rounded-full blur-[120px] pointer-events-none -translate-y-1/2 translate-x-1/2"></div>
         <div class="max-w-4xl mx-auto text-center">
             <nav class="mb-12">
                <a href="/blog" class="inline-flex items-center gap-3 text-slate-400 hover:text-rose-500 font-black uppercase text-[10px] tracking-[0.4em] transition-colors group font-mono">
-                <i class="fa-solid fa-arrow-left group-hover:-translate-x-2 transition-transform text-[8px]"></i>
+                 <i class="fa-solid fa-arrow-left group-hover:-translate-x-2 transition-transform text-[8px]"></i>
                 Zurück zum Journal
               </a>
             </nav>
@@ -99,17 +92,24 @@ const formatDate = (dateString: string) => {
 
     <section class="max-w-7xl mx-auto px-6 mb-24">
       <div class="rounded-[48px] overflow-hidden aspect-video shadow-2xl ring-1 ring-slate-200 dark:ring-slate-800">
-         <img src={`${ASSET_URL}/${post.main_image}`} class="w-full h-full object-cover" alt={post.title} />
+         <Image 
+            src={`${ASSET_URL}/${post.main_image}`} 
+            alt={post.title}
+            width={1200}
+            height={675}
+            loading="eager"
+            fetchpriority="high"
+            class="w-full h-full object-cover" 
+         />
       </div>
     </section>
 
     {/* --- MAIN ARTICLE & SIDEBARS --- */}
     <section class="max-w-7xl mx-auto px-6">
-      <div class="flex flex-col lg:flex-row gap-12 xl:gap-24 items-start">
+      <div class="flex flex-col xl:flex-row gap-12 xl:gap-24 items-start">
 
-        {/* --- LEFT SIDEBAR --- */}
-        {/* ÄNDERUNG: h-fit hinzugefügt */}
-        <aside class="hidden lg:block w-[240px] shrink-0 sticky top-32 h-fit space-y-10 mb-12">
+        {/* --- LEFT SIDEBAR (TOC) --- */}
+        <aside class="hidden xl:block w-[240px] shrink-0 sticky top-32 h-fit space-y-10 mb-12">
           <div class="px-2">
             <span class="block text-[10px] font-black uppercase tracking-[0.3em] text-rose-500 mb-2 font-mono font-bold">Kategorie</span>
             <div class="inline-flex items-center gap-2 bg-slate-100 dark:bg-slate-900 px-4 py-2 rounded-xl border border-slate-200 dark:border-white/5">
@@ -146,7 +146,7 @@ const formatDate = (dateString: string) => {
         </aside>
 
         {/* --- ARTICLE AREA --- */}
-        <article class="flex-1 min-w-0">
+        <article class="flex-1 min-w-0 w-full">
           <div class="prose prose-lg dark:prose-invert prose-slate prose-headings:font-display prose-headings:uppercase prose-headings:tracking-tighter prose-headings:font-black prose-a:text-rose-500 prose-img:rounded-[32px] max-w-none prose-p:leading-relaxed prose-p:text-slate-600 dark:prose-p:text-slate-400 mb-12">
             <div set:html={modifiedContent} />
           </div>
@@ -155,17 +155,20 @@ const formatDate = (dateString: string) => {
           <BlogShare title={post.title} url={currentUrl} />
         </article>
 
-        {/* --- RIGHT SIDEBAR --- */}
-        {/* ÄNDERUNG: h-fit hinzugefügt */}
-        <aside class="hidden lg:block w-[280px] shrink-0 sticky top-32 h-fit space-y-12 mb-12">
+        {/* --- RIGHT SIDEBAR (CTA & SOCIALS) --- */}
+        {/* FIX: 'mb-24' hinzugefügt für mehr Abstand zum Footer auf kleinen Screens.
+            Desktop überschreibt das mit 'xl:mb-12'. 
+        */}
+        <aside class="w-full max-w-4xl mx-auto xl:w-[280px] xl:max-w-none shrink-0 xl:sticky xl:top-32 h-fit mt-12 mb-24 xl:mt-0 xl:mb-12 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-1 gap-8 xl:gap-12 items-start">
+          
+          {/* Box 1: Dynamic CTA */}
           <div
             id="dynamic-cta-box"
             data-category={logicCategory}
             data-event={sidebarEvent ? JSON.stringify(sidebarEvent) : null}
             data-service={sidebarService ? JSON.stringify(sidebarService) : null}
-            class="p-8 bg-slate-700 rounded-[40px] text-white shadow-2xl relative overflow-hidden group border border-white/5 transition-transform hover:scale-[1.02] duration-500"
+            class="p-8 bg-slate-700 rounded-[40px] text-white shadow-2xl relative overflow-hidden group border border-white/5 transition-transform hover:scale-[1.02] duration-500 w-full"
           >
-            {/* ... CTA Content bleibt gleich ... */}
             <div class="absolute -right-8 -top-8 w-32 h-32 bg-rose-500/20 rounded-full blur-3xl group-hover:bg-rose-500/40 transition-all duration-700"></div>
             <span id="cta-label" class="text-[9px] font-black uppercase tracking-[0.3em] text-rose-500 block mb-6 relative z-10 font-mono italic font-bold">Empfehlung</span>
             <h4 id="cta-title" class="text-2xl font-display font-black uppercase leading-[1.1] mb-4 relative z-10">...</h4>
@@ -174,13 +177,18 @@ const formatDate = (dateString: string) => {
               Mehr erfahren
             </a>
           </div>
-          <BlogSocials />
+
+          {/* Box 2: Socials */}
+          <div class="bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-white/5 rounded-[40px] p-8 w-full xl:bg-transparent xl:border-0 xl:p-0 xl:rounded-none">
+             <BlogSocials />
+          </div>
+
         </aside>
       </div>
     </section>
   </main>
 </MainLayout>
-{/* ... Script und Style am Ende bleiben gleich ... */}
+
 <script>
   function safeParseJSON(value) {
     try {
@@ -192,19 +200,18 @@ const formatDate = (dateString: string) => {
     }
   }
 
-function truncateText(str, max = 100) {
+  function truncateText(str, max = 100) {
     if (!str) return "";
     let clean = str.replace(/<[^>]*>/g, "");
     const parser = new DOMParser();
     const decoded = parser.parseFromString(clean, 'text/html').body.textContent || "";
     clean = decoded.replace(/\s+/g, " ").trim();
     return clean.length > max ? clean.substring(0, max) + "…" : clean;
-}
+  }
 
   function updateCTA() {
     const box = document.getElementById("dynamic-cta-box");
     if (!box) return;
-
     const category = (box.dataset.category || "aktion").toLowerCase().trim();
     const dbEvent = safeParseJSON(box.dataset.event);
     const dbService = safeParseJSON(box.dataset.service);
@@ -240,7 +247,7 @@ function truncateText(str, max = 100) {
           link: "/events",
           btn: "Alle Events",
           label: "Kultur",
-        },
+      },
         serviceOption("Projekt-Fokus")
       ].filter(Boolean),
 
@@ -281,7 +288,7 @@ function truncateText(str, max = 100) {
           link: "/camps",
           btn: "Alle Reisen",
           label: "Urlaub",
-        }
+      }
       ].filter(Boolean),
     };
 

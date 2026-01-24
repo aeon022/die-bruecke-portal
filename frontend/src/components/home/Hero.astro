@@ -1,4 +1,6 @@
 ---
+import { Image } from 'astro:assets'; // <--- NEU: Import für Performance
+
 interface Props {
   headline: string;
   subline: string;
@@ -25,15 +27,12 @@ const { headline, subline, image } = Astro.props;
                 Seit 1983
             </div>
 
-            {/* FIX: whitespace-nowrap nur ab Tablet (sm), damit es mobil nicht rausragt */}
             <h1 class="text-4xl sm:text-6xl xl:text-8xl font-display font-extrabold text-slate-900 dark:text-white tracking-tighter leading-[0.95] mb-6 sm:mb-8 drop-shadow-sm lg:drop-shadow-none group-hover/hero:text-slate-900 transition-colors duration-500 [&_*:not(.text-transparent)]:dark:text-white sm:whitespace-nowrap pointer-events-auto" set:html={headline}></h1>
 
-            {/* FIX: max-w-sm für iPhone, pl-4 statt pl-6 für mehr Platz */}
             <p class="text-lg sm:text-xl text-slate-600 dark:text-slate-200 leading-relaxed border-l-4 border-rose-500 pl-4 sm:pl-6 font-medium mb-8 sm:mb-10 max-w-sm sm:max-w-4xl lg:w-[120%] line-clamp-4 group-hover/hero:text-slate-900 dark:group-hover/hero:text-white transition-colors duration-500 pointer-events-auto drop-shadow-sm">
                 {subline}
             </p>
 
-            {/* FIX: flex-col für Buttons untereinander auf Mobile */}
             <div class="flex flex-col sm:flex-row gap-4 pointer-events-auto">
                 <a href="/events" class="bg-rose-600 text-white px-8 py-3.5 sm:py-4 rounded-full font-bold hover:bg-slate-900 dark:hover:bg-white dark:hover:text-slate-900 transition-all shadow-lg shadow-rose-500/20 hover:-translate-y-1 text-center text-sm sm:text-base">
                     Event Kalender
@@ -44,15 +43,24 @@ const { headline, subline, image } = Astro.props;
             </div>
         </div>
 
-        {/* 2. BILD CONTAINER - EXAKT DEIN ORIGINAL CODE OHNE VERÄNDERUNG AM EFFEKT */}
+        {/* 2. BILD CONTAINER */}
         <div class="relative col-span-12 lg:col-span-7 h-[50vh] lg:h-[75vh] z-10 pointer-events-auto group/image">
             
             <div class="absolute right-0 top-0 bottom-0 h-full rounded-[40px] lg:rounded-[80px] overflow-hidden shadow-2xl bg-slate-900 ring-4 ring-white dark:ring-slate-800
                         w-full group-hover/image:w-[130%] transition-[width] duration-[1.0s] ease-out">
 
-                <img
+                {/* PERFORMANCE UPDATE: 
+                    Statt <img> nutzen wir <Image />.
+                    Klassen bleiben gleich -> Effekt bleibt gleich.
+                    Wichtig: width/height helfen gegen Layout Shift, loading="eager" für LCP Score.
+                */}
+                <Image
                     src={image}
                     alt="Impression aus der Brücke Graz"
+                    width={1600}
+                    height={900}
+                    loading="eager"
+                    fetchpriority="high"
                     class="absolute inset-0 w-full h-full object-cover object-center scale-105 group-hover/image:scale-100 transition-transform duration-[2s]"
                 />
 

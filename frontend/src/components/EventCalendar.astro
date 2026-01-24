@@ -1,4 +1,5 @@
 ---
+import { Image } from 'astro:assets'; // WICHTIG: Performance Import
 import { cleanText, formatEventDate } from '../lib/utils';
 
 const { events, categories } = Astro.props;
@@ -11,128 +12,140 @@ const categoryNames = categories ? [...new Set(categories.map((c: any) => c.name
 let highlightCounter = 0;
 ---
 
-{/* --- FILTER BAR (Semantic: <nav>) --- */}
-<nav aria-label="Veranstaltungsfilter" class="sticky top-24 z-30 transition-all pointer-events-none mb-12">
+{/* --- FILTER BAR --- */}
+<nav aria-label="Veranstaltungsfilter" class="sticky top-28 z-30 transition-all pointer-events-none mb-12">
     <div class="pointer-events-auto w-full">
         <div id="filter-container" class="filter-bar-container bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-y sm:border border-slate-200/60 dark:border-white/5 py-3 px-4 sm:p-2 sm:rounded-2xl shadow-xl shadow-slate-200/10 dark:shadow-black/40 flex flex-nowrap gap-3 overflow-x-auto hide-scrollbar snap-x snap-mandatory transition-all duration-500">
             
-            <button class="filter-btn active flex-shrink-0 snap-center px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-all hover:scale-105 active:scale-95 shadow-md bg-slate-900 text-white dark:bg-white dark:text-slate-900 whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-rose-500" 
+            <button class="filter-btn active cursor-pointer flex-shrink-0 snap-center px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-all duration-300 hover:scale-105 active:scale-95 shadow-md bg-slate-900 text-white dark:bg-white dark:text-slate-900 whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-rose-500" 
                     data-category="all" aria-pressed="true">
                 Alle
             </button>
             
             {categoryNames.map((name: any) => (
-                <button class="filter-btn flex-shrink-0 snap-center px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-all hover:scale-105 active:scale-95 bg-transparent text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-rose-500" 
+                 <button class="filter-btn cursor-pointer flex-shrink-0 snap-center px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-all duration-300 hover:scale-105 active:scale-95 bg-transparent text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-rose-500" 
                         data-category={name} aria-pressed="false">
                     {name}
                 </button>
             ))}
+ 
              <div class="w-2 sm:hidden flex-shrink-0"></div>
         </div>
     </div>
 </nav>
 
-{/* --- GRID SECTION (Semantic: <section> mit <article>) --- */}
-<section aria-label="Veranstaltungsliste" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 grid-flow-row-dense auto-rows-[minmax(380px,auto)]">
-    
-    {events.length === 0 && (
-        <div class="col-span-full text-center py-20 bg-slate-50 dark:bg-slate-900 rounded-[32px] border border-dashed border-slate-200 dark:border-slate-800">
-            <p class="text-slate-400 font-bold uppercase tracking-widest">Aktuell keine Termine veröffentlicht</p>
-        </div>
-    )}
-
-    {events.map((event: any) => {
-        const isHighlight = event.is_highlight === true;
-        let isEvenHighlight = false;
-        if (isHighlight) {
-            highlightCounter++;
-            isEvenHighlight = highlightCounter % 2 === 0;
-        }
-        const dateToShow = event._displayDate;
+{/* --- GRID SECTION --- */}
+<section aria-label="Veranstaltungsliste" class="min-h-[50vh]">
+    <div id="events-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 grid-flow-row-dense auto-rows-[minmax(380px,auto)]">
         
-        return (
-            <article 
-                class={`event-card group relative overflow-hidden rounded-[40px] transition-all duration-500 hover:scale-[1.01] hover:shadow-2xl flex flex-col
-                ${isHighlight 
-                    ? `md:col-span-2 md:flex-row bg-gradient-to-br from-rose-50 via-white to-amber-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 shadow-xl ring-1 ring-slate-900/5 dark:ring-white/10 ${isEvenHighlight ? 'lg:col-start-2' : ''}` 
-                    : 'col-span-1 bg-gradient-to-br from-white to-slate-50 dark:from-slate-900 dark:to-slate-950 border border-slate-100 dark:border-slate-800'
-                }`}
-                data-cats={event._catString}
-            >
-                {/* Image Link */}
-                <a href={`/events/${event.slug}`} 
-                   class={`block relative overflow-hidden shrink-0 z-10 focus:outline-none focus:ring-4 focus:ring-rose-500/50 rounded-t-[40px] md:rounded-none
-                   ${isHighlight ? 'w-full md:w-2/5 h-64 md:h-auto md:rounded-l-[40px]' : 'w-full aspect-[4/3] rounded-t-[40px]'}`}
-                   aria-label={`Details zu ${event.title}`}>
-                    
-                    {event.image ? (
-                        <img src={`${ASSET_URL}/${event.image}`} class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="" />
-                    ) : (
-                        <div class="w-full h-full flex items-center justify-center bg-slate-200 dark:bg-slate-800 text-slate-400 italic font-display uppercase tracking-widest text-[10px]">Kein Bild</div>
-                    )}
-                    
-                    {/* Badge */}
-                    <div class="absolute top-6 left-6 flex gap-2 items-start">
-                        <time datetime={dateToShow.toISOString()} class="px-3 py-1 rounded-full bg-slate-900/80 backdrop-blur-md text-white text-[10px] font-bold uppercase shadow-lg tracking-widest border border-white/10">
-                            {formatEventDate(dateToShow, event.time_start)}
-                        </time>
-                        {isHighlight && (
-                            <span class="px-3 py-1 rounded-full bg-amber-400 text-slate-900 text-[10px] font-bold uppercase shadow-lg tracking-widest flex items-center gap-1.5 animate-pulse-slow">
-                                <i class="fa-solid fa-star text-[10px]"></i> Tipp
-                            </span>
-                        )}
-                    </div>
-                </a>
+        {events.length === 0 && (
+            <div class="col-span-full text-center py-20 bg-slate-50 dark:bg-slate-900 rounded-[32px] border border-dashed border-slate-200 dark:border-slate-800">
+                <p class="text-slate-400 font-bold uppercase tracking-widest">Aktuell keine Termine veröffentlicht</p>
+            </div>
+        )}
 
-                <div class={`flex flex-col flex-grow relative z-10 justify-between ${isHighlight ? 'p-8 md:p-12' : 'p-8'}`}>
-                    <div>
-                        {/* Categories */}
-                        <div class="flex gap-2 mb-5 flex-wrap">
-                            {event._catString ? event._catString.split(',').map((catName: string) => (
-                                <span class={`text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-lg border
-                                    ${isHighlight 
-                                        ? 'bg-white/60 border-rose-200/50 text-rose-700 dark:bg-rose-900/20 dark:border-rose-700/30 dark:text-rose-300' 
-                                        : 'bg-white border-slate-200 text-slate-400 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-400'}`}>
-                                    {catName}
+        {events.map((event: any) => {
+            const isHighlight = event.is_highlight === true;
+            let isEvenHighlight = false;
+            if (isHighlight) {
+                highlightCounter++;
+                isEvenHighlight = highlightCounter % 2 === 0;
+            }
+            const dateToShow = event._displayDate;
+
+            return (
+                <article 
+                    class={`event-card group relative overflow-hidden rounded-[40px] hover:shadow-2xl flex flex-col will-change-transform
+                    /* BASIS STYLE für Animation */
+                    transition-all duration-500 cubic-bezier(0.25, 1, 0.5, 1)
+                    ${isHighlight 
+                        ? `md:col-span-2 md:flex-row bg-gradient-to-br from-rose-50 via-white to-amber-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 shadow-xl ring-1 ring-slate-900/5 dark:ring-white/10 ${isEvenHighlight ? 'lg:col-start-2' : ''}` 
+                        : 'col-span-1 bg-gradient-to-br from-white to-slate-50 dark:from-slate-900 dark:to-slate-950 border border-slate-100 dark:border-slate-800'
+                    }`}
+                    data-cats={event._catString}
+                >
+                    {/* Image Link */}
+                    <a href={`/events/${event.slug}`} 
+                    class={`block relative overflow-hidden shrink-0 z-10 focus:outline-none focus:ring-4 focus:ring-rose-500/50 rounded-t-[40px] md:rounded-none
+                    ${isHighlight ? 'w-full md:w-2/5 h-64 md:h-auto md:rounded-l-[40px]' : 'w-full aspect-[4/3] rounded-t-[40px]'}`}
+                    aria-label={`Details zu ${event.title}`}>
+                    
+                        {event.image ? (
+                            /* PERFORMANCE FIX: Astro Image statt img */
+                            <Image 
+                                src={`${ASSET_URL}/${event.image}`}
+                                alt={event.title}
+                                width={800}
+                                height={600}
+                                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                            />
+                        ) : (
+                            <div class="w-full h-full flex items-center justify-center bg-slate-200 dark:bg-slate-800 text-slate-400 italic font-display uppercase tracking-widest text-[10px]">Kein Bild</div>
+                        )}
+                        
+                        {/* Badge */}
+                        <div class="absolute top-6 left-6 flex gap-2 items-start">
+                            <time datetime={dateToShow.toISOString()} class="px-3 py-1 rounded-full bg-slate-900/80 backdrop-blur-md text-white text-[10px] font-bold uppercase shadow-lg tracking-widest border border-white/10">
+                                {formatEventDate(dateToShow, event.time_start)}
+                            </time>
+                            {isHighlight && (
+                                <span class="px-3 py-1 rounded-full bg-amber-400 text-slate-900 text-[10px] font-bold uppercase shadow-lg tracking-widest flex items-center gap-1.5 animate-pulse-slow">
+                                    <i class="fa-solid fa-star text-[10px]"></i> Tipp
                                 </span>
-                            )) : null}
+                            )}
+                        </div>
+                    </a>
+
+                    <div class={`flex flex-col flex-grow relative z-10 justify-between ${isHighlight ? 'p-8 md:p-12' : 'p-8'}`}>
+                        <div>
+                            {/* Categories */}
+                            <div class="flex gap-2 mb-5 flex-wrap">
+                                {event._catString ? event._catString.split(',').map((catName: string) => (
+                                    <span class={`text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-lg border
+                                        ${isHighlight 
+                                            ? 'bg-white/60 border-rose-200/50 text-rose-700 dark:bg-rose-900/20 dark:border-rose-700/30 dark:text-rose-300' 
+                                            : 'bg-white border-slate-200 text-slate-400 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-400'}`}>
+                                        {catName}
+                                    </span>
+                                )) : null}
+                            </div>
+
+                            {/* Semantic: Headline */}
+                            <h2 class={`font-display font-bold group-hover:text-rose-600 transition-colors leading-[1.1] tracking-tight mb-4
+                                ${isHighlight ? 'text-3xl md:text-4xl' : 'text-2xl'}
+                                text-slate-900 dark:text-white`}>
+                                <a href={`/events/${event.slug}`} class="focus:outline-none focus:underline decoration-rose-500 decoration-2 underline-offset-4">
+                                    {event.title}
+                                </a>
+                            </h2>
+
+                            {isHighlight && event.description && (
+                                <p class="text-slate-600 dark:text-slate-300 text-lg leading-relaxed mb-8 line-clamp-2 md:line-clamp-3 hidden md:block">
+                                    {cleanText(event.description).substring(0, 160)}...
+                                </p>
+                            )}
                         </div>
 
-                        {/* Semantic: Headline */}
-                        <h2 class={`font-display font-bold group-hover:text-rose-600 transition-colors leading-[1.1] tracking-tight mb-4
-                            ${isHighlight ? 'text-3xl md:text-4xl' : 'text-2xl'}
-                            text-slate-900 dark:text-white`}>
-                            <a href={`/events/${event.slug}`} class="focus:outline-none focus:underline decoration-rose-500 decoration-2 underline-offset-4">
-                                {event.title}
+                        <div class="flex items-center justify-between pt-6 mt-4 border-t border-slate-200/50 dark:border-white/5">
+                            <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest group-hover:text-rose-500 transition-colors">Details</span>
+                            <a href={`/events/${event.slug}`} class={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 transform group-hover:translate-x-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500
+                                ${isHighlight 
+                                    ? 'bg-rose-500 text-white shadow-lg shadow-rose-500/20' 
+                                    : 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm group-hover:bg-rose-600 group-hover:text-white'}`}
+                            aria-label={`Zum Event ${event.title}`}>
+                                <i class="fa-solid fa-arrow-right text-sm"></i>
                             </a>
-                        </h2>
-
-                        {/* Semantic: Description Paragraph with cleanText */}
-                        {isHighlight && event.description && (
-                            <p class="text-slate-600 dark:text-slate-300 text-lg leading-relaxed mb-8 line-clamp-2 md:line-clamp-3 hidden md:block">
-                                {cleanText(event.description).substring(0, 160)}...
-                            </p>
-                        )}
+                        </div>
                     </div>
-
-                    <div class="flex items-center justify-between pt-6 mt-4 border-t border-slate-200/50 dark:border-white/5">
-                        <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest group-hover:text-rose-500 transition-colors">Details</span>
-                        <a href={`/events/${event.slug}`} class={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 transform group-hover:translate-x-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500
-                            ${isHighlight 
-                                ? 'bg-rose-500 text-white shadow-lg shadow-rose-500/20' 
-                                : 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm group-hover:bg-rose-600 group-hover:text-white'}`}
-                           aria-label={`Zum Event ${event.title}`}>
-                            <i class="fa-solid fa-arrow-right text-sm"></i>
-                        </a>
-                    </div>
-                </div>
-            </article>
-        );
-    })}
+                </article>
+            );
+        })}
+    </div>
 </section>
 
 {/* Scripts & Styles */}
 <style is:global>
+    /* Styling für Sticky Filter */
     .filter-bar-container.is-stuck {
         background-color: rgba(241, 245, 249, 0.95) !important;
         border-color: rgba(203, 213, 225, 0.8) !important;
@@ -148,17 +161,31 @@ let highlightCounter = 0;
     }
     .hide-scrollbar::-webkit-scrollbar { display: none; }
     .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* HARDWARE ACCELERATED ANIMATION CLASSES */
+    .card-hidden {
+        display: none !important;
+    }
+    /* "Zugeklappt" Zustand */
+    .card-out {
+        opacity: 0 !important;
+        transform: scale(0.9) translateY(20px) !important;
+        pointer-events: none;
+    }
+    /* "Offen" Zustand (Default durch CSS Transition animiert) */
+    .card-in {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
 </style>
 
 <script>
-    // Filter Logic
     const buttons = document.querySelectorAll('.filter-btn');
-    const cards = document.querySelectorAll('.event-card');
-    
-    // Sticky Sentinel Logic
+    const cards = Array.from(document.querySelectorAll('.event-card'));
     const filterContainer = document.getElementById('filter-container');
-    const sentinel = document.getElementById('sticky-sentinel'); // Sentinel muss in der Parent Page sein!
+    const sentinel = document.getElementById('sticky-sentinel');
 
+    // Sticky Logic (unverändert)
     if (sentinel && filterContainer) {
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -174,33 +201,86 @@ let highlightCounter = 0;
 
     const activeClasses = ['bg-slate-900', 'text-white', 'shadow-md', 'dark:bg-white', 'dark:text-slate-900'];
     const inactiveClasses = ['bg-transparent', 'text-slate-500', 'hover:bg-slate-100', 'hover:text-slate-900', 'dark:text-slate-400', 'dark:hover:bg-slate-800', 'dark:hover:text-white'];
+    
+    // --- FLÜSSIGE ANIMATION LOGIK ---
+    let isAnimating = false; // Spam-Schutz für Buttons
 
     buttons.forEach(btn => {
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', async () => {
+            if (isAnimating) return;
             const category = btn.getAttribute('data-category');
             
-            // ARIA & Styles update
+            // 1. Buttons sofort updaten (Feedback)
             buttons.forEach(b => {
                 b.classList.remove(...activeClasses);
                 b.classList.add(...inactiveClasses);
                 b.classList.remove('active');
                 b.setAttribute('aria-pressed', 'false');
             });
-            
             btn.classList.remove(...inactiveClasses);
             btn.classList.add(...activeClasses);
             btn.classList.add('active'); 
             btn.setAttribute('aria-pressed', 'true');
 
-            // Filtern
+            isAnimating = true;
+
+            // 2. Sortieren: Wer muss weg? Wer darf bleiben?
+            const toHide = [];
+            const toShow = [];
+
             cards.forEach(card => {
                 const cardCats = card.getAttribute('data-cats') || '';
-                if (category === 'all' || cardCats.includes(category)) {
-                    (card as HTMLElement).style.display = 'flex'; 
+                const isMatch = category === 'all' || cardCats.includes(category);
+                
+                // Wir betrachten nur Karten, die ihren Zustand ändern müssen
+                if (isMatch) {
+                    toShow.push(card);
                 } else {
-                    (card as HTMLElement).style.display = 'none';
+                    toHide.push(card);
                 }
             });
+
+            // SCHRITT A: ALLES WAS WEG MUSS, AUSBLENDEN (Fade Out)
+            // Wir filtern nur die, die gerade sichtbar sind, um unnötige Arbeit zu sparen
+            const visibleToHide = toHide.filter(c => !c.classList.contains('card-hidden'));
+            
+            if (visibleToHide.length > 0) {
+                visibleToHide.forEach(el => el.classList.add('card-out'));
+                // Warten bis CSS Transition fertig (300ms im CSS definiert)
+                await new Promise(r => setTimeout(r, 300));
+            }
+
+            // SCHRITT B: LAYOUT SWITCH (Der harte Cut)
+            // Jetzt setzen wir display:none. Da opacity schon 0 ist, sieht man den "Sprung" nicht,
+            // aber das Grid klappt zusammen.
+            toHide.forEach(el => el.classList.add('card-hidden'));
+            
+            // Die neuen Elemente vorbereiten (Display block, aber noch unsichtbar)
+            toShow.forEach(el => {
+                el.classList.remove('card-hidden'); // Layout Platz nehmen
+                el.classList.add('card-out');       // Startposition: unsichtbar & klein
+            });
+
+            // Browser zwingen, das neue Layout zu berechnen, bevor wir animieren
+            // (Reflow Hack)
+            void filterContainer.offsetHeight;
+
+            // SCHRITT C: EINFLEGEN LASSEN (Staggered Fade In)
+            // Wir nutzen requestAnimationFrame für flüssigen Start
+            requestAnimationFrame(() => {
+                toShow.forEach((el, index) => {
+                    // Kleine Verzögerung für den "Domino"-Effekt
+                    setTimeout(() => {
+                        el.classList.remove('card-out');
+                        el.classList.add('card-in');
+                    }, index * 40); // 40ms Abstand = schön zackig
+                });
+            });
+
+            // Cleanup & Unlock nach Animation
+            setTimeout(() => {
+                isAnimating = false;
+            }, toShow.length * 40 + 300);
         });
     });
 </script>

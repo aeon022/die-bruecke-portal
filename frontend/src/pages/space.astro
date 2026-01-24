@@ -1,10 +1,35 @@
 ---
 import MainLayout from '../layouts/layout.astro';
+import { Image } from 'astro:assets'; 
 
+// "Hard Facts" & Equipment kombiniert (8 Items für perfektes 4er Grid)
 const equipment = [
+    // Zeile 1: Die Raum-Facts (NEU - Deine Daten)
+    { 
+        icon: "fa-users", 
+        label: "Bis 400 Gäste", 
+        desc: "150 Innenraum / 250 Garten" 
+    },
+    { 
+        icon: "fa-chair", 
+        label: "Flexibler Saal", 
+        desc: "30-80 Pers. (Bistro bis Reihe)" 
+    },
+    { 
+        icon: "fa-utensils", 
+        label: "Catering Bereich", 
+        desc: "Buffet räumlich abtrennbar" 
+    },
+    { 
+        icon: "fa-wheelchair", 
+        label: "100% Barrierefrei", 
+        desc: "Rollstuhlgerechtes WC" 
+    },
+    
+    // Zeile 2: Die Technik
     { icon: "fa-video", label: "HD Beamer", desc: "Lichtstark für Präsentationen" },
     { icon: "fa-expand", label: "Große Leinwand", desc: "Motorisiert, 16:9 Format" },
-    { icon: "fa-wifi", label: " WLAN", desc: "WLAN für alle Gäste" },
+    { icon: "fa-wifi", label: "WLAN", desc: "Highspeed für alle Gäste" },
     { icon: "fa-microphone-lines", label: "Profi-Audio", desc: "Mikrofone & PA-Anlage" }
 ];
 
@@ -14,53 +39,56 @@ const useCases = [
         subtitle: "Dein Raum am Vormittag",
         desc: "Nutze unsere zentrale Lage für deine Business-Events. Helle Atmosphäre, Bestuhlung nach Wunsch und volle technische Ausstattung.",
         features: ["Flipcharts inklusive", "Kaffee-Catering möglich", "Barrierefreier Zugang"],
-        image: "https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=1600&auto=format&fit=crop"
+        // Unsplash ID ohne Parameter für Astro Optimierung
+        image: "https://images.unsplash.com/photo-1517048676732-d65bc937f952" 
     },
     {
         title: "Private Feiern",
         subtitle: "Dein Raum am Abend",
         desc: "Geburtstage, Jubiläen oder Vereinsfeiern. Die Brücke verwandelt sich abends in einen stimmungsvollen Partyraum.",
         features: ["Flexibel für dich", "Essen: Dein Caterer oder DIY", "Lichttechnik für Stimmung"],
-        image: "https://images.unsplash.com/photo-1516997121675-4c2d1684aa3e?q=80&w=1600&auto=format&fit=crop"
+        // Unsplash ID ohne Parameter
+        image: "https://images.unsplash.com/photo-1516997121675-4c2d1684aa3e" 
     }
 ];
 ---
 
 <MainLayout title="Dein Raum | Die Brücke">
     
-    {/* --- HERO SECTION: SPACE (STABLE 2-LINE LAYERED) --- */}
+    {/* --- HERO SECTION --- */}
     <section class="px-4 sm:px-6 pt-6 pb-20 dark:bg-slate-900">
         <div class="relative bg-slate-900 rounded-[48px] overflow-hidden min-h-[60vh] flex items-center px-6 md:px-16 py-24">
             
-            {/* DAS BILD: Jetzt als atmosphärischer Layer im Hintergrund rechts */}
-            <div class="absolute top-0 right-0 w-full lg:w-1/2 h-full pointer-events-none overflow-hidden">
-                <div class="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/60 to-transparent z-10"></div>
-                <img 
-                    src="https://images.unsplash.com/photo-1517457373958-b7bdd4587205?q=80&w=1200" 
-                    alt="Event Space" 
+            {/* ATMOSPHERIC IMAGE LAYER (Rechts) 
+               FIX: CSS Maske für perfekten Verlauf.
+            */}
+            <div class="absolute top-0 right-0 w-full lg:w-1/2 h-full pointer-events-none overflow-hidden [mask-image:linear-gradient(to_left,black_40%,transparent)]">
+                {/* PERFORMANCE: Eager loading für LCP */}
+                <Image 
+                    src="https://images.unsplash.com/photo-1517457373958-b7bdd4587205" 
+                    alt=""
+                    width={1200}
+                    height={800}
+                    loading="eager"
                     class="w-full h-full object-cover opacity-30 lg:opacity-45 grayscale"
                 />
             </div>
 
-            {/* Background Effects */}
+            {/* BACKGROUND FX */}
             <div class="absolute top-0 left-0 w-full h-full pointer-events-none">
                 <div class="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-indigo-500/20 rounded-full blur-[120px] animate-pulse-slow"></div>
                 <div class="absolute bottom-[-10%] right-[10%] w-[500px] h-[500px] bg-rose-500/10 rounded-full blur-[100px]"></div>
-                <div class="absolute inset-0 bg-[url('/noise.png')] opacity-10 mix-blend-overlay"></div>
+                {/* Noise Textur Konsistent mit anderen Pages */}
+                <div class="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay"></div>
             </div>
 
             <div class="max-w-7xl mx-auto w-full relative z-20">
-                {/* max-w-3xl sorgt für den kompakten Stand des Textes */}
                 <div class="max-w-3xl">
                     <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-rose-300 text-xs font-bold uppercase tracking-widest mb-8 backdrop-blur-md">
                         <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
                         Infrastruktur & Technik
                     </div>
                     
-                    {/* TITEL-FIX: 
-                        - text-7xl als Obergrenze
-                        - whitespace-nowrap verhindert den Umbruch in die 3. Zeile
-                    */}
                     <h1 class="text-4xl md:text-6xl lg:text-7xl font-display font-black text-white mb-8 leading-[0.95] tracking-tighter uppercase">
                         Dein Raum für <br class="hidden sm:block"/>
                         <span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-400 to-indigo-400 whitespace-nowrap">große Ideen.</span>
@@ -81,7 +109,7 @@ const useCases = [
         </div>
     </section>
 
-    {/* --- EQUIPMENT GRID --- */}
+    {/* --- EQUIPMENT GRID (MIT NEUEN HARD FACTS) --- */}
     <section class="px-4 sm:px-6 -mt-10 relative z-20 pb-24">
         <div class="max-w-7xl mx-auto">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -107,7 +135,14 @@ const useCases = [
                     {/* Image Side */}
                     <div class="flex-1 w-full">
                         <div class="relative aspect-[4/3] rounded-[48px] overflow-hidden shadow-2xl group border border-slate-100 dark:border-slate-800">
-                            <img src={useCase.image} alt={useCase.title} class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-[1.5s]" />
+                            {/* PERFORMANCE: Lazy Loading für Content Images */}
+                            <Image 
+                                src={useCase.image}
+                                alt={useCase.title}
+                                width={800}
+                                height={600}
+                                class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-[1.5s]"
+                            />
                             <div class="absolute inset-0 bg-slate-900/10 group-hover:bg-transparent transition"></div>
                         </div>
                     </div>
@@ -165,7 +200,6 @@ const useCases = [
                     <p class="text-slate-500 dark:text-slate-400 text-lg mb-12 leading-relaxed">
                         Ob Workshop, Tagung oder Feier: Jede Veranstaltung hat ihren eigenen Rhythmus. Wir sorgen für den passenden Rahmen und helfen dir bei dem, was du wirklich brauchst. 
                         <br class="hidden md:block"/>
-            
                     </p>
                     <a href="/contact" class="bg-rose-600 text-white px-10 py-5 rounded-full font-bold shadow-xl hover:bg-slate-900 dark:hover:bg-white dark:hover:text-slate-900 transition-all transform hover:scale-105 inline-flex items-center gap-3">
                         <i class="fa-regular fa-paper-plane"></i>
