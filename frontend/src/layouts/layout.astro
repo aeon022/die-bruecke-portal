@@ -2,10 +2,21 @@
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro'; 
 import CookieBanner from '../components/CookieBanner.astro';
-import CommandPalette from '../components/CommandPalette.astro'; // <--- 1. IMPORT HINZUFÜGEN
+import CommandPalette from '../components/CommandPalette.astro'; 
 import '../styles/global.css';
 
-const { title } = Astro.props;
+// Props erweitern für bessere SEO pro Seite
+const { 
+  title, 
+  description = "Die Brücke Graz – Inklusion, Kultur und Begegnung. Wir schaffen Raum für ein Miteinander ohne Barrieren.",
+  image = "/assets/share-image.jpg" // Fallback Bild (sollte in public/assets liegen)
+} = Astro.props;
+
+const fullTitle = title ? `${title} - Die Brücke` : 'Die Brücke - Studio';
+
+// FIX: Fallback für Astro.site, damit es lokal und ohne Config nicht crasht
+const siteUrl = Astro.site || 'https://beta.diebruecke.social';
+const canonicalURL = new URL(Astro.url.pathname, siteUrl);
 ---
 
 <!DOCTYPE html> 
@@ -13,7 +24,28 @@ const { title } = Astro.props;
   <head> 
     <meta charset="utf-8"> 
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> 
-    <title>{title ? `${title} - Die Brücke` : 'Die Brücke - Studio'}</title>         
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{fullTitle}</title>   
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={Astro.url} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={image} />
+    
+    <link rel="preconnect" href="https://api.diebruecke.social" crossorigin>
+    <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"></noscript>
 
     <script is:inline>
       const themeKey = 'theme';
@@ -35,24 +67,30 @@ const { title } = Astro.props;
         window.dispatchEvent(new Event('theme-change'));
       };
     </script>
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style is:global>
-      @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
-      
+      /* Font Definitions */
       body { font-family: 'Plus Jakarta Sans', sans-serif; }
       .font-display { font-family: 'Outfit', sans-serif; }
 
       /* Sticky Scroll Fix */
       html { overflow-x: visible; scroll-behavior: smooth; }
       body { overflow-x: clip; width: 100%; }
+
+      /* Erzwingt weiße Überschriften im Dark Mode innerhalb von Main */
+      html.dark main h1, html.dark main h2, html.dark main h3, html.dark main h4, html.dark main h5, html.dark main h6 {
+          color: #f8fafc !important; /* Slate-50 */
+      }
+      /* Ausnahme für Gradient-Texte */
+      html.dark main .text-transparent {
+          color: transparent !important;
+      }
     </style>
   </head>     
 
-  {/* --- GLOBALER TOOLTIP (JS Gesteuert für maximalen Z-Index) --- */}
+    {/* --- GLOBALER TOOLTIP --- */}
     <div id="global-tooltip" class="fixed pointer-events-none opacity-0 transition-opacity duration-200 bg-slate-900 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg shadow-xl z-[9999] whitespace-nowrap transform -translate-x-1/2 mt-2 hidden dark:bg-slate-50 dark:text-slate-900 border border-white/10 dark:border-slate-200">
-        </div>
+    </div>
 
     <script is:inline>
         // GLOBAL TOOLTIP LOGIC
@@ -60,27 +98,17 @@ const { title } = Astro.props;
         
         if (tooltip) {
             document.body.addEventListener('mouseover', (e) => {
-                // Suche das nächste Element mit data-tooltip Attribut (auch wenn man auf das Icon klickt)
                 const target = e.target.closest('[data-tooltip]');
-                
                 if (target) {
                     const text = target.getAttribute('data-tooltip');
                     if (!text) return;
-
-                    // Text setzen
                     tooltip.textContent = text;
                     tooltip.classList.remove('hidden');
-                    
-                    // Position berechnen
                     const rect = target.getBoundingClientRect();
                     const centerX = rect.left + (rect.width / 2);
-                    const topY = rect.bottom; // Unter dem Element
-
-                    // Tooltip positionieren
+                    const topY = rect.bottom; 
                     tooltip.style.left = `${centerX}px`;
                     tooltip.style.top = `${topY}px`;
-                    
-                    // Einblenden (kleine Verzögerung für Smoothness)
                     requestAnimationFrame(() => {
                         tooltip.classList.remove('opacity-0');
                     });
@@ -91,9 +119,7 @@ const { title } = Astro.props;
                 const target = e.target.closest('[data-tooltip]');
                 if (target) {
                     tooltip.classList.add('opacity-0');
-                    // Nach Transition verstecken
                     setTimeout(() => {
-                         // Checken ob wir nicht schon wieder über einem anderen Tooltip sind
                          if (tooltip.classList.contains('opacity-0')) {
                              tooltip.classList.add('hidden');
                          }
@@ -101,7 +127,6 @@ const { title } = Astro.props;
                 }
             });
 
-            // Wenn man scrollt, Tooltip verstecken (damit er nicht "mitwandert" an falscher Stelle)
             window.addEventListener('scroll', () => {
                 tooltip.classList.add('opacity-0');
                 tooltip.classList.add('hidden');
@@ -119,7 +144,7 @@ const { title } = Astro.props;
         <Header />
       </div>
 
-      <main class="flex-grow dark:text-slate-200">
+      <main id="main-content" class="flex-grow dark:text-slate-200">
         <slot />
       </main>
 
@@ -127,19 +152,6 @@ const { title } = Astro.props;
       <CookieBanner />
     </div>
 
-    {/* 2. KOMPONENTE EINFÜGEN (Außerhalb des Wrappers für Fullscreen) */}
     <CommandPalette />
-
-    <style is:global>
-        /* Erzwingt weiße Überschriften im Dark Mode innerhalb von Main */
-        html.dark main h1, html.dark main h2, html.dark main h3, html.dark main h4, html.dark main h5, html.dark main h6 {
-            color: #f8fafc !important; /* Slate-50 */
-        }
-        /* Ausnahme für Gradient-Texte */
-        html.dark main .text-transparent {
-            color: transparent !important;
-        }
-    </style>
-
   </body>     
 </html>
