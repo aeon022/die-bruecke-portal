@@ -1,5 +1,5 @@
 version: 1
-directus: 11.14.0
+directus: 11.14.1
 vendor: postgres
 collections:
   - collection: archiv
@@ -5786,7 +5786,7 @@ fields:
       readonly: false
       required: false
       searchable: true
-      sort: 2
+      sort: 3
       special: null
       translations: null
       validation: null
@@ -5826,7 +5826,7 @@ fields:
       readonly: false
       required: false
       searchable: true
-      sort: 1
+      sort: 2
       special: null
       translations: null
       validation: null
@@ -5866,7 +5866,7 @@ fields:
       readonly: false
       required: false
       searchable: true
-      sort: 3
+      sort: 4
       special: null
       translations: null
       validation: null
@@ -5906,7 +5906,7 @@ fields:
       readonly: false
       required: false
       searchable: true
-      sort: 4
+      sort: 5
       special: null
       translations: null
       validation: null
@@ -6170,6 +6170,166 @@ fields:
       width: full
     schema:
       name: social_youtube
+      table: global_settings
+      data_type: character varying
+      default_value: null
+      max_length: 255
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: global_settings
+    field: authority
+    type: string
+    meta:
+      collection: global_settings
+      conditions: null
+      display: null
+      display_options: null
+      field: authority
+      group: contact_legal
+      hidden: false
+      interface: input
+      note: Aufsichtsbehörde
+      options: null
+      readonly: false
+      required: false
+      searchable: true
+      sort: 6
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: authority
+      table: global_settings
+      data_type: character varying
+      default_value: null
+      max_length: 255
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: global_settings
+    field: association_purpose
+    type: text
+    meta:
+      collection: global_settings
+      conditions: null
+      display: null
+      display_options: null
+      field: association_purpose
+      group: contact_legal
+      hidden: false
+      interface: input-multiline
+      note: Vereinszweck (Blattlinie)
+      options: null
+      readonly: false
+      required: false
+      searchable: true
+      sort: 7
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: association_purpose
+      table: global_settings
+      data_type: text
+      default_value: null
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: global_settings
+    field: photo_credits
+    type: text
+    meta:
+      collection: global_settings
+      conditions: null
+      display: null
+      display_options: null
+      field: photo_credits
+      group: contact_legal
+      hidden: false
+      interface: input-multiline
+      note: null
+      options: null
+      readonly: false
+      required: false
+      searchable: true
+      sort: 8
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: photo_credits
+      table: global_settings
+      data_type: text
+      default_value: null
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: global_settings
+    field: legal_name
+    type: string
+    meta:
+      collection: global_settings
+      conditions: null
+      display: null
+      display_options: null
+      field: legal_name
+      group: contact_legal
+      hidden: false
+      interface: input
+      note: null
+      options: null
+      readonly: false
+      required: false
+      searchable: true
+      sort: 1
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: legal_name
       table: global_settings
       data_type: character varying
       default_value: null
@@ -7057,7 +7217,7 @@ fields:
       field: content
       group: null
       hidden: false
-      interface: input-rich-text-md
+      interface: input-rich-text-html
       note: null
       options: null
       readonly: false
@@ -9511,6 +9671,10 @@ fields:
 systemFields:
   - collection: directus_activity
     field: timestamp
+    schema:
+      is_indexed: true
+  - collection: directus_revisions
+    field: activity
     schema:
       is_indexed: true
   - collection: directus_revisions
