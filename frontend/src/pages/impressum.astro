@@ -1,85 +1,122 @@
 ---
 import MainLayout from '../layouts/layout.astro';
+import { directus } from '../lib/directus';
+import { readSingleton, readItems } from '@directus/sdk';
 
-// DATEN AUS VEREINSREGISTERZUG (Stichtag 25.02.2025)
+// 1. DATEN LADEN
+let settings;
+let boardMembers = [];
+let pageContent;
+
+try {
+    const [settingsData, teamData, pagesData] = await Promise.all([
+        // Global Settings (Adresse, ZVR, Zweck, Bildnachweis)
+        directus.request(readSingleton('global_settings')),
+        
+        // Vorstand (aus Team Collection, gefiltert nach type='board')
+        directus.request(readItems('team', {
+            filter: { 
+                _and: [
+                    { status: { _eq: 'published' } },
+                    { type: { _eq: 'board' } }
+                ]
+            },
+            sort: ['sort']
+        })),
+
+        // Page Content (Haftungstext etc. aus Pages Collection)
+        directus.request(readItems('pages', {
+            filter: { slug: { _eq: 'impressum' } }
+        }))
+    ]);
+
+    settings = settingsData;
+    boardMembers = teamData;
+    pageContent = pagesData[0];
+
+} catch (error) {
+    console.error("Impressum: Fehler beim Laden der Daten", error);
+}
+
+// 2. DATEN MAPPING
 const associationData = {
-    name: "Die Brücke - soziokulturelles Zentrum",
-    address: ["Grabenstraße 39a", "8010 Graz", "Österreich"],
-    zvr: "747612623",
-    authority: "Landespolizeidirektion Steiermark, SVA 3",
+    // FIX: Priorisiere den neuen legal_name, sonst project_name
+    name: settings?.legal_name || settings?.project_name || "Die Brücke - soziokulturelles Zentrum",
+    address: settings?.address ? [settings.address] : ["Grabenstraße 39a", "8010 Graz", "Österreich"],
+    zvr: settings?.zvr_number || "747612623",
+    authority: settings?.authority || "Landespolizeidirektion Steiermark, SVA 3",
+    
+    // HIER SIND DEINE NEUEN FELDER:
+    purpose: settings?.association_purpose || "Der Verein bezweckt die Förderung der gesellschaftlichen Inklusion...", 
+    credits: settings?.photo_credits || "Archiv Die Brücke, Unsplash, Adobe Stock.",
+    
     contact: {
-        mail: "office@diebruecke.cc",
-        web: "www.diebruecke.cc",
-        tel: "+43 316 67 22 48"
+        mail: settings?.email || "office@diebruecke.cc",
+        tel: settings?.phone || "+43 316 67 22 48"
     }
 };
-
-// VORSTAND
-const board = [
-    { role: "Obmann", name: "Gerwin Weiher" },
-    { role: "Obmann Stellvertreter", name: "Heinz Sailer" },
-    { role: "Kassierin", name: "Bibiana Fleps" },
-    { role: "Kassierin Stellvertreter", name: "Günther Kolman" },
-    { role: "Schriftführer", name: "Oliver Haditsch" },
-    { role: "Schriftführer Stellvertreterin", name: "Ruth Köppel" }
-];
 ---
 
 <MainLayout title="Impressum">
     
     <section class="relative pt-32 pb-20 px-6 sm:px-10 overflow-hidden">
         <div class="max-w-4xl mx-auto relative z-10">
-            <span class="inline-block px-3 py-1 rounded-full bg-slate-100 text-slate-500 text-xs font-bold uppercase tracking-widest mb-6">
+            <span class="inline-block px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-900 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-widest mb-6 border border-slate-200 dark:border-slate-800">
                 Transparenz & Rechtliches
             </span>
-            <h1 class="text-4xl md:text-6xl font-display font-extrabold text-slate-900 mb-6 tracking-tight">
+            <h1 class="text-4xl md:text-6xl font-display font-extrabold text-slate-900 dark:text-white mb-6 tracking-tight">
                 Impressum.
             </h1>
-            <p class="text-xl text-slate-500 max-w-2xl leading-relaxed">
+            <p class="text-xl text-slate-500 dark:text-slate-400 max-w-2xl leading-relaxed">
                 Offenlegung gemäß § 25 Mediengesetz und Angaben nach § 5 ECG.
             </p>
         </div>
-        <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-slate-50 rounded-full blur-3xl opacity-60 pointer-events-none -translate-y-1/2 translate-x-1/4"></div>
+        <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-slate-50 dark:bg-slate-800/30 rounded-full blur-3xl opacity-60 pointer-events-none -translate-y-1/2 translate-x-1/4"></div>
     </section>
 
     <section class="px-6 sm:px-10 pb-24">
         <div class="max-w-4xl mx-auto">
             
+            {/* HARD FACTS (Adresse, Kontakt) */}
             <div class="grid md:grid-cols-2 gap-8 mb-24">
-                <div class="bg-slate-50 p-8 rounded-3xl border border-slate-100">
+                
+                {/* LINKE BOX */}
+                <div class="bg-slate-50 dark:bg-slate-900 p-8 rounded-3xl border border-slate-100 dark:border-slate-800">
                     <h2 class="text-xs font-bold uppercase tracking-widest text-slate-400 mb-6">Medieninhaber & Herausgeber</h2>
-                    <p class="text-xl font-display font-bold text-slate-900 mb-4 leading-tight">{associationData.name}</p>
-                    <div class="space-y-1 text-slate-600 mb-6">
+                    <p class="text-xl font-display font-bold text-slate-900 dark:text-white mb-4 leading-tight">{associationData.name}</p>
+                    <div class="space-y-1 text-slate-600 dark:text-slate-300 mb-6 font-medium">
                         {associationData.address.map(line => (<div class="block">{line}</div>))}
                     </div>
-                    <div class="inline-flex bg-white border border-slate-200 px-3 py-1.5 rounded-lg text-xs font-bold text-slate-500">
-                        ZVR-Zahl: <span class="text-slate-900 ml-1">{associationData.zvr}</span>
+                    <div class="inline-flex bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold text-slate-500 dark:text-slate-400">
+                        ZVR-Zahl: <span class="text-slate-900 dark:text-white ml-1">{associationData.zvr}</span>
                     </div>
                 </div>
 
-                <div class="bg-white p-8 rounded-3xl border border-slate-100 shadow-xl shadow-slate-100/50 flex flex-col justify-between">
+                {/* RECHTE BOX */}
+                <div class="bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-100/50 dark:shadow-none flex flex-col justify-between">
                     <div>
                         <h2 class="text-xs font-bold uppercase tracking-widest text-slate-400 mb-6">Kontakt</h2>
                         <ul class="space-y-4">
                             <li class="flex items-center gap-4 group">
-                                <div class="w-10 h-10 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center shrink-0"><i class="fa-solid fa-envelope"></i></div>
-                                <a href={`mailto:${associationData.contact.mail}`} class="font-bold text-slate-900 hover:text-rose-600 transition-colors">{associationData.contact.mail}</a>
+                                <div class="w-10 h-10 rounded-full bg-rose-50 dark:bg-rose-900/20 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0"><i class="fa-solid fa-envelope"></i></div>
+                                <a href={`mailto:${associationData.contact.mail}`} class="font-bold text-slate-900 dark:text-white hover:text-rose-600 dark:hover:text-rose-400 transition-colors">{associationData.contact.mail}</a>
                             </li>
                             <li class="flex items-center gap-4 group">
-                                <div class="w-10 h-10 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0"><i class="fa-solid fa-phone"></i></div>
-                                <a href={`tel:${associationData.contact.tel.replace(/\s/g,'')}`} class="font-bold text-slate-900 hover:text-indigo-600 transition-colors">{associationData.contact.tel}</a>
+                                <div class="w-10 h-10 rounded-full bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0"><i class="fa-solid fa-phone"></i></div>
+                                <a href={`tel:${associationData.contact.tel.replace(/\s/g,'')}`} class="font-bold text-slate-900 dark:text-white hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">{associationData.contact.tel}</a>
                             </li>
                         </ul>
                     </div>
-                    <div class="mt-8 pt-8 border-t border-slate-100">
+                    <div class="mt-8 pt-8 border-t border-slate-100 dark:border-slate-800">
                         <p class="text-xs text-slate-400 mb-1 font-bold uppercase tracking-wider">Aufsichtsbehörde</p>
-                        <p class="text-sm text-slate-600">{associationData.authority}</p>
+                        <p class="text-sm text-slate-600 dark:text-slate-300 font-medium">{associationData.authority}</p>
                     </div>
                 </div>
             </div>
 
-            <div class="w-full h-px bg-slate-200 mb-20"></div>
+            <div class="w-full h-px bg-slate-200 dark:bg-slate-800 mb-20"></div>
 
+            {/* VEREINSZWECK */}
             <div class="mb-24">
                 <div class="flex flex-col md:flex-row gap-8 md:gap-16 items-start">
                     <div class="md:w-1/3 shrink-0">
@@ -87,73 +124,89 @@ const board = [
                         <span class="text-sm font-bold text-slate-400 uppercase tracking-wider">(Blattlinie)</span>
                     </div>
                     <div class="md:w-2/3">
-                        <p class="text-xl md:text-2xl font-medium text-slate-900 leading-relaxed">
-                            Der Verein, dessen Tätigkeit nicht auf Gewinn gerichtet ist, bezweckt die Förderung der gesellschaftlichen Inklusion von Menschen mit Benachteiligungen sowie die Durchführung von soziokulturellen Projekten, Veranstaltungen und Bildungsangeboten.
+                        <p class="text-xl md:text-2xl font-medium text-slate-900 dark:text-white leading-relaxed">
+                            {associationData.purpose}
                         </p>
                     </div>
                 </div>
             </div>
 
+            <div class="w-full h-px bg-slate-200 dark:bg-slate-800 mb-20"></div>
+
+            {/* VORSTAND */}
             <div class="mb-24">
                 <div class="flex flex-col md:flex-row gap-8 md:gap-16 items-start mb-10">
                     <div class="md:w-1/3 shrink-0">
                         <h3 class="text-2xl font-display font-bold text-rose-600">Organschaftliche Vertreter</h3>
                     </div>
                     <div class="md:w-2/3">
-                        <p class="text-lg text-slate-600">
+                        <p class="text-lg text-slate-600 dark:text-slate-300">
                             Die Vertretung des Vereins nach außen erfolgt durch den Vorstand.
                         </p>
                     </div>
                 </div>
                 
-                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {board.map(member => (
-                        <div class="bg-white border border-slate-200 rounded-2xl p-5 flex items-start gap-4 hover:border-rose-200 hover:shadow-lg transition-all duration-300 group">
-                            <div class="w-10 h-10 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0 text-slate-300 group-hover:text-rose-500 group-hover:bg-rose-50 transition-colors">
-                                <i class="fa-solid fa-user"></i>
+                {boardMembers.length > 0 ? (
+                    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {boardMembers.map((member: any) => (
+                            <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 flex items-start gap-4 hover:border-rose-200 dark:hover:border-rose-900 hover:shadow-lg transition-all duration-300 group">
+                                <div class="w-10 h-10 rounded-full bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 flex items-center justify-center shrink-0 text-slate-300 dark:text-slate-600 group-hover:text-rose-500 group-hover:bg-rose-50 dark:group-hover:bg-rose-900/30 transition-colors">
+                                    <i class="fa-solid fa-user"></i>
+                                </div>
+                                <div>
+                                    <span class="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">{member.role}</span>
+                                    <span class="block font-bold text-slate-900 dark:text-white">{member.name}</span>
+                                </div>
                             </div>
-                            <div>
-                                <span class="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">{member.role}</span>
-                                <span class="block font-bold text-slate-900">{member.name}</span>
-                            </div>
-                        </div>
-                    ))}
-                </div>
+                        ))}
+                    </div>
+                ) : (
+                    <p class="text-slate-400 italic">Vorstandsdaten werden geladen...</p>
+                )}
             </div>
 
-            <div class="w-full h-px bg-slate-200 mb-20"></div>
+            <div class="w-full h-px bg-slate-200 dark:bg-slate-800 mb-20"></div>
 
             <div class="grid md:grid-cols-2 gap-8">
                 
-                <div class="bg-slate-50 rounded-3xl p-8 border border-slate-100">
-                    <h4 class="font-display font-bold text-lg text-slate-900 mb-4 flex items-center gap-2">
+                {/* EU STREITSCHLICHTUNG */}
+                <div class="bg-slate-50 dark:bg-slate-900 rounded-3xl p-8 border border-slate-100 dark:border-slate-800">
+                    <h4 class="font-display font-bold text-lg text-slate-900 dark:text-white mb-4 flex items-center gap-2">
                         <i class="fa-solid fa-scale-balanced text-rose-500"></i> EU-Streitschlichtung
                     </h4>
-                    <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-4">
                         Angaben zur Online-Streitbeilegung: Verbraucher haben die Möglichkeit, Beschwerden an die Online-Streitbeilegungsplattform der EU zu richten.
                     </p>
-                    <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="nofollow" class="text-sm font-bold text-slate-900 underline decoration-slate-300 underline-offset-4 hover:decoration-rose-500 hover:text-rose-600 transition-all">
+                    <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="nofollow" class="text-sm font-bold text-slate-900 dark:text-white underline decoration-slate-300 dark:decoration-slate-600 underline-offset-4 hover:decoration-rose-500 hover:text-rose-600 dark:hover:text-rose-400 transition-all">
                         https://ec.europa.eu/consumers/odr
                     </a>
-                    <p class="text-slate-500 text-xs mt-4">
+                    <p class="text-slate-500 dark:text-slate-500 text-xs mt-4">
                         Sie können allfällige Beschwerde auch an die oben angegebene E-Mail-Adresse richten.
                     </p>
                 </div>
 
-                <div class="bg-slate-50 rounded-3xl p-8 border border-slate-100">
-                    <h4 class="font-display font-bold text-lg text-slate-900 mb-4 flex items-center gap-2">
+                {/* HAFTUNG & URHEBERRECHT */}
+                <div class="bg-slate-50 dark:bg-slate-900 rounded-3xl p-8 border border-slate-100 dark:border-slate-800">
+                    <h4 class="font-display font-bold text-lg text-slate-900 dark:text-white mb-4 flex items-center gap-2">
                         <i class="fa-solid fa-shield-halved text-rose-500"></i> Haftung & Urheberrecht
                     </h4>
-                    <p class="text-slate-600 text-sm leading-relaxed mb-4">
-                        Wir entwickeln die Inhalte dieser Webseite ständig weiter und bemühen uns um korrekte Informationen. Für die Inhalte verlinkter Seiten sind wir nicht verantwortlich.
-                    </p>
-                    <p class="text-slate-600 text-sm leading-relaxed">
-                        Alle Inhalte (Bilder, Texte) unterliegen dem Urheberrecht.
-                    </p>
                     
-                    <div class="mt-6 pt-6 border-t border-slate-200">
+                    {/* Content (mit prose-invert für Dark Mode) */}
+                    <div class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-4 prose prose-sm max-w-none dark:prose-invert">
+                        {pageContent?.content ? (
+                            <div set:html={pageContent.content} />
+                        ) : (
+                            <p>
+                                Wir entwickeln die Inhalte dieser Webseite ständig weiter und bemühen uns um korrekte Informationen. Für die Inhalte verlinkter Seiten sind wir nicht verantwortlich.
+                                Alle Inhalte (Bilder, Texte) unterliegen dem Urheberrecht.
+                            </p>
+                        )}
+                    </div>
+                    
+                    {/* BILDNACHWEIS */}
+                    <div class="mt-6 pt-6 border-t border-slate-200 dark:border-slate-800">
                         <span class="text-xs font-bold uppercase text-slate-400 block mb-1">Bildnachweis</span>
-                        <span class="text-xs text-slate-500">Archiv Die Brücke, Unsplash, Adobe Stock.</span>
+                        <span class="text-xs text-slate-500 dark:text-slate-500">{associationData.credits}</span>
                     </div>
                 </div>
 
