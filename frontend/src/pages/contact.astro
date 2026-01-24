@@ -152,12 +152,10 @@ const departments = [
                                     In Google Maps öffnen <i class="fa-solid fa-arrow-up-right-from-square"></i>
                                 </a>
 
-                                {/* NEU: Action Buttons Container */}
                                 <div class="flex flex-wrap gap-4 mt-6 border-b border-slate-100 dark:border-slate-800 pb-6 mb-6">
                                     <a href="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2718.026724395214!2d15.43345831561725!3d47.08502597915357!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x476e35970c776099%3A0x6295772393080e76!2sDie%20Br%C3%BCcke!5e0!3m2!1sde!2sat!4v1614167823456!5m2!1sde!2sat6" target="_blank" class="inline-flex items-center gap-2 text-xs font-bold text-rose-600 dark:text-rose-400 hover:underline">
                                         <i class="fa-solid fa-map-location-dot"></i> Karte öffnen
                                     </a>
-                                    {/* FIX: cursor-pointer hinzugefügt */}
                                     <button id="vcard-btn" class="inline-flex items-center gap-2 text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 transition-colors cursor-pointer">
                                         <i class="fa-regular fa-address-card"></i> Ins Adressbuch
                                     </button>
@@ -192,17 +190,12 @@ const departments = [
                             </div>
                         </div>
 
-                        {/* NEU: ÖFFI LINK & APP INFO */}
                         <div class="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800/50">
                             <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3">Routenplaner</p>
                             <div class="flex flex-col sm:flex-row gap-3">
-                                
-                                {/* 1. ROUTE: Google Maps im "Transit Modus" */}
                                 <a href="https://www.google.com/maps/dir/?api=1&destination=Grabenstraße+39a,+Graz&travelmode=transit" target="_blank" class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-emerald-500 hover:text-white dark:hover:bg-emerald-600 transition-all text-xs font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wide group">
                                     <i class="fa-solid fa-route group-hover:scale-110 transition-transform"></i> Route berechnen
                                 </a>
-                                
-                                {/* 2. APP: Link zur Graz Mobil App Info */}
                                 <a href="https://www.holding-graz.at/de/unternehmen/unsere-app-angebote/" target="_blank" class="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-emerald-500 hover:text-emerald-500 dark:hover:border-emerald-400 dark:hover:text-emerald-400 transition-all text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">
                                     <i class="fa-solid fa-mobile-screen"></i> Graz Mobil App
                                 </a>
@@ -231,14 +224,14 @@ const departments = [
                     </div>
                 )}
 
-                {/* --- ÖFFNUNGSZEITEN --- */}
+                {/* --- ÖFFNUNGSZEITEN (FIXED: GRID LAYOUT FÜR SAUBERE AUSRICHTUNG) --- */}
                 <div>
                     <h3 class="text-2xl font-display font-bold text-slate-900 dark:text-white mb-6">Bürozeiten</h3>
                     <ul class="space-y-4 text-slate-600 dark:text-slate-300">
                         {openingHours.map((slot: any) => (
-                            <li class={`flex justify-between border-b border-slate-100 dark:border-slate-800 pb-2 ${slot.highlight ? 'text-rose-600 dark:text-rose-400 font-medium' : ''}`}>
+                            <li class={`grid grid-cols-[1fr_auto] gap-4 border-b border-slate-100 dark:border-slate-800 pb-2 items-start ${slot.highlight ? 'text-rose-600 dark:text-rose-400 font-medium' : ''}`}>
                                 <span>{slot.label}</span>
-                                <span class="font-bold">{slot.time}</span>
+                                <span class="text-right font-bold">{slot.time}</span>
                             </li>
                         ))}
                     </ul>
@@ -248,7 +241,7 @@ const departments = [
             {/* --- RECHTE SPALTE: FORMULAR & FAQ --- */}
             <div class="space-y-12">
                 
-                {/* KONTAKTFORMULAR (LIVE) */}
+                {/* KONTAKTFORMULAR */}
                 <div class="bg-white dark:bg-slate-900 rounded-[40px] shadow-2xl shadow-slate-200/50 dark:shadow-none p-8 md:p-12 border border-slate-100 dark:border-slate-800 relative overflow-hidden h-fit transition-colors duration-300">
                     <div class="absolute top-0 right-0 w-64 h-64 bg-rose-50 dark:bg-rose-900/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
 
@@ -256,8 +249,6 @@ const departments = [
                     <p class="text-slate-500 dark:text-slate-400 mb-8 relative z-10 font-medium">Wir melden uns so schnell wie möglich bei dir.</p>
 
                     <form id="contact-form" class="space-y-6 relative z-10">
-                        
-                        {/* Status Message Container */}
                         <div id="form-message" class="hidden p-4 rounded-xl text-sm font-bold mb-4"></div>
 
                         <div class="grid md:grid-cols-2 gap-6">
@@ -287,7 +278,6 @@ const departments = [
                             <textarea id="message" name="message" rows="5" required class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all dark:text-white" placeholder="Wie können wir helfen?"></textarea>
                         </div>
 
-                        {/* HONEYPOT FELD */}
                         <div class="hidden" aria-hidden="true">
                             <label for="website_check">Bitte dieses Feld leer lassen</label>
                             <input type="text" name="website_check" id="website_check" tabindex="-1" autocomplete="off">
@@ -356,11 +346,10 @@ const departments = [
         </div>
     </section>
 
-    {/* --- CTA: MITMACHEN (DESIGN UPDATE) --- */}
+    {/* --- CTA --- */}
     <section class="px-6 sm:px-10 py-24 bg-white dark:bg-slate-950 transition-colors duration-300 rounded-t-[32px] md:rounded-t-[64px]">
         <div class="max-w-7xl mx-auto">
             <a href="/join" class="group relative bg-slate-900 rounded-[40px] p-10 md:p-14 overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-10 shadow-2xl shadow-slate-200 dark:shadow-none border border-white/10 hover:scale-[1.01] transition-all duration-500">
-                {/* Glow Effect */}
                 <div class="absolute -right-20 -top-20 w-96 h-96 bg-rose-500/20 rounded-full blur-[100px] group-hover:bg-rose-500/30 transition-colors duration-700 pointer-events-none"></div>
 
                 <div class="relative z-10 flex flex-col lg:flex-row items-center gap-10 text-center lg:text-left">
@@ -368,7 +357,7 @@ const departments = [
                         <i class="fa-solid fa-rocket"></i>
                     </div>
                     <div>
-                        <span class="text-[10px] font-black uppercase tracking-[0.3em] text-rose-500 mb-2 block font-mono">Support us //</span>
+                        <span class="text-[10px] font-black uppercase tracking-[0.3em] text-rose-500 mb-2 block font-mono">Unterstütze uns</span>
                         <h2 class="text-3xl md:text-5xl font-display font-black text-white mb-4 tracking-tight uppercase leading-none">Werde ein <br> Brückenpfeiler.</h2>
                         <p class="text-slate-400 max-w-xl font-medium text-lg leading-relaxed">
                             Inklusion braucht Menschen, die mit anpacken. Ob Ehrenamt, Praktikum oder Zivildienst – dein Engagement stärkt unser gemeinsames Fundament.
@@ -435,13 +424,13 @@ const departments = [
 })} />
 
 <script>
-    // 1. Live-Status (Client-Side Logic)
+    // 1. Live-Status
     function updateOpeningStatus() {
         const container = document.getElementById('opening-status');
         if (!container) return;
 
         const now = new Date();
-        const day = now.getDay(); // 0 = So, 1 = Mo ...
+        const day = now.getDay(); 
         const hour = now.getHours();
         let isOpen = false;
 
@@ -456,7 +445,6 @@ const departments = [
                 </span>
             `;
         } else {
-            // RED & PULSING for CLOSED
             container.innerHTML = `
                 <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-400 text-xs font-bold uppercase tracking-widest border border-rose-200 dark:border-rose-800">
                     <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span> Gerade geschlossen
@@ -475,7 +463,7 @@ const departments = [
             placeholder.addEventListener('click', () => {
                 const apiKey = placeholder.dataset.key;
                 const query = "Die Brücke Graz Grabenstraße 39a";
-                // FIX: Korrekte Google Embed URL
+                // FIX: Korrekte URL Formatierung für Embed API
                 const mapUrl = `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${encodeURIComponent(query)}`;
                 
                 iframe.setAttribute('src', mapUrl);
@@ -485,7 +473,7 @@ const departments = [
         }
     }
 
-    // 3. Form Logic (SEND TO API)
+    // 3. Form Logic
     function initFormLogic() {
         const form = document.getElementById('contact-form');
         const msgBox = document.getElementById('form-message');
@@ -495,13 +483,11 @@ const departments = [
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 
-                // UI: Loading State
                 const originalBtnText = submitBtn.innerHTML;
                 submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Senden...';
                 submitBtn.setAttribute('disabled', 'true');
                 msgBox.classList.add('hidden');
 
-                // Data
                 const formData = new FormData(form);
                 const data = Object.fromEntries(formData.entries());
 
@@ -524,7 +510,7 @@ const departments = [
 
                 } catch (error) {
                     console.error(error);
-                    msgBox.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> ${error.message || 'Verbindungsfehler. Bitte versuche es später.'}`;
+                    msgBox.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> ${error.message || 'Verbindungsfehler.'}`;
                     msgBox.className = "p-4 rounded-xl text-sm font-bold mb-4 bg-rose-100 text-rose-800 border border-rose-200 block";
                 } finally {
                     submitBtn.innerHTML = originalBtnText;
@@ -534,7 +520,7 @@ const departments = [
         }
     }
 
-    // 4. vCard Logic (EventListener statt onclick)
+    // 4. vCard Logic
     function initVCardLogic() {
         const btn = document.getElementById('vcard-btn');
         if(btn) {
@@ -566,12 +552,11 @@ const departments = [
         }
     }
 
-    // Init All
     const init = () => {
         updateOpeningStatus();
         initMapLogic();
         initFormLogic();
-        initVCardLogic(); // <--- NEU HINZUGEFÜGT
+        initVCardLogic();
     }
     
     init();

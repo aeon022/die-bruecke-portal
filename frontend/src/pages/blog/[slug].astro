@@ -79,9 +79,15 @@ const formatDate = (dateString: string) => {
                 Zurück zum Journal
               </a>
             </nav>
-            <h1 class="text-5xl md:text-6xl lg:text-7xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tighter leading-[0.95] mb-8">
+            
+            {/* FIX: 
+                - text-3xl auf Mobile
+                - leading-[1.1] GLOBAL (auch Desktop), damit Umlaute (Ä,Ö,Ü) Platz haben
+            */}
+            <h1 class="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tighter leading-[1.1] mb-8 py-2">
               {post.title}
             </h1>
+            
             <div class="flex items-center justify-center gap-4 text-[10px] font-black uppercase tracking-widest text-slate-400">
               <span>{formatDate(post.date_created)}</span>
               <span class="w-1 h-1 rounded-full bg-slate-300"></span>
@@ -156,9 +162,6 @@ const formatDate = (dateString: string) => {
         </article>
 
         {/* --- RIGHT SIDEBAR (CTA & SOCIALS) --- */}
-        {/* FIX: 'mb-24' hinzugefügt für mehr Abstand zum Footer auf kleinen Screens.
-            Desktop überschreibt das mit 'xl:mb-12'. 
-        */}
         <aside class="w-full max-w-4xl mx-auto xl:w-[280px] xl:max-w-none shrink-0 xl:sticky xl:top-32 h-fit mt-12 mb-24 xl:mt-0 xl:mb-12 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-1 gap-8 xl:gap-12 items-start">
           
           {/* Box 1: Dynamic CTA */}

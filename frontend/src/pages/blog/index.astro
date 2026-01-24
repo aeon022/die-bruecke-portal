@@ -1,7 +1,7 @@
 ---
 import MainLayout from '../../layouts/layout.astro';
 import { getBlogPosts } from '../../lib/api';
-import { Image } from 'astro:assets'; // <--- NEU
+import { Image } from 'astro:assets'; 
 
 const posts = await getBlogPosts();
 const [featuredPost, ...otherPosts] = posts;
@@ -21,6 +21,7 @@ const formatDate = (dateString: string) => {
     <main class="bg-slate-50 dark:bg-slate-950 transition-colors duration-500 relative overflow-hidden rounded-[48px] m-2 md:m-4 border border-slate-200 dark:border-slate-800 shadow-2xl min-h-screen">        
         {/* Background Glow Effect für Darkmode Tiefe */}
         <div class="absolute top-0 right-0 w-[800px] h-[800px] bg-rose-500/5 rounded-full blur-[120px] pointer-events-none -translate-y-1/2 translate-x-1/2"></div>
+       
        {/* --- HEADER --- */}
         <section class="max-w-7xl mx-auto px-6 pt-24 pb-12 relative z-10">
             <div class="flex items-center gap-4 mb-6">
@@ -34,9 +35,10 @@ const formatDate = (dateString: string) => {
                 <span class="w-12 h-px bg-slate-200 dark:bg-slate-800"></span>
             </div>
             
-            <h1 class="text-6xl md:text-8xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tighter leading-[1.1] py-2">
+            {/* FIX: Schriftgröße mobil angepasst (text-4xl) und Padding rechts reduziert */}
+            <h1 class="text-4xl sm:text-6xl md:text-8xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tighter leading-[1.0] md:leading-[1.1] py-2">
                 Geschichten <br/> 
-                <span class="inline-block text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-indigo-600 italic pb-4 pr-12">
+                <span class="inline-block text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-indigo-600 italic pb-2 md:pb-4 pr-2 md:pr-12">
                     von uns.
                 </span>
             </h1>
@@ -48,7 +50,7 @@ const formatDate = (dateString: string) => {
                <a href={`/blog/${featuredPost.slug}/`} class="group grid lg:grid-cols-12 bg-white dark:bg-slate-900 rounded-[48px] overflow-hidden shadow-xl hover:shadow-2xl dark:shadow-black/50 border border-slate-100 dark:border-slate-800 transition-all duration-700 hover:-translate-y-1 isolate [transform:translateZ(0)]">
                     
                     {/* BILD BEREICH */}
-                    <div class="lg:col-span-7 overflow-hidden h-[400px] lg:h-[600px] relative">
+                    <div class="lg:col-span-7 overflow-hidden h-[300px] sm:h-[400px] lg:h-[600px] relative">
                         {/* PERFORMANCE: Eager Loading, hohe Priorität */}
                         <Image 
                             src={`${ASSET_URL}/${featuredPost.main_image}`} 
@@ -64,16 +66,18 @@ const formatDate = (dateString: string) => {
                     </div>
 
                     {/* TEXT BEREICH */}
-                    <div class="lg:col-span-5 p-12 md:p-20 flex flex-col justify-center border-t lg:border-t-0 lg:border-l border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 relative z-10">
-                        <div class="flex items-center gap-4 mb-8 text-[10px] font-black uppercase tracking-widest text-slate-400">
+                    {/* FIX: Padding mobil reduziert (p-8 statt p-12) */}
+                    <div class="lg:col-span-5 p-8 sm:p-12 md:p-20 flex flex-col justify-center border-t lg:border-t-0 lg:border-l border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 relative z-10">
+                        <div class="flex items-center gap-4 mb-6 md:mb-8 text-[10px] font-black uppercase tracking-widest text-slate-400">
                             <span>{formatDate(featuredPost.date_created)}</span>
                             <span class="w-1 h-1 rounded-full bg-rose-500"></span>
                             <span>Von {featuredPost.author}</span>
                         </div>
-                        <h2 class="text-4xl md:text-5xl font-display font-black text-slate-900 dark:text-white uppercase leading-[1.1] mb-8 group-hover:text-rose-500 transition-colors">
+                        {/* FIX: Schriftgröße mobil reduziert */}
+                        <h2 class="text-2xl sm:text-4xl md:text-5xl font-display font-black text-slate-900 dark:text-white uppercase leading-[1.1] mb-6 md:mb-8 group-hover:text-rose-500 transition-colors">
                             {featuredPost.title}
                         </h2>
-                        <p class="text-lg text-slate-600 dark:text-slate-400 leading-relaxed mb-10 line-clamp-3">
+                        <p class="text-base md:text-lg text-slate-600 dark:text-slate-400 leading-relaxed mb-8 md:mb-10 line-clamp-3">
                             {featuredPost.excerpt}
                         </p>
                         <span class="inline-flex items-center gap-3 text-rose-500 font-black uppercase tracking-widest text-xs group-hover:translate-x-2 transition-transform">
@@ -105,7 +109,8 @@ const formatDate = (dateString: string) => {
                             <div class="flex items-center gap-3 mb-4 text-[10px] font-black uppercase tracking-widest text-slate-400">
                                 <span>{formatDate(post.date_created)}</span>
                             </div>
-                            <h3 class="text-2xl font-display font-black text-slate-900 dark:text-white uppercase leading-tight mb-4 group-hover:text-rose-500 transition-colors">
+                            {/* FIX: Dezenterer Titel auf Mobile (text-xl, font-bold statt black) */}
+                            <h3 class="text-xl md:text-2xl font-display font-bold md:font-black text-slate-900 dark:text-white uppercase leading-tight mb-3 md:mb-4 group-hover:text-rose-500 transition-colors">
                                 {post.title}
                             </h3>
                             <p class="text-slate-600 dark:text-slate-400 text-sm line-clamp-2 leading-relaxed opacity-80 group-hover:opacity-100 transition-opacity">
