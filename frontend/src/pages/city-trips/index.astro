@@ -29,11 +29,11 @@ const seoImage = featuredTrip?.image ? `${ASSET_URL}/${featuredTrip.image}` : "h
     
     {/* --- HERO SECTION (Featured Trip) --- */}
     {featuredTrip && (
-        <section class="px-4 sm:px-6 pt-6 pb-20">
+        <section class="px-4 sm:px-6 pt-6 pb-20 transition-colors duration-500">
             <div class="relative bg-slate-900 rounded-[48px] md:rounded-[64px] overflow-hidden min-h-[60vh] flex items-center px-6 md:px-16 py-20 shadow-2xl">
                 
-                {/* Background Image Layer */}
-                <div class="absolute inset-0">
+                {/* Background Layer */}
+                <div class="absolute inset-0 z-0">
                     {featuredTrip.image && (
                          <img 
                             src={`${ASSET_URL}/${featuredTrip.image}`} 
@@ -44,9 +44,10 @@ const seoImage = featuredTrip?.image ? `${ASSET_URL}/${featuredTrip.image}` : "h
                     <div class="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/60 to-transparent"></div>
                 </div>
 
-                <div class="relative z-10 w-full">
+                {/* Content z-30 damit alles klickbar bleibt */}
+                <div class="relative z-30 w-full">
                     
-                    {/* --- NAVIGATION LINKS (ZURÜCK & WECHSEL ZU CAMPS) --- */}
+                    {/* --- NAVIGATION LINKS --- */}
                     <div class="mb-12 flex flex-wrap gap-3">
                         <a href="/" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-white/80 hover:text-white hover:bg-white/20 transition-all text-[10px] font-black uppercase tracking-widest group">
                             <i class="fa-solid fa-arrow-left group-hover:-translate-x-1 transition-transform"></i> 
@@ -63,7 +64,9 @@ const seoImage = featuredTrip?.image ? `${ASSET_URL}/${featuredTrip.image}` : "h
                             <span class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span> 
                             Highlight-Trip
                         </div>
-                        <h1 class="text-5xl md:text-8xl font-display font-black text-white mb-6 leading-[0.85] tracking-tighter uppercase">
+                        
+                        {/* leading-[1.02] fix für Umlaute */}
+                        <h1 class="text-5xl md:text-8xl font-display font-black text-white mb-6 leading-[1.02] tracking-tighter uppercase">
                             {featuredTrip.title}
                         </h1>
                         
@@ -106,17 +109,19 @@ const seoImage = featuredTrip?.image ? `${ASSET_URL}/${featuredTrip.image}` : "h
             
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
                 {trips.map((trip: any) => (
-                    <article class="group bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-[40px] overflow-hidden hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 flex flex-col h-full shadow-sm">
-                        <a href={`/city-trips/${trip.slug}`} class="block relative h-64 overflow-hidden">
+                    <article class="group relative bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-[40px] overflow-hidden hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 flex flex-col h-full shadow-sm cursor-pointer">
+                        
+                        {/* Bild-Bereich */}
+                        <div class="relative h-64 overflow-hidden">
                             {trip.image ? (
                                 <img src={`${ASSET_URL}/${trip.image}`} alt={trip.title} class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[1.5s]" />
                             ) : (
                                 <div class="w-full h-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-300"><i class="fa-solid fa-bus text-5xl"></i></div>
                             )}
-                            <div class="absolute top-6 right-6 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md px-4 py-2 rounded-2xl text-xs font-black text-slate-900 dark:text-white shadow-xl">
+                            <div class="absolute top-6 right-6 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md px-4 py-2 rounded-2xl text-sm font-black text-slate-900 dark:text-white shadow-xl z-10">
                                 € {trip.price}
                             </div>
-                        </a>
+                        </div>
                         
                         <div class="p-8 flex flex-col flex-grow">
                             <div class="flex gap-4 text-[10px] font-black text-indigo-500 uppercase tracking-[0.2em] mb-4">
@@ -124,19 +129,20 @@ const seoImage = featuredTrip?.image ? `${ASSET_URL}/${featuredTrip.image}` : "h
                             </div>
                             
                             <h3 class="text-2xl font-display font-bold text-slate-900 dark:text-white mb-4 leading-tight group-hover:text-indigo-600 transition-colors uppercase tracking-tight">
-                                <a href={`/city-trips/${trip.slug}`}>
+                                {/* STRETCHED LINK: Ganze Karte klickbar */}
+                                <a href={`/city-trips/${trip.slug}`} class="before:absolute before:inset-0 before:z-20">
                                     {trip.title}
                                 </a>
                             </h3>
 
                             {trip.fass_hours && (
-                                <div class="mb-6 inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 text-[10px] font-black uppercase tracking-widest border border-emerald-100 dark:border-emerald-800 w-fit">
+                                <div class="mb-6 inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 text-[10px] font-black uppercase tracking-widest border border-emerald-100 dark:border-emerald-800 w-fit relative z-10">
                                     <i class="fa-solid fa-clock"></i> {trip.fass_hours}h FASS anrechenbar
                                 </div>
                             )}
                             
                             <div class="pt-6 border-t border-slate-50 dark:border-slate-800 flex items-center justify-between mt-auto">
-                                <div class="flex items-center gap-2 text-xs font-bold">
+                                <div class="flex items-center gap-2 text-xs font-bold relative z-10">
                                     {trip.free_spots > 0 ? (
                                         <span class="text-emerald-600 flex items-center gap-2">
                                             <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> 
@@ -148,7 +154,7 @@ const seoImage = featuredTrip?.image ? `${ASSET_URL}/${featuredTrip.image}` : "h
                                         </span>
                                     )}
                                 </div>
-                                <div class="w-10 h-10 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-400 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300">
+                                <div class="w-10 h-10 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-400 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300 relative z-10">
                                     <i class="fa-solid fa-arrow-right"></i>
                                 </div>
                             </div>
