@@ -12,11 +12,13 @@ try {
 }
 
 // --- DATEN-LOGIK: ÖFFNUNGSZEITEN ---
+// Fallback, falls Directus leer ist (Wichtig für Stabilität)
 const defaultOpeningHours = [
     { label: "Montag – Donnerstag", time: "09:00 – 16:00", highlight: false },
     { label: "Freitag", time: "09:00 – 13:00", highlight: false },
     { label: "Veranstaltungen", time: "Je nach Programm", highlight: true }
 ];
+// Wenn Settings da sind, nimm sie, sonst Fallback
 const openingHours = settings?.opening_hours || defaultOpeningHours;
 
 // --- DATEN-LOGIK: BARRIEREFREIHEIT ---
@@ -256,7 +258,7 @@ const faqs = [
                     </div>
                 </div>
 
-                {/* Rechte Seite: Öffnungszeiten & Barrierefreiheit */}
+                {/* Rechte Seite: Öffnungszeiten & Barrierefreiheit (JETZT MIT KORREKTEM LAYOUT) */}
                 <div class="bg-slate-100 dark:bg-slate-800/50 p-10 md:p-16 lg:w-2/5 border-t lg:border-t-0 lg:border-l border-slate-200 dark:border-slate-800 flex flex-col justify-center">
                     
                     {/* Öffnungszeiten */}
