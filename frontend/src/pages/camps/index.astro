@@ -4,7 +4,7 @@ import { directus } from '../../lib/directus';
 import { readItems } from '@directus/sdk';
 import { Image } from 'astro:assets';
 
-// 1. Daten laden (Collection: camps)
+// 1. Daten laden
 const camps = await directus.request(readItems('camps', {
     filter: { status: { _eq: 'published' } },
     sort: ['date_range'] 
@@ -13,7 +13,9 @@ const camps = await directus.request(readItems('camps', {
 const ASSET_URL = "https://api.diebruecke.social/assets";
 const featuredCamp = camps.find((c: any) => c.is_featured) || camps[0];
 
-// Flaggen-Logik
+// Hilfsfunktion für Directus-Optimierung (Serverseitig)
+const getImg = (id, w = 800) => `${ASSET_URL}/${id}?width=${w}&format=webp&quality=80`;
+
 const getFlag = (location: string) => {
     if (!location) return '📍';
     const loc = location.toLowerCase();
@@ -32,10 +34,9 @@ function cleanDesc(html: string) {
     return html.replace(/<[^>]*>?/gm, '').slice(0, 160).trim();
 }
 
-// SEO CONFIG
 const seoTitle = "Inklusive Sommercamps & barrierefreie Reisen 2026 | Die Brücke Graz";
 const seoDescription = "Entdecke unsere barrierefreien Sommercamps und inklusiven Reisen 2026. Abenteuer ohne Barrieren für Menschen mit Behinderung.";
-const seoImage = featuredCamp?.image ? `${ASSET_URL}/${featuredCamp.image}` : "https://diebruecke.cc/share-camps.jpg";
+const seoImage = featuredCamp?.image ? getImg(featuredCamp.image, 1200) : "https://diebruecke.cc/share-camps.jpg";
 ---
 
 <MainLayout 
@@ -49,21 +50,26 @@ const seoImage = featuredCamp?.image ? `${ASSET_URL}/${featuredCamp.image}` : "h
         <section class="px-4 sm:px-6 pt-6 pb-20 transition-colors duration-500">
             <div class="relative bg-slate-900 rounded-[48px] md:rounded-[64px] overflow-hidden min-h-[70vh] flex items-center shadow-2xl">
                 
-                {/* Background Layer */}
                 <div class="absolute inset-0 z-0">
                     {featuredCamp.image && (
-                         <img src={`${ASSET_URL}/${featuredCamp.image}`} class="w-full h-full object-cover opacity-40 scale-105" alt="" />
+                         <Image 
+                            src={getImg(featuredCamp.image, 1600)} 
+                            alt={featuredCamp.title}
+                            width={1600}
+                            height={900}
+                            loading="eager"
+                            fetchpriority="high"
+                            class="w-full h-full object-cover opacity-40 scale-105" 
+                         />
                     )}
                     <div class="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-900/70 to-transparent z-10"></div>
                     
-                    {/* STUDIO GLOW EFFECTS (pointer-events-none ist hier Pflicht!) */}
                     <div class="absolute top-0 right-0 w-full h-full overflow-hidden pointer-events-none z-20">
                         <div class="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] bg-rose-600/25 rounded-full blur-[120px] animate-pulse-slow"></div>
                         <div class="absolute bottom-[-10%] right-[-5%] w-[500px] h-[500px] bg-indigo-600/20 rounded-full blur-[100px]"></div>
                     </div>
                 </div>
 
-                {/* Content Area (z-30 damit Buttons oben liegen) */}
                 <div class="relative z-30 w-full px-8 md:px-16 py-24">
                     <div class="max-w-3xl">
                         <div class="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-rose-500/20 backdrop-blur-md border border-rose-500/30 text-rose-300 text-[10px] font-black uppercase tracking-[0.3em] mb-10 shadow-lg">
@@ -71,7 +77,6 @@ const seoImage = featuredCamp?.image ? `${ASSET_URL}/${featuredCamp.image}` : "h
                             Highlight Reise 2026
                         </div>
                         
-                        {/* leading-[1.02] damit Umlaute Platz haben */}
                         <h1 class="text-5xl md:text-8xl font-display font-black text-white mb-8 tracking-tighter leading-[1.02] uppercase">
                             {featuredCamp.title}
                         </h1>
@@ -92,7 +97,7 @@ const seoImage = featuredCamp?.image ? `${ASSET_URL}/${featuredCamp.image}` : "h
                         </div>
 
                         <div class="flex flex-wrap gap-4">
-                            <a href={`/camps/${featuredCamp.slug}`} class="bg-rose-600 text-white px-10 py-5 rounded-full font-black uppercase tracking-widest text-xs hover:bg-white hover:text-slate-900 transition-all shadow-xl transform hover:-translate-y-1">
+                            <a href={`/camps/${featuredCamp.slug}`} class="bg-rose-600 text-white px-10 py-5 rounded-full font-black uppercase tracking-widest text-xs hover:bg-white hover:text-slate-900 transition-all shadow-xl shadow-rose-900/20 transform hover:-translate-y-1">
                                 Details & Anmeldung
                             </a>
                             <div class="px-10 py-5 border border-white/20 backdrop-blur-md text-white rounded-full font-black text-xs uppercase tracking-widest">
@@ -104,6 +109,77 @@ const seoImage = featuredCamp?.image ? `${ASSET_URL}/${featuredCamp.image}` : "h
             </div>
         </section>
     )}
+
+    {/* --- LISTE ALLER REISEN 2026 --- */}
+    <section class="px-6 sm:px-10 py-32 bg-white dark:bg-slate-950 transition-colors duration-500">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-24 border-b border-slate-100 dark:border-slate-800 pb-12 gap-8">
+                <div>
+                    <span class="text-rose-500 font-bold tracking-widest uppercase text-[10px] mb-4 block">Reisekatalog</span>
+                    <h2 class="text-5xl md:text-7xl font-display font-black text-slate-900 dark:text-white tracking-tighter uppercase leading-none">
+                        Unsere <span class="text-rose-600 italic">Reisen</span> 2026.
+                    </h2>
+                </div>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-12">
+                {camps.map((camp: any) => (
+                    <article class="group relative bg-white dark:bg-slate-900 rounded-[48px] overflow-hidden border border-slate-100 dark:border-slate-800 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 flex flex-col h-full shadow-sm cursor-pointer">
+                        
+                        <div class="relative h-72 overflow-hidden bg-slate-100">
+                            {camp.image ? (
+                                <Image 
+                                    src={getImg(camp.image, 800)} 
+                                    alt={camp.title}
+                                    width={800}
+                                    height={500}
+                                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[1.5s]" 
+                                />
+                            ) : (
+                                <div class="w-full h-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-300"><i class="fa-solid fa-plane-up text-5xl"></i></div>
+                            )}
+                            <div class="absolute top-6 left-6 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md px-4 py-2 rounded-2xl text-xs font-black text-slate-900 dark:text-white shadow-xl flex items-center gap-3 z-10">
+                                <span class="text-xl">{getFlag(camp.location)}</span> 
+                                <span>€ {camp.price}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="p-10 flex flex-col flex-1">
+                            <div class="text-[10px] font-black text-rose-500 uppercase tracking-[0.3em] mb-6">
+                                <i class="fa-regular fa-calendar mr-2"></i> {camp.date_range}
+                            </div>
+                            
+                            <h3 class="text-3xl font-display font-bold text-slate-900 dark:text-white mb-6 leading-tight group-hover:text-rose-600 transition-colors uppercase tracking-tight">
+                                <a href={`/camps/${camp.slug}`} class="before:absolute before:inset-0 before:z-20">
+                                    {camp.title}
+                                </a>
+                            </h3>
+                            
+                            <div class="text-slate-500 dark:text-slate-400 leading-relaxed line-clamp-3 mb-10 text-base font-medium flex-1" set:html={camp.description}></div>
+                            
+                            <div class="pt-8 border-t border-slate-50 dark:border-slate-800 flex items-center justify-between mt-auto">
+                                <div class="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest relative z-10">
+                                    {camp.free_spots > 0 ? (
+                                        <span class="text-emerald-600 flex items-center gap-2">
+                                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> 
+                                            {camp.free_spots} Plätze
+                                        </span>
+                                    ) : (
+                                        <span class="text-rose-500 flex items-center gap-2">
+                                            <span class="w-2 h-2 rounded-full bg-rose-500"></span> Warteliste
+                                        </span>
+                                    )}
+                                </div>
+                                <div class="w-12 h-12 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-400 group-hover:bg-rose-600 group-hover:text-white transition-all duration-300 relative z-10">
+                                    <i class="fa-solid fa-arrow-right"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                ))}
+            </div>
+        </div>
+    </section>
 
     {/* --- LISTE ALLER REISEN 2026 --- */}
     <section class="px-6 sm:px-10 py-32 bg-white dark:bg-slate-950 transition-colors duration-500">

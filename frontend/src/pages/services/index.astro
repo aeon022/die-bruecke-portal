@@ -6,7 +6,7 @@ import { directus } from '../../lib/directus';
 import { readItems } from '@directus/sdk';
 import { Image } from 'astro:assets'; 
 
-// 1. Services aus Directus holen
+// 1. Services laden
 let services = [];
 try {
   services = await directus.request(readItems('services', {
@@ -17,7 +17,12 @@ try {
   console.warn("Konnte Services nicht laden:", error.message);
 }
 
-// 2. Mit statischer Camps-Karte kombinieren
+const ASSET_URL = "https://api.diebruecke.social/assets";
+
+// Hilfsfunktion für Directus-Bildoptimierung (PageSpeed Fix)
+const getImg = (id, w = 800) => id ? `${ASSET_URL}/${id}?width=${w}&format=webp&quality=80` : null;
+
+// 2. Kombinierte Services
 const allServices = [
   ...services,
   {
@@ -29,7 +34,6 @@ const allServices = [
   }
 ];
 
-// Farben für die Karten-Akzente
 const serviceColors = ["bg-rose-500", "bg-amber-500", "bg-emerald-500", "bg-sky-500", "bg-purple-500"];
 
 const highlights = [
@@ -37,24 +41,24 @@ const highlights = [
     title: "City Trips",
     subtitle: "Europa ruft.",
     desc: "Prag, Wien oder Ljubljana? Wir warten nicht auf den Bus, wir starten das Abenteuer.",
-    image: "https://images.unsplash.com/photo-1541849546-216549ae216d?q=80&w=1200", 
+    // OPTIMIERUNG: URL Parameter w=1000 hinzugefügt
+    image: "https://images.unsplash.com/photo-1541849546-216549ae216d?q=80&w=1000&auto=format&fit=crop", 
     tags: ["Travel", "Culture"]
   },
   {
     title: "Adventure Time",
     subtitle: "Adrenalin statt Alltag.",
     desc: "Ob beim Segeln oder am Fels – hier geht es nicht um 'Barrierefrei', sondern um 'Grenzenlos'.",
-    image: "https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=1600&auto=format&fit=crop", 
+    // OPTIMIERUNG: URL Parameter w=1000 hinzugefügt
+    image: "https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=1000&auto=format&fit=crop", 
     tags: ["Action", "Sport"]
   }
 ];
 
-// --- SEO POWER HOUSE ---
-// Titel: Spezifisch für Graz + Hauptdienstleistungen
 const seoTitle = "Soziale Dienste & Freizeitassistenz Graz | Angebote";
-// Description: Pain Point (Selbstbestimmung) + Lösung (Unsere Dienste) + Location
-const seoDescription = "Dein Partner für ein selbstbestimmtes Leben in Graz. Wir bieten Freizeitassistenz, Wohnassistenz, Familienentlastung und inklusive Camps. Unbürokratisch & auf Augenhöhe.";
-const seoImage = "https://images.pexels.com/photos/1438072/pexels-photo-1438072.jpeg"; // Hero Image
+const seoDescription = "Dein Partner für ein selbstbestimmtes Leben in Graz. Freizeitassistenz, Wohnassistenz, Familienentlastung und inklusive Camps.";
+// OPTIMIERUNG: Pexels URL Parameter w=1200 hinzugefügt
+const seoImage = "https://images.pexels.com/photos/1438072/pexels-photo-1438072.jpeg?auto=compress&cs=tinysrgb&w=1200"; 
 ---
 
 <MainLayout 

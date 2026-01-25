@@ -31,3 +31,12 @@ export function formatEventDate(dateObj: Date, timeStr?: string) {
     }
     return `${day} • ${time}`;
 }
+
+// "Image Turbo" (Bilder-Optimierung) Hilfsfunktion
+
+export function getOptimizedImage(id, width = 800) {
+  if (!id) return null;
+  const ASSET_URL = "https://api.diebruecke.social/assets";
+  // Wir erzwingen WebP, setzen die Breite und eine gute Kompression
+  return `${ASSET_URL}/${id}?width=${width}&format=webp&quality=80`;
+}

@@ -12,13 +12,16 @@ const trips = await directus.request(readItems('city_trips', {
 
 const ASSET_URL = "https://api.diebruecke.social/assets";
 
+// Hilfsfunktion für Directus-Bildoptimierung (spart ca. 80-90% Datenmenge)
+const getOptimizedImg = (id, width = 800) => `${ASSET_URL}/${id}?width=${width}&format=webp&quality=80`;
+
 // 2. Featured-Logik
 const featuredTrip = trips.find((t: any) => t.is_featured) || trips[0];
 
 // --- SEO CONFIG ---
 const seoTitle = "Barrierefreie Reisen & Ausflüge Graz | City Trips";
-const seoDescription = "Raus aus dem Alltag! Entdecke unsere inklusiven City Trips und barrierefreien Ausflüge ab Graz. Professionelle Begleitung, tolle Gemeinschaft und volle Barrierefreiheit.";
-const seoImage = featuredTrip?.image ? `${ASSET_URL}/${featuredTrip.image}` : "https://diebruecke.cc/share-trips.jpg";
+const seoDescription = "Raus aus dem Alltag! Entdecke unsere inklusiven City Trips und barrierefreien Ausflüge ab Graz. Professionelle Begleitung und volle Barrierefreiheit.";
+const seoImage = featuredTrip?.image ? getOptimizedImg(featuredTrip.image, 1200) : "https://diebruecke.cc/share-trips.jpg";
 ---
 
 <MainLayout 
@@ -32,19 +35,23 @@ const seoImage = featuredTrip?.image ? `${ASSET_URL}/${featuredTrip.image}` : "h
         <section class="px-4 sm:px-6 pt-6 pb-20 transition-colors duration-500">
             <div class="relative bg-slate-900 rounded-[48px] md:rounded-[64px] overflow-hidden min-h-[60vh] flex items-center px-6 md:px-16 py-20 shadow-2xl">
                 
-                {/* Background Layer */}
+                {/* Background Layer mit LCP Optimierung */}
                 <div class="absolute inset-0 z-0">
                     {featuredTrip.image && (
-                         <img 
-                            src={`${ASSET_URL}/${featuredTrip.image}`} 
-                            class="w-full h-full object-cover opacity-50 grayscale hover:grayscale-0 transition-all duration-1000" 
+                         <Image 
+                            src={getOptimizedImg(featuredTrip.image, 1600)} 
                             alt={`Inklusiv-Reise nach ${featuredTrip.title}`} 
+                            width={1600}
+                            height={900}
+                            loading="eager"
+                            fetchpriority="high"
+                            class="w-full h-full object-cover opacity-50 grayscale hover:grayscale-0 transition-all duration-1000 scale-105" 
                         />
                     )}
                     <div class="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/60 to-transparent"></div>
                 </div>
 
-                {/* Content z-30 damit alles klickbar bleibt */}
+                {/* Content z-30 für volle Klickbarkeit */}
                 <div class="relative z-30 w-full">
                     
                     {/* --- NAVIGATION LINKS --- */}
@@ -64,8 +71,8 @@ const seoImage = featuredTrip?.image ? `${ASSET_URL}/${featuredTrip.image}` : "h
                             <span class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span> 
                             Highlight-Trip
                         </div>
-                        
-                        {/* leading-[1.02] fix für Umlaute */}
+
+                        {/* Leading fix für Umlaute */}
                         <h1 class="text-5xl md:text-8xl font-display font-black text-white mb-6 leading-[1.02] tracking-tighter uppercase">
                             {featuredTrip.title}
                         </h1>
@@ -102,19 +109,22 @@ const seoImage = featuredTrip?.image ? `${ASSET_URL}/${featuredTrip.image}` : "h
                     <span class="text-indigo-600 font-bold tracking-widest uppercase text-xs mb-3 block">Reise-Kalender</span>
                     <h2 class="text-4xl md:text-5xl font-display font-black text-slate-900 dark:text-white tracking-tight uppercase">Aktuelle <span class="text-indigo-600 italic">Ausflüge.</span></h2>
                 </div>
-                <p class="text-slate-500 dark:text-slate-400 max-w-md font-medium">
-                    Unsere City Trips sind speziell für Menschen mit Behinderung konzipiert – barrierefrei, unbürokratisch und voller Erlebnisse.
-                </p>
             </div>
             
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
                 {trips.map((trip: any) => (
                     <article class="group relative bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-[40px] overflow-hidden hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 flex flex-col h-full shadow-sm cursor-pointer">
                         
-                        {/* Bild-Bereich */}
-                        <div class="relative h-64 overflow-hidden">
+                        {/* Bild-Bereich mit optimierter Größe */}
+                        <div class="relative h-64 overflow-hidden bg-slate-100">
                             {trip.image ? (
-                                <img src={`${ASSET_URL}/${trip.image}`} alt={trip.title} class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[1.5s]" />
+                                <Image 
+                                    src={getOptimizedImg(trip.image, 800)} 
+                                    alt={trip.title}
+                                    width={800}
+                                    height={500}
+                                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[1.5s]" 
+                                />
                             ) : (
                                 <div class="w-full h-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-300"><i class="fa-solid fa-bus text-5xl"></i></div>
                             )}
@@ -129,7 +139,7 @@ const seoImage = featuredTrip?.image ? `${ASSET_URL}/${featuredTrip.image}` : "h
                             </div>
                             
                             <h3 class="text-2xl font-display font-bold text-slate-900 dark:text-white mb-4 leading-tight group-hover:text-indigo-600 transition-colors uppercase tracking-tight">
-                                {/* STRETCHED LINK: Ganze Karte klickbar */}
+                                {/* STRETCHED LINK: Gesamte Karte klickbar + Cursorpointer */}
                                 <a href={`/city-trips/${trip.slug}`} class="before:absolute before:inset-0 before:z-20">
                                     {trip.title}
                                 </a>
@@ -137,7 +147,7 @@ const seoImage = featuredTrip?.image ? `${ASSET_URL}/${featuredTrip.image}` : "h
 
                             {trip.fass_hours && (
                                 <div class="mb-6 inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 text-[10px] font-black uppercase tracking-widest border border-emerald-100 dark:border-emerald-800 w-fit relative z-10">
-                                    <i class="fa-solid fa-clock"></i> {trip.fass_hours}h FASS anrechenbar
+                                    <i class="fa-solid fa-clock"></i> {trip.fass_hours}h FASS
                                 </div>
                             )}
                             
@@ -146,7 +156,7 @@ const seoImage = featuredTrip?.image ? `${ASSET_URL}/${featuredTrip.image}` : "h
                                     {trip.free_spots > 0 ? (
                                         <span class="text-emerald-600 flex items-center gap-2">
                                             <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> 
-                                            {trip.free_spots} freie Plätze
+                                            {trip.free_spots} Plätze
                                         </span>
                                     ) : (
                                         <span class="text-rose-500 flex items-center gap-2 uppercase tracking-widest">
@@ -167,7 +177,7 @@ const seoImage = featuredTrip?.image ? `${ASSET_URL}/${featuredTrip.image}` : "h
 
 </MainLayout>
 
-{/* --- SCHEMA.ORG: TRIPS LIST --- */}
+{/* SCHEMA.ORG */}
 <script type="application/ld+json" set:html={JSON.stringify({
   "@context": "https://schema.org",
   "@type": "ItemList",
@@ -177,7 +187,6 @@ const seoImage = featuredTrip?.image ? `${ASSET_URL}/${featuredTrip.image}` : "h
     "@type": "ListItem",
     "position": index + 1,
     "url": `https://diebruecke.cc/city-trips/${trip.slug}`,
-    "name": trip.title,
-    "description": trip.description?.replace(/<[^>]*>?/gm, '').substring(0, 100) + "..."
+    "name": trip.title
   }))
 })} />

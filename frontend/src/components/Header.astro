@@ -14,7 +14,8 @@ try {
   if (settings) {
     projectName = settings.project_name || 'Die Brücke';
     if (settings.logo) {
-      logoUrl = `https://api.diebruecke.social/assets/${settings.logo}`;
+      // PERF FIX: Optimierte Größe via Directus anfordern
+      logoUrl = `https://api.diebruecke.social/assets/${settings.logo}?width=200&format=webp`;
     }
     if (settings.address) {
       contactAddress = settings.address;
@@ -26,66 +27,32 @@ try {
 
 // SOCIAL MEDIA LOGIK (Dynamisch aus Directus)
 const rawSocials = [
-    { 
-        key: 'social_facebook', 
-        icon: 'fa-facebook-f', 
-        label: 'Facebook',
-        fallback: 'https://www.facebook.com/brueckegraz' 
-    },
-    { 
-        key: 'social_instagram', 
-        icon: 'fa-instagram', 
-        label: 'Instagram',
-        fallback: 'https://www.instagram.com/die.bruecke.graz'
-    },
-    { 
-        key: 'social_x', 
-        icon: 'fa-x-twitter', 
-        label: 'X (Twitter)',
-        fallback: null 
-    },
-    { 
-        key: 'social_youtube', 
-        icon: 'fa-youtube', 
-        label: 'YouTube',
-        fallback: null
-    },
-    { 
-        key: 'social_linkedin', 
-        icon: 'fa-linkedin-in', 
-        label: 'LinkedIn',
-        fallback: null
-    }
+    { key: 'social_facebook', icon: 'fa-facebook-f', label: 'Facebook', fallback: 'https://www.facebook.com/brueckegraz' },
+    { key: 'social_instagram', icon: 'fa-instagram', label: 'Instagram', fallback: 'https://www.instagram.com/die.bruecke.graz' },
+    { key: 'social_x', icon: 'fa-x-twitter', label: 'X (Twitter)', fallback: null },
+    { key: 'social_youtube', icon: 'fa-youtube', label: 'YouTube', fallback: null },
+    { key: 'social_linkedin', icon: 'fa-linkedin-in', label: 'LinkedIn', fallback: null }
 ];
 
-// Filtere nur aktive Links
 const activeSocials = rawSocials.map(s => {
     const url = settings?.[s.key] || s.fallback;
     return url ? { ...s, href: url } : null;
 }).filter(Boolean);
 
 
-// NEUES MENÜ-KONZEPT (12 Punkte)
+// MENÜ-KONZEPT (12 Punkte)
 const menuItems = [
-  // ZEILE 1: Kern-Angebot
   { number: '01', title: 'Kalender', href: '/events', desc: 'Termine & Kultur.' },
   { number: '02', title: 'Angebote', href: '/services', desc: 'Begleitung & Alltag.' },
   { number: '03', title: 'Camps', href: '/camps', desc: 'Reisen & Urlaub.' },
   { number: '04', title: 'Projekte', href: '/projects', desc: 'Kunst & Inklusion.' },
-  
-  // ZEILE 2: Orte & Info
   { number: '05', title: 'Info-Point', href: '/info', desc: 'Beratung & Service.' },
   { number: '06', title: 'Dein Raum', href: '/space', desc: 'Vermietung & Feiern.' },
   { number: '07', title: 'Über uns', href: '/about', desc: 'Team & Mission.' },
   { number: '08', title: 'Mitmachen', href: '/join', desc: 'Jobs & Ehrenamt.' },
-
-  // ZEILE 3: Content & Shop
   { number: '09', title: 'Journal', href: '/blog', desc: 'Blog & Neuigkeiten.', highlight: true },
   { number: '10', title: 'Archiv', href: '/archiv', desc: '40 Jahre Zeitreise.' },
-  
-  // UPDATE: Shop Link aktiviert
   { number: '11', title: 'Shop', href: '/shop', desc: 'Merch & Handwerk.', badge: 'Coming Soon', disabled: false },
-  
   { number: '12', title: 'Kontakt', href: '/contact', desc: 'Anfahrt & Hallo.' },
 ];
 ---
@@ -99,7 +66,8 @@ const menuItems = [
     <a href="/" class="flex items-center gap-3 group" aria-label="Zur Startseite">
       <div id="logo-container" class={`rounded-xl bg-transparent flex items-center justify-center transition-all duration-300 overflow-hidden text-slate-900 dark:text-white ${logoUrl ? 'w-auto h-14 md:h-16 px-2 md:px-5' : 'w-12 h-12'}`}>
         {logoUrl ? (
-             <img src={logoUrl} alt={projectName} class="h-full w-auto object-contain p-1 logo-img" />
+             /* REDUNDANZ FIX: alt leer / PERF FIX: width+height */
+             <img src={logoUrl} alt="" width="160" height="60" class="h-full w-auto object-contain p-1 logo-img" />
         ) : (
              <div class="w-3 h-3 rounded-sm bg-rose-500"></div>
         )}
@@ -115,27 +83,26 @@ const menuItems = [
 
     <div class="flex items-center gap-2 sm:gap-3">
       
-      <button id="btnAccessibility" data-tooltip="Barrierefreiheit anzeigen mit Shift + / oder Strg + K" class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/5 flex items-center justify-center text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/30 transition cursor-pointer shadow-sm focus:outline-none focus:ring-2 focus:ring-rose-500" type="button" aria-label="Barrierefreiheit">
-         <i class="fa-solid fa-wheelchair text-base md:text-lg"></i>
+      <button id="btnAccessibility" data-tooltip="Barrierefreiheit anzeigen mit Shift + / oder Strg + K" class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/5 flex items-center justify-center text-rose-600 dark:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/30 transition cursor-pointer shadow-sm focus:outline-none focus:ring-2 focus:ring-rose-500" type="button" aria-label="Barrierefreiheit">
+         <i class="fa-solid fa-wheelchair text-base md:text-lg" aria-hidden="true"></i>
       </button>
 
-      {/* Button mit ID für das Script */}
       <button id="themeToggle" data-tooltip="Design Hell/Dunkel" class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/5 flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-700 transition cursor-pointer shadow-sm relative focus:outline-none overflow-hidden group" type="button" aria-label="Design wechseln">
         <span class="theme-moon absolute inset-0 flex items-center justify-center transition-all duration-500 rotate-0 scale-100 opacity-100 dark:rotate-90 dark:scale-0 dark:opacity-0 text-slate-600">
-          <i class="fa-solid fa-moon text-base md:text-lg"></i>
+          <i class="fa-solid fa-moon text-base md:text-lg" aria-hidden="true"></i>
         </span>
         <span class="theme-sun absolute inset-0 flex items-center justify-center transition-all duration-500 -rotate-90 scale-0 opacity-0 dark:rotate-0 dark:scale-100 dark:opacity-100 text-yellow-400">
-          <i class="fa-solid fa-sun text-base md:text-lg"></i>
+          <i class="fa-solid fa-sun text-base md:text-lg" aria-hidden="true"></i>
         </span>
       </button>
 
       <button id="btnOpenNav" class="h-10 md:h-12 pl-3 pr-4 md:pr-5 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/5 flex items-center justify-center gap-2 text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-700 transition cursor-pointer shadow-sm relative focus:outline-none group" aria-label="Menü öffnen" aria-expanded="false" aria-controls="navOverlay">
         <div class="relative w-6 h-6 flex items-center justify-center">
             <span class="icon-bars pointer-events-none transition-opacity duration-300 absolute inset-0 flex items-center justify-center">
-              <i class="fa-solid fa-bars text-lg md:text-xl group-hover:scale-110 transition-transform"></i>
+              <i class="fa-solid fa-bars text-lg md:text-xl group-hover:scale-110 transition-transform" aria-hidden="true"></i>
             </span>
             <span class="icon-x pointer-events-none absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-300">
-              <i class="fa-solid fa-xmark text-lg md:text-xl text-rose-500"></i>
+              <i class="fa-solid fa-xmark text-lg md:text-xl text-rose-600"></i>
             </span>
         </div>
         <span class="font-bold text-xs md:text-sm tracking-wide">Menü</span>
@@ -144,7 +111,7 @@ const menuItems = [
     </div>
   </header>
 
-  <div id="navOverlay" class="-mt-px w-full bg-slate-700/95 dark:bg-slate-800/95 text-white border-x border-b border-white/10 dark:border-white/5 rounded-[40px] overflow-hidden nav-panel nav-transition shadow-2xl backdrop-blur-xl" data-state="closed" aria-hidden="true">
+  <div id="navOverlay" class="-mt-px w-full bg-slate-700/95 dark:bg-slate-800/95 text-white border-x border-b border-white/10 dark:border-white/5 rounded-[40px] overflow-hidden nav-panel nav-transition shadow-2xl backdrop-blur-xl" data-state="closed" aria-hidden="true" role="region" aria-label="Hauptnavigation">
     
     <div class="max-w-7xl mx-auto w-full px-6 sm:px-10 py-5 flex items-center justify-between border-b border-white/10">
       <div class="flex items-center gap-2">
@@ -181,7 +148,8 @@ const menuItems = [
             `}
           >
             <div class="flex justify-between items-start mb-2">
-               <span class={`font-bold text-xs tracking-widest uppercase ${item.highlight ? 'text-rose-400' : 'text-slate-400 group-hover:text-rose-400 transition-colors'}`}>
+               {/* KONTRAST BOOST: slate-400 -> slate-500 */}
+               <span class={`font-bold text-xs tracking-widest uppercase ${item.highlight ? 'text-rose-400' : 'text-slate-500 group-hover:text-rose-400 transition-colors'}`}>
                  {item.number}
                </span>
                {item.badge && (
@@ -200,7 +168,7 @@ const menuItems = [
             </span>
             
             {!item.disabled && (
-               <i class="fa-solid fa-arrow-right absolute bottom-6 right-6 text-sm text-white/10 group-hover:text-rose-400 group-hover:-rotate-45 transition-all duration-300"></i>
+               <i class="fa-solid fa-arrow-right absolute bottom-6 right-6 text-sm text-white/10 group-hover:text-rose-400 group-hover:-rotate-45 transition-all duration-300" aria-hidden="true"></i>
             )}
           </a>
         ))}
@@ -213,14 +181,14 @@ const menuItems = [
         
         {/* Adresse aus Directus */}
         <span class="flex items-center gap-2">
-            <i class="fa-solid fa-location-dot text-rose-500"></i> {contactAddress}
+            <i class="fa-solid fa-location-dot text-rose-500" aria-hidden="true"></i> {contactAddress}
         </span>
 
         {/* Socials aus Directus */}
         <div class="flex gap-6">
            {activeSocials.map((social) => (
-              <a href={social.href} target="_blank" aria-label={social.label} class="hover:text-white transition-colors">
-                  <i class={`fa-brands ${social.icon} text-base`}></i>
+              <a href={social.href} target="_blank" rel="noopener noreferrer" aria-label={social.label} class="hover:text-white transition-colors">
+                  <i class={`fa-brands ${social.icon} text-base`} aria-hidden="true"></i>
               </a>
            ))}
         </div>
@@ -292,9 +260,7 @@ const menuItems = [
       const themeToggle = document.getElementById('themeToggle');
       const systemMedia = window.matchMedia('(prefers-color-scheme: dark)');
 
-      // 1. INITIAL: Was sollen wir beim Laden anzeigen?
-      // Prio 1: Gespeicherter Wert (falls vorhanden)
-      // Prio 2: Systemeinstellung
+      // 1. INITIAL
       const storedTheme = localStorage.getItem('theme');
       
       if (storedTheme === 'dark' || (!storedTheme && systemMedia.matches)) {
@@ -303,35 +269,26 @@ const menuItems = [
         document.documentElement.classList.remove('dark');
       }
 
-      // 2. SYSTEM-LISTENER (Der Fix):
-      // Wir hören IMMER auf Systemänderungen, auch wenn localStorage existiert.
-      // Wenn du am Mac den Modus wechselst, überschreiben wir die Webseite sofort.
-      // Um Doppel-Events zu vermeiden, entfernen wir erst alte Listener (falls nötig),
-      // aber hier definieren wir die Funktion neu, das ist sauberer.
-      
-      // Wir definieren die Funktion separat, um sie sauber binden zu können
+      // 2. SYSTEM-LISTENER
       const handleSystemChange = (e) => {
           if (e.matches) {
               document.documentElement.classList.add('dark');
-              localStorage.setItem('theme', 'dark'); // Wir aktualisieren auch den Speicher
+              localStorage.setItem('theme', 'dark');
           } else {
               document.documentElement.classList.remove('dark');
               localStorage.setItem('theme', 'light');
           }
       };
 
-      // Alten Listener entfernen (Trick via Property, um Event-Duplizierung bei Astro-Swap zu vermeiden)
       if (window._themeListener) {
           systemMedia.removeEventListener('change', window._themeListener);
       }
-      // Neuen Listener setzen und global speichern
       window._themeListener = handleSystemChange;
       systemMedia.addEventListener('change', handleSystemChange);
 
 
-      // 3. BUTTON CLICK (Manuell)
+      // 3. BUTTON CLICK
       if (themeToggle) {
-        // Button klonen um alte EventListener loszuwerden (Astro Best Practice)
         const newToggle = themeToggle.cloneNode(true);
         themeToggle.parentNode.replaceChild(newToggle, themeToggle);
         
@@ -352,7 +309,6 @@ const menuItems = [
   function init() {
     setupThemeLogic();
 
-    // Restliche Header Logik (Nav, Scroll etc.)
     const btnOpenNav = document.getElementById('btnOpenNav');
     const navOverlay = document.getElementById('navOverlay');
     const navBackdrop = document.getElementById('navBackdrop');
@@ -361,7 +317,6 @@ const menuItems = [
     const btnAccessibility = document.getElementById('btnAccessibility');
 
     if (btnAccessibility) {
-        // Klonen um Event-Stacking zu verhindern
         const newBtn = btnAccessibility.cloneNode(true);
         btnAccessibility.parentNode.replaceChild(newBtn, btnAccessibility);
         newBtn.addEventListener('click', () => {
@@ -376,7 +331,7 @@ const menuItems = [
       navBackdrop?.setAttribute('data-state', newState);
       btnOpenNav?.setAttribute('aria-expanded', !isOpen);
       
-      const bars = document.querySelector('#btnOpenNav .icon-bars'); // Selektor sicherer machen
+      const bars = document.querySelector('#btnOpenNav .icon-bars');
       const x = document.querySelector('#btnOpenNav .icon-x');
       
       if (bars && x) {
@@ -410,7 +365,6 @@ const menuItems = [
         mainHeader?.classList.toggle('is-shrink', scrolled);
     };
     
-    // EventListener bereinigen (falls vorhanden) und neu setzen
     window.removeEventListener('scroll', window._headerScrollListener);
     window._headerScrollListener = handleScroll;
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -418,9 +372,6 @@ const menuItems = [
     handleScroll();
   }
 
-  // Starten
   init();
-  
-  // Astro Swap Support (für View Transitions)
   document.addEventListener('astro:after-swap', init);
 </script>
