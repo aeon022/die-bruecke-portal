@@ -1,0 +1,94 @@
+services:
+  # --- BACKEND SERVICES ---
+  database:
+    image: postgis/postgis:13-3.4
+    container_name: bruecke_db
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - bruecke_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_DATABASE}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  cache:
+    image: redis:6-alpine
+    container_name: bruecke_cache
+    restart: always
+    networks:
+      - bruecke_net
+
+  directus:
+    image: directus/directus:11
+    container_name: bruecke_cms
+    restart: always
+    ports:
+      - "127.0.0.1:8055:8055"
+    depends_on:
+      database:
+        condition: service_healthy
+      cache:
+        condition: service_started
+    environment:
+      KEY: ${KEY}
+      SECRET: ${SECRET}
+      ADMIN_EMAIL: ${ADMIN_EMAIL}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      DB_CLIENT: 'pg'
+      DB_HOST: 'bruecke_db'
+      DB_PORT: '5432'
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      CACHE_ENABLED: 'false'
+      CACHE_STORE: 'memory'
+      STORAGE_LOCATIONS: 'local'
+      STORAGE_LOCAL_ROOT: '/directus/uploads'
+      PUBLIC_URL: "https://api.diebruecke.social"
+      CORS_ENABLED: 'true'
+      CORS_ORIGIN: 'true'
+      # WICHTIG: Erlaube Astro Frontend und API Domain für Bilder
+      CONTENT_SECURITY_POLICY_DIRECTIVES__IMG_SRC: "'self' data: https://api.diebruecke.social https://beta.diebruecke.social http://localhost:4321"
+      WEBSOCKETS_ENABLED: 'false'
+      FLOWS_EXEC_ALLOWED_MODULES: "*"
+      FLOWS_EXEC_DRIVER: "nodejs"
+    volumes:
+      # Pfade angepasst auf Root-Ebene
+      - ./backend/uploads:/directus/uploads
+      - ./backend/schema:/directus/schema
+      - ./backend/extensions:/directus/extensions
+    networks:
+      - bruecke_net
+
+  # --- FRONTEND SERVICE (Optional für lokalen Dev, meist nutzt du npm run dev) ---
+  beta_frontend:
+    build:
+      context: ./frontend  # Kontext ist nun der Unterordner
+      dockerfile: Dockerfile
+      args:
+        DIRECTUS_URL: https://api.diebruecke.social
+    container_name: bruecke_beta
+    restart: always
+    ports:
+      - "127.0.0.1:4321:4321"
+    environment:
+      - DIRECTUS_URL=https://api.diebruecke.social
+      - PUBLIC_DIRECTUS_URL=https://api.diebruecke.social 
+      - HOST=0.0.0.0
+      - PORT=4321
+    networks:
+      - bruecke_net
+
+networks:
+  bruecke_net:
+    driver: bridge
+
+volumes:
+  db_data:
