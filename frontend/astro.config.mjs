@@ -5,28 +5,33 @@ import react from '@astrojs/react';
 import tailwindcss from '@tailwindcss/vite';
 import vue from '@astrojs/vue';
 import PinyAstro from '@pinegrow/piny-astro';
-
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
+  // --- WICHTIG: Pfad zur .env Datei ---
+  // Da die .env einen Ordner höher liegt (im Projekt-Root), müssen wir das hier angeben.
+  envDir: '..',
+
   output: 'server',
   adapter: node({ mode: 'standalone' }),
 
-  // --- NEU: HIER BEGINNT DER IMAGE BLOCK ---
   image: {
     domains: [
       'images.unsplash.com',
-      'images.pexels.com',     // Für das aktuelle Platzhalter-Bild
-      'api.diebruecke.social'  // Für deine echten Bilder aus Directus
+      'images.pexels.com',
+      'api.diebruecke.social',     // Live API
+      'cms.beta.diebruecke.social' // WICHTIG: Beta API (hier liegen aktuell die Bilder)
     ],
-    // Optional: Falls Bilder lokal nicht geladen werden, hilft manchmal:
-    // remotePatterns: [{ protocol: 'https' }],
   },
-  // --- ENDE IMAGE BLOCK ---
 
-  integrations: [react(), vue(), PinyAstro({
+  integrations: [
+    react(), 
+    vue(), 
+    PinyAstro({
       hotReload: true, 
-  }), sitemap()],
+    }), 
+    sitemap()
+  ],
 
   vite: {
     plugins: [

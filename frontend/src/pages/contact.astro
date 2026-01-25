@@ -3,7 +3,9 @@ import MainLayout from '../layouts/layout.astro';
 import { directus } from '../lib/directus';
 import { readSingleton } from '@directus/sdk';
 
-// 1. Environment Variables & Konstanten
+// 1. Environment Variables
+// WICHTIG: Damit das funktioniert, muss Astro Zugriff auf die .env im Root haben.
+// Falls undefined: Prüfe astro.config.mjs 'envDir' oder starte Astro mit Env-Vars.
 const GOOGLE_KEY = import.meta.env.PUBLIC_GOOGLE_MAPS_KEY;
 const LAT_LNG = "47.0849,15.4348"; // Koordinaten für Static Map Zentrierung
 
@@ -148,12 +150,13 @@ const departments = [
                                     8010 Graz <br>
                                     Österreich
                                 </p>
-                                <a href="http://googleusercontent.com/maps.google.com/maps?q=Die+Brücke+Graz+Grabenstraße+39a" target="_blank" class="inline-flex items-center gap-2 text-sm font-bold text-rose-600 dark:text-rose-400 mt-4 hover:underline">
+                                {/* FIX: Richtiger Google Maps Link */}
+                                <a href="https://www.google.com/maps/search/?api=1&query=Die+Brücke+Graz+Grabenstraße+39a" target="_blank" class="inline-flex items-center gap-2 text-sm font-bold text-rose-600 dark:text-rose-400 mt-4 hover:underline">
                                     In Google Maps öffnen <i class="fa-solid fa-arrow-up-right-from-square"></i>
                                 </a>
 
                                 <div class="flex flex-wrap gap-4 mt-6 border-b border-slate-100 dark:border-slate-800 pb-6 mb-6">
-                                    <a href="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2718.026724395214!2d15.43345831561725!3d47.08502597915357!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x476e35970c776099%3A0x6295772393080e76!2sDie%20Br%C3%BCcke!5e0!3m2!1sde!2sat!4v1614167823456!5m2!1sde!2sat6" target="_blank" class="inline-flex items-center gap-2 text-xs font-bold text-rose-600 dark:text-rose-400 hover:underline">
+                                    <a href="https://www.google.com/maps/search/?api=1&query=Die+Brücke+Graz+Grabenstraße+39a" target="_blank" class="inline-flex items-center gap-2 text-xs font-bold text-rose-600 dark:text-rose-400 hover:underline">
                                         <i class="fa-solid fa-map-location-dot"></i> Karte öffnen
                                     </a>
                                     <button id="vcard-btn" class="inline-flex items-center gap-2 text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 transition-colors cursor-pointer">
@@ -193,7 +196,8 @@ const departments = [
                         <div class="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800/50">
                             <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3">Routenplaner</p>
                             <div class="flex flex-col sm:flex-row gap-3">
-                                <a href="https://www.google.com/maps/dir/?api=1&destination=Grabenstraße+39a,+Graz&travelmode=transit" target="_blank" class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-emerald-500 hover:text-white dark:hover:bg-emerald-600 transition-all text-xs font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wide group">
+                                {/* FIX: Richtiger Google Maps Directions Link */}
+                                <a href="https://www.google.com/maps/dir/?api=1&destination=Die+Brücke+Graz+Grabenstraße+39a" target="_blank" class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-emerald-500 hover:text-white dark:hover:bg-emerald-600 transition-all text-xs font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wide group">
                                     <i class="fa-solid fa-route group-hover:scale-110 transition-transform"></i> Route berechnen
                                 </a>
                                 <a href="https://www.holding-graz.at/de/unternehmen/unsere-app-angebote/" target="_blank" class="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-emerald-500 hover:text-emerald-500 dark:hover:border-emerald-400 dark:hover:text-emerald-400 transition-all text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">
@@ -224,7 +228,7 @@ const departments = [
                     </div>
                 )}
 
-                {/* --- ÖFFNUNGSZEITEN (FIXED: GRID LAYOUT FÜR SAUBERE AUSRICHTUNG) --- */}
+                {/* --- ÖFFNUNGSZEITEN --- */}
                 <div>
                     <h3 class="text-2xl font-display font-bold text-slate-900 dark:text-white mb-6">Bürozeiten</h3>
                     <ul class="space-y-4 text-slate-600 dark:text-slate-300">
@@ -462,8 +466,12 @@ const departments = [
         if (placeholder && iframe) {
             placeholder.addEventListener('click', () => {
                 const apiKey = placeholder.dataset.key;
+                if (!apiKey) {
+                    alert("Google Maps API Key nicht gefunden. Bitte .env prüfen.");
+                    return;
+                }
                 const query = "Die Brücke Graz Grabenstraße 39a";
-                // FIX: Korrekte URL Formatierung für Embed API
+                // FIX: Korrekte Google Maps Embed API URL
                 const mapUrl = `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${encodeURIComponent(query)}`;
                 
                 iframe.setAttribute('src', mapUrl);
