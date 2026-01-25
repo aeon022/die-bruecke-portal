@@ -8,9 +8,7 @@ import PinyAstro from '@pinegrow/piny-astro';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  // --- WICHTIG: Pfad zur .env Datei ---
-  // Da die .env einen Ordner höher liegt (im Projekt-Root), müssen wir das hier angeben.
-  envDir: '..',
+
 
   output: 'server',
   adapter: node({ mode: 'standalone' }),
