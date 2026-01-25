@@ -2,7 +2,7 @@
 export const prerender = false;
 
 import MainLayout from '../../layouts/layout.astro';
-import ServiceContact from '../../components/ServiceContact.astro'; // <--- HIER IMPORTIEREN
+import ServiceContact from '../../components/ServiceContact.astro'; 
 import { directus } from '../../lib/directus';
 import { readItems } from '@directus/sdk';
 
@@ -38,9 +38,24 @@ const downloadUrl = service.program_file ? `${ASSET_URL}/${service.program_file}
 
 // 4. Features sicherstellen (falls mal leer)
 const features = service.features || [];
+
+// --- SEO GENERATOR ---
+// Titel: Service Name + Location (Wichtig!)
+const seoTitle = `${service.title} Graz | Die Brücke`;
+
+// Description: Teaser nutzen, HTML entfernen, auf 160 Zeichen kürzen
+const cleanTeaser = service.teaser || service.description?.replace(/<[^>]*>/g, '') || "";
+const seoDescription = cleanTeaser.length > 160 ? cleanTeaser.substring(0, 157) + "..." : cleanTeaser;
+
+// Image: Service Image oder Fallback
+const seoImage = serviceImage || "https://images.pexels.com/photos/1438072/pexels-photo-1438072.jpeg";
 ---
 
-<MainLayout title={service.title}>
+<MainLayout 
+    title={seoTitle}
+    description={seoDescription}
+    image={seoImage}
+>
     
     {/* HERO SECTION */}
     <section class="relative pt-32 pb-32 lg:pb-40 px-6 sm:px-10 overflow-hidden">
@@ -222,3 +237,52 @@ const features = service.features || [];
     </section>
 
 </MainLayout>
+
+{/* --- SCHEMA.ORG: SERVICE --- */}
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "GovernmentService", // Oder "Service"
+  "name": service.title,
+  "provider": {
+    "@type": "Organization",
+    "name": "Die Brücke - soziokulturelles Zentrum",
+    "url": "https://diebruecke.cc"
+  },
+  "areaServed": {
+    "@type": "City",
+    "name": "Graz"
+  },
+  "description": seoDescription,
+  "url": `https://diebruecke.cc/services/${slug}`,
+  "serviceType": "Disability Support",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "EUR",
+    "description": "Kostenübernahme nach Stmk. Behindertengesetz möglich."
+  }
+})} />
+
+{/* --- SCHEMA.ORG: FAQ (Finanzierung) --- */}
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Werden die Kosten übernommen?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ja, eine Kostenübernahme bis zu 100% ist nach dem Steiermärkischen Behindertengesetz (LEVO) möglich, sofern ein entsprechender Bescheid vorliegt."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Muss ich einen Selbstbehalt zahlen?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ein Selbstbehalt von 10% kann einkommensabhängig anfallen. Wir beraten dich gerne dazu im Vorfeld."
+      }
+    }
+  ]
+})} />

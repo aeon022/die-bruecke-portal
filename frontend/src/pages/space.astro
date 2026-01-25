@@ -2,9 +2,9 @@
 import MainLayout from '../layouts/layout.astro';
 import { Image } from 'astro:assets'; 
 
-// "Hard Facts" & Equipment kombiniert (8 Items für perfektes 4er Grid)
+// "Hard Facts" & Equipment kombiniert
 const equipment = [
-    // Zeile 1: Die Raum-Facts (NEU - Deine Daten)
+    // Zeile 1: Die Raum-Facts
     { 
         icon: "fa-users", 
         label: "Bis 400 Gäste", 
@@ -39,7 +39,6 @@ const useCases = [
         subtitle: "Dein Raum am Vormittag",
         desc: "Nutze unsere zentrale Lage für deine Business-Events. Helle Atmosphäre, Bestuhlung nach Wunsch und volle technische Ausstattung.",
         features: ["Flipcharts inklusive", "Kaffee-Catering möglich", "Barrierefreier Zugang"],
-        // Unsplash ID ohne Parameter für Astro Optimierung
         image: "https://images.unsplash.com/photo-1517048676732-d65bc937f952" 
     },
     {
@@ -47,26 +46,32 @@ const useCases = [
         subtitle: "Dein Raum am Abend",
         desc: "Geburtstage, Jubiläen oder Vereinsfeiern. Die Brücke verwandelt sich abends in einen stimmungsvollen Partyraum.",
         features: ["Flexibel für dich", "Essen: Dein Caterer oder DIY", "Lichttechnik für Stimmung"],
-        // Unsplash ID ohne Parameter
         image: "https://images.unsplash.com/photo-1516997121675-4c2d1684aa3e" 
     }
 ];
+
+// --- SEO KONFIGURATION (Das muss knallen für Google!) ---
+const seoTitle = "Raumvermietung Graz | Seminarraum & Eventlocation";
+const seoDescription = "Dein Raum im Zentrum von Graz. Perfekt für Seminare, Workshops und private Feiern. 150m² flexibel nutzbar, 100% barrierefrei, inkl. Profi-Technik & Garten.";
+const seoImage = "https://images.unsplash.com/photo-1517457373958-b7bdd4587205"; // Hero Image als Share-Bild
 ---
 
-<MainLayout title="Dein Raum | Die Brücke">
+<MainLayout 
+    title={seoTitle}
+    description={seoDescription}
+    image={seoImage}
+>
     
     {/* --- HERO SECTION --- */}
     <section class="px-4 sm:px-6 pt-6 pb-20 dark:bg-slate-900">
         <div class="relative bg-slate-900 rounded-[48px] overflow-hidden min-h-[60vh] flex items-center px-6 md:px-16 py-24">
             
-            {/* ATMOSPHERIC IMAGE LAYER (Rechts) 
-               FIX: CSS Maske für perfekten Verlauf.
-            */}
+            {/* ATMOSPHERIC IMAGE LAYER (Rechts) */}
             <div class="absolute top-0 right-0 w-full lg:w-1/2 h-full pointer-events-none overflow-hidden [mask-image:linear-gradient(to_left,black_40%,transparent)]">
                 {/* PERFORMANCE: Eager loading für LCP */}
                 <Image 
-                    src="https://images.unsplash.com/photo-1517457373958-b7bdd4587205" 
-                    alt=""
+                    src={seoImage}
+                    alt="Eventlocation Die Brücke Graz"
                     width={1200}
                     height={800}
                     loading="eager"
@@ -78,7 +83,7 @@ const useCases = [
             <div class="absolute top-0 left-0 w-full h-full pointer-events-none">
                 <div class="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-indigo-500/20 rounded-full blur-[120px] animate-pulse-slow"></div>
                 <div class="absolute bottom-[-10%] right-[10%] w-[500px] h-[500px] bg-rose-500/10 rounded-full blur-[100px]"></div>
-                {/* Noise Textur Konsistent mit anderen Pages */}
+                {/* Noise Textur */}
                 <div class="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay"></div>
             </div>
 
@@ -109,7 +114,7 @@ const useCases = [
         </div>
     </section>
 
-    {/* --- EQUIPMENT GRID (MIT NEUEN HARD FACTS) --- */}
+    {/* --- EQUIPMENT GRID --- */}
     <section class="px-4 sm:px-6 -mt-10 relative z-20 pb-24">
         <div class="max-w-7xl mx-auto">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">

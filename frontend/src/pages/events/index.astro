@@ -63,9 +63,18 @@ let eventsWithCats = allEvents.map(event => {
 const nowTimestamp = new Date().setHours(0,0,0,0);
 eventsWithCats = eventsWithCats.filter(e => e._displayDate.getTime() >= nowTimestamp);
 eventsWithCats.sort((a, b) => a._displayDate.getTime() - b._displayDate.getTime());
+
+// --- SEO CONFIG ---
+const seoTitle = "Veranstaltungskalender Graz | Konzerte, Workshops & Kultur";
+const seoDescription = "Der aktuelle Eventkalender für Graz. Konzerte, Impro-Theater, Workshops und inklusives Programm in der Brücke. Barrierefrei & offen für alle.";
+const seoImage = "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?q=80&w=1200"; // Konzert-Crowd Bild
 ---
 
-<MainLayout title="Veranstaltungskalender | Die Brücke">
+<MainLayout 
+    title={seoTitle}
+    description={seoDescription}
+    image={seoImage}
+>
     
     {/* --- HERO SECTION --- */}
     <section class="px-4 sm:px-6 pt-6 pb-12">
@@ -151,3 +160,44 @@ eventsWithCats.sort((a, b) => a._displayDate.getTime() - b._displayDate.getTime(
     </section>
 
 </MainLayout>
+
+{/* --- SCHEMA.ORG (EVENTS LIST) --- */}
+<script type="application/ld+json" set:html={JSON.stringify(
+  eventsWithCats.map(event => ({
+    "@context": "https://schema.org",
+    "@type": "Event",
+    "name": event.title,
+    "startDate": event._displayDate.toISOString(),
+    // Wenn kein Enddatum da ist, nehmen wir Start + 3 Stunden an (typisch für Kultur)
+    "endDate": event.end_date ? new Date(event.end_date).toISOString() : new Date(event._displayDate.getTime() + 3 * 60 * 60 * 1000).toISOString(),
+    "eventStatus": "https://schema.org/EventScheduled",
+    "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+    "location": {
+      "@type": "Place",
+      "name": event.location || "Die Brücke Graz",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Grabenstraße 39a",
+        "addressLocality": "Graz",
+        "postalCode": "8010",
+        "addressCountry": "AT"
+      }
+    },
+    "image": [
+      event.image ? `https://api.diebruecke.social/assets/${event.image}` : "https://diebruecke.cc/logo.png"
+    ],
+    "description": event.short_description || event.description?.replace(/<[^>]*>/g, '').substring(0, 150) + "...",
+    "offers": {
+      "@type": "Offer",
+      "price": event.price || "0",
+      "priceCurrency": "EUR",
+      "url": event.pretix_link || `https://diebruecke.cc/events/${event.slug}`,
+      "availability": "https://schema.org/InStock"
+    },
+    "organizer": {
+      "@type": "Organization",
+      "name": "Die Brücke - soziokulturelles Zentrum",
+      "url": "https://diebruecke.cc"
+    }
+  }))
+)} />

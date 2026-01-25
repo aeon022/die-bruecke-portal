@@ -28,9 +28,19 @@ const history = [
     { year: "2007", title: "Neuer Glanz", desc: "Nach umfassender Renovierung und Zubau erstrahlt die Brücke barrierefrei und modern – bereit für die nächsten Jahrzehnte." },
     { year: "Heute", title: "42 Jahre Pionierarbeit", desc: "Vom Visionär zum Fels in der Brandung. Mit Urlaubsaktionen, mobilen Diensten und über 300 Events pro Jahr sind wir Graz' Herz für Inklusion." }
 ];
+
+// --- SEO KONFIGURATION ---
+const seoTitle = "Über uns | Die Brücke Graz";
+const seoDescription = "Ein Haus voller Kultur, Begleitung und echter Begegnungen. Seit über 42 Jahren sind wir der Ort in Graz, an dem Autonomie und Gemeinschaft keine Widersprüche sind.";
+// Ein starkes, warmes Community-Bild als Fallback für Social Media
+const seoImage = "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=1200"; 
 ---
 
-<MainLayout title="Über uns | Die Brücke">
+<MainLayout 
+    title={seoTitle}
+    description={seoDescription}
+    image={seoImage}
+>
     
     <div class="home-content">
         {/* --- HERO (UPDATED DESIGN) --- */}
@@ -76,7 +86,7 @@ const history = [
                                 Wir sind die Brücke in deine Unabhängigkeit.
                             </h2>
                             <p class="text-xl text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
-                                Ein Haus voller Kultur, Begleitung und echter Begegnungen. Seit über 42 Jahren sind wir der Ort in Graz, an dem Autonomie und Gemeinschaft keine Widersprüche sind. Wir verwalten keine Fälle, wir gestalten Lebensräume – radikal menschlich, einfach echt.
+                                {seoDescription}
                             </p>
                         </div>
 
@@ -98,66 +108,66 @@ const history = [
         </section>
             
         {/* --- WERTE: REDUZIERT & FOKUSSIERT --- */}
-<section class="px-6 sm:px-10 py-32 bg-white dark:bg-slate-950 transition-colors duration-500">
-    <div class="max-w-7xl mx-auto text-center">
-        <h2 class="text-4xl md:text-6xl font-display font-black text-slate-900 dark:text-white tracking-tighter mb-24 uppercase">
-            Worauf wir <span class="text-rose-600 italic">bauen.</span>
-        </h2>
-        
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-10 text-left">
-            {[
-                { 
-                    title: "Menschlichkeit", 
-                    icon: "fa-heart", 
-                    accent: "border-rose-500/20",
-                    iconBg: "bg-rose-500",
-                    text: "Wir verwalten keine Akten, wir begleiten Menschen. Unbürokratisch, herzlich und immer auf Augenhöhe. Seit 1983 ist echtes Miteinander unser Fundament." 
-                },
-                { 
-                    title: "Selbstbestimmung", 
-                    icon: "fa-wind", // Wind-Icon für "Rückenwind"
-                    accent: "border-slate-200",
-                    iconBg: "bg-slate-900",
-                    text: "Dein Weg. Unser Rückenwind. Wir bevormunden nicht, wir unterstützen dich professionell dabei, dein Leben nach deinen eigenen Regeln zu gestalten." 
-                },
-                { 
-                    title: "Kultur & Begegnung", 
-                    icon: "fa-masks-theater", 
-                    accent: "border-slate-200",
-                    iconBg: "bg-rose-600",
-                    text: "Ein Haus voller Leben. Wir schaffen den Raum in Graz, in dem Kunst und Kultur Barrieren einfach verschwinden lassen. Mittendrin statt nur dabei." 
-                }
-            ].map(card => (
-                <div class="group h-[420px] [perspective:1000px]">
-                    <div class="relative h-full w-full rounded-[48px] transition-all duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)] cursor-pointer shadow-sm hover:shadow-2xl hover:shadow-rose-500/5">
-                        
-                        {/* FRONT: Clean & Kompetent */}
-                        <div class="absolute inset-0 h-full w-full rounded-[48px] bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 flex flex-col items-center justify-center p-12 [backface-visibility:hidden]">
-                            <div class={`w-20 h-20 ${card.iconBg} text-white rounded-[28px] flex items-center justify-center text-3xl mb-8 shadow-lg group-hover:scale-110 transition-transform duration-500`}>
-                                <i class={`fa-solid ${card.icon}`}></i>
-                            </div>
-                            <h3 class="text-2xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tight">{card.title}</h3>
-                            
-                            <div class="mt-8 flex items-center gap-2 text-rose-500 font-black text-[10px] uppercase tracking-[0.2em] opacity-50 group-hover:opacity-100 transition-opacity">
-                                <span>Details</span>
-                                <i class="fa-solid fa-chevron-right text-[8px]"></i>
-                            </div>
-                        </div>
+        <section class="px-6 sm:px-10 py-32 bg-white dark:bg-slate-950 transition-colors duration-500">
+            <div class="max-w-7xl mx-auto text-center">
+                <h2 class="text-4xl md:text-6xl font-display font-black text-slate-900 dark:text-white tracking-tighter mb-24 uppercase">
+                    Worauf wir <span class="text-rose-600 italic">bauen.</span>
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-10 text-left">
+                    {[
+                        { 
+                            title: "Menschlichkeit", 
+                            icon: "fa-heart", 
+                            accent: "border-rose-500/20",
+                            iconBg: "bg-rose-500",
+                            text: "Wir verwalten keine Akten, wir begleiten Menschen. Unbürokratisch, herzlich und immer auf Augenhöhe. Seit 1983 ist echtes Miteinander unser Fundament." 
+                        },
+                        { 
+                            title: "Selbstbestimmung", 
+                            icon: "fa-wind", // Wind-Icon für "Rückenwind"
+                            accent: "border-slate-200",
+                            iconBg: "bg-slate-900",
+                            text: "Dein Weg. Unser Rückenwind. Wir bevormunden nicht, wir unterstützen dich professionell dabei, dein Leben nach deinen eigenen Regeln zu gestalten." 
+                        },
+                        { 
+                            title: "Kultur & Begegnung", 
+                            icon: "fa-masks-theater", 
+                            accent: "border-slate-200",
+                            iconBg: "bg-rose-600",
+                            text: "Ein Haus voller Leben. Wir schaffen den Raum in Graz, in dem Kunst und Kultur Barrieren einfach verschwinden lassen. Mittendrin statt nur dabei." 
+                        }
+                    ].map(card => (
+                        <div class="group h-[420px] [perspective:1000px]">
+                            <div class="relative h-full w-full rounded-[48px] transition-all duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)] cursor-pointer shadow-sm hover:shadow-2xl hover:shadow-rose-500/5">
+                                
+                                {/* FRONT: Clean & Kompetent */}
+                                <div class="absolute inset-0 h-full w-full rounded-[48px] bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 flex flex-col items-center justify-center p-12 [backface-visibility:hidden]">
+                                    <div class={`w-20 h-20 ${card.iconBg} text-white rounded-[28px] flex items-center justify-center text-3xl mb-8 shadow-lg group-hover:scale-110 transition-transform duration-500`}>
+                                        <i class={`fa-solid ${card.icon}`}></i>
+                                    </div>
+                                    <h3 class="text-2xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tight">{card.title}</h3>
+                                    
+                                    <div class="mt-8 flex items-center gap-2 text-rose-500 font-black text-[10px] uppercase tracking-[0.2em] opacity-50 group-hover:opacity-100 transition-opacity">
+                                        <span>Details</span>
+                                        <i class="fa-solid fa-chevron-right text-[8px]"></i>
+                                    </div>
+                                </div>
 
-                        {/* BACK: Die Botschaft */}
-                        <div class="absolute inset-0 h-full w-full rounded-[48px] bg-slate-900 dark:bg-slate-800 p-12 text-white [transform:rotateY(180deg)] [backface-visibility:hidden] flex flex-col items-center justify-center text-center border border-slate-800">
-                            <h3 class="text-xl font-display font-black mb-6 uppercase tracking-tight text-rose-500">{card.title}</h3>
-                            <p class="text-slate-300 leading-relaxed font-medium text-lg">
-                                {card.text}
-                            </p>
+                                {/* BACK: Die Botschaft */}
+                                <div class="absolute inset-0 h-full w-full rounded-[48px] bg-slate-900 dark:bg-slate-800 p-12 text-white [transform:rotateY(180deg)] [backface-visibility:hidden] flex flex-col items-center justify-center text-center border border-slate-800">
+                                    <h3 class="text-xl font-display font-black mb-6 uppercase tracking-tight text-rose-500">{card.title}</h3>
+                                    <p class="text-slate-300 leading-relaxed font-medium text-lg">
+                                        {card.text}
+                                    </p>
+                                </div>
+                                
+                            </div>
                         </div>
-                        
-                    </div>
+                    ))}
                 </div>
-            ))}
-        </div>
-    </div>
-</section>
+            </div>
+        </section>
 
         {/* --- TIMELINE --- */}
         <section class="px-6 sm:px-10 py-32 bg-slate-50 dark:bg-slate-900 relative overflow-hidden transition-colors duration-500">
@@ -288,7 +298,7 @@ const history = [
                 {/* DER "MEHR" BUTTON FÜR DAS PDF */}
                 <div class="flex justify-start">
                     <a 
-                        href="/path-to-your-leitbild.pdf" 
+                        href="/Leitbild.pdf" 
                         target="_blank"
                         class="group inline-flex items-center gap-4 px-8 py-4 bg-slate-50 dark:bg-slate-900 hover:bg-rose-500 transition-all duration-500 rounded-full border border-slate-100 dark:border-slate-800 hover:border-rose-500 shadow-sm"
                     >
@@ -304,76 +314,76 @@ const history = [
 
 
         {/* --- TEAM SECTION: HALTUNG & HERZ --- */}
-<section class="px-6 sm:px-10 py-32 bg-white dark:bg-slate-950 transition-colors duration-500">
-    <div class="max-w-7xl mx-auto text-left">
-        <div class="mb-24">
-            <span class="text-rose-500 font-bold tracking-widest uppercase text-xs mb-4 block underline decoration-rose-500 decoration-2 underline-offset-8">Struktur & Köpfe</span>
-            <h2 class="text-4xl md:text-6xl font-display font-black text-slate-900 dark:text-white tracking-tighter leading-[0.9] uppercase">
-                Menschen mit <br>
-                <span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-rose-600">
-                    Haltung & Herz.
-                </span>
-            </h2>
-        </div>
+        <section class="px-6 sm:px-10 py-32 bg-white dark:bg-slate-950 transition-colors duration-500">
+            <div class="max-w-7xl mx-auto text-left">
+                <div class="mb-24">
+                    <span class="text-rose-500 font-bold tracking-widest uppercase text-xs mb-4 block underline decoration-rose-500 decoration-2 underline-offset-8">Struktur & Köpfe</span>
+                    <h2 class="text-4xl md:text-6xl font-display font-black text-slate-900 dark:text-white tracking-tighter leading-[0.9] uppercase">
+                        Menschen mit <br>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-rose-600">
+                            Haltung & Herz.
+                        </span>
+                    </h2>
+                </div>
 
-        {/* Vorstand: Die Strategischen Brückenbauer */}
-        <div class="mb-32">
-            <div class="flex items-center gap-6 mb-12">
-                <h3 class="text-2xl font-display font-black text-slate-900 dark:text-white shrink-0 uppercase tracking-tight">Der Vorstand</h3>
-                <div class="h-px bg-slate-100 dark:bg-slate-800 flex-1 transition-colors"></div>
-                <span class="text-slate-400 text-[10px] font-bold uppercase tracking-[0.2em] hidden sm:block">Strategische Führung</span>
-            </div>
-
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6">
-                {boardMembers.map(member => (
-                    <div class="group">
-                        <div class="aspect-square rounded-[32px] overflow-hidden bg-slate-50 dark:bg-slate-900 mb-4 border border-slate-100 dark:border-slate-800 shadow-sm group-hover:shadow-xl group-hover:border-rose-500/20 transition-all duration-500 flex items-center justify-center relative">
-                            {member.image ? (
-                                <img src={`${ASSET_URL}/${member.image}?key=system-medium-cover`} class="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" alt={member.name} />
-                            ) : (
-                                <span class="text-2xl font-display font-black text-slate-300 dark:text-slate-700 group-hover:text-rose-500 transition-colors uppercase">
-                                    {member.name.split(' ').map(n => n[0]).join('')}
-                                </span>
-                            )}
-                        </div>
-                        <h4 class="text-sm font-bold text-slate-900 dark:text-white leading-tight mb-1">{member.name}</h4>
-                        <p class="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-tighter leading-none italic">{member.role}</p>
+                {/* Vorstand: Die Strategischen Brückenbauer */}
+                <div class="mb-32">
+                    <div class="flex items-center gap-6 mb-12">
+                        <h3 class="text-2xl font-display font-black text-slate-900 dark:text-white shrink-0 uppercase tracking-tight">Der Vorstand</h3>
+                        <div class="h-px bg-slate-100 dark:bg-slate-800 flex-1 transition-colors"></div>
+                        <span class="text-slate-400 text-[10px] font-bold uppercase tracking-[0.2em] hidden sm:block">Strategische Führung</span>
                     </div>
-                ))}
-            </div>
-        </div>
 
-        {/* Operatives Team: Das Herz der Grabenstraße */}
-        <div>
-            <div class="flex items-center gap-6 mb-12">
-                <h3 class="text-2xl font-display font-black text-slate-900 dark:text-white shrink-0 uppercase tracking-tight">Das Team</h3>
-                <div class="h-px bg-slate-100 dark:bg-slate-800 flex-1 transition-colors"></div>
-            </div>
-
-            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-x-8 gap-y-12">
-                {leadership.map(member => (
-                    <div class="group text-center">
-                        <div class="relative w-28 h-28 sm:w-32 sm:h-32 md:w-40 md:h-40 mx-auto mb-6">
-                            {/* Gradient-Ring: Indigo durch Slate/Rose ersetzt für weniger Stress */}
-                            <div class="absolute inset-0 rounded-full bg-gradient-to-tr from-rose-500 to-slate-400 animate-spin-slow opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                            <div class="absolute inset-1 rounded-full overflow-hidden border-4 border-white dark:border-slate-800 bg-slate-50 dark:bg-slate-900 flex items-center justify-center relative transition-colors shadow-inner">
-                                {member.image ? (
-                                    <img src={`${ASSET_URL}/${member.image}?key=system-medium-cover`} class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt={member.name} />
-                                ) : (
-                                    <span class="text-3xl font-display font-black text-slate-200 dark:text-slate-700 group-hover:text-rose-500 transition-colors uppercase">
-                                        {member.name.split(' ').map(n => n[0]).join('')}
-                                    </span>
-                                )}
+                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6">
+                        {boardMembers.map(member => (
+                            <div class="group">
+                                <div class="aspect-square rounded-[32px] overflow-hidden bg-slate-50 dark:bg-slate-900 mb-4 border border-slate-100 dark:border-slate-800 shadow-sm group-hover:shadow-xl group-hover:border-rose-500/20 transition-all duration-500 flex items-center justify-center relative">
+                                    {member.image ? (
+                                        <img src={`${ASSET_URL}/${member.image}?key=system-medium-cover`} class="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" alt={member.name} />
+                                    ) : (
+                                        <span class="text-2xl font-display font-black text-slate-300 dark:text-slate-700 group-hover:text-rose-500 transition-colors uppercase">
+                                            {member.name.split(' ').map(n => n[0]).join('')}
+                                        </span>
+                                    )}
+                                </div>
+                                <h4 class="text-sm font-bold text-slate-900 dark:text-white leading-tight mb-1">{member.name}</h4>
+                                <p class="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-tighter leading-none italic">{member.role}</p>
                             </div>
-                        </div>
-                        <h4 class="text-lg font-bold text-slate-900 dark:text-white mb-1 leading-tight tracking-tight uppercase">{member.name}</h4>
-                        <p class="text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest italic">{member.role}</p>
+                        ))}
                     </div>
-                ))}
+                </div>
+
+                {/* Operatives Team: Das Herz der Grabenstraße */}
+                <div>
+                    <div class="flex items-center gap-6 mb-12">
+                        <h3 class="text-2xl font-display font-black text-slate-900 dark:text-white shrink-0 uppercase tracking-tight">Das Team</h3>
+                        <div class="h-px bg-slate-100 dark:bg-slate-800 flex-1 transition-colors"></div>
+                    </div>
+
+                    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-x-8 gap-y-12">
+                        {leadership.map(member => (
+                            <div class="group text-center">
+                                <div class="relative w-28 h-28 sm:w-32 sm:h-32 md:w-40 md:h-40 mx-auto mb-6">
+                                    {/* Gradient-Ring: Indigo durch Slate/Rose ersetzt für weniger Stress */}
+                                    <div class="absolute inset-0 rounded-full bg-gradient-to-tr from-rose-500 to-slate-400 animate-spin-slow opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                                    <div class="absolute inset-1 rounded-full overflow-hidden border-4 border-white dark:border-slate-800 bg-slate-50 dark:bg-slate-900 flex items-center justify-center relative transition-colors shadow-inner">
+                                        {member.image ? (
+                                            <img src={`${ASSET_URL}/${member.image}?key=system-medium-cover`} class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt={member.name} />
+                                        ) : (
+                                            <span class="text-3xl font-display font-black text-slate-200 dark:text-slate-700 group-hover:text-rose-500 transition-colors uppercase">
+                                                {member.name.split(' ').map(n => n[0]).join('')}
+                                            </span>
+                                        )}
+                                    </div>
+                                </div>
+                                <h4 class="text-lg font-bold text-slate-900 dark:text-white mb-1 leading-tight tracking-tight uppercase">{member.name}</h4>
+                                <p class="text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest italic">{member.role}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-</section>
+        </section>
 
         {/* --- JOIN US: WARMER GLOW & KLARE HALTUNG --- */}
         <section class="px-6 sm:px-10 py-24 bg-white dark:bg-slate-950 transition-colors duration-500 text-left">

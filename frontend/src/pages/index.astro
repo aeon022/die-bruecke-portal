@@ -30,7 +30,7 @@ const [settings, allEvents, dbServices, dbPartners] = await Promise.all([
   }))
 ]);
 
-// 2. Event Logik (DIESER BLOCK FEHLTE)
+// 2. Event Logik
 const today = new Date();
 today.setHours(0,0,0,0);
 
@@ -61,9 +61,16 @@ const heroSubline = settings?.hero_subline || "Die Brücke ist dein Rückenwind 
 const heroImg = settings?.hero_image 
   ? `${ASSET_URL}/${settings.hero_image}` 
   : 'https://images.unsplash.com/photo-1511632765486-a01980e01a18';
+
+// SEO Helper: HTML aus Subline entfernen, falls vorhanden (für Meta Description)
+const seoDescription = heroSubline.replace(/<[^>]*>/g, '');
 ---
 
-<MainLayout title="Startseite">
+<MainLayout 
+    title="Startseite"
+    description={seoDescription}
+    image={heroImg}
+>
     
     <style is:inline>
         .home-content { visibility: hidden; }
@@ -99,7 +106,6 @@ const heroImg = settings?.hero_image
             services={dbServices}
         />
 
-        {/* NEU: Das Fundament/Leitbild direkt nach den Services */}
         <Foundation />
 
         <Projects />

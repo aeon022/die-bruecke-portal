@@ -4,6 +4,7 @@ export const prerender = false;
 import MainLayout from '../../layouts/layout.astro';
 import { directus } from '../../lib/directus';
 import { readItems } from '@directus/sdk';
+import { Image } from 'astro:assets';
 
 const { slug } = Astro.params;
 
@@ -25,100 +26,155 @@ if (!trip) return Astro.redirect('/404');
 
 const ASSET_URL = "https://api.diebruecke.social/assets";
 const heroImage = trip.image ? `${ASSET_URL}/${trip.image}` : null;
+
+// --- SEO GENERATOR ---
+const seoTitle = `${trip.title} | Inklusiver City Trip Graz`;
+const cleanDesc = trip.description?.replace(/<[^>]*>/g, '') || "";
+const seoDescription = cleanDesc.length > 160 ? cleanDesc.substring(0, 157) + "..." : cleanDesc;
+const seoImage = heroImage || "https://diebruecke.cc/share-trips.jpg";
 ---
 
-<MainLayout title={`${trip.title} | City Trips`}>
+<MainLayout 
+    title={seoTitle}
+    description={seoDescription}
+    image={seoImage}
+>
 
-    {/* HERO HEADER */}
-    <section class="relative pt-32 pb-20 bg-slate-900 overflow-hidden">
-        <div class="absolute inset-0 opacity-30">
-            {heroImage && (
-                <img src={heroImage} alt={trip.title} class="w-full h-full object-cover" />
-            )}
-            <div class="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent"></div>
-        </div>
-
-        <div class="container mx-auto px-6 relative z-10">
-            <a href="/city-trips" class="inline-flex items-center text-slate-400 hover:text-white mb-8 transition-colors text-sm font-bold uppercase tracking-widest">
-                <i class="fa-solid fa-arrow-left mr-2"></i> Alle Ausflüge
-            </a>
+    {/* --- HERO SECTION: STUDIO LOOK --- */}
+    <section class="px-4 sm:px-6 pt-6 pb-12 transition-colors duration-500">
+        <div class="relative bg-slate-900 rounded-[48px] md:rounded-[64px] overflow-hidden min-h-[60vh] flex items-center shadow-2xl">
             
-            <div class="max-w-4xl">
-                <div class="flex flex-wrap gap-3 mb-6">
-                    {trip.free_spots > 0 ? (
-                        <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-bold uppercase">
-                            {trip.free_spots} Plätze frei
-                        </span>
-                    ) : (
-                        <span class="px-3 py-1 rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/30 text-xs font-bold uppercase">
-                            Ausgebucht
-                        </span>
-                    )}
-                </div>
+            {/* Background Image Layer */}
+            <div class="absolute inset-0 z-0">
+                {heroImage ? (
+                    <img 
+                        src={heroImage} 
+                        alt={trip.title} 
+                        class="w-full h-full object-cover opacity-40 scale-105" 
+                    />
+                ) : (
+                    <div class="w-full h-full bg-slate-800"></div>
+                )}
+                {/* Studio Gradient Overlay */}
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent"></div>
+                <div class="absolute inset-0 bg-gradient-to-r from-slate-900 via-transparent to-transparent opacity-80"></div>
+            </div>
 
-                <h1 class="text-4xl md:text-6xl font-display font-extrabold text-white mb-6 leading-tight">
-                    {trip.title}
-                </h1>
+            <div class="relative z-10 w-full px-8 md:px-16 py-20">
+                <div class="max-w-7xl mx-auto">
+                    
+                    {/* --- NAVIGATION LINKS (ZURÜCK & WECHSEL) --- */}
+                    <div class="mb-12 flex flex-wrap gap-3">
+                        <a href="/city-trips" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-white/80 hover:text-white hover:bg-white/20 transition-all text-[10px] font-black uppercase tracking-widest group shadow-lg">
+                            <i class="fa-solid fa-arrow-left group-hover:-translate-x-1 transition-transform"></i> 
+                            Alle Ausflüge
+                        </a>
+                        <a href="/camps" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 backdrop-blur-md border border-white/10 text-white/50 hover:text-white hover:bg-rose-500/20 transition-all text-[10px] font-black uppercase tracking-widest group">
+                            <i class="fa-solid fa-tent text-[9px]"></i> 
+                            Zu den Camps
+                        </a>
+                    </div>
+                    
+                    <div class="max-w-4xl">
+                        <div class="flex flex-wrap gap-3 mb-8">
+                            {trip.free_spots > 0 ? (
+                                <div class="px-4 py-1.5 rounded-full bg-emerald-500/20 backdrop-blur-md text-emerald-400 border border-emerald-500/30 text-[10px] font-black uppercase tracking-widest flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                                    {trip.free_spots} Plätze frei
+                                </div>
+                            ) : (
+                                <div class="px-4 py-1.5 rounded-full bg-rose-500/20 backdrop-blur-md text-rose-400 border border-rose-500/30 text-[10px] font-black uppercase tracking-widest flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+                                    Ausgebucht
+                                </div>
+                            )}
+                            
+                            {trip.fass_hours && (
+                                <div class="px-4 py-1.5 rounded-full bg-indigo-500/20 backdrop-blur-md text-indigo-300 border border-indigo-500/30 text-[10px] font-black uppercase tracking-widest">
+                                    {trip.fass_hours}h FASS anrechenbar
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Leading-Value auf 1.05 für Umlaute optimiert */}
+                        <h1 class="text-5xl md:text-7xl lg:text-8xl font-display font-black text-white mb-8 leading-[1.05] tracking-tighter uppercase">
+                            {trip.title}
+                        </h1>
+                        
+                        <div class="flex flex-wrap gap-8 text-slate-300 font-bold uppercase tracking-widest text-xs">
+                             <div class="flex items-center gap-3">
+                                <i class="fa-regular fa-calendar text-indigo-400 text-lg"></i>
+                                {trip.date_range}
+                             </div>
+                             <div class="flex items-center gap-3">
+                                <i class="fa-solid fa-location-dot text-rose-500 text-lg"></i>
+                                {trip.location}
+                             </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
-    {/* CONTENT */}
-    <section class="py-16 px-6 bg-white">
+    {/* CONTENT SECTION */}
+    <section class="py-24 px-6 bg-white dark:bg-slate-950 transition-colors duration-500">
         <div class="container mx-auto">
-            <div class="grid lg:grid-cols-3 gap-12 max-w-7xl mx-auto">
+            <div class="grid lg:grid-cols-12 gap-16 max-w-7xl mx-auto">
                 
-                <div class="lg:col-span-2">
-                    <h2 class="text-2xl font-display font-bold text-slate-900 mb-6">Infos zum Ausflug</h2>
-                    <div class="prose prose-lg text-slate-600 prose-headings:text-slate-900 prose-a:text-indigo-600" set:html={trip.description}></div>
+                <div class="lg:col-span-8">
+                    <div class="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-[10px] font-black text-rose-500 uppercase tracking-[0.2em] mb-8">
+                        Trip Details
+                    </div>
+                    <h2 class="text-4xl font-display font-black text-slate-900 dark:text-white mb-10 tracking-tight uppercase">
+                        Was wir gemeinsam <span class="text-indigo-600 italic">erleben.</span>
+                    </h2>
+                    <div class="prose prose-lg dark:prose-invert text-slate-600 dark:text-slate-400 prose-headings:font-display prose-headings:font-bold max-w-none" set:html={trip.description}></div>
                 </div>
 
-                <div class="lg:col-span-1">
-                    <div class="bg-slate-50 border border-slate-200 rounded-3xl p-8 sticky top-24">
-                        <h3 class="text-xl font-bold text-slate-900 mb-6 border-b border-slate-200 pb-4">Eckdaten</h3>
+                <div class="lg:col-span-4">
+                    <div class="bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-[48px] p-10 sticky top-24 shadow-sm">
+                        <h3 class="text-xs font-black text-slate-400 uppercase tracking-[0.3em] mb-10 text-center">Inkludierte Leistungen</h3>
                         
-                        <div class="space-y-6">
+                        <div class="space-y-8 mb-12">
                             <div class="flex items-start gap-4">
-                                <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center shrink-0">
-                                    <i class="fa-regular fa-calendar text-indigo-600"></i>
+                                <div class="w-12 h-12 rounded-2xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 flex items-center justify-center text-indigo-600 dark:text-indigo-400 text-xl shadow-sm shrink-0">
+                                    <i class="fa-solid fa-bus-simple"></i>
                                 </div>
                                 <div>
-                                    <span class="block text-xs font-bold text-slate-400 uppercase">Wann?</span>
-                                    <span class="text-slate-900 font-medium">{trip.date_range}</span>
+                                    <span class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Transfer</span>
+                                    <span class="text-slate-900 dark:text-white font-bold">Barrierefreie Anreise</span>
                                 </div>
                             </div>
 
                             <div class="flex items-start gap-4">
-                                <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center shrink-0">
-                                    <i class="fa-solid fa-location-dot text-indigo-600"></i>
+                                <div class="w-12 h-12 rounded-2xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 flex items-center justify-center text-rose-500 text-xl shadow-sm shrink-0">
+                                    <i class="fa-solid fa-user-shield"></i>
                                 </div>
                                 <div>
-                                    <span class="block text-xs font-bold text-slate-400 uppercase">Wohin?</span>
-                                    <span class="text-slate-900 font-medium">{trip.location}</span>
+                                    <span class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Begleitung</span>
+                                    <span class="text-slate-900 dark:text-white font-bold">Professionelles Team</span>
                                 </div>
                             </div>
                             
-                            <div class="p-4 bg-white rounded-2xl border border-slate-100 mt-6">
-                                <div class="flex justify-between items-center mb-2">
-                                    <span class="text-slate-500 text-sm">Kostenbeitrag</span>
-                                    <span class="text-xl font-bold text-slate-900">€ {trip.price},-</span>
+                            <div class="p-8 bg-white dark:bg-slate-800 rounded-[32px] border border-slate-100 dark:border-slate-700 mt-6 shadow-inner text-center">
+                                <span class="text-slate-400 text-[10px] font-black uppercase tracking-widest block mb-2">Gesamtpreis</span>
+                                <div class="text-4xl font-display font-black text-slate-900 dark:text-white mb-2">
+                                    € {trip.price}
                                 </div>
-                                {trip.fass_hours && (
-                                    <div class="flex justify-between items-center pt-2 border-t border-slate-50">
-                                        <span class="text-slate-500 text-sm flex items-center gap-1">
-                                            <i class="fa-solid fa-info-circle text-slate-300"></i> FASS
-                                        </span>
-                                        <span class="font-bold text-slate-700">{trip.fass_hours} h</span>
-                                    </div>
-                                )}
+                                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Inkl. aller Steuern</span>
                             </div>
                         </div>
 
-                        <div class="mt-8">
+                        <div class="mt-10">
                             <a href={`/contact?subject=Anfrage für City Trip: ${trip.title}`} 
-                               class="block w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white text-center font-bold rounded-xl transition-colors shadow-lg shadow-indigo-200">
-                                Jetzt Anfragen
+                               class="group block w-full py-5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-center font-black uppercase tracking-widest text-xs rounded-2xl transition-all shadow-xl hover:bg-rose-600 dark:hover:bg-rose-500 dark:hover:text-white transform hover:-translate-y-1">
+                                Jetzt Platz sichern
+                                <i class="fa-solid fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
                             </a>
+                            <p class="text-[10px] text-slate-400 text-center mt-6 font-bold uppercase tracking-widest">
+                                Begrenztes Kontingent
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -128,3 +184,40 @@ const heroImage = trip.image ? `${ASSET_URL}/${trip.image}` : null;
     </section>
 
 </MainLayout>
+
+<style>
+    /* Sanfter Scale-In Effekt für das Hero-Bild */
+    img {
+        animation: hero-reveal 2s ease-out forwards;
+    }
+    @keyframes hero-reveal {
+        from { transform: scale(1.1); opacity: 0; }
+        to { transform: scale(1.05); opacity: 0.4; }
+    }
+</style>
+
+{/* --- SCHEMA.ORG: TOURIST TRIP --- */}
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "TouristTrip",
+  "name": trip.title,
+  "description": seoDescription,
+  "image": [seoImage],
+  "touristType": "People with disabilities",
+  "itinerary": {
+    "@type": "City",
+    "name": trip.location
+  },
+  "offers": {
+    "@type": "Offer",
+    "price": trip.price || "0",
+    "priceCurrency": "EUR",
+    "url": Astro.url.href,
+    "availability": trip.free_spots > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"
+  },
+  "provider": {
+    "@type": "Organization",
+    "name": "Die Brücke - soziokulturelles Zentrum",
+    "url": "https://diebruecke.cc"
+  }
+})} />

@@ -11,6 +11,11 @@ const projects = await directus.request(readItems('projects', {
 
 const ASSET_URL = 'https://api.diebruecke.social/assets'; 
 
+// SEO-Daten: Spezifisch für Graz & Innovation
+const seoTitle = "Soziale Innovation & Inklusive Projekte Graz | Die Brücke";
+const seoDescription = "Das Labor für neue Wege. Von 'SofaKINO' bis 'Stage Dive'. Entdecke Projekte, die Inklusion in Graz neu definieren. Mach mit beim Kultur-Inkubator.";
+const seoImage = "https://images.unsplash.com/photo-1531482615713-2afd69097998?q=80&w=1200"; // Ein Bild, das "Brainstorming/Werkstatt" zeigt
+
 const styleMap: Record<string, { gradient: string, text: string, border: string }> = {
     'SofaKINO': { 
         gradient: "from-indigo-500 to-purple-600",
@@ -45,7 +50,11 @@ const getStyle = (title: string) => {
 };
 ---
 
-<MainLayout title="Innovation & Projekte | Die Brücke">
+<MainLayout 
+    title={seoTitle}
+    description={seoDescription}
+    image={seoImage}
+>
     
     {/* --- HERO SECTION --- */}
     <section class="px-4 sm:px-6 pt-6 pb-12">
@@ -78,8 +87,8 @@ const getStyle = (title: string) => {
                         <span class="text-[10px] uppercase tracking-[0.2em] text-slate-500 font-bold">Aktive Lab-Projekte</span>
                     </div>
                     <div>
-                        <span class="block text-3xl font-bold text-white tracking-tight">2026</span>
-                        <span class="text-[10px] uppercase tracking-[0.2em] text-slate-500 font-bold">Innovation Cycle</span>
+                        <span class="block text-3xl font-bold text-white tracking-tight">Graz</span>
+                        <span class="text-[10px] uppercase tracking-[0.2em] text-slate-500 font-bold">Basis & Wirkung</span>
                     </div>
                 </div>
 
@@ -130,7 +139,8 @@ const getStyle = (title: string) => {
                                     {project.title}
                                 </h2>
                                 <p class="project-desc text-slate-500 leading-relaxed line-clamp-3 group-[.is-featured]:line-clamp-6 mb-4 font-medium">
-                                    {project.description}
+                                    {/* SEO-Helper: HTML entfernen für sauberen Teaser */}
+                                    {project.description?.replace(/<[^>]*>/g, '')}
                                 </p>
                             </div>
 
@@ -139,7 +149,7 @@ const getStyle = (title: string) => {
                                      <i class="fa-solid fa-arrow-right -rotate-45 group-hover:rotate-0 transition-transform duration-300"></i>
                                 </span>
                                 <span class="cta-text text-sm font-bold text-slate-900 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-300">
-                                   Projekt ansehen
+                                   Zum Projekt
                                 </span>
                             </div>
 
@@ -224,3 +234,17 @@ const getStyle = (title: string) => {
         document.getElementById('shuffleBtn')?.addEventListener('click', shuffleHighlights);
     </script>
 </MainLayout>
+
+{/* --- SCHEMA.ORG: ITEM LIST --- */}
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "Soziale Innovationen & Projekte Die Brücke Graz",
+  "description": "Laufende und abgeschlossene Projekte im Bereich Inklusion, Kultur und Teilhabe.",
+  "itemListElement": projects.map((project: any, index: number) => ({
+    "@type": "ListItem",
+    "position": index + 1,
+    "url": `https://diebruecke.cc/projects/${project.slug}`,
+    "name": project.title
+  }))
+})} />

@@ -115,6 +115,12 @@ if (urlDateParam) {
 
 const displayEndDate = new Date(displayDate.getTime() + duration);
 
+// --- SEO CONFIG (DAS KRANT JETZT) ---
+const seoTitle = `${event.title} Graz | Event | Die Brücke`;
+const rawDesc = event.subtitle || event.description || "Veranstaltung im soziokulturellen Zentrum Die Brücke Graz.";
+const seoDescription = rawDesc.replace(/<[^>]*>/g, '').substring(0, 160).trim() + "...";
+const seoImage = heroImage ? `${ASSET_URL}/${heroImage}` : "https://diebruecke.cc/share-image.jpg";
+
 // --- FORMATIERUNG ---
 const dateString = displayDate.toLocaleDateString('de-DE', {
   day: '2-digit',
@@ -153,7 +159,7 @@ const shareX = 'https://twitter.com/intent/tweet?text=' + shareText + '&url=' + 
 const shareLinkedIn = 'https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(currentUrl);
 ---
 
-<MainLayout title={event.title}>
+<MainLayout title={seoTitle} description={seoDescription} image={seoImage}>
   
   {/* --- HERO SECTION --- */}
   <section class="relative h-[50vh] lg:h-[70vh] min-h-[400px] overflow-hidden bg-slate-900 group" aria-hidden="true">
@@ -251,10 +257,8 @@ const shareLinkedIn = 'https://www.linkedin.com/sharing/share-offsite/?url=' + e
 
           {/* --- ASIDE: Facts & Tickets & Sticky Logic --- */}
           
-          {/* 1. SENTINEL: Der unsichtbare Marker für den Sticky-Effekt */}
           <div id="sidebar-sentinel" class="absolute top-0 right-0 h-32 w-1 pointer-events-none opacity-0"></div>
 
-          {/* 2. SIDEBAR mit ID und Transition Classes */}
           <aside 
             id="event-sidebar"
             class="lg:col-span-4 bg-slate-50/80 dark:bg-slate-900/50 backdrop-blur-md border-t lg:border-t-0 lg:border-l border-slate-100 dark:border-slate-800 p-8 md:p-14 w-full rounded-tr-[40px] rounded-br-[40px] lg:sticky lg:top-32 lg:max-h-[calc(100vh-4rem)] overflow-y-auto custom-scrollbar no-print transition-all duration-500 ease-out"
@@ -418,7 +422,6 @@ const shareLinkedIn = 'https://www.linkedin.com/sharing/share-offsite/?url=' + e
             >
               <div class="aspect-[16/10] rounded-2xl overflow-hidden mb-6 relative">
                 {rel.image ? (
-                  /* PERFORMANCE: Image Komponente für Thumbnails */
                   <Image
                     src={`${ASSET_URL}/${rel.image}`}
                     width={600}
@@ -451,96 +454,53 @@ const shareLinkedIn = 'https://www.linkedin.com/sharing/share-offsite/?url=' + e
   )}
 </MainLayout>
 
+{/* --- SCHEMA.ORG --- */}
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Event",
+  "name": event.title,
+  "startDate": displayDate.toISOString(),
+  "endDate": displayEndDate.toISOString(),
+  "location": { "@type": "Place", "name": "Die Brücke Graz", "address": { "@type": "PostalAddress", "streetAddress": "Grabenstraße 39a", "addressLocality": "Graz", "postalCode": "8010", "addressCountry": "AT" } },
+  "image": [seoImage],
+  "description": seoDescription,
+  "offers": { "@type": "Offer", "url": pretixLink || currentUrl, "price": event.price || "0", "priceCurrency": "EUR", "availability": isSoldOut ? "https://schema.org/OutOfStock" : "https://schema.org/InStock" },
+  "organizer": { "@type": "Organization", "name": "Die Brücke - soziokulturelles Zentrum", "url": "https://diebruecke.cc" }
+})} />
+
 <script>
-  // --- EXISTING LOGIC: INSTAGRAM COPY ---
   const btnInsta = document.getElementById('share-insta');
-
-  function copyLink(btn) {
-    if (!btn) return;
-    navigator.clipboard.writeText(window.location.href);
-    const originalHTML = btn.innerHTML;
-    const originalClasses = btn.className;
-
-    btn.innerHTML = '<i class="fa-solid fa-check"></i>';
-    btn.className =
-      'h-10 rounded-lg bg-green-100 text-green-700 flex items-center justify-center transition-all cursor-pointer';
-
-    setTimeout(() => {
-      btn.innerHTML = originalHTML;
-      btn.className = originalClasses;
-    }, 2000);
-  }
-
-  if (btnInsta) {
-    btnInsta.addEventListener('click', () => copyLink(btnInsta));
-  }
-
-  // --- NEU: STICKY SIDEBAR LOGIK MIT RUNDEN ECKEN ---
   const sidebar = document.getElementById('event-sidebar');
   const sentinel = document.getElementById('sidebar-sentinel');
 
-  // Nur ausführen, wenn wir auf Desktop sind (und Elemente existieren)
-  if (sidebar && sentinel) {
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            // Wenn der Sentinel oben raus scrollt (nicht mehr intersecting), ist die Sidebar sticky
-            if (!entry.isIntersecting && entry.boundingClientRect.top < 0) {
-                sidebar.classList.add('is-stuck');
-            } else {
-                sidebar.classList.remove('is-stuck');
-            }
-        });
-    }, { 
-        threshold: 0,
-        rootMargin: "-100px 0px 0px 0px" // Triggerpunkt anpassen
+  // Instagram Link Copy
+  if (btnInsta) {
+    btnInsta.addEventListener('click', () => {
+        navigator.clipboard.writeText(window.location.href);
+        const originalHTML = btnInsta.innerHTML;
+        btnInsta.innerHTML = '<i class="fa-solid fa-check"></i>';
+        setTimeout(() => btnInsta.innerHTML = originalHTML, 2000);
     });
-    
-    observer.observe(sentinel);
+  }
+
+  // Sticky Sidebar Logic
+  if (sidebar && sentinel) {
+    new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (!entry.isIntersecting && entry.boundingClientRect.top < 0) sidebar.classList.add('is-stuck');
+            else sidebar.classList.remove('is-stuck');
+        });
+    }, { threshold: 0, rootMargin: "-100px 0px 0px 0px" }).observe(sentinel);
   }
 </script>
 
 <style>
-  @keyframes shine {
-    100% {
-      transform: translateX(100%);
-    }
-  }
-  .animate-shine {
-    animation: shine 1.5s infinite;
-  }
-
-  .custom-scrollbar::-webkit-scrollbar {
-    width: 4px;
-  }
-  .custom-scrollbar::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    background-color: #cbd5e1;
-    border-radius: 20px;
-  }
-
-  html.dark .custom-scrollbar::-webkit-scrollbar-thumb {
-    background-color: #475569;
-  }
-
-  @media screen {
-    .no-screen-only { display: none; }
-  }
-  @media print {
-    .no-print { display: none !important; }
-  }
-
-  /* --- NEU: STICKY STATE STYLE --- */
-  .is-stuck {
-      /* Wenn sticky: Links oben und unten abrunden */
-      border-top-left-radius: 40px;
-      border-bottom-left-radius: 40px;
-      
-      /* Optional: Kleiner Schatten für "Floating" Effekt */
-      box-shadow: -5px 0 20px -5px rgba(0,0,0,0.05);
-      
-      /* Rand Links anpassen für sauberen Look */
-      border-left: 1px solid rgba(255,255,255,0.1); 
-  }
+  @keyframes shine { 100% { transform: translateX(100%); } }
+  .animate-shine { animation: shine 1.5s infinite; }
+  .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+  .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
+  html.dark .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #475569; }
+  .is-stuck { border-top-left-radius: 40px; border-bottom-left-radius: 40px; box-shadow: -5px 0 20px -5px rgba(0,0,0,0.05); border-left: 1px solid rgba(255,255,255,0.1); }
+  @media screen { .no-screen-only { display: none; } }
+  @media print { .no-print { display: none !important; } }
 </style>

@@ -1,5 +1,5 @@
 ---
-// WICHTIG: SSR aktivieren (Server-Side Rendering)
+// WICHTIG: SSR aktivieren (Server-Side Rendering) für dynamische Routen
 export const prerender = false;
 import MainLayout from '../../layouts/layout.astro';
 import { directus } from '../../lib/directus';
@@ -36,14 +36,27 @@ const ASSET_URL = 'https://api.diebruecke.social/assets';
 const gradientClass = project?.color || "from-slate-700 to-slate-900";
 
 // URL & Text für Sharing
-// Hinweis: Nutze Astro.url.href für die echte URL
 const shareUrl = Astro.url.href;
 const shareTitle = encodeURIComponent(`Tolles Projekt bei der Brücke: ${project.title}`);
 const shareText = encodeURIComponent(project.subtitle || project.description || '');
-const instagramProfile = "https://www.instagram.com/die.bruecke.graz"; // Angepasst auf Graz
+const instagramProfile = "https://www.instagram.com/die.bruecke.graz";
+
+// --- SEO META DATEN ---
+const seoTitle = `${project.title} - Inklusionsprojekt Graz | Die Brücke`;
+const cleanDesc = project.description?.replace(/<[^>]*>/g, '') || "";
+const seoDescription = cleanDesc.length > 160 ? cleanDesc.substring(0, 157) + "..." : cleanDesc;
+const seoImage = project.image ? `${ASSET_URL}/${project.image}` : "https://images.unsplash.com/photo-1531482615713-2afd69097998?q=80&w=1200";
+
+// Youtube Thumbnail für Video-Schema (falls vorhanden)
+const videoId = project.video; 
+const videoThumbnail = videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : null;
 ---
 
-<MainLayout title={`${project.title} – Projekte`}>
+<MainLayout 
+    title={seoTitle}
+    description={seoDescription}
+    image={seoImage}
+>
     
     {/* Header Section */}
     <section class="relative pt-32 pb-20 px-6 sm:px-10 overflow-hidden">
@@ -248,3 +261,66 @@ const instagramProfile = "https://www.instagram.com/die.bruecke.graz"; // Angepa
     </section>
 
 </MainLayout>
+
+{/* --- SCHEMA.ORG: CREATIVE WORK --- */}
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "CreativeWork",
+  "name": project.title,
+  "headline": project.subtitle || project.title,
+  "description": seoDescription,
+  "image": seoImage,
+  "url": Astro.url.href,
+  "creator": {
+    "@type": "Organization",
+    "name": "Die Brücke Graz"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Die Brücke Graz",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://diebruecke.cc/logo.png"
+    }
+  }
+})} />
+
+{/* --- SCHEMA.ORG: BREADCRUMB --- */}
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Startseite",
+      "item": "https://diebruecke.cc"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Projekte",
+      "item": "https://diebruecke.cc/projects"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": project.title,
+      "item": Astro.url.href
+    }
+  ]
+})} />
+
+{/* --- SCHEMA.ORG: VIDEO (Falls vorhanden) --- */}
+{videoId && (
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "VideoObject",
+      "name": project.title,
+      "description": project.subtitle || "Einblick in das Projekt",
+      "thumbnailUrl": videoThumbnail,
+      "uploadDate": new Date().toISOString(),
+      "contentUrl": `https://www.youtube.com/watch?v=${videoId}`,
+      "embedUrl": `https://www.youtube.com/embed/${videoId}`
+    })} />
+)}

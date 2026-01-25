@@ -12,13 +12,11 @@ try {
 }
 
 // --- DATEN-LOGIK: ÖFFNUNGSZEITEN ---
-// Fallback, falls Directus leer ist (Wichtig für Stabilität)
 const defaultOpeningHours = [
     { label: "Montag – Donnerstag", time: "09:00 – 16:00", highlight: false },
     { label: "Freitag", time: "09:00 – 13:00", highlight: false },
     { label: "Veranstaltungen", time: "Je nach Programm", highlight: true }
 ];
-// Wenn Settings da sind, nimm sie, sonst Fallback
 const openingHours = settings?.opening_hours || defaultOpeningHours;
 
 // --- DATEN-LOGIK: BARRIEREFREIHEIT ---
@@ -68,9 +66,17 @@ const faqs = [
         a: "Für das Erstgespräch gar nichts – komm einfach so. Falls du bereits Bescheide, Arztbriefe oder den Behindertenpass hast, bring sie gerne mit. Das hilft uns, die Situation schneller zu erfassen." 
     }
 ];
+
+// --- SEO KONFIGURATION ---
+const seoDescription = "Das Infozentrum ist deine erste Adresse für alles, was den Alltag betrifft. Rechte, Anträge oder einfach ein offenes Ohr – unbürokratisch und menschlich.";
+const seoImage = "https://images.unsplash.com/photo-1516382799247-87df95d790b7?q=80&w=1200";
 ---
 
-<MainLayout title="Infozentrum | Die Brücke">
+<MainLayout 
+    title="Infozentrum" 
+    description={seoDescription}
+    image={seoImage}
+>
     
     {/* --- HERO SECTION: INFOZENTRUM (STABLE 2-LINE LAYERED) --- */}
     <section class="px-4 sm:px-6 pt-6 pb-20">
@@ -80,7 +86,7 @@ const faqs = [
             <div class="absolute top-0 right-0 w-full lg:w-1/2 h-full pointer-events-none overflow-hidden">
                 <div class="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/60 to-transparent z-10"></div>
                 <img 
-                    src="https://images.unsplash.com/photo-1516382799247-87df95d790b7?q=80&w=1200" 
+                    src={seoImage} 
                     alt="Infozentrum Welcome" 
                     class="w-full h-full object-cover opacity-30 lg:opacity-45 grayscale"
                 />
@@ -108,17 +114,13 @@ const faqs = [
                         Anlaufstelle & Beratung
                     </div>
                     
-                    {/* TITEL-FIX: 
-                        - text-7xl als Obergrenze
-                        - whitespace-nowrap verhindert den Umbruch
-                    */}
                     <h1 class="text-4xl md:text-6xl lg:text-7xl font-display font-black text-white mb-8 leading-[0.95] tracking-tighter uppercase">
                         Orientierung & <br class="hidden sm:block"/>
                         <span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-400 to-indigo-400 whitespace-nowrap">Rückhalt.</span>
                     </h1>
                     
                     <p class="text-lg md:text-xl text-slate-300 leading-relaxed mb-10 max-w-lg font-medium border-l-4 border-rose-500 pl-6">
-                        Das Infozentrum ist deine erste Adresse für alles, was den Alltag betrifft. Rechte, Anträge oder einfach ein offenes Ohr – unbürokratisch und menschlich.
+                        {seoDescription}
                     </p>
                     
                     <div class="flex flex-wrap gap-4">
@@ -236,7 +238,6 @@ const faqs = [
                         </div>
                         <div>
                             <p class="text-xs font-bold uppercase tracking-widest text-slate-400">Dein Team</p>
-                            {/* LUSTIGER NAME */}
                             <p class="text-slate-900 dark:text-white font-bold leading-tight">Die Möglichmacher</p>
                         </div>
                     </div>
@@ -258,7 +259,7 @@ const faqs = [
                     </div>
                 </div>
 
-                {/* Rechte Seite: Öffnungszeiten & Barrierefreiheit (JETZT MIT KORREKTEM LAYOUT) */}
+                {/* Rechte Seite: Öffnungszeiten & Barrierefreiheit (MIT FIX) */}
                 <div class="bg-slate-100 dark:bg-slate-800/50 p-10 md:p-16 lg:w-2/5 border-t lg:border-t-0 lg:border-l border-slate-200 dark:border-slate-800 flex flex-col justify-center">
                     
                     {/* Öffnungszeiten */}
@@ -268,9 +269,13 @@ const faqs = [
                         </h4>
                         <ul class="space-y-4">
                             {openingHours.map((slot: any) => (
-                                <li class={`flex justify-between items-center border-b border-slate-200 dark:border-slate-700 pb-2 ${slot.highlight ? 'text-rose-600 dark:text-rose-400 font-bold' : ''}`}>
-                                    <span class="font-bold text-slate-700 dark:text-slate-300">{slot.label}</span>
-                                    <span class="font-mono text-slate-500 dark:text-slate-400">{slot.time}</span>
+                                <li class="flex justify-between items-center border-b border-slate-200 dark:border-slate-700 pb-2 last:border-0">
+                                    <span class={`font-bold ${slot.highlight ? 'text-rose-600 dark:text-rose-400' : 'text-slate-700 dark:text-slate-300'}`}>
+                                        {slot.label}
+                                    </span>
+                                    <span class={`font-mono text-right flex-grow pl-4 ${slot.highlight ? 'text-rose-600 dark:text-rose-400 font-bold' : 'text-slate-500 dark:text-slate-400'}`}>
+                                        {slot.time}
+                                    </span>
                                 </li>
                             ))}
                         </ul>

@@ -5,7 +5,9 @@ import { Image } from 'astro:assets';
 
 const posts = await getBlogPosts();
 const [featuredPost, ...otherPosts] = posts;
-const ASSET_URL = import.meta.env.DIRECTUS_URL + '/assets';
+
+// Wir nutzen die konsistente API-URL
+const ASSET_URL = 'https://api.diebruecke.social/assets';
 
 // Formatierung für das Datum
 const formatDate = (dateString: string) => {
@@ -15,11 +17,21 @@ const formatDate = (dateString: string) => {
         year: 'numeric'
     });
 };
+
+// --- SEO CONFIG ---
+const seoTitle = "Journal für Inklusion & Kultur Graz | Die Brücke";
+const seoDescription = "Geschichten, Einblicke und Hintergründe aus dem Verein Die Brücke. Erfahre mehr über Inklusion, Kulturprojekte und das Miteinander in Graz.";
+const seoImage = featuredPost ? `${ASSET_URL}/${featuredPost.main_image}` : "/assets/share-journal.jpg";
 ---
 
-<MainLayout title="Journal | Verein Die Brücke">
-    <main class="bg-slate-50 dark:bg-slate-950 transition-colors duration-500 relative overflow-hidden rounded-[48px] m-2 md:m-4 border border-slate-200 dark:border-slate-800 shadow-2xl min-h-screen">        
-        {/* Background Glow Effect für Darkmode Tiefe */}
+<MainLayout 
+    title={seoTitle}
+    description={seoDescription}
+    image={seoImage}
+>
+    <main class="bg-slate-50 dark:bg-slate-950 transition-colors duration-500 relative overflow-hidden rounded-[48px] md:rounded-[64px] m-2 md:m-4 border border-slate-200 dark:border-slate-800 shadow-2xl min-h-screen">        
+        
+        {/* Background Glow Effect */}
         <div class="absolute top-0 right-0 w-[800px] h-[800px] bg-rose-500/5 rounded-full blur-[120px] pointer-events-none -translate-y-1/2 translate-x-1/2"></div>
        
        {/* --- HEADER --- */}
@@ -35,8 +47,7 @@ const formatDate = (dateString: string) => {
                 <span class="w-12 h-px bg-slate-200 dark:bg-slate-800"></span>
             </div>
             
-            {/* FIX: Schriftgröße mobil angepasst (text-4xl) und Padding rechts reduziert */}
-            <h1 class="text-4xl sm:text-6xl md:text-8xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tighter leading-[1.0] md:leading-[1.1] py-2">
+            <h1 class="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tighter leading-[1.05] py-2">
                 Geschichten <br/> 
                 <span class="inline-block text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-indigo-600 italic pb-2 md:pb-4 pr-2 md:pr-12">
                     von uns.
@@ -47,11 +58,10 @@ const formatDate = (dateString: string) => {
         {/* --- FEATURED POST (HERO) --- */}
         {featuredPost && (
             <section class="max-w-7xl mx-auto px-6 mb-32 relative z-10">
-               <a href={`/blog/${featuredPost.slug}/`} class="group grid lg:grid-cols-12 bg-white dark:bg-slate-900 rounded-[48px] overflow-hidden shadow-xl hover:shadow-2xl dark:shadow-black/50 border border-slate-100 dark:border-slate-800 transition-all duration-700 hover:-translate-y-1 isolate [transform:translateZ(0)]">
+               <a href={`/blog/${featuredPost.slug}/`} class="group grid lg:grid-cols-12 bg-white dark:bg-slate-900 rounded-[48px] md:rounded-[56px] overflow-hidden shadow-xl hover:shadow-2xl dark:shadow-black/50 border border-slate-100 dark:border-slate-800 transition-all duration-700 hover:-translate-y-1 isolate">
                     
                     {/* BILD BEREICH */}
-                    <div class="lg:col-span-7 overflow-hidden h-[300px] sm:h-[400px] lg:h-[600px] relative">
-                        {/* PERFORMANCE: Eager Loading, hohe Priorität */}
+                    <div class="lg:col-span-7 overflow-hidden h-[350px] sm:h-[450px] lg:h-[650px] relative">
                         <Image 
                             src={`${ASSET_URL}/${featuredPost.main_image}`} 
                             width={1200}
@@ -61,27 +71,30 @@ const formatDate = (dateString: string) => {
                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[2s]" 
                             alt={featuredPost.title}
                         />
-                        {/* Overlay Gradient */}
-                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/20 to-transparent pointer-events-none"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-transparent pointer-events-none"></div>
                     </div>
 
                     {/* TEXT BEREICH */}
-                    {/* FIX: Padding mobil reduziert (p-8 statt p-12) */}
-                    <div class="lg:col-span-5 p-8 sm:p-12 md:p-20 flex flex-col justify-center border-t lg:border-t-0 lg:border-l border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 relative z-10">
-                        <div class="flex items-center gap-4 mb-6 md:mb-8 text-[10px] font-black uppercase tracking-widest text-slate-400">
+                    <div class="lg:col-span-5 p-8 sm:p-12 md:p-16 flex flex-col justify-center bg-white dark:bg-slate-900 relative z-10">
+                        <div class="flex items-center gap-4 mb-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
                             <span>{formatDate(featuredPost.date_created)}</span>
                             <span class="w-1 h-1 rounded-full bg-rose-500"></span>
                             <span>Von {featuredPost.author}</span>
                         </div>
-                        {/* FIX: Schriftgröße mobil reduziert */}
-                        <h2 class="text-2xl sm:text-4xl md:text-5xl font-display font-black text-slate-900 dark:text-white uppercase leading-[1.1] mb-6 md:mb-8 group-hover:text-rose-500 transition-colors">
+                        
+                        <h2 class="text-3xl sm:text-4xl md:text-5xl font-display font-black text-slate-900 dark:text-white uppercase leading-[1.05] mb-8 group-hover:text-rose-500 transition-colors break-words">
                             {featuredPost.title}
                         </h2>
-                        <p class="text-base md:text-lg text-slate-600 dark:text-slate-400 leading-relaxed mb-8 md:mb-10 line-clamp-3">
+                        
+                        <p class="text-lg text-slate-600 dark:text-slate-400 leading-relaxed mb-10 line-clamp-3 font-medium">
                             {featuredPost.excerpt}
                         </p>
-                        <span class="inline-flex items-center gap-3 text-rose-500 font-black uppercase tracking-widest text-xs group-hover:translate-x-2 transition-transform">
-                            Beitrag lesen <i class="fa-solid fa-arrow-right"></i>
+                        
+                        <span class="inline-flex items-center gap-4 text-slate-900 dark:text-white font-black uppercase tracking-widest text-xs group-hover:gap-6 transition-all">
+                            Beitrag lesen 
+                            <div class="w-10 h-10 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 flex items-center justify-center group-hover:bg-rose-500 group-hover:text-white transition-colors">
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </div>
                         </span>
                     </div>
                 </a>
@@ -90,11 +103,10 @@ const formatDate = (dateString: string) => {
 
         {/* --- POST GRID --- */}
         <section class="max-w-7xl mx-auto px-6 pb-40 relative z-10">
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-12">
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-20">
                 {otherPosts.map(post => (
                     <a href={`/blog/${post.slug}/`} class="group block h-full">
-                        <div class="relative rounded-[32px] overflow-hidden aspect-[4/5] mb-8 shadow-lg border border-transparent dark:border-white/5 transition-all duration-500 group-hover:shadow-xl group-hover:border-rose-500/20">
-                            {/* PERFORMANCE: Lazy Loading für Grid-Items */}
+                        <div class="relative rounded-[40px] overflow-hidden aspect-[4/5] mb-8 shadow-lg border border-slate-100 dark:border-white/5 transition-all duration-500 group-hover:shadow-2xl group-hover:-translate-y-2 group-hover:border-rose-500/20">
                             <Image 
                                 src={`${ASSET_URL}/${post.main_image}`} 
                                 width={600}
@@ -102,18 +114,21 @@ const formatDate = (dateString: string) => {
                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[1.5s]" 
                                 alt={post.title}
                             />
-                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-10">
+                                <span class="text-white font-black uppercase tracking-widest text-[10px] transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                                    Lesen <i class="fa-solid fa-chevron-right ml-2"></i>
+                                </span>
+                            </div>
                         </div>
                         
                         <div class="px-2">
-                            <div class="flex items-center gap-3 mb-4 text-[10px] font-black uppercase tracking-widest text-slate-400">
+                            <div class="flex items-center gap-3 mb-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
                                 <span>{formatDate(post.date_created)}</span>
                             </div>
-                            {/* FIX: Dezenterer Titel auf Mobile (text-xl, font-bold statt black) */}
-                            <h3 class="text-xl md:text-2xl font-display font-bold md:font-black text-slate-900 dark:text-white uppercase leading-tight mb-3 md:mb-4 group-hover:text-rose-500 transition-colors">
+                            <h3 class="text-2xl font-display font-black text-slate-900 dark:text-white uppercase leading-[1.1] mb-4 group-hover:text-rose-500 transition-colors tracking-tight">
                                 {post.title}
                             </h3>
-                            <p class="text-slate-600 dark:text-slate-400 text-sm line-clamp-2 leading-relaxed opacity-80 group-hover:opacity-100 transition-opacity">
+                            <p class="text-slate-600 dark:text-slate-400 text-sm line-clamp-2 leading-relaxed font-medium opacity-80">
                                 {post.excerpt}
                             </p>
                         </div>
@@ -123,3 +138,27 @@ const formatDate = (dateString: string) => {
         </section>
     </main>
 </MainLayout>
+
+{/* --- SCHEMA.ORG: BLOG & ITEMLIST --- */}
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Blog",
+  "name": "Die Brücke Journal",
+  "description": seoDescription,
+  "url": "https://diebruecke.cc/blog",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Verein Die Brücke",
+    "logo": "https://diebruecke.cc/logo.png"
+  },
+  "blogPost": posts.map((post) => ({
+    "@type": "BlogPosting",
+    "headline": post.title,
+    "url": `https://diebruecke.cc/blog/${post.slug}`,
+    "datePublished": post.date_created,
+    "author": {
+      "@type": "Person",
+      "name": post.author
+    }
+  }))
+})} />
