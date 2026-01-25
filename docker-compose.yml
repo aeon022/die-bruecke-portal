@@ -70,17 +70,20 @@ services:
   # --- FRONTEND SERVICE (Optional für lokalen Dev, meist nutzt du npm run dev) ---
   beta_frontend:
     build:
-      context: ./frontend  # Kontext ist nun der Unterordner
+      context: ./frontend
       dockerfile: Dockerfile
       args:
-        DIRECTUS_URL: https://api.diebruecke.social
+        DIRECTUS_URL: ${DIRECTUS_URL}
     container_name: bruecke_beta
     restart: always
     ports:
       - "127.0.0.1:4321:4321"
     environment:
-      - DIRECTUS_URL=https://api.diebruecke.social
-      - PUBLIC_DIRECTUS_URL=https://api.diebruecke.social 
+      # Wir reichen die Variablen aus der Root-.env durch
+      - DIRECTUS_URL=${DIRECTUS_URL}
+      - DIRECTUS_STATIC_TOKEN=${DIRECTUS_STATIC_TOKEN}
+      - PUBLIC_API_URL=${PUBLIC_API_URL}
+      - PUBLIC_GOOGLE_MAPS_KEY=${PUBLIC_GOOGLE_MAPS_KEY}
       - HOST=0.0.0.0
       - PORT=4321
     networks:
