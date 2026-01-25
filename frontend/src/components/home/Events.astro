@@ -8,8 +8,9 @@ interface Props {
 const { highlightEvent, upcomingEvents } = Astro.props;
 const ASSET_URL = 'https://api.diebruecke.social/assets'; 
 
-// HELPER: Datum formatieren (SECURE VERSION)
-// Verhindert Abstürze, wenn Directus leere oder falsche Daten liefert
+// PERF HELPER: Optimierte URL-Generierung
+const getImg = (id: string, width: number) => `${ASSET_URL}/${id}?width=${width}&format=webp&quality=80`;
+
 function formatEventDate(event: any) {
     if (!event) return "";
     const dateStr = event.date_start || event.start_date || event.date;
@@ -17,18 +18,13 @@ function formatEventDate(event: any) {
     
     try {
         const date = new Date(dateStr);
-        // Prüfen, ob das Datum gültig ist (sonst crasht .toLocaleDateString)
         if (isNaN(date.getTime())) return "";
-
         const day = date.toLocaleDateString('de-DE', { day: '2-digit', month: 'short' });
-        // Sicherer Aufruf von toUpperCase
         const dayUpper = day ? day.toUpperCase() : "";
-        
         const time = event.time_start ? event.time_start.slice(0, 5) : date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
-        
         return time === "00:00" ? dayUpper : `${dayUpper} • ${time}`;
     } catch (e) {
-        return ""; // Im Fehlerfall einfach nichts anzeigen, statt weiße Seite
+        return "";
     }
 }
 ---
@@ -42,15 +38,18 @@ function formatEventDate(event: any) {
                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
                     <span class="relative inline-flex rounded-full h-3 w-3 bg-rose-500 dark:bg-rose-400"></span>
                 </span>
-                <span class="text-rose-500 dark:text-rose-400 font-bold tracking-widest uppercase text-[10px]">Live aus der Brücke</span>
+                {/* A11Y FIX: rose-600 statt rose-500 für Kontrast-Score */}
+                <span class="text-rose-600 dark:text-rose-400 font-bold tracking-widest uppercase text-[10px]">
+                    Live aus der Brücke
+                </span>            
             </div>
             <h2 id="events-heading" class="text-4xl md:text-5xl font-display font-bold text-slate-900 dark:text-white tracking-tighter">
                 Was gerade geht.
             </h2>
         </div>
-        <p class="text-slate-400 dark:text-slate-300 font-medium italic text-lg md:text-right">
-            Langweilig wird's woanders. <br class="hidden md:block"> Komm wie du bist.
-        </p>
+                <p class="text-slate-600 dark:text-slate-300 font-medium italic text-lg md:text-right">
+                    Langweilig wird's woanders. <br class="hidden md:block"> Komm wie du bist.
+                </p>
     </div>
 </section>
 
@@ -63,11 +62,19 @@ function formatEventDate(event: any) {
             {highlightEvent && (
                 <a href={`/events/${highlightEvent.slug}`} class="md:col-span-2 md:row-span-2 relative group rounded-[32px] overflow-hidden bg-slate-900 shadow-xl border border-transparent dark:border-slate-800 min-h-[500px] md:min-h-0 block" aria-label={`Highlight Event: ${highlightEvent.title}`}>
                     {highlightEvent.image && (
-                        <img src={`${ASSET_URL}/${highlightEvent.image}`} class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition duration-1000" alt="" />
+                        /* PERF FIX: width=1200 & format=webp */
+                        <img 
+                            src={getImg(highlightEvent.image, 1200)} 
+                            class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition duration-1000" 
+                            alt="" 
+                            width="1200"
+                            height="800"
+                            loading="lazy"
+                            decoding="async"
+                        />
                     )}
                     <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent"></div>
                     
-                    {/* BATCH: Datum & Tipp */}
                     <div class="absolute top-6 left-6 flex gap-2">
                         <span class="px-3 py-1 rounded-full bg-amber-400 text-slate-900 text-[10px] font-bold uppercase shadow-lg tracking-widest">Tipp</span>
                         <span class="px-3 py-1 rounded-full bg-slate-900/80 backdrop-blur-md text-white text-[10px] font-bold uppercase shadow-lg tracking-widest border border-white/10">
@@ -86,11 +93,19 @@ function formatEventDate(event: any) {
             {upcomingEvents && upcomingEvents.map((event, index) => (
                 <a href={`/events/${event.slug}`} class={`relative group rounded-[32px] overflow-hidden bg-slate-900 border border-slate-900/10 dark:border-slate-800 hover:shadow-xl transition-all min-h-[350px] md:min-h-0 block ${index === 2 ? 'md:col-span-2 md:row-span-1' : 'md:col-span-1 md:row-span-1'}`} aria-label={`Event: ${event.title}`}>
                     {event.image && (
-                        <img src={`${ASSET_URL}/${event.image}`} class="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:scale-105 transition duration-1000" alt="" />
+                        /* PERF FIX: width=800 & format=webp */
+                        <img 
+                            src={getImg(event.image, 800)} 
+                            class="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:scale-105 transition duration-1000" 
+                            alt="" 
+                            width="800"
+                            height="600"
+                            loading="lazy"
+                            decoding="async"
+                        />
                     )}
                     <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/25 to-transparent"></div>
                     
-                    {/* BATCH: Datum */}
                     <div class="absolute top-6 left-6">
                         <span class="px-3 py-1 rounded-full bg-slate-900/80 backdrop-blur-md text-white text-[10px] font-bold uppercase shadow-lg tracking-widest border border-white/10">
                             {formatEventDate(event)}
@@ -103,7 +118,6 @@ function formatEventDate(event: any) {
                 </a>
             ))}
             
-            {/* ALLE EVENTS LINK */}
             <a href="/events" class="md:col-span-1 md:row-span-1 bg-rose-600 rounded-[32px] p-8 flex items-center justify-center text-white group hover:bg-slate-900 transition-all shadow-lg overflow-hidden border border-transparent dark:border-slate-700 min-h-[200px] md:min-h-0">
                 <div class="flex items-center gap-4 text-left">
                     <i class="fa-solid fa-layer-group text-3xl group-hover:rotate-12 transition-transform shrink-0"></i>

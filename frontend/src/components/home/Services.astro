@@ -25,20 +25,20 @@ function cleanText(html: string) {
 <section aria-labelledby="services-heading" class="px-6 sm:px-10 py-24 transition-colors duration-300">
     <div class="max-w-7xl mx-auto text-center">
         <div class="max-w-3xl mx-auto mb-20">
-            {/* Pulsierendes Badge für den Live-Charakter */}
-<div class="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-[10px] font-black text-rose-500 uppercase tracking-[0.2em] mb-8 shadow-sm">
-    <span class="relative flex h-2 w-2">
-        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
-        <span class="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
-    </span>
-    Angebote & Unterstützung
-</div>
+            {/* Pulsierendes Badge – A11Y FIX: rose-600 für Kontrast */}
+            <div class="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-[10px] font-black text-rose-600 dark:text-rose-400 uppercase tracking-[0.2em] mb-8 shadow-sm">
+                <span class="relative flex h-2 w-2">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
+                </span>
+                Angebote & Unterstützung
+            </div>
             
-            <h2 id="services-heading" class="text-4xl md:text-6xl font-display font-extrabold text-slate-900 dark:text-white tracking-tighter mb-6">
+            <h2 id="services-heading" class="text-4xl md:text-6xl font-display font-extrabold text-slate-900 dark:text-white tracking-tighter mb-6 leading-[1.1] pt-4">
                 Selbstbestimmung.<br>
                 <span class="text-rose-600 dark:text-rose-400 italic">Gemeinsam gestalten.</span>
             </h2>
-            <p class="text-lg text-slate-500 dark:text-slate-300 font-medium leading-relaxed">
+            <p class="text-lg text-slate-600 dark:text-slate-300 font-medium leading-relaxed">
                 Inklusion bedeutet für uns Unabhängigkeit. Wir unterstützen dich genau dort, wo du uns brauchst – im Alltag, beim Wohnen oder auf Reisen.
             </p>
         </div>
@@ -49,32 +49,32 @@ function cleanText(html: string) {
                 return (
                     <a href={`/services/${service.slug}`} class="group bg-white dark:bg-slate-900 p-8 rounded-[32px] border border-slate-100 dark:border-slate-800 hover:border-rose-500/30 hover:shadow-2xl hover:shadow-rose-500/5 transition-all duration-500 block flex flex-col h-full relative overflow-hidden">
                         
-                        {/* Dezenter Background-Glow beim Hover */}
                         <div class="absolute -right-4 -top-4 w-24 h-24 bg-rose-500/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
 
                         <div class="flex-1 relative z-10">
                             <div class={`w-12 h-12 rounded-2xl ${colorClass} text-white flex items-center justify-center text-xl mb-6 shadow-lg group-hover:rotate-6 transition-transform`}>
-                                <i class={`fa-solid ${service.icon || 'fa-hand-holding-heart'}`}></i>
+                                <i class={`fa-solid ${service.icon || 'fa-hand-holding-heart'}`} aria-hidden="true"></i>
                             </div>
                             
-                            <h3 class="text-xl font-display font-bold text-slate-900 dark:text-white mb-2 group-hover:text-rose-600 transition-colors">
+                            <h3 class="text-xl font-display font-bold text-slate-900 dark:text-white mb-2 group-hover:text-rose-600 transition-colors uppercase">
                                 {service.title}
                             </h3>
                             
-                            {/* Kurze Info-Flag (Details & Info nach oben gezogen) */}
-                            <div class="text-[10px] font-bold text-rose-500 uppercase tracking-tight mb-4 opacity-0 group-hover:opacity-100 transition-all transform translate-y-2 group-hover:translate-y-0">
+                            {/* A11Y FIX: rose-600 für Kontrast */}
+                            <div class="text-[10px] font-bold text-rose-600 dark:text-rose-400 uppercase tracking-tight mb-4 opacity-0 group-hover:opacity-100 transition-all transform translate-y-2 group-hover:translate-y-0">
                                 Jetzt Details ansehen
                             </div>
 
-                            <p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed line-clamp-4">
+                            {/* A11Y FIX: slate-600 für besseren Kontrast im Light Mode */}
+                            <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed line-clamp-4 font-medium">
                                 {cleanText(service.description)}
                             </p>
                         </div>
                         
                         <div class="mt-8 pt-6 border-t border-slate-50 dark:border-slate-800 flex items-center justify-between">
                             <span class="text-slate-900 dark:text-white font-bold text-xs uppercase tracking-widest">Mehr erfahren</span>
-                            <div class="w-8 h-8 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-400 group-hover:bg-rose-600 group-hover:text-white transition-all">
-                                <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                            <div class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 group-hover:bg-rose-600 group-hover:text-white transition-all">
+                                <i class="fa-solid fa-arrow-right text-[10px]" aria-hidden="true"></i>
                             </div>
                         </div>
                     </a>

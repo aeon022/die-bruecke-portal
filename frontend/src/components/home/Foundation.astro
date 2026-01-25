@@ -4,39 +4,37 @@
 <section class="px-6 sm:px-10 py-24 md:py-32 bg-slate-50 dark:bg-slate-950/50 transition-colors duration-500 overflow-hidden">
     <div class="max-w-7xl mx-auto">
         
-        {/* HEADER BEREICH: Optimiert für Mobil (links) vs Desktop (untenbündig) */}
+        {/* HEADER BEREICH: Links auf Mobil, iPad Mini safe, lg:items-end für Desktop-Effekt */}
         <div class="flex flex-col lg:grid lg:grid-cols-12 gap-8 md:gap-12 items-start lg:items-end mb-16 md:mb-24">
             <div class="lg:col-span-8">
-                {/* Pulsierendes Badge */}
-                <div class="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-[10px] font-black text-rose-500 uppercase tracking-[0.2em] mb-8 shadow-sm">
+                {/* A11Y FIX: text-rose-600 statt 500 für Kontrast */}
+                <div class="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-[10px] font-black text-rose-600 dark:text-rose-400 uppercase tracking-[0.2em] mb-8 shadow-sm">
                     <span class="relative flex h-2 w-2">
                         <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-rose-600"></span>
                     </span>
                     Unser Fundament
                 </div>
                 
-                {/* Leading fix für Umlaute + pt-4 für Padding nach oben */}
                 <h2 class="text-5xl md:text-7xl font-display font-black text-slate-900 dark:text-white tracking-tighter leading-[1.05] uppercase pt-4">
                     Worauf wir <br/>
-                    <span class="text-rose-500 italic pr-4">bauen.</span>
+                    <span class="text-rose-600 italic pr-4">bauen.</span>
                 </h2>
             </div>
 
             <div class="lg:col-span-4 lg:pb-2">
-                {/* Border-Logik: Oben bei Mobil, Links bei Desktop */}
-                <p class="text-lg md:text-xl text-slate-600 dark:text-slate-400 font-medium leading-relaxed border-t-2 lg:border-t-0 lg:border-l-2 border-rose-500/30 lg:border-slate-200 lg:dark:border-slate-800 pt-6 lg:pt-0 pl-0 lg:pl-8">
+                <p class="text-lg md:text-xl text-slate-600 dark:text-slate-400 font-medium leading-relaxed border-t-2 lg:border-t-0 lg:border-l-2 border-rose-600/30 lg:border-slate-200 lg:dark:border-slate-800 pt-6 lg:pt-0 pl-0 lg:pl-8">
                     Seit über vier Jahrzehnten schaffen wir nicht nur Raum für Inklusion, sondern stellen sicher, dass sie menschlich und selbstverständlich ist.
                 </p>
             </div>
         </div>
 
-        {/* GRID: 1 Spalte Mobil, 3 Spalten ab Tablet (iPad Mini safe) */}
         <div class="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-20">
             
             {/* 1. MENSCHLICHKEIT */}
             <div class="group">
-                <span class="block text-6xl font-display font-black text-slate-200 dark:text-slate-800 mb-6 group-hover:text-rose-500/20 transition-colors duration-500">01</span>
+                {/* A11Y FIX: text-slate-300 statt 200 für besseren Kontrast auf weißem Grund */}
+                <span class="block text-6xl font-display font-black text-slate-300 dark:text-slate-800 mb-6 group-hover:text-rose-600/20 transition-colors duration-500">01</span>
                 <h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-4 uppercase tracking-tight">Menschlichkeit</h3>
                 <p class="text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
                     Bei uns steht von Anfang an der Mensch mit seinen individuellen Bedürfnissen im Mittelpunkt. Unbürokratisch, herzlich und echt.
@@ -45,16 +43,16 @@
 
             {/* 2. SELBSTBESTIMMUNG */}
             <div class="group">
-                <span class="block text-6xl font-display font-black text-slate-200 dark:text-slate-800 mb-6 group-hover:text-rose-500/20 transition-colors duration-500">02</span>
+                <span class="block text-6xl font-display font-black text-slate-300 dark:text-slate-800 mb-6 group-hover:text-rose-600/20 transition-colors duration-500">02</span>
                 <h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-4 uppercase tracking-tight">Selbstbestimmung</h3>
                 <p class="text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
-                    Dein Recht nach Artikel 19 UN-BRK ist unser Auftrag. Wir begleiten dich auf Augenhöhe – dein Weg ist unser <span class="text-rose-500 font-bold">Rückenwind</span>.
+                    Dein Recht nach Artikel 19 UN-BRK ist unser Auftrag. Wir begleiten dich auf Augenhöhe – dein Weg ist unser <span class="text-rose-600 font-bold">Rückenwind</span>.
                 </p>
             </div>
 
             {/* 3. KULTUR & BEGEGNUNG */}
             <div class="group">
-                <span class="block text-6xl font-display font-black text-slate-200 dark:text-slate-800 mb-6 group-hover:text-rose-500/20 transition-colors duration-500">03</span>
+                <span class="block text-6xl font-display font-black text-slate-300 dark:text-slate-800 mb-6 group-hover:text-rose-600/20 transition-colors duration-500">03</span>
                 <h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-4 uppercase tracking-tight">Kultur & Begegnung</h3>
                 <p class="text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
                     Kunst zum Erleben. Wir schaffen Räume, in denen Unterschiede verschwinden und du einfach mitten drinnen bist. Ohne Barrieren in den Köpfen.
@@ -63,10 +61,9 @@
 
         </div>
 
-        {/* ARCHIV-TEASER: Responsive Flex-Layout */}
+        {/* ARCHIV-TEASER */}
         <div class="mt-24 p-8 md:p-14 rounded-[40px] md:rounded-[64px] bg-slate-900 dark:bg-slate-900 border border-transparent dark:border-white/5 text-white flex flex-col lg:flex-row items-start lg:items-center justify-between gap-10 overflow-hidden relative group/archive transition-all duration-500 shadow-2xl">
             
-            {/* Glow Effect */}
             <div class="absolute top-0 right-0 w-80 h-80 bg-rose-500/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
 
             <div class="relative z-10 max-w-2xl">
@@ -80,7 +77,6 @@
                 Zum Archiv <i class="fa-solid fa-arrow-right ml-2"></i>
             </a>
             
-            {/* Jahreszahl im Hintergrund: Skaliert mit */}
             <span class="absolute right-6 -bottom-8 md:-bottom-12 text-[100px] md:text-[180px] font-display font-black text-white/5 select-none pointer-events-none group-hover/archive:-translate-y-4 transition-transform duration-1000">
                 1983
             </span>
