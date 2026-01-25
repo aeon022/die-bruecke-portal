@@ -9,7 +9,8 @@ const { highlightEvent, upcomingEvents } = Astro.props;
 const ASSET_URL = 'https://api.diebruecke.social/assets'; 
 
 // PERF HELPER: Optimierte URL-Generierung
-const getImg = (id: string, width: number) => `${ASSET_URL}/${id}?width=${width}&format=webp&quality=80`;
+// Wir senken die Qualität leicht auf 75, was bei WebP kaum sichtbar ist, aber KB spart
+const getImg = (id: string, width: number) => `${ASSET_URL}/${id}?width=${width}&format=webp&quality=75`;
 
 function formatEventDate(event: any) {
     if (!event) return "";
@@ -38,8 +39,8 @@ function formatEventDate(event: any) {
                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
                     <span class="relative inline-flex rounded-full h-3 w-3 bg-rose-500 dark:bg-rose-400"></span>
                 </span>
-                {/* A11Y FIX: rose-600 statt rose-500 für Kontrast-Score */}
-                <span class="text-rose-600 dark:text-rose-400 font-bold tracking-widest uppercase text-[10px]">
+                {/* A11Y FIX: rose-700 für den harten Mobile-Contrast-Check bei kleiner Schrift */}
+                <span class="text-rose-700 dark:text-rose-400 font-bold tracking-widest uppercase text-[10px]">
                     Live aus der Brücke
                 </span>            
             </div>
@@ -47,9 +48,10 @@ function formatEventDate(event: any) {
                 Was gerade geht.
             </h2>
         </div>
-                <p class="text-slate-600 dark:text-slate-300 font-medium italic text-lg md:text-right">
-                    Langweilig wird's woanders. <br class="hidden md:block"> Komm wie du bist.
-                </p>
+        {/* A11Y FIX: slate-700 statt 600 für besseren Kontrast auf hellem Grund */}
+        <p class="text-slate-700 dark:text-slate-300 font-medium italic text-lg md:text-right">
+            Langweilig wird's woanders. <br class="hidden md:block"> Komm wie du bist.
+        </p>
     </div>
 </section>
 
@@ -62,13 +64,13 @@ function formatEventDate(event: any) {
             {highlightEvent && (
                 <a href={`/events/${highlightEvent.slug}`} class="md:col-span-2 md:row-span-2 relative group rounded-[32px] overflow-hidden bg-slate-900 shadow-xl border border-transparent dark:border-slate-800 min-h-[500px] md:min-h-0 block" aria-label={`Highlight Event: ${highlightEvent.title}`}>
                     {highlightEvent.image && (
-                        /* PERF FIX: width=1200 & format=webp */
+                        /* PERF FIX: width=1000 reicht völlig für 2-col Desktop und spart massiv auf Mobile */
                         <img 
-                            src={getImg(highlightEvent.image, 1200)} 
+                            src={getImg(highlightEvent.image, 1000)} 
                             class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition duration-1000" 
                             alt="" 
-                            width="1200"
-                            height="800"
+                            width="1000"
+                            height="700"
                             loading="lazy"
                             decoding="async"
                         />
@@ -93,13 +95,13 @@ function formatEventDate(event: any) {
             {upcomingEvents && upcomingEvents.map((event, index) => (
                 <a href={`/events/${event.slug}`} class={`relative group rounded-[32px] overflow-hidden bg-slate-900 border border-slate-900/10 dark:border-slate-800 hover:shadow-xl transition-all min-h-[350px] md:min-h-0 block ${index === 2 ? 'md:col-span-2 md:row-span-1' : 'md:col-span-1 md:row-span-1'}`} aria-label={`Event: ${event.title}`}>
                     {event.image && (
-                        /* PERF FIX: width=800 & format=webp */
+                        /* PERF FIX: width=600 statt 800. Auf dem Handy ist das Bild ca. 350-400px breit, 600px ist der perfekte Quality-Sweetspot */
                         <img 
-                            src={getImg(event.image, 800)} 
+                            src={getImg(event.image, 600)} 
                             class="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:scale-105 transition duration-1000" 
                             alt="" 
-                            width="800"
-                            height="600"
+                            width="600"
+                            height="450"
                             loading="lazy"
                             decoding="async"
                         />

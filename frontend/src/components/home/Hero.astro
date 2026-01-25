@@ -1,5 +1,5 @@
 ---
-import { Image } from 'astro:assets'; // <--- NEU: Import für Performance
+import { Image } from 'astro:assets';
 
 interface Props {
   headline: string;
@@ -18,18 +18,19 @@ const { headline, subline, image } = Astro.props;
         {/* 1. TEXT CONTENT */}
         <div class="relative z-30 col-span-12 lg:col-span-5 pointer-events-none">
 
-            {/* BADGE */}
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-slate-700 text-xs font-bold text-rose-500 dark:text-rose-400 mb-6 sm:mb-8 uppercase tracking-widest shadow-sm whitespace-nowrap pointer-events-auto">
+            {/* BADGE - A11Y FIX: rose-600 für besseren Kontrast auf weiß/hellgrau */}
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-slate-700 text-xs font-bold text-rose-600 dark:text-rose-400 mb-6 sm:mb-8 uppercase tracking-widest shadow-sm whitespace-nowrap pointer-events-auto">
                 <span class="relative flex h-2 w-2 mb-0.5">
                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-rose-600"></span>
                 </span>
                 Seit 1983
             </div>
 
-            <h1 class="text-4xl sm:text-6xl xl:text-8xl font-display font-extrabold text-slate-900 dark:text-white tracking-tighter leading-[0.95] mb-6 sm:mb-8 drop-shadow-sm lg:drop-shadow-none group-hover/hero:text-slate-900 transition-colors duration-500 [&_*:not(.text-transparent)]:dark:text-white sm:whitespace-nowrap pointer-events-auto" set:html={headline}></h1>
+            {/* Headline: Leading fix für Umlaute */}
+            <h1 class="text-4xl sm:text-6xl xl:text-8xl font-display font-extrabold text-slate-900 dark:text-white tracking-tighter leading-[1.05] mb-6 sm:mb-8 drop-shadow-sm lg:drop-shadow-none group-hover/hero:text-slate-900 transition-colors duration-500 [&_*:not(.text-transparent)]:dark:text-white sm:whitespace-nowrap pointer-events-auto" set:html={headline}></h1>
 
-            <p class="text-lg sm:text-xl text-slate-600 dark:text-slate-200 leading-relaxed border-l-4 border-rose-500 pl-4 sm:pl-6 font-medium mb-8 sm:mb-10 max-w-sm sm:max-w-4xl lg:w-[120%] line-clamp-4 group-hover/hero:text-slate-900 dark:group-hover/hero:text-white transition-colors duration-500 pointer-events-auto drop-shadow-sm">
+            <p class="text-lg sm:text-xl text-slate-700 dark:text-slate-200 leading-relaxed border-l-4 border-rose-500 pl-4 sm:pl-6 font-medium mb-8 sm:mb-10 max-w-sm sm:max-w-4xl lg:w-[120%] line-clamp-4 group-hover/hero:text-slate-900 dark:group-hover/hero:text-white transition-colors duration-500 pointer-events-auto drop-shadow-sm">
                 {subline}
             </p>
 
@@ -50,13 +51,15 @@ const { headline, subline, image } = Astro.props;
                         w-full group-hover/image:w-[130%] transition-[width] duration-[1.0s] ease-out">
 
                 {/* PERFORMANCE UPDATE: 
-                    Statt <img> nutzen wir <Image />.
-                    Klassen bleiben gleich -> Effekt bleibt gleich.
-                    Wichtig: width/height helfen gegen Layout Shift, loading="eager" für LCP Score.
+                    Wir fügen widths und sizes hinzu. 
+                    widths: Erstellt verschiedene Versionen des Bildes.
+                    sizes: Sagt dem Browser, wie breit das Bild im Layout ungefähr sein wird.
                 */}
                 <Image
                     src={image}
                     alt="Impression aus der Brücke Graz"
+                    widths={[480, 800, 1200, 1600]}
+                    sizes="(max-width: 768px) 90vw, (max-width: 1200px) 60vw, 800px"
                     width={1600}
                     height={900}
                     loading="eager"
@@ -65,7 +68,6 @@ const { headline, subline, image } = Astro.props;
                 />
 
                 <div class="absolute inset-0 bg-[radial-gradient(circle_at_70%_40%,rgba(244,63,94,0.1),transparent_60%)]"></div>
-                
                 <div class="absolute inset-0 bg-slate-900/40 opacity-0 group-hover/image:opacity-100 transition-opacity duration-700 backdrop-blur-[1px]"></div>
 
                 {/* WATERMARK */}
