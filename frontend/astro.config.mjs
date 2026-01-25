@@ -6,6 +6,8 @@ import tailwindcss from '@tailwindcss/vite';
 import vue from '@astrojs/vue';
 import PinyAstro from '@pinegrow/piny-astro';
 
+import sitemap from '@astrojs/sitemap';
+
 export default defineConfig({
   output: 'server',
   adapter: node({ mode: 'standalone' }),
@@ -22,13 +24,9 @@ export default defineConfig({
   },
   // --- ENDE IMAGE BLOCK ---
 
-  integrations: [
-    react(),
-    vue(),
-    PinyAstro({
-        hotReload: true, 
-    }),
-  ],
+  integrations: [react(), vue(), PinyAstro({
+      hotReload: true, 
+  }), sitemap()],
 
   vite: {
     plugins: [

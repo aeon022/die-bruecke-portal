@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@astrojs/node": "^9.5.2",
+    "@astrojs/sitemap": "^3.7.0",
     "@astrojs/vue": "^5.1.4",
     "@directus/sdk": "^20.3.0",
     "@tailwindcss/vite": "^4.1.18",

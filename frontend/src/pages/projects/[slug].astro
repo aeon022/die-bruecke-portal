@@ -4,6 +4,7 @@ export const prerender = false;
 import MainLayout from '../../layouts/layout.astro';
 import { directus } from '../../lib/directus';
 import { readItems } from '@directus/sdk';
+import { Image } from 'astro:assets';
 
 // Parameter holen
 const { slug } = Astro.params;
@@ -89,9 +90,10 @@ const instagramProfile = "https://www.instagram.com/die.bruecke.graz"; // Angepa
                 {/* 1. PROJECT IMAGE */}
                 {project.image && (
                     <div class="mb-12 rounded-[32px] overflow-hidden shadow-2xl border border-slate-100">
-                        <img 
+                        <Image 
                             src={`${ASSET_URL}/${project.image}`} 
                             alt={`Bild zum Projekt ${project.title}`} 
+                            inferSize={true}
                             class="w-full h-auto object-cover hover:scale-105 transition-transform duration-700"
                         />
                     </div>
