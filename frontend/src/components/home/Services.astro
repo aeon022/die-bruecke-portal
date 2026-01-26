@@ -25,7 +25,6 @@ function cleanText(html: string) {
 <section aria-labelledby="services-heading" class="px-6 sm:px-10 py-24 transition-colors duration-300">
     <div class="max-w-7xl mx-auto text-center">
         <div class="max-w-3xl mx-auto mb-16 md:mb-20">
-            {/* Pulsierendes Badge – A11Y FIX: rose-700 für Mobile-Kontrast bei 10px Schrift */}
             <div class="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-[10px] font-black text-rose-700 dark:text-rose-400 uppercase tracking-[0.2em] mb-8 shadow-sm">
                 <span class="relative flex h-2 w-2">
                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
@@ -38,36 +37,33 @@ function cleanText(html: string) {
                 Selbstbestimmung.<br>
                 <span class="text-rose-600 dark:text-rose-400 italic">Gemeinsam gestalten.</span>
             </h2>
-            {/* A11Y FIX: text-slate-700 statt 600 für Mobile-Lesbarkeit */}
             <p class="text-lg text-slate-700 dark:text-slate-300 font-medium leading-relaxed">
                 Inklusion bedeutet für uns Unabhängigkeit. Wir unterstützen dich genau dort, wo du uns brauchst – im Alltag, beim Wohnen oder auf Reisen.
             </p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-left">
+        {/* OPTIMIERUNG: Grid-Logik für iPad Mini (2-spaltig bis xl) */}
+        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 text-left">
             {services.map((service: any, index: number) => {
                 const colorClass = serviceColors[index % serviceColors.length];
                 return (
-                    <a href={`/services/${service.slug}`} class="group bg-white dark:bg-slate-900 p-8 rounded-[32px] border border-slate-100 dark:border-slate-800 hover:border-rose-500/30 hover:shadow-2xl hover:shadow-rose-500/5 transition-all duration-500 block flex flex-col h-full relative overflow-hidden">
+                    <a href={`/services/${service.slug}`} class="group bg-white dark:bg-slate-900 p-6 md:p-8 rounded-[32px] border border-slate-100 dark:border-slate-800 hover:border-rose-500/30 hover:shadow-2xl hover:shadow-rose-500/5 transition-all duration-500 block flex flex-col h-full relative overflow-hidden">
                         
                         <div class="absolute -right-4 -top-4 w-24 h-24 bg-rose-500/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
 
                         <div class="flex-1 relative z-10">
-                            {/* Icon-BG auf rose-600 für Sättigung */}
                             <div class={`w-12 h-12 rounded-2xl ${colorClass} text-white flex items-center justify-center text-xl mb-6 shadow-lg group-hover:rotate-6 transition-transform`}>
                                 <i class={`fa-solid ${service.icon || 'fa-hand-holding-heart'}`} aria-hidden="true"></i>
                             </div>
                             
-                            <h3 class="text-xl font-display font-bold text-slate-900 dark:text-white mb-2 group-hover:text-rose-600 transition-colors uppercase">
+                            <h3 class="text-xl font-display font-bold text-slate-900 dark:text-white mb-2 group-hover:text-rose-600 transition-colors uppercase leading-tight">
                                 {service.title}
                             </h3>
                             
-                            {/* A11Y FIX: rose-700 für Kontrast (Mobile) */}
                             <div class="text-[10px] font-bold text-rose-700 dark:text-rose-400 uppercase tracking-tight mb-4 opacity-0 group-hover:opacity-100 transition-all transform translate-y-2 group-hover:translate-y-0">
                                 Jetzt Details ansehen
                             </div>
 
-                            {/* A11Y FIX: text-slate-700 für Mobile-Lesbarkeit */}
                             <p class="text-slate-700 dark:text-slate-400 text-sm leading-relaxed line-clamp-4 font-medium">
                                 {cleanText(service.description)}
                             </p>

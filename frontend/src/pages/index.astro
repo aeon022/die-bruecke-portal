@@ -57,8 +57,9 @@ const upcomingEvents = allEvents
   .slice(0, 3);
 
 // 3. Daten für Hero vorbereiten
-const heroHeadline = settings?.hero_headline || `Kultur verbindet.<br> Inklusion stärkt.`;
-const heroSubline = settings?.hero_subline || "Die Brücke ist dein Rückenwind...";
+// Wir fügen hier HTML-Klassen für den Gradient hinzu
+const heroHeadline = settings?.hero_headline || `Kultur verbindet.<br> <span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-orange-500">Inklusion stärkt.</span>`;
+const heroSubline = settings?.hero_subline || "Die Brücke ist dein Rückenwind für ein selbstbestimmtes Leben. Wir verbinden Menschen durch Kultur, Freizeit und Unterstützung im Alltag – barrierefrei, bunt und mitten in Graz.";
 const heroImg = getOptimizedImg(settings?.hero_image || 'https://images.unsplash.com/photo-1511632765486-a01980e01a18', 1600);
 
 // --- FIX: PARTNER NUR ALS ID ÜBERGEBEN ---
