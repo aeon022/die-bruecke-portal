@@ -20,8 +20,8 @@ const ASSET_URL = 'https://api.diebruecke.social/assets';
 const getOptimizedImg = (id, w = 800) => {
     if (!id) return null;
     if (typeof id === 'object') id = id.id;
-    if (id.startsWith('http')) return `${id}?auto=format&fit=crop&w=${w}&q=80`;
-    return `${ASSET_URL}/${id}?width=${w}&format=webp&quality=80`;
+    if (id.startsWith('http')) return `${id}?auto=format&fit=crop&w=${w}&q=60`; // Hier q=60
+    return `${ASSET_URL}/${id}?width=${w}&format=webp&quality=60`; // Und hier quality=60
 };
 
 // 1. Daten laden

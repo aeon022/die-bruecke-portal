@@ -79,6 +79,8 @@ const part2 = parts.length > 1 ? parts.slice(1).join('<br>') : null;
                 <Image
                     src={image}
                     alt="Impression aus der Brücke Graz"
+                    // ÄNDERUNG: quality auf 60 setzen (statt Standard 80)
+                    quality={60}
                     widths={[480, 800, 1200, 1600]}
                     sizes="(max-width: 768px) 90vw, (max-width: 1200px) 60vw, 800px"
                     width={1600}
