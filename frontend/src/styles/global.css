@@ -3,10 +3,11 @@
 
 /* --- 1. CONFIG --- */
 @theme {
-  --font-heading: 'Sora', sans-serif;
-  --font-sans: 'Inter', sans-serif;
-  --font-display: 'Outfit', sans-serif;
-  --font-body: 'Plus Jakarta Sans', sans-serif;
+  /* WICHTIG: Die Namen müssen exakt so heißen wie in den Fontsource-Paketen */
+  --font-heading: 'Sora Variable', sans-serif;
+  --font-sans: 'Inter Variable', sans-serif;
+  --font-display: 'Outfit Variable', sans-serif;
+  --font-body: 'Plus Jakarta Sans Variable', sans-serif;
 }
 
 @variant dark (&:where(.dark, .dark *));
