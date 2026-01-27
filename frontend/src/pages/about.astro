@@ -42,7 +42,7 @@ const seoImage = "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q
 >
     
     <div class="home-content">
-        {/* --- HERO (OPTIMIERT: 2-ZEILIG & CLEAN) --- */}
+        {/* --- HERO (OPTIMIERT: STRICT 2 LINES & FLUID) --- */}
         <section class="px-4 sm:px-6 pt-6 pb-6 transition-colors duration-500">
             <div class="relative bg-white dark:bg-slate-900 rounded-[48px] overflow-hidden px-6 md:px-12 lg:px-16 py-24 md:py-32 shadow-2xl shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-800">
                 
@@ -67,16 +67,12 @@ const seoImage = "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q
                         Seit 1983
                     </div>
                     
-                    <div class="max-w-6xl">
-                        {/* FIX: Fluid Typography (clamp) statt starrer Breakpoints.
-                            Schrift wird stufenlos kleiner, wenn das Fenster schrumpft.
-                            pb-4 beim Span verhindert, dass Buchstaben unten abgeschnitten werden.
-                        */}
-                        <h1 class="font-display font-black text-slate-900 dark:text-white tracking-tighter leading-[1.1] mb-12 text-[clamp(2.5rem,8vw,7.5rem)]">
-                            Unabhängigkeit ist <br />
-                            <span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-indigo-600 pb-4 pr-2">
-                                keine Einzelleistung.
-                            </span>
+                    <div class="max-w-7xl">
+                        {/* FIX: clamp() skaliert aggressiv runter (bis 1.5rem), damit es auf Mobile passt. 
+                            block + whitespace-nowrap erzwingt exakt zwei Zeilen ohne Umbruch. */}
+                        <h1 class="font-display font-black text-slate-900 dark:text-white tracking-tighter leading-[1.1] mb-12 text-[clamp(1.5rem,6vw,7.5rem)]">
+                            <span class="block whitespace-nowrap">Unabhängigkeit ist</span>
+                            <span class="block whitespace-nowrap text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-indigo-600 pb-2 pr-2">keine Einzelleistung.</span>
                         </h1>
                     </div>
 
@@ -130,7 +126,7 @@ const seoImage = "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q
                         },
                         { 
                             title: "Selbstbestimmung", 
-                            icon: "fa-wind", // Wind-Icon für "Rückenwind"
+                            icon: "fa-wind", 
                             accent: "border-slate-200",
                             iconBg: "bg-slate-900",
                             text: "Dein Weg. Unser Rückenwind. Wir bevormunden nicht, wir unterstützen dich professionell dabei, dein Leben nach deinen eigenen Regeln zu gestalten." 
@@ -145,28 +141,22 @@ const seoImage = "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q
                     ].map(card => (
                         <div class="group h-[420px] [perspective:1000px]">
                             <div class="relative h-full w-full rounded-[48px] transition-all duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)] cursor-pointer shadow-sm hover:shadow-2xl hover:shadow-rose-500/5">
-                                
-                                {/* FRONT: Clean & Kompetent */}
                                 <div class="absolute inset-0 h-full w-full rounded-[48px] bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 flex flex-col items-center justify-center p-12 [backface-visibility:hidden]">
                                     <div class={`w-20 h-20 ${card.iconBg} text-white rounded-[28px] flex items-center justify-center text-3xl mb-8 shadow-lg group-hover:scale-110 transition-transform duration-500`}>
                                         <i class={`fa-solid ${card.icon}`}></i>
                                     </div>
                                     <h3 class="text-2xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tight">{card.title}</h3>
-                                    
                                     <div class="mt-8 flex items-center gap-2 text-rose-500 font-black text-[10px] uppercase tracking-[0.2em] opacity-50 group-hover:opacity-100 transition-opacity">
                                         <span>Details</span>
                                         <i class="fa-solid fa-chevron-right text-[8px]"></i>
                                     </div>
                                 </div>
-
-                                {/* BACK: Die Botschaft */}
                                 <div class="absolute inset-0 h-full w-full rounded-[48px] bg-slate-900 dark:bg-slate-800 p-12 text-white [transform:rotateY(180deg)] [backface-visibility:hidden] flex flex-col items-center justify-center text-center border border-slate-800">
                                     <h3 class="text-xl font-display font-black mb-6 uppercase tracking-tight text-rose-500">{card.title}</h3>
                                     <p class="text-slate-300 leading-relaxed font-medium text-lg">
                                         {card.text}
                                     </p>
                                 </div>
-                                
                             </div>
                         </div>
                     ))}
@@ -174,7 +164,7 @@ const seoImage = "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q
             </div>
         </section>
 
-        {/* --- TIMELINE (OPTIMIERT) --- */}
+        {/* --- TIMELINE (OPTIMIERT: FLUID TEXT & SPACING) --- */}
         <section class="px-6 sm:px-10 py-32 bg-slate-50 dark:bg-slate-900 relative overflow-hidden transition-colors duration-500">
             <div class="max-w-4xl mx-auto relative">
                 <div class="text-center mb-24">
@@ -183,28 +173,23 @@ const seoImage = "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q
                 </div>
                 
                 <div class="relative" id="timelineContainer">
-                    
-                    {/* LINIE: Links auf Mobile (left-6), Mitte auf Desktop (md:left-1/2) */}
                     <div class="absolute left-6 md:left-1/2 top-0 bottom-0 w-0.5 bg-slate-200 dark:bg-slate-800 -translate-x-1/2"></div>
-                    
-                    {/* PROGRESS BAR */}
                     <div id="timelineProgress" class="absolute left-6 md:left-1/2 top-0 w-1 bg-rose-600 -translate-x-1/2 transition-all duration-100 ease-out shadow-[0_0_15px_rgba(225,29,72,0.6)]" style="height: 0%;"></div>
                     
                     <div class="space-y-16 md:space-y-32 relative z-10 pt-10">
                         {history.map((item, idx) => (
                             <div class={`relative flex flex-col md:flex-row items-start md:items-center gap-8 md:gap-16 timeline-item opacity-20 transition-all duration-700 transform translate-y-8 ${idx % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'}`}>
                                 
-                                {/* TEXT BLOCK: padding-left auf Mobile (pl-16) um Linie freizuhalten */}
-                                <div class={`flex-1 pl-16 md:pl-0 ${idx % 2 === 0 ? 'md:text-right' : 'md:text-left'} text-left w-full`}>
-                                    <span class="text-6xl md:text-8xl font-display font-black text-slate-200 dark:text-slate-800/50 block mb-2 transition-colors leading-none tracking-tighter">{item.year}</span>
-                                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-3 mt-[-1rem] relative z-10">{item.title}</h3>
+                                {/* TEXT BLOCK: pl-12 auf Mobile für sauberen Abstand zur Linie */}
+                                <div class={`flex-1 pl-12 md:pl-0 ${idx % 2 === 0 ? 'md:text-right' : 'md:text-left'} text-left w-full`}>
+                                    {/* JAHRESZAHL: Fluid Typography (clamp) verhindert riesige Zahlen auf Mobile */}
+                                    <span class="text-[clamp(3.5rem,5vw,6rem)] font-display font-black text-slate-200 dark:text-slate-800/50 block mb-2 transition-colors leading-none tracking-tighter">{item.year}</span>
+                                    <h3 class="text-xl md:text-2xl font-bold text-slate-900 dark:text-white mb-3 mt-[-0.5rem] relative z-10">{item.title}</h3>
                                     <p class="text-slate-500 dark:text-slate-400 leading-relaxed font-medium text-sm md:text-base">{item.desc}</p>
                                 </div>
 
-                                {/* DOT: Links auf Mobile (left-6), Mitte auf Desktop */}
-                                <div class="absolute left-6 md:left-1/2 top-16 md:top-1/2 w-4 h-4 rounded-full bg-white dark:bg-slate-950 border-[3px] border-slate-300 dark:border-slate-700 -translate-x-1/2 -translate-y-1/2 transition-all duration-500 z-20 group-[.active]:border-rose-500 group-[.active]:scale-125 shadow-sm"></div>
+                                <div class="absolute left-6 md:left-1/2 top-14 md:top-1/2 w-4 h-4 rounded-full bg-white dark:bg-slate-950 border-[3px] border-slate-300 dark:border-slate-700 -translate-x-1/2 -translate-y-1/2 transition-all duration-500 z-20 group-[.active]:border-rose-500 group-[.active]:scale-125 shadow-sm"></div>
 
-                                {/* SPACER für Zig-Zag Layout Desktop */}
                                 <div class="flex-1 hidden md:block"></div>
                             </div>
                         ))}
@@ -219,7 +204,6 @@ const seoImage = "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q
 
             <div class="max-w-7xl mx-auto relative z-10 text-left">
                 <div class="grid lg:grid-cols-2 gap-12 md:gap-20 items-center">
-                    
                     <div class="max-w-2xl">
                         <h2 class="text-5xl md:text-7xl font-display font-black mb-8 tracking-tighter uppercase leading-[0.9]">
                             42 Jahre <br><span class="text-rose-500 italic text-4xl md:text-7xl">Eigensinn & Mut.</span>
@@ -230,22 +214,16 @@ const seoImage = "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
-                        
-                        {/* Card 1 */}
                         <div class="bg-white/5 p-6 sm:p-8 lg:p-10 rounded-[32px] md:rounded-[40px] border border-white/10 group hover:border-rose-500/50 transition-all">
                             <span class="block text-[clamp(2rem,8vw,3rem)] font-display font-black text-white mb-1 leading-none group-hover:scale-105 transition-transform origin-left uppercase">Echt</span>
                             <span class="text-[10px] font-bold uppercase text-rose-500 tracking-widest block mb-4 italic">Seit der ersten Stunde</span>
                             <p class="text-slate-400 text-sm font-medium leading-snug">Über 40 Jahre Graz. Über 40 Jahre Brüche im System und echte Begegnungen auf Augenhöhe.</p>
                         </div>
-
-                        {/* Card 2 */}
                         <div class="bg-white/5 p-6 sm:p-8 lg:p-10 rounded-[32px] md:rounded-[40px] border border-white/10 group hover:border-white/30 transition-all">
                             <span class="block text-[clamp(2.5rem,10vw,4rem)] font-display font-black text-white mb-1 leading-none group-hover:scale-105 transition-transform origin-left">80+</span>
                             <span class="text-[10px] font-bold uppercase text-slate-400 tracking-widest block mb-4 italic">Kultur-Momente</span>
                             <p class="text-slate-400 text-sm font-medium leading-snug">Von SofaKino bis StageDIVE. Jedes Jahr schaffen wir Räume, in denen Unterschiede keine Rolle spielen.</p>
                         </div>
-
-                        {/* Card 3 */}
                         <div class="bg-rose-600 p-6 sm:p-8 lg:p-10 rounded-[32px] md:rounded-[40px] shadow-2xl col-span-1 sm:col-span-2 flex flex-col sm:flex-row items-start sm:items-center gap-6 group hover:scale-[1.01] transition-transform">
                             <div class="text-6xl md:text-7xl font-display font-black text-white shrink-0 leading-none">5x</div>
                             <div class="text-left">
@@ -253,7 +231,6 @@ const seoImage = "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q
                                 <p class="text-white font-bold text-lg leading-tight">So oft sind wir im Schnitt mit der Freizeitassistenz in Graz unterwegs. Wir liefern den Support für deinen eigenen Weg.</p>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -262,7 +239,6 @@ const seoImage = "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q
         {/* --- DAS MANIFEST --- */}
         <section class="px-6 sm:px-10 py-24 bg-white dark:bg-slate-950 transition-colors duration-500">
             <div class="max-w-6xl mx-auto">
-                
                 <div class="flex items-center gap-6 mb-16">
                     <div class="h-[1px] w-12 bg-rose-500"></div>
                     <span class="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">Das Manifest</span>
@@ -290,7 +266,6 @@ const seoImage = "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q
                             Wir verwalten keine Fälle, wir gestalten Lebensräume. Inklusion passiert bei uns zwanglos zwischen Kultur und Alltag.
                         </p>
                     </div>
-
                     <div class="space-y-4">
                         <span class="text-rose-500 font-mono text-[10px]">02 —</span>
                         <h3 class="text-xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tight">Kultur als Brücke</h3>
@@ -298,7 +273,6 @@ const seoImage = "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q
                             Teilhabe ist ein Grundrecht. Wir nutzen Kunst, um Barrieren in den Köpfen einfach verschwinden lassen.
                         </p>
                     </div>
-
                     <div class="space-y-4">
                         <span class="text-rose-500 font-mono text-[10px]">03 —</span>
                         <h3 class="text-xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tight">Echter Rückenwind</h3>
@@ -320,10 +294,8 @@ const seoImage = "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q
                         </div>
                     </a>
                 </div>
-
             </div>
         </section>
-
 
         {/* --- TEAM SECTION --- */}
         <section class="px-6 sm:px-10 py-32 bg-white dark:bg-slate-950 transition-colors duration-500">
@@ -376,7 +348,6 @@ const seoImage = "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q
                         {leadership.map(member => (
                             <div class="group text-center">
                                 <div class="relative w-28 h-28 sm:w-32 sm:h-32 md:w-40 md:h-40 mx-auto mb-6">
-                                    {/* Gradient-Ring */}
                                     <div class="absolute inset-0 rounded-full bg-gradient-to-tr from-rose-500 to-slate-400 animate-spin-slow opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                                     <div class="absolute inset-1 rounded-full overflow-hidden border-4 border-white dark:border-slate-800 bg-slate-50 dark:bg-slate-900 flex items-center justify-center relative transition-colors shadow-inner">
                                         {member.image ? (
@@ -526,7 +497,7 @@ const seoImage = "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q
 
 <script>
     function initAnimations() {
-        // --- TIMELINE LOGIC (OPTIMIERT & ROBUST) ---
+        // --- TIMELINE LOGIC ---
         const container = document.getElementById('timelineContainer');
         const fillLine = document.getElementById('timelineProgress');
         const items = document.querySelectorAll('.timeline-item');
@@ -536,31 +507,26 @@ const seoImage = "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q
                 const rect = container.getBoundingClientRect();
                 const viewportHeight = window.innerHeight;
                 
-                // Fortschrittsberechnung (startet etwas früher)
                 let progress = (viewportHeight * 0.5 - rect.top) / rect.height;
                 progress = Math.max(0, Math.min(1, progress));
                 fillLine.style.height = `${progress * 100}%`;
                 
                 items.forEach((item) => {
                     const itemRect = item.getBoundingClientRect();
-                    const dot = item.querySelector('.rounded-full.border-\\[3px\\]'); // Sucht den Punkt
+                    const dot = item.querySelector('.rounded-full.border-\\[3px\\]'); 
 
-                    // Trigger für Einblendung
                     if (itemRect.top < viewportHeight * 0.65) {
                         item.classList.remove('opacity-20', 'translate-y-8');
                         item.classList.add('opacity-100', 'translate-y-0');
                         
-                        // Dot wird aktiv (Rose Glow)
                         if(dot) {
                             dot.classList.add('border-rose-500', 'scale-125', 'bg-rose-500');
                             dot.classList.remove('border-slate-300', 'dark:border-slate-700', 'bg-white', 'dark:bg-slate-950');
                         }
                     } else {
-                        // Reset wenn man wieder hochscrollt
                         item.classList.remove('opacity-100', 'translate-y-0');
                         item.classList.add('opacity-20', 'translate-y-8');
                         
-                        // Dot Reset
                         if(dot) {
                             dot.classList.remove('border-rose-500', 'scale-125', 'bg-rose-500');
                             dot.classList.add('border-slate-300', 'dark:border-slate-700', 'bg-white', 'dark:bg-slate-950');
@@ -584,7 +550,6 @@ const seoImage = "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q
         document.querySelectorAll('.reveal-blur').forEach(el => revealObserver.observe(el));
     }
 
-    // Initialisierung beim Laden und nach Astro Page Swaps
     initAnimations();
     document.addEventListener('astro:after-swap', initAnimations);
 </script>
