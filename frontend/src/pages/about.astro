@@ -42,9 +42,9 @@ const seoImage = "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q
 >
     
     <div class="home-content">
-        {/* --- HERO (OPTIMIERT: STRICT 2 LINES & FLUID) --- */}
-        <section class="px-4 sm:px-6 pt-6 pb-6 transition-colors duration-500">
-            <div class="relative bg-white dark:bg-slate-900 rounded-[48px] overflow-hidden px-6 md:px-12 lg:px-16 py-24 md:py-32 shadow-2xl shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-800">
+        {/* --- HERO --- */}
+        <section class="px-2 sm:px-6 pt-4 pb-6 transition-colors duration-500">
+            <div class="relative bg-white dark:bg-slate-900 rounded-[48px] overflow-hidden px-4 md:px-12 lg:px-16 py-24 md:py-32 shadow-2xl shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-800">
                 
                 {/* Background Pattern */}
                 <div class="absolute inset-0 pointer-events-none opacity-[0.03] dark:opacity-[0.05]">
@@ -68,10 +68,34 @@ const seoImage = "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q
                     </div>
                     
                     <div class="max-w-7xl">
-                        {/* HERO FIX: Aggressive Fluid-Skalierung + Zwangsumbruch */}
-                        <h1 class="font-display font-black text-slate-900 dark:text-white tracking-tighter leading-[1.1] mb-12 text-[clamp(1.5rem,6vw,7.5rem)]">
-                            <span class="block whitespace-nowrap">Unabhängigkeit ist</span>
-                            <span class="block whitespace-nowrap text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-indigo-600 pb-2 pr-2">keine Einzelleistung.</span>
+                        {/* HERO FIX: 
+                            Desktop: clamp angepasst (6.5vw, max 8rem), damit es nicht über den Rand geht.
+                            Mobile: "ist keine" in font-black und Slate-900 (Deep Black).
+                        */}
+                        <h1 class="font-display font-black text-slate-900 dark:text-white tracking-tighter leading-[1.05] mb-12">
+                            
+                            {/* MOBILE VERSION: Sandwich Layout */}
+                            <span class="block md:hidden">
+                                <span class="block text-[clamp(2.5rem,11vw,5rem)] leading-[0.9]">
+                                    Unabhängigkeit
+                                </span>
+                                
+                                {/* FIX: Tiefschwarz & FETT */}
+                                <span class="block text-2xl font-black text-slate-900 dark:text-white my-2 pl-1">
+                                    ist keine
+                                </span>
+                                
+                                <span class="block text-[clamp(2.5rem,11vw,5rem)] leading-[0.9] text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-indigo-600 pb-2">
+                                    Einzelleistung.
+                                </span>
+                            </span>
+
+                            {/* DESKTOP VERSION: Clean 2 Lines - Skalierung reduziert (6.5vw/8rem) gegen Overflow */}
+                            <span class="hidden md:block text-[clamp(2.5rem,6.5vw,8rem)] leading-[1.1]">
+                                <span class="block whitespace-nowrap">Unabhängigkeit ist</span>
+                                <span class="block whitespace-nowrap text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-indigo-600 pb-2 pr-2">keine Einzelleistung.</span>
+                            </span>
+
                         </h1>
                     </div>
 
@@ -230,7 +254,7 @@ const seoImage = "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q
             </div>
         </section>
 
-        {/* --- DAS MANIFEST (FIX: Ebenfalls fluid & 2-zeilig) --- */}
+        {/* --- DAS MANIFEST --- */}
         <section class="px-6 sm:px-10 py-24 bg-white dark:bg-slate-950 transition-colors duration-500">
             <div class="max-w-6xl mx-auto">
                 <div class="flex items-center gap-6 mb-16">
@@ -240,11 +264,32 @@ const seoImage = "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q
 
                 <div class="grid lg:grid-cols-12 gap-12 lg:gap-20 items-end mb-24">
                     <div class="lg:col-span-8">
-                        {/* HIER WAR DER FIX NÖTIG: Haltung... kein Standard */}
-                        <h2 class="font-display font-black text-slate-900 dark:text-white tracking-tighter leading-[1.1] uppercase text-[clamp(1.8rem,5vw,4.5rem)]">
+                        
+                        {/* --- MANIFEST (POSTER STYLE MOBILE) --- */}
+                        
+                        <div class="block md:hidden text-left">
+                            {/* Alles in FONT-BLACK */}
+                            <span class="block text-6xl font-black text-slate-900 dark:text-white uppercase tracking-tighter mb-2 leading-none">
+                                Haltung
+                            </span>
+                            
+                            <span class="block text-xl font-black text-slate-900 dark:text-white mb-2 pl-1">
+                                ist bei uns
+                            </span>
+                            
+                            {/* FIX: Fetter, knalliger Gradient, mehr Padding (pb-6) */}
+                            <span class="block whitespace-nowrap text-transparent bg-clip-text bg-gradient-to-r from-rose-500 via-fuchsia-600 to-indigo-600 italic font-black text-[clamp(2.8rem,11vw,6rem)] leading-none pb-6 pr-4">
+                                kein Standard.
+                            </span>
+                        </div>
+
+                        {/* DESKTOP */}
+                        {/* FIX: pr-6 damit der Punkt sicher drauf ist. clamp angepasst gegen Overflow. */}
+                        <h2 class="hidden md:block font-display font-black text-slate-900 dark:text-white tracking-tighter leading-[1.1] uppercase text-[clamp(2rem,5.5vw,6rem)]">
                             <span class="block whitespace-nowrap">Haltung ist bei uns</span>
-                            <span class="block whitespace-nowrap text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-indigo-600 italic pb-2 pr-2">kein Standard.</span>
+                            <span class="block whitespace-nowrap text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-indigo-600 italic pb-2 pr-6">kein Standard.</span>
                         </h2>
+
                     </div>
                     <div class="lg:col-span-4">
                         <p class="text-slate-500 dark:text-slate-400 font-medium leading-relaxed border-l border-slate-100 dark:border-slate-800 pl-6 text-sm">
