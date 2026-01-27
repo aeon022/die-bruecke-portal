@@ -9,12 +9,12 @@ interface Props {
 const { highlightEvent, upcomingEvents } = Astro.props;
 const ASSET_URL = 'https://api.diebruecke.social/assets'; 
 
-// PERF HELPER: Optimierte URL-Generierung
-const getImg = (id: string, width: number) => `${ASSET_URL}/${id}?width=${width}&format=webp&quality=75`;
+// PERF: Qualität auf 60 runter (reicht völlig für Web), WebP erzwingen
+const getImg = (id: string, width: number) => `${ASSET_URL}/${id}?width=${width}&format=webp&quality=60`;
 
-// FIX: Diese Funktion hat gefehlt
+// PERF: Helper für srcsets
 const getSrcset = (id: string, widths: number[]) => {
-  return widths.map(w => `${ASSET_URL}/${id}?width=${w}&format=webp&quality=75 ${w}w`).join(', ');
+  return widths.map(w => `${getImg(id, w)} ${w}w`).join(', ');
 };
 
 function formatEventDate(event: any) {
@@ -34,9 +34,8 @@ function formatEventDate(event: any) {
     }
 }
 
-// INLINE ICONS (Spart den FontAwesome Request & CSS Blocking)
+// INLINE ICONS
 const ICON_ARROW_RIGHT = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="currentColor" class="w-3 h-3"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></svg>`;
-
 const ICON_LAYER_GROUP = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" fill="currentColor" class="w-8 h-8 group-hover:rotate-12 transition-transform shrink-0"><path d="M264.5 5.2c14.9-6.9 32.1-6.9 47 0l218.6 101c8.5 3.9 13.9 12.4 13.9 21.8s-5.4 17.9-13.9 21.8l-218.6 101c-14.9 6.9-32.1 6.9-47 0L45.9 149.8C37.4 145.8 32 137.3 32 128s5.4-17.9 13.9-21.8L264.5 5.2zM476.9 209.6l53.2 24.6c8.5 3.9 13.9 12.4 13.9 21.8s-5.4 17.9-13.9 21.8l-218.6 101c-14.9 6.9-32.1 6.9-47 0L45.9 277.8C37.4 273.8 32 265.3 32 256s5.4-17.9 13.9-21.8l53.2-24.6 152 70.2c23.4 10.8 50.4 10.8 73.8 0l152-70.2zm-152 198.2l152-70.2 53.2 24.6c8.5 3.9 13.9 12.4 13.9 21.8s-5.4 17.9-13.9 21.8l-218.6 101c-14.9 6.9-32.1 6.9-47 0L45.9 405.8C37.4 401.8 32 393.3 32 384s5.4-17.9 13.9-21.8l53.2-24.6 152 70.2c23.4 10.8 50.4 10.8 73.8 0z"/></svg>`;
 ---
 
@@ -49,7 +48,6 @@ const ICON_LAYER_GROUP = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5
                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
                     <span class="relative inline-flex rounded-full h-3 w-3 bg-rose-500 dark:bg-rose-400"></span>
                 </span>
-                {/* A11Y FIX: rose-700 für den harten Mobile-Contrast-Check */}
                 <span class="text-rose-700 dark:text-rose-400 font-bold tracking-widest uppercase text-[10px]">
                     Live aus der Brücke
                 </span>            
@@ -58,7 +56,6 @@ const ICON_LAYER_GROUP = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5
                 Was gerade geht.
             </h2>
         </div>
-        {/* A11Y FIX: slate-700 statt 600 */}
         <p class="text-slate-700 dark:text-slate-300 font-medium italic text-lg md:text-right">
             Langweilig wird's woanders. <br class="hidden md:block"> Komm wie du bist.
         </p>
@@ -74,28 +71,25 @@ const ICON_LAYER_GROUP = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5
             {highlightEvent && (
                 <a href={`/events/${highlightEvent.slug}`} class="md:col-span-2 md:row-span-2 relative group rounded-[32px] overflow-hidden bg-slate-900 shadow-xl border border-transparent dark:border-slate-800 min-h-[500px] md:min-h-0 block" aria-label={`Highlight Event: ${highlightEvent.title}`}>
                     {highlightEvent.image && (
-                        /* PERF FIX: Responsive Images + Eager Loading für LCP */
                         <img 
-                            src={getImg(highlightEvent.image, 1000)} 
-                            srcset={getSrcset(highlightEvent.image, [600, 1000, 1400])}
-                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 1000px"
+                            src={getImg(highlightEvent.image, 800)} 
+                            srcset={getSrcset(highlightEvent.image, [600, 800, 1200])}
+                            sizes="(max-width: 768px) 95vw, (max-width: 1200px) 50vw, 800px"
                             class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition duration-1000" 
                             alt={highlightEvent.title} 
-                            width="1000"
-                            height="700"
+                            width="800"
+                            height="600"
                             loading="eager" 
                             decoding="async"
                         />
                     )}
                     <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent"></div>
-                    
                     <div class="absolute top-6 left-6 flex gap-2">
                         <span class="px-3 py-1 rounded-full bg-amber-400 text-slate-900 text-[10px] font-bold uppercase shadow-lg tracking-widest">Tipp</span>
                         <span class="px-3 py-1 rounded-full bg-slate-900/80 backdrop-blur-md text-white text-[10px] font-bold uppercase shadow-lg tracking-widest border border-white/10">
                             {formatEventDate(highlightEvent)}
                         </span>
                     </div>
-
                     <div class="absolute bottom-0 left-0 p-8 md:p-12 text-white w-full">
                         <h3 class="text-3xl md:text-5xl font-display font-bold leading-tight mb-4 tracking-tight drop-shadow-md">{highlightEvent.title}</h3>
                         <span class="font-bold flex items-center gap-2 text-rose-400">
@@ -109,11 +103,11 @@ const ICON_LAYER_GROUP = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5
             {upcomingEvents && upcomingEvents.map((event, index) => (
                 <a href={`/events/${event.slug}`} class={`relative group rounded-[32px] overflow-hidden bg-slate-900 border border-slate-900/10 dark:border-slate-800 hover:shadow-xl transition-all min-h-[350px] md:min-h-0 block ${index === 2 ? 'md:col-span-2 md:row-span-1' : 'md:col-span-1 md:row-span-1'}`} aria-label={`Event: ${event.title}`}>
                     {event.image && (
-                        /* PERF FIX: Responsive Images, kleiner für Cards */
+                        /* Optimized Sizes: Auf Mobile ist die Card fast Full-Width */
                         <img 
                             src={getImg(event.image, 600)} 
                             srcset={getSrcset(event.image, [400, 600])}
-                            sizes="(max-width: 768px) 100vw, 25vw"
+                            sizes="(max-width: 768px) 90vw, 25vw"
                             class="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:scale-105 transition duration-1000" 
                             alt="" 
                             width="600"
@@ -123,13 +117,11 @@ const ICON_LAYER_GROUP = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5
                         />
                     )}
                     <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/25 to-transparent"></div>
-                    
                     <div class="absolute top-6 left-6">
                         <span class="px-3 py-1 rounded-full bg-slate-900/80 backdrop-blur-md text-white text-[10px] font-bold uppercase shadow-lg tracking-widest border border-white/10">
                             {formatEventDate(event)}
                         </span>
                     </div>
-
                     <div class="relative z-10 p-6 flex flex-col h-full justify-end">
                         <h3 class="text-xl font-display font-bold text-white group-hover:text-rose-200 transition-colors line-clamp-3 leading-tight tracking-tight drop-shadow-md">{event.title}</h3>
                     </div>
