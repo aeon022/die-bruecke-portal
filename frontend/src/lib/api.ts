@@ -166,6 +166,7 @@ export async function getArchiv() {
           'year', 
           'image', 
           'aspect',
+          'pdf_file', // <--- WICHTIG: Das PDF-Feld wurde hinzugefügt!
           // WICHTIG: Holt die Verknüpfung UND das eigentliche Bild-Objekt
           'gallery.directus_files_id.*', 
           'gallery.*', 
