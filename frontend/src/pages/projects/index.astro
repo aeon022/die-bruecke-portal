@@ -75,7 +75,6 @@ const getStyle = (title: string) => {
                     Brücke Laboratorium
                 </div>
                 
-                {/* FIX: pr-8 (Rechts-Abstand) und leading-[1.15] (Umlaut-Abstand) */}
                 <h1 class="text-5xl md:text-7xl lg:text-8xl font-display font-black text-white leading-[1.15] md:leading-[1.1] tracking-tight mb-8 uppercase pt-4 pr-8">
                     Ideen, die <br/>
                     <span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-400 to-orange-400 italic pb-2 inline-block pr-2">Brücken bauen.</span>
@@ -119,7 +118,8 @@ const getStyle = (title: string) => {
                     
                     return (
                         <article 
-                            class={`bento-card group relative flex flex-col justify-between rounded-[40px] p-8 overflow-hidden transition-all duration-500 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:shadow-2xl hover:-translate-y-1 ${styles.border} hover:border-transparent cursor-pointer shadow-sm`}
+                            /* FIX: [mask-image:radial-gradient(white,black)] zwingt Safari, die Ecken auch bei Blur/Overflow korrekt abzuschneiden */
+                            class={`bento-card group relative flex flex-col justify-between rounded-[40px] p-8 overflow-hidden transition-all duration-500 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:shadow-2xl hover:-translate-y-1 ${styles.border} hover:border-transparent cursor-pointer shadow-sm [mask-image:radial-gradient(white,black)]`}
                             data-index={index}
                         >
                             {project.image && (
