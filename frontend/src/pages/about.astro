@@ -131,61 +131,68 @@ const seoImage = "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q
             </div>
         </section>  
             
-        {/* --- WERTE --- */}
-        <section class="px-6 sm:px-10 py-32 bg-white dark:bg-slate-950 transition-colors duration-500">
-            <div class="max-w-7xl mx-auto text-center">
-                <h2 class="text-4xl md:text-6xl font-display font-black text-slate-900 dark:text-white tracking-tighter mb-24 uppercase">
-                    Worauf wir <span class="text-rose-600 italic">bauen.</span>
-                </h2>
+        {/* --- WERTE GRID (FIX: Flip on Touch) --- */}
+<div class="grid grid-cols-1 md:grid-cols-3 gap-10 text-left p-6 mb-12">
+    {[
+        { 
+            title: "Menschlichkeit", 
+            icon: "fa-heart", 
+            accent: "border-rose-500/20",
+            iconBg: "bg-rose-500",
+            text: "Wir verwalten keine Akten, wir begleiten Menschen. Unbürokratisch, herzlich und immer auf Augenhöhe. Seit 1983 ist echtes Miteinander unser Fundament." 
+        },
+        { 
+            title: "Selbstbestimmung", 
+            icon: "fa-wind", 
+            accent: "border-slate-200",
+            iconBg: "bg-slate-900",
+            text: "Dein Weg. Unser Rückenwind. Wir bevormunden nicht, wir unterstützen dich professionell dabei, dein Leben nach deinen eigenen Regeln zu gestalten." 
+        },
+        { 
+            title: "Kultur & Begegnung", 
+            icon: "fa-masks-theater", 
+            accent: "border-slate-200",
+            iconBg: "bg-rose-600",
+            text: "Ein Haus voller Leben. Wir schaffen den Raum in Graz, in dem Kunst und Kultur Barrieren einfach verschwinden lassen. Mittendrin statt nur dabei." 
+        }
+    ].map(card => (
+        /* FIX: 
+           1. 'flip-card' Klasse für JS-Selektor hinzugefügt.
+           2. 'onclick' direkt hier für maximale Robustheit (kein komplexes Event-Binding nötig).
+        */
+        <div 
+            class="group flip-card h-[420px] [perspective:1000px]" 
+            onclick="this.classList.toggle('is-flipped')"
+        >
+            {/* FIX: 
+               Neben 'group-hover' reagieren wir jetzt auch auf 'group-[.is-flipped]'.
+               Dadurch bleibt die Karte gedreht, wenn man darauf tippt (oder klickt).
+            */}
+            <div class="relative h-full w-full rounded-[48px] transition-all duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)] group-[.is-flipped]:[transform:rotateY(180deg)] cursor-pointer shadow-sm hover:shadow-2xl hover:shadow-rose-500/5">
                 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-10 text-left">
-                    {[
-                        { 
-                            title: "Menschlichkeit", 
-                            icon: "fa-heart", 
-                            accent: "border-rose-500/20",
-                            iconBg: "bg-rose-500",
-                            text: "Wir verwalten keine Akten, wir begleiten Menschen. Unbürokratisch, herzlich und immer auf Augenhöhe. Seit 1983 ist echtes Miteinander unser Fundament." 
-                        },
-                        { 
-                            title: "Selbstbestimmung", 
-                            icon: "fa-wind", 
-                            accent: "border-slate-200",
-                            iconBg: "bg-slate-900",
-                            text: "Dein Weg. Unser Rückenwind. Wir bevormunden nicht, wir unterstützen dich professionell dabei, dein Leben nach deinen eigenen Regeln zu gestalten." 
-                        },
-                        { 
-                            title: "Kultur & Begegnung", 
-                            icon: "fa-masks-theater", 
-                            accent: "border-slate-200",
-                            iconBg: "bg-rose-600",
-                            text: "Ein Haus voller Leben. Wir schaffen den Raum in Graz, in dem Kunst und Kultur Barrieren einfach verschwinden lassen. Mittendrin statt nur dabei." 
-                        }
-                    ].map(card => (
-                        <div class="group h-[420px] [perspective:1000px]">
-                            <div class="relative h-full w-full rounded-[48px] transition-all duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)] cursor-pointer shadow-sm hover:shadow-2xl hover:shadow-rose-500/5">
-                                <div class="absolute inset-0 h-full w-full rounded-[48px] bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 flex flex-col items-center justify-center p-12 [backface-visibility:hidden]">
-                                    <div class={`w-20 h-20 ${card.iconBg} text-white rounded-[28px] flex items-center justify-center text-3xl mb-8 shadow-lg group-hover:scale-110 transition-transform duration-500`}>
-                                        <i class={`fa-solid ${card.icon}`}></i>
-                                    </div>
-                                    <h3 class="text-2xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tight">{card.title}</h3>
-                                    <div class="mt-8 flex items-center gap-2 text-rose-500 font-black text-[10px] uppercase tracking-[0.2em] opacity-50 group-hover:opacity-100 transition-opacity">
-                                        <span>Details</span>
-                                        <i class="fa-solid fa-chevron-right text-[8px]"></i>
-                                    </div>
-                                </div>
-                                <div class="absolute inset-0 h-full w-full rounded-[48px] bg-slate-900 dark:bg-slate-800 p-12 text-white [transform:rotateY(180deg)] [backface-visibility:hidden] flex flex-col items-center justify-center text-center border border-slate-800">
-                                    <h3 class="text-xl font-display font-black mb-6 uppercase tracking-tight text-rose-500">{card.title}</h3>
-                                    <p class="text-slate-300 leading-relaxed font-medium text-lg">
-                                        {card.text}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
+                {/* Front */}
+                <div class="absolute inset-0 h-full w-full rounded-[48px] bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 flex flex-col items-center justify-center p-12 [backface-visibility:hidden]">
+                    <div class={`w-20 h-20 ${card.iconBg} text-white rounded-[28px] flex items-center justify-center text-3xl mb-8 shadow-lg group-hover:scale-110 transition-transform duration-500`}>
+                        <i class={`fa-solid ${card.icon}`}></i>
+                    </div>
+                    <h3 class="text-2xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tight">{card.title}</h3>
+                    <div class="mt-8 flex items-center gap-2 text-rose-500 font-black text-[10px] uppercase tracking-[0.2em] opacity-50 group-hover:opacity-100 transition-opacity">
+                        <span>Details</span>
+                        <i class="fa-solid fa-chevron-right text-[8px]"></i>
+                    </div>
+                </div>
+
+                {/* Back */}
+                <div class="absolute inset-0 h-full w-full rounded-[48px] bg-slate-900 dark:bg-slate-800 p-12 text-white [transform:rotateY(180deg)] [backface-visibility:hidden] flex flex-col items-center justify-center text-center border border-slate-800">
+                    <h3 class="text-xl font-display font-black mb-6 uppercase tracking-tight text-rose-500">{card.title}</h3>
+                    <p class="text-slate-300 leading-relaxed font-medium text-lg">
+                        {card.text}
+                    </p>
                 </div>
             </div>
-        </section>
+        </div>
+    ))}
+</div>
 
         {/* --- TIMELINE --- */}
         <section class="px-6 sm:px-10 py-32 bg-slate-50 dark:bg-slate-900 relative overflow-hidden transition-colors duration-500">
