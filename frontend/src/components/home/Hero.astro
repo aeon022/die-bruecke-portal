@@ -9,23 +9,23 @@ interface Props {
 
 const { headline, subline, image } = Astro.props;
 
-// LOGIK: Text beim <br> trennen für das Styling
+// LOGIK: Text beim <br> trennen
 const parts = headline.split(/<br\s*\/?>/i);
 const part1 = parts[0];
 const part2 = parts.length > 1 ? parts.slice(1).join('<br>') : null;
 ---
 
 {/* --- HERO SECTION --- */}
-<section class="relative z-10 w-full min-h-[85vh] md:min-h-[90vh] flex items-center overflow-hidden px-6 sm:px-16 lg:px-24 py-16 sm:py-24 lg:py-20 group/hero bg-gradient-to-br from-slate-50 via-white to-rose-50/30 dark:from-slate-950 dark:via-slate-950 dark:to-rose-950/20 transition-colors duration-500 rounded-[40px] mb-10 isolate">
+{/* FIX: px-4 mobil (statt px-6) für mehr Platz auf iPhone SE */}
+<section class="relative z-10 w-full min-h-[85vh] flex items-center overflow-hidden px-4 sm:px-16 lg:px-24 py-12 lg:py-20 group/hero bg-gradient-to-br from-slate-50 via-white to-rose-50/30 dark:from-slate-950 dark:via-slate-950 dark:to-rose-950/20 transition-colors duration-500 rounded-[40px] mb-10">
 
-    <div class="max-w-[1800px] mx-auto w-full grid grid-cols-12 gap-12 lg:gap-0 relative items-center">
+    <div class="max-w-[1600px] mx-auto w-full grid grid-cols-12 gap-8 lg:gap-0 relative items-center">
 
         {/* 1. TEXT CONTENT */}
-        {/* FIX: pr-4 lg:pr-0 sorgt mobil für den Sicherheitsabstand rechts */}
-        <div class="relative z-30 col-span-12 lg:col-span-5 pointer-events-none pr-4 lg:pr-0">
+        <div class="relative z-30 col-span-12 lg:col-span-5 pointer-events-none">
 
             {/* BADGE */}
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-slate-700 text-xs font-bold text-rose-600 dark:text-rose-400 mb-8 sm:mb-10 uppercase tracking-widest shadow-sm whitespace-nowrap pointer-events-auto">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-slate-700 text-xs font-bold text-rose-600 dark:text-rose-400 mb-6 sm:mb-8 uppercase tracking-widest shadow-sm whitespace-nowrap pointer-events-auto">
                 <span class="relative flex h-2 w-2 mb-0.5">
                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
                     <span class="relative inline-flex rounded-full h-2 w-2 bg-rose-600"></span>
@@ -33,40 +33,46 @@ const part2 = parts.length > 1 ? parts.slice(1).join('<br>') : null;
                 Seit 1983
             </div>
 
-            {/* Headline */}
-            <h1 class="font-display font-black text-slate-900 dark:text-white uppercase tracking-tighter mb-10 md:mb-14 drop-shadow-sm lg:drop-shadow-none group-hover/hero:text-slate-900 transition-colors duration-500 pointer-events-auto">
-                <span class="block text-[clamp(3.5rem,10vw,7.5rem)] leading-[0.9]" set:html={part1}></span>
+            {/* HEADLINE (UNVERÄNDERT) */}
+            <h1 class="text-6xl sm:text-6xl xl:text-8xl font-display font-extrabold text-slate-900 dark:text-white tracking-tighter leading-[1.05] mb-12 sm:mb-8 drop-shadow-sm lg:drop-shadow-none group-hover/hero:text-slate-900 transition-colors duration-500 sm:whitespace-nowrap pointer-events-auto">
+                
+                {/* Teil 1 */}
+                <span set:html={part1}></span>
+
+                {/* Teil 2 */}
                 {part2 && (
-                    <span class="block text-[clamp(3.5rem,10vw,7.5rem)] leading-[0.9] text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-orange-500 mt-2" set:html={part2}></span>
+                    <>
+                        <br />
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-orange-500" set:html={part2}></span>
+                    </>
                 )}
             </h1>
 
             {/* SUBLINE */}
+            {/* FIX: break-words und pr-2 verhindern Abschneiden am rechten Rand */}
             <p 
-                class="relative z-30 text-lg sm:text-xl text-slate-700 dark:text-slate-200 leading-relaxed border-l-4 border-rose-500 pl-4 sm:pl-6 font-medium mb-10 sm:mb-12 w-full sm:max-w-4xl lg:w-[120%] group-hover/hero:text-slate-900 dark:group-hover/hero:text-white transition-colors duration-500 pointer-events-auto drop-shadow-sm"
+                class="relative z-30 text-lg sm:text-xl text-slate-700 dark:text-slate-200 leading-relaxed border-l-4 border-rose-500 pl-4 sm:pl-6 font-medium mb-8 sm:mb-10 w-full sm:max-w-4xl lg:w-[120%] group-hover/hero:text-slate-900 dark:group-hover/hero:text-white transition-colors duration-500 pointer-events-auto drop-shadow-sm break-words pr-2 sm:pr-0"
                 set:html={subline}
             >
             </p>
 
-            {/* BUTTONS FIX:
-                - w-full sm:w-auto: Mobil volle Breite, ab Tablet auto
-                - px-6 sm:px-8: Mobil weniger Padding links/rechts, damit Text Platz hat
-                - justify-center: Text immer mittig
-            */}
+            {/* BUTTONS */}
+            {/* FIX: px-5 (statt 8) mobil -> passt besser auf 320px Breite */}
             <div class="flex flex-col sm:flex-row gap-4 pointer-events-auto w-full sm:w-auto">
-                <a href="/events" class="w-full sm:w-auto flex justify-center items-center bg-rose-600 text-white px-6 sm:px-8 py-4 rounded-full font-bold hover:bg-slate-900 dark:hover:bg-white dark:hover:text-slate-900 transition-all shadow-lg shadow-rose-500/20 hover:-translate-y-1 text-base">
+                <a href="/events" class="w-full sm:w-auto justify-center bg-rose-600 text-white px-5 sm:px-8 py-3.5 sm:py-4 rounded-full font-bold hover:bg-slate-900 dark:hover:bg-white dark:hover:text-slate-900 transition-all shadow-lg shadow-rose-500/20 hover:-translate-y-1 text-center text-sm sm:text-base flex items-center">
                     Event Kalender
                 </a>
-                <a href="/about" class="w-full sm:w-auto flex justify-center items-center bg-transparent text-slate-900 dark:text-white border-2 border-slate-200 dark:border-slate-700 px-6 sm:px-8 py-4 rounded-full font-bold hover:border-rose-500 dark:hover:border-rose-500 transition-all hover:-translate-y-1 text-base">
+                <a href="/about" class="w-full sm:w-auto justify-center bg-transparent text-slate-900 dark:text-white border-2 border-slate-200 dark:border-slate-700 px-5 sm:px-8 py-3.5 sm:py-4 rounded-full font-bold hover:border-rose-500 dark:hover:border-rose-500 transition-all hover:-translate-y-1 text-center text-sm sm:text-base flex items-center">
                     Über uns
                 </a>
             </div>
         </div>
 
         {/* 2. BILD CONTAINER */}
-        <div class="relative col-span-12 lg:col-span-7 h-[55vh] lg:h-[80vh] z-10 pointer-events-auto group/image mt-8 lg:mt-0">
+        <div class="relative col-span-12 lg:col-span-7 h-[50vh] lg:h-[75vh] z-10 pointer-events-auto group/image mt-8 lg:mt-0">
             
-            <div class="absolute right-0 top-0 bottom-0 h-full rounded-[40px] lg:rounded-[80px] overflow-hidden shadow-2xl bg-slate-900 ring-4 ring-white dark:ring-slate-800
+            {/* FIX: rounded-[24px] mobil (statt 40px) gibt dem Bild mehr Platz an den Ecken */}
+            <div class="absolute right-0 top-0 bottom-0 h-full rounded-[24px] sm:rounded-[40px] lg:rounded-[80px] overflow-hidden shadow-2xl bg-slate-900 ring-4 ring-white dark:ring-slate-800
                         w-full group-hover/image:w-[130%] transition-[width] duration-[1.0s] ease-out">
 
                 <Image
@@ -88,7 +94,7 @@ const part2 = parts.length > 1 ? parts.slice(1).join('<br>') : null;
 
                 {/* WATERMARK */}
                 <div class="absolute -bottom-10 -right-10 pointer-events-none select-none opacity-50 group-hover/image:opacity-80 transition-opacity duration-700">
-                    <p class="text-[100px] sm:text-[160px] xl:text-[220px] font-display font-black tracking-tighter leading-none text-white/10 uppercase">
+                    <p class="text-[120px] sm:text-[160px] xl:text-[220px] font-display font-black tracking-tighter leading-none text-white/10 uppercase">
                         Brücke
                     </p>
                 </div>
