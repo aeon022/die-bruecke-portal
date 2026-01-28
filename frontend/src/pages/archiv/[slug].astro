@@ -27,11 +27,6 @@ const currentUrl = Astro.url.href;
 ---
 
 <MainLayout title={item ? `${item.title} | Archiv` : "Ladefehler"}>
-    {/* ÄNDERUNGEN:
-        1. rounded-[48px]: Runde Ecken für den Main-Container
-        2. m-2 md:m-4: Abstand zum Bildschirmrand
-        3. border...: Rahmen für Darkmode Kontrast
-    */}
     <main class="bg-white dark:bg-slate-950 min-h-screen transition-colors duration-500 pb-32 rounded-[48px] m-2 md:m-4 border border-slate-200 dark:border-slate-800 shadow-2xl relative overflow-hidden">
         
         {/* Darkmode Glow Effect */}
@@ -63,9 +58,17 @@ const currentUrl = Astro.url.href;
                                     Zurück zum Archiv
                                 </a>
                             </div>
-                            <h1 class="text-6xl md:text-[8rem] font-display font-bold text-white mb-8 leading-[0.85] tracking-tighter uppercase">
+                            
+                            {/* FIX: Clamp Logic für responsive Titelgröße
+                                - Min: 2.5rem (Mobil sicher)
+                                - Fluid: 10vw (Wächst dynamisch)
+                                - Max: 8rem (Desktop riesig wie gewünscht)
+                                - break-words: Zwingt Umbruch bei Monster-Wörtern
+                            */}
+                            <h1 class="text-[clamp(2.5rem,10vw,8rem)] font-display font-bold text-white mb-8 leading-[0.85] tracking-tighter uppercase break-words hyphens-auto">
                                 {item.title}
                             </h1>
+                            
                             <div class="flex items-center gap-4 text-rose-500 font-mono text-xl">
                                 <span class="font-bold">ID-{item.id.toString().padStart(3, '0')}</span>
                                 <span class="text-white/20">/</span>
@@ -139,10 +142,9 @@ const currentUrl = Astro.url.href;
                     </div>
                 </section>
 
-                {/* --- PDF DOCUMENT VIEWER (NUR WENN PDF VORHANDEN) --- */}
+                {/* --- PDF DOCUMENT VIEWER --- */}
                 {item.pdf_file && (
                     <section class="max-w-7xl mx-auto px-4 sm:px-10 mt-12 mb-24 relative z-10">
-                        {/* Section Header */}
                         <div class="flex items-center gap-4 mb-8 pl-2">
                             <div class="w-12 h-12 rounded-full bg-rose-500/10 flex items-center justify-center text-rose-500 shrink-0">
                                 <i class="fa-solid fa-file-pdf text-xl"></i>
@@ -155,15 +157,12 @@ const currentUrl = Astro.url.href;
                             </div>
                         </div>
 
-                        {/* PDF Viewer Container */}
                         <div class="relative w-full h-[85vh] rounded-[40px] overflow-hidden border-4 border-slate-100 dark:border-slate-800 shadow-2xl bg-slate-200 dark:bg-slate-900">
-                            {/* Native Object Tag für PDF */}
                             <object 
                                 data={`${ASSET_URL}/${item.pdf_file}#toolbar=0&navpanes=0&scrollbar=1`} 
                                 type="application/pdf" 
                                 class="w-full h-full block"
                             >
-                                {/* Fallback für Mobile/No-PDF-Support */}
                                 <div class="flex flex-col items-center justify-center h-full text-center p-10 bg-slate-50 dark:bg-slate-900">
                                     <div class="w-20 h-20 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center mb-6">
                                         <i class="fa-regular fa-file-pdf text-4xl text-slate-400"></i>
@@ -183,7 +182,6 @@ const currentUrl = Astro.url.href;
                             </object>
                         </div>
 
-                        {/* Utility Links unter dem Viewer */}
                         <div class="mt-6 flex justify-end px-2">
                             <a 
                                 href={`${ASSET_URL}/${item.pdf_file}`} 
