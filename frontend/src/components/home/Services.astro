@@ -22,7 +22,7 @@ function cleanText(html: string) {
 }
 ---
 
-<section aria-labelledby="services-heading" class="px-6 sm:px-10 py-24 transition-colors duration-300">
+<section aria-labelledby="services-heading" class="px-4 sm:px-10 py-24 transition-colors duration-300 overflow-hidden">
     <div class="max-w-7xl mx-auto text-center">
         <div class="max-w-3xl mx-auto mb-16 md:mb-20">
             <div class="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-[10px] font-black text-rose-700 dark:text-rose-400 uppercase tracking-[0.2em] mb-8 shadow-sm">
@@ -33,11 +33,16 @@ function cleanText(html: string) {
                 Angebote & Unterstützung
             </div>
             
-            <h2 id="services-heading" class="text-4xl md:text-6xl font-display font-extrabold text-slate-900 dark:text-white tracking-tighter mb-6 leading-[1.1] pt-4 uppercase">
+            {/* FIX: 
+               1. Clamp: Skaliert von min 1.6rem (passt auf iPhone SE) bis max 3.75rem (Desktop).
+               2. Keine 'break-words', kein 'hyphens' -> Das Wort bleibt ganz.
+            */}
+            <h2 id="services-heading" class="text-[clamp(1.6rem,8vw,3.75rem)] font-display font-black text-slate-900 dark:text-white tracking-tighter mb-6 leading-[1.1] pt-4 uppercase">
                 Selbstbestimmung.<br>
                 <span class="text-rose-600 dark:text-rose-400 italic">Gemeinsam gestalten.</span>
             </h2>
-            <p class="text-lg text-slate-700 dark:text-slate-300 font-medium leading-relaxed">
+            
+            <p class="text-lg text-slate-700 dark:text-slate-300 font-medium leading-relaxed px-2 sm:px-0">
                 Inklusion bedeutet für uns Unabhängigkeit. Wir unterstützen dich genau dort, wo du uns brauchst – im Alltag, beim Wohnen oder auf Reisen.
             </p>
         </div>
@@ -56,7 +61,7 @@ function cleanText(html: string) {
                                 <i class={`fa-solid ${service.icon || 'fa-hand-holding-heart'}`} aria-hidden="true"></i>
                             </div>
                             
-                            <h3 class="text-xl font-display font-bold text-slate-900 dark:text-white mb-2 group-hover:text-rose-600 transition-colors uppercase leading-tight">
+                            <h3 class="text-xl font-display font-bold text-slate-900 dark:text-white mb-2 group-hover:text-rose-600 transition-colors uppercase leading-tight break-words">
                                 {service.title}
                             </h3>
                             
