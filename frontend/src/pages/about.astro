@@ -114,8 +114,13 @@ const seoImage = "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q
                     </div>
                 </div>
 
-                <div class="absolute right-[-5%] top-1/2 -translate-y-1/2 hidden 2xl:block opacity-[0.02] dark:opacity-[0.05] pointer-events-none select-none">
-                    <span class="text-[18rem] font-black uppercase origin-center rotate-90 inline-block whitespace-nowrap tracking-widest text-slate-900 dark:text-white">VEREIN</span>
+                {/* WATERMARK FIX: 
+                   1. text-[18rem] -> text-[10rem] (passt nun vertikal in den Container)
+                   2. right-[-5%] -> right-0 (sauberer am Rand)
+                   3. opacity leicht erhöht, da es kleiner ist (0.02 -> 0.03/0.06)
+                */}
+                <div class="absolute right-0 top-1/2 -translate-y-1/2 hidden 2xl:block opacity-[0.03] dark:opacity-[0.06] pointer-events-none select-none">
+                    <span class="text-[10rem] font-black uppercase origin-center rotate-90 inline-block whitespace-nowrap tracking-widest text-slate-900 dark:text-white">VEREIN</span>
                 </div>
             </div>
         </section>  
