@@ -3,30 +3,42 @@ import MainLayout from '../../layouts/layout.astro';
 import ImageGallery from '../../components/common/ImageGallery.astro';
 import { getArchiv } from '../../lib/api';
 
-// WICHTIG: Damit sagst du Astro, dass dies eine statische Seite ist
-export const prerender = true;
-
-export async function getStaticPaths() {
-    const archivItems = await getArchiv();
-    return (archivItems || []).map((item: any) => ({
-        params: { slug: String(item.slug || item.id).trim() },
-        props: { item },
-    }));
-}
+// WICHTIG: SSR aktivieren (KEIN prerender = true mehr!)
+// FIX: Zwingt Astro explizit in den SSR-Modus für diese dynamische Route
+export const prerender = false;
 
 const { slug } = Astro.params;
-let { item } = Astro.props;
 
-if (!item) {
-    const allItems = await getArchiv();
-    item = allItems.find((a: any) => String(a.slug || a.id) === slug);
+// 1. Daten holen (nutzt intern die neue directus.ts mit process.env)
+const allItems = await getArchiv();
+
+// 2. DEBUGGING: Taucht in den Server-Logs auf
+console.log('--- DEBUG START: Archiv Detail ---');
+console.log(`Gesuchter Slug: "${slug}"`);
+console.log(`Anzahl Items im Archiv: ${allItems?.length ?? 0}`);
+
+if (allItems && allItems.length > 0) {
+    // Logge die ersten paar Slugs zum Vergleich
+    console.log('Verfügbare Slugs (Auszug):', allItems.slice(0, 3).map((i: any) => i.slug || i.id));
 }
 
-const ASSET_URL = import.meta.env.PUBLIC_API_URL + '/assets';
+// 3. Robuste Suche (String Vergleich & Trim)
+const item = allItems?.find((a: any) => String(a.slug || a.id).trim() === String(slug).trim());
+
+if (item) {
+    console.log(`Treffer! Item gefunden: ${item.title}`);
+} else {
+    console.log('KEIN Treffer. Zeige 404 View.');
+}
+console.log('--- DEBUG ENDE ---');
+
+
+// FIX: Bilder für den Browser müssen über die ÖFFENTLICHE URL geladen werden!
+const ASSET_URL = (import.meta.env.PUBLIC_API_URL || 'https://api.diebruecke.social') + '/assets';
 const currentUrl = Astro.url.href;
 ---
 
-<MainLayout title={item ? `${item.title} | Archiv` : "Ladefehler"}>
+<MainLayout title={item ? `${item.title} | Archiv` : "Eintrag nicht gefunden"}>
     <main class="bg-white dark:bg-slate-950 min-h-screen transition-colors duration-500 pb-32 rounded-[48px] m-2 md:m-4 border border-slate-200 dark:border-slate-800 shadow-2xl relative overflow-hidden">
         
         {/* Darkmode Glow Effect */}
@@ -35,7 +47,8 @@ const currentUrl = Astro.url.href;
         {!item ? (
             <div class="h-screen flex flex-col items-center justify-center relative z-10">
                 <h1 class="text-rose-500 font-display text-9xl font-black">404</h1>
-                <a href="/archiv" class="mt-8 text-slate-500 uppercase tracking-widest font-black text-xs">Zurück</a>
+                <p class="text-slate-500 mt-4 mb-8">Eintrag nicht gefunden oder Ladefehler.</p>
+                <a href="/archiv" class="text-slate-900 dark:text-white uppercase tracking-widest font-black text-xs border border-slate-200 dark:border-slate-800 px-6 py-3 rounded-full hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors">Zurück zum Archiv</a>
             </div>
         ) : (
             <>
@@ -59,12 +72,7 @@ const currentUrl = Astro.url.href;
                                 </a>
                             </div>
                             
-                            {/* FIX: Clamp Logic für responsive Titelgröße
-                                - Min: 2.5rem (Mobil sicher)
-                                - Fluid: 10vw (Wächst dynamisch)
-                                - Max: 8rem (Desktop riesig wie gewünscht)
-                                - break-words: Zwingt Umbruch bei Monster-Wörtern
-                            */}
+                            {/* FIX: Clamp Logic für responsive Titelgröße + Break Words */}
                             <h1 class="text-[clamp(2.5rem,10vw,8rem)] font-display font-bold text-white mb-8 leading-[0.85] tracking-tighter uppercase break-words hyphens-auto">
                                 {item.title}
                             </h1>

@@ -6,7 +6,8 @@ import { Image } from 'astro:assets';
 const archivItems = await getArchiv();
 const safeArchivItems = Array.isArray(archivItems) ? archivItems : [];
 
-const ASSET_URL = import.meta.env.DIRECTUS_URL + '/assets';
+// FIX: Bilder müssen über die ÖFFENTLICHE URL geladen werden (für den Browser)
+const ASSET_URL = (import.meta.env.PUBLIC_API_URL || 'https://api.diebruecke.social') + '/assets';
 
 // --- HELPER: HTML Tags entfernen ---
 const stripHtml = (html: string) => {
@@ -165,7 +166,6 @@ const randomItem = processedItems.length > 0
 
         {/* --- BENTO GRID --- */}
         <section class="px-4 sm:px-10 py-12 md:py-24 bg-white dark:bg-slate-950 relative z-10">
-            {/* FIX: Volle Breite (w-full) statt max-w und grid-flow-dense für Lückenschluss */}
             <div class="w-full">
                 {processedItems.length === 0 && (
                     <div class="text-center py-24 text-slate-400">
@@ -173,21 +173,14 @@ const randomItem = processedItems.length > 0
                     </div>
                 )}
                 
-                {/* GRID LOGIC:
-                   - grid-flow-dense: Füllt Lücken automatisch auf
-                   - auto-rows-[300px]: Basis-Höhe für Standard-Items (1x1)
-                   - md:grid-cols-4: Auf Desktop 4 Spalten
-                */}
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 auto-rows-[300px] grid-flow-dense" id="archiv-grid">
                     {processedItems.map((item: any, index: number) => (
                         <a 
                             href={`/archiv/${item.slug || item.id}/`}
                             class={`archiv-card group relative rounded-[40px] md:rounded-[64px] overflow-hidden transition-all duration-700 bg-slate-50 dark:bg-slate-900 block
                             
-                            /* ASPECT RATIO LOGIC */
                             ${item.aspect === 'wide' ? 'md:col-span-2 md:row-span-2' : ''} 
                             ${item.aspect === 'tall' ? 'md:row-span-2' : ''}
-                            /* Standard (kein Match) ist automatisch 1x1 */
 
                             hover:shadow-2xl hover:-translate-y-2 border border-transparent dark:border-white/5
                             opacity-0 translate-y-8`} 
