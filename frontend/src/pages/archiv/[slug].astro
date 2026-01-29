@@ -22,7 +22,7 @@ if (!item) {
     item = allItems.find((a: any) => String(a.slug || a.id) === slug);
 }
 
-const ASSET_URL = import.meta.env.DIRECTUS_URL + '/assets';
+const ASSET_URL = import.meta.env.PUBLIC_API_URL + '/assets';
 const currentUrl = Astro.url.href;
 ---
 
