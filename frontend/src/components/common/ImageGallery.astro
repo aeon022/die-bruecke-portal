@@ -6,7 +6,10 @@ interface Props {
 }
 
 const { gallery } = Astro.props;
-const ASSET_URL = import.meta.env.DIRECTUS_URL + '/assets';
+
+// FIX: Hier MUSS die öffentliche URL verwendet werden, da der Browser diese Bilder lädt!
+// Nicht DIRECTUS_URL (das ist jetzt intern http://directus:8055)
+const ASSET_URL = (import.meta.env.PUBLIC_API_URL || 'https://api.diebruecke.social') + '/assets';
 
 if (!gallery || gallery.length === 0) {
   return;
@@ -25,8 +28,6 @@ if (!gallery || gallery.length === 0) {
       const file = item.directus_files_id || item;
       if (!file?.id) return null;
       
-      // FIX: Wir nehmen hier das Originalbild (ohne ?key=...), 
-      // damit Breite und Höhe exakt zu file.width/height passen.
       const largeImage = `${ASSET_URL}/${file.id}`; 
       
       return (
@@ -37,7 +38,6 @@ if (!gallery || gallery.length === 0) {
           target="_blank"
           class="group relative aspect-[4/3] rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-900 shadow-sm border border-slate-100 dark:border-white/5 cursor-zoom-in block"
         >
-          {/* Das Thumbnail darf ruhig zugeschnitten/kleiner sein */}
           <img 
             src={`${ASSET_URL}/${file.id}?key=system-large-cover`} 
             alt={file.title || "Galerie Bild"} 
