@@ -14,10 +14,6 @@ const ASSET_URL = "https://api.diebruecke.social/assets";
 // Wir suchen das Featured Camp, sonst nehmen wir das erste aus der Liste
 const featuredCamp = camps.find((c: any) => c.is_featured) || camps[0];
 
-// Falls das Featured Camp auch in der normalen Liste steht, wollen wir es dort vielleicht
-// nicht nochmal anzeigen? Optional: .filter(c => c.id !== featuredCamp.id)
-// Für jetzt lasse ich es drin, da es oben als "Hero" und unten in der Übersicht sein kann.
-
 // Hilfsfunktion für Directus-Optimierung (Serverseitig)
 const getImg = (id, w = 800) => `${ASSET_URL}/${id}?width=${w}&format=webp&quality=80`;
 
@@ -86,8 +82,11 @@ const seoImage = featuredCamp?.image ? getImg(featuredCamp.image, 1200) : "https
                             {featuredCamp.title}
                         </h1>
                         
-                        <p class="text-xl md:text-2xl text-slate-200 mb-12 leading-relaxed font-medium border-l-4 border-rose-500 pl-8 max-w-2xl">
-                            {cleanDesc(featuredCamp.description)}...
+                        {/* FIX: set:html nutzen, damit Sonderzeichen korrekt dargestellt werden */}
+                        <p 
+                            class="text-xl md:text-2xl text-slate-200 mb-12 leading-relaxed font-medium border-l-4 border-rose-500 pl-8 max-w-2xl"
+                            set:html={cleanDesc(featuredCamp.description) + '...'}
+                        >
                         </p>
                         
                         <div class="flex flex-wrap gap-10 mb-12 text-xs font-black uppercase tracking-[0.2em] text-slate-300">
