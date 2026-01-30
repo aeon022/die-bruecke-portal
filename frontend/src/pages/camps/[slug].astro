@@ -1,11 +1,14 @@
 ---
-// frontend/src/pages/camps/[slug].astro
-export const prerender = false; 
+export const prerender = false;
 
 import MainLayout from '../../layouts/layout.astro';
 import { directus } from '../../lib/directus';
 import { readItems } from '@directus/sdk';
 import { Image } from 'astro:assets';
+
+// Import der Komponenten
+import ImageGallery from '../../components/common/ImageGallery.astro';
+import VideoPlayer from '../../components/common/VideoPlayer.astro';
 
 const { slug } = Astro.params;
 
@@ -16,7 +19,9 @@ try {
     filter: {
       slug: { _eq: slug },
       status: { _eq: 'published' }
-    }
+    },
+    // WICHTIG: 'video_url' muss hier dabei sein!
+    fields: ['*', 'gallery.*', 'gallery.directus_files_id.*', 'video_url']
   }));
   if (result && result.length > 0) camp = result[0];
 } catch (error) {
@@ -25,7 +30,8 @@ try {
 
 if (!camp) return Astro.redirect('/404');
 
-const ASSET_URL = "https://api.diebruecke.social/assets";
+// API URL Logik
+const ASSET_URL = (import.meta.env.PUBLIC_API_URL || "https://api.diebruecke.social") + "/assets";
 const heroImage = camp.image ? `${ASSET_URL}/${camp.image}` : null;
 
 // --- SEO GENERATOR ---
@@ -49,7 +55,7 @@ const getFlag = (location: string) => {
     image={seoImage}
 >
 
-    {/* --- HERO SECTION: STUDIO LOOK (OPTIMIERT FÜR DIACRITICS) --- */}
+    {/* --- HERO SECTION --- */}
     <section class="px-4 sm:px-6 pt-4 pb-12 transition-colors duration-500">
         <div class="relative bg-slate-900 rounded-[40px] md:rounded-[64px] overflow-hidden min-h-[60vh] md:min-h-[65vh] flex items-center shadow-2xl">
             
@@ -99,7 +105,6 @@ const getFlag = (location: string) => {
                             )}
                         </div>
 
-                        {/* FIX: Leading erhöht von 0.85 auf 1.05 für Umlaute */}
                         <h1 class="text-4xl md:text-7xl lg:text-8xl font-display font-black text-white mb-8 leading-[1.05] md:leading-[1.02] tracking-tighter uppercase break-words">
                             {camp.title}
                         </h1>
@@ -125,6 +130,7 @@ const getFlag = (location: string) => {
         <div class="container mx-auto">
             <div class="grid lg:grid-cols-12 gap-10 md:gap-16 max-w-7xl mx-auto">
                 
+                {/* --- LINKE SPALTE: TEXT, VIDEO & GALERIE --- */}
                 <div class="lg:col-span-8">
                     <div class="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-[10px] font-black text-rose-500 uppercase tracking-[0.2em] mb-6 md:mb-8">
                         Camp Beschreibung
@@ -132,9 +138,36 @@ const getFlag = (location: string) => {
                     <h2 class="text-3xl md:text-4xl font-display font-black text-slate-900 dark:text-white mb-8 md:mb-10 tracking-tight uppercase">
                         Zeit für <span class="text-rose-600 italic">Abenteuer.</span>
                     </h2>
+                    
+                    {/* Beschreibungstext */}
                     <div class="prose prose-md md:prose-lg dark:prose-invert text-slate-600 dark:text-slate-400 prose-headings:font-display prose-headings:font-bold prose-a:text-rose-600 max-w-none" set:html={camp.description}></div>
+
+                    {/* --- VIDEO PLAYER BEREICH --- */}
+                    {camp.video_url && (
+                        <div class="mt-16 pt-8 border-t border-slate-100 dark:border-slate-800">
+                            <h3 class="font-display font-black text-2xl md:text-3xl text-slate-900 dark:text-white uppercase mb-6">
+                                Camp <span class="text-rose-500">Video</span>
+                            </h3>
+                            <VideoPlayer url={camp.video_url} poster={heroImage} />
+                        </div>
+                    )}
+
+                    {/* --- GALERIE BEREICH --- */}
+                    {camp.gallery && camp.gallery.length > 0 && (
+                        <div class="mt-16 pt-8 border-t border-slate-100 dark:border-slate-800">
+                            <h3 class="font-display font-black text-2xl md:text-3xl text-slate-900 dark:text-white uppercase mb-6">
+                                Eindrücke & <span class="text-indigo-500 italic">Momente</span>
+                            </h3>
+                            <p class="text-slate-500 dark:text-slate-400 mb-8 max-w-xl">
+                                Ein kleiner Vorgeschmack darauf, was dich erwartet. Bilder sagen mehr als tausend Worte.
+                            </p>
+                            
+                            <ImageGallery gallery={camp.gallery} />
+                        </div>
+                    )}
                 </div>
 
+                {/* --- RECHTE SPALTE: INFO BOX --- */}
                 <div class="lg:col-span-4">
                     <div class="bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-[32px] md:rounded-[48px] p-8 md:p-10 sticky top-24 shadow-sm">
                         <h3 class="text-xs font-black text-slate-400 uppercase tracking-[0.3em] mb-8 md:mb-10 text-center border-b border-slate-200 dark:border-slate-800 pb-4">Reisedaten</h3>
@@ -209,7 +242,7 @@ const getFlag = (location: string) => {
     }
 </style>
 
-{/* --- SCHEMA.ORG: TOURIST TRIP --- */}
+{/* --- SCHEMA.ORG --- */}
 <script type="application/ld+json" set:html={JSON.stringify({
   "@context": "https://schema.org",
   "@type": "TouristTrip",

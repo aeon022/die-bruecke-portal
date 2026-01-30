@@ -6,6 +6,9 @@ import { directus } from '../../lib/directus';
 import { readItems } from '@directus/sdk';
 import { Image } from 'astro:assets';
 
+// NEU: Video Player Import
+import VideoPlayer from '../../components/common/VideoPlayer.astro';
+
 const { slug } = Astro.params;
 
 let trip = null;
@@ -15,7 +18,9 @@ try {
     filter: {
       slug: { _eq: slug },
       status: { _eq: 'published' }
-    }
+    },
+    // WICHTIG: 'video_url' zur Abfrage hinzufügen
+    fields: ['*', 'video_url'] 
   }));
   if (result && result.length > 0) trip = result[0];
 } catch (error) {
@@ -24,7 +29,7 @@ try {
 
 if (!trip) return Astro.redirect('/404');
 
-const ASSET_URL = "https://api.diebruecke.social/assets";
+const ASSET_URL = (import.meta.env.PUBLIC_API_URL || "https://api.diebruecke.social") + "/assets";
 const heroImage = trip.image ? `${ASSET_URL}/${trip.image}` : null;
 
 // --- SEO GENERATOR ---
@@ -122,6 +127,7 @@ const seoImage = heroImage || "https://diebruecke.cc/share-trips.jpg";
         <div class="container mx-auto">
             <div class="grid lg:grid-cols-12 gap-16 max-w-7xl mx-auto">
                 
+                {/* --- LINKE SPALTE: TEXT & VIDEO --- */}
                 <div class="lg:col-span-8">
                     <div class="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-[10px] font-black text-rose-500 uppercase tracking-[0.2em] mb-8">
                         Trip Details
@@ -129,9 +135,22 @@ const seoImage = heroImage || "https://diebruecke.cc/share-trips.jpg";
                     <h2 class="text-4xl font-display font-black text-slate-900 dark:text-white mb-10 tracking-tight uppercase">
                         Was wir gemeinsam <span class="text-indigo-600 italic">erleben.</span>
                     </h2>
+                    
+                    {/* Beschreibung */}
                     <div class="prose prose-lg dark:prose-invert text-slate-600 dark:text-slate-400 prose-headings:font-display prose-headings:font-bold max-w-none" set:html={trip.description}></div>
+
+                    {/* --- NEU: VIDEO PLAYER --- */}
+                    {trip.video_url && (
+                        <div class="mt-16 pt-8 border-t border-slate-100 dark:border-slate-800">
+                            <h3 class="font-display font-black text-2xl md:text-3xl text-slate-900 dark:text-white uppercase mb-6">
+                                Vorschau <span class="text-rose-500">Video</span>
+                            </h3>
+                            <VideoPlayer url={trip.video_url} poster={heroImage} />
+                        </div>
+                    )}
                 </div>
 
+                {/* --- RECHTE SPALTE: INFO BOX --- */}
                 <div class="lg:col-span-4">
                     <div class="bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-[48px] p-10 sticky top-24 shadow-sm">
                         <h3 class="text-xs font-black text-slate-400 uppercase tracking-[0.3em] mb-10 text-center">Inkludierte Leistungen</h3>

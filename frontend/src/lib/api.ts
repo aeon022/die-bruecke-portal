@@ -169,7 +169,8 @@ export async function getArchiv() {
           'pdf_file', // <--- WICHTIG: Das PDF-Feld wurde hinzugefügt!
           // WICHTIG: Holt die Verknüpfung UND das eigentliche Bild-Objekt
           'gallery.directus_files_id.*', 
-          'gallery.*', 
+          'gallery.*',
+          'video_url',  
           'category'
         ],
         limit: -1,
@@ -198,7 +199,8 @@ export async function getBlogPosts() {
           'tags', 
           'date_created', 
           'category', 
-          'gallery.directus_files_id.*'
+          'gallery.directus_files_id.*',
+          'video_url'
         ],
         filter: { status: { _eq: 'published' } },
         sort: ['-date_created'],
@@ -238,7 +240,7 @@ export async function getSidebarEvent(options?: {
 
     const response = await directus.request(
       readItems('events', {
-        fields: ['title', 'slug', 'description', 'image', 'is_highlight', 'start_date'],
+        fields: ['title', 'slug', 'description', 'image', 'is_highlight', 'start_date', 'video_url'],
         filter: {
           ...(import.meta.env.PROD ? { status: { _eq: 'published' } } : {}),
         },

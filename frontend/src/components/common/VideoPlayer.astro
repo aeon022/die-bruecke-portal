@@ -1,0 +1,71 @@
+---
+interface Props {
+  url: string;
+  poster?: string; // Optionales Vorschaubild (nehmen wir vom Camp Cover)
+}
+
+const { url, poster } = Astro.props;
+
+// --- Helper: Video Typ erkennen ---
+const getVideoType = (link: string) => {
+  if (!link) return null;
+  if (link.includes('youtube.com') || link.includes('youtu.be')) return 'youtube';
+  if (link.includes('vimeo.com')) return 'vimeo';
+  if (link.match(/\.(mp4|webm|ogg)$/i) || link.includes('/assets/')) return 'file'; // Erkennt Endungen oder Directus Assets
+  return null;
+};
+
+// --- Helper: Embed URL generieren ---
+const getEmbedUrl = (link: string, type: string) => {
+  if (type === 'youtube') {
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = link.match(regExp);
+    const id = (match && match[2].length === 11) ? match[2] : null;
+    return id ? `https://www.youtube-nocookie.com/embed/${id}` : null;
+  }
+  if (type === 'vimeo') {
+    const regExp = /vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/(?:[^\/]*)\/videos\/|album\/(?:\d+)\/video\/|video\/|)(\d+)(?:$|\/|\?)/;
+    const match = link.match(regExp);
+    const id = match ? match[1] : null;
+    return id ? `https://player.vimeo.com/video/${id}?badge=0&autopause=0&player_id=0&app_id=58479` : null;
+  }
+  return link; // Für lokale Files bleibt der Link gleich
+};
+
+const type = getVideoType(url);
+const embedSrc = getEmbedUrl(url, type || '');
+---
+
+{embedSrc && (
+  <div class="w-full rounded-[32px] overflow-hidden shadow-2xl bg-black border border-slate-200 dark:border-slate-800 my-12">
+    
+    {/* Aspect Ratio Container 16:9 */}
+    <div class="relative aspect-video w-full">
+      
+      {/* YOUTUBE & VIMEO */}
+      {(type === 'youtube' || type === 'vimeo') && (
+        <iframe 
+          src={embedSrc} 
+          title="Video Player" 
+          frameborder="0" 
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+          allowfullscreen
+          class="absolute inset-0 w-full h-full"
+        ></iframe>
+      )}
+
+      {/* LOKALE DATEI (DIRECTUS) */}
+      {type === 'file' && (
+        <video 
+          controls 
+          poster={poster} 
+          class="absolute inset-0 w-full h-full object-cover"
+        >
+          <source src={embedSrc} type="video/mp4" />
+          Ihr Browser unterstützt dieses Video-Format nicht.
+        </video>
+      )}
+
+    </div>
+  </div>
+)}

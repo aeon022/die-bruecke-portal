@@ -5,6 +5,9 @@ import { Image } from 'astro:assets';
 import pkg from 'rrule';
 const { RRule } = pkg;
 
+// NEU: Video Player Import
+import VideoPlayer from '../../components/common/VideoPlayer.astro';
+
 const { slug } = Astro.params;
 
 // URL Parameter prüfen
@@ -115,7 +118,7 @@ if (urlDateParam) {
 
 const displayEndDate = new Date(displayDate.getTime() + duration);
 
-// --- SEO CONFIG (DAS KRANT JETZT) ---
+// --- SEO CONFIG ---
 const seoTitle = `${event.title} Graz | Event | Die Brücke`;
 const rawDesc = event.subtitle || event.description || "Veranstaltung im soziokulturellen Zentrum Die Brücke Graz.";
 const seoDescription = rawDesc.replace(/<[^>]*>/g, '').substring(0, 160).trim() + "...";
@@ -253,6 +256,17 @@ const shareLinkedIn = 'https://www.linkedin.com/sharing/share-offsite/?url=' + e
               class="prose prose-lg prose-slate dark:prose-invert max-w-none font-medium leading-relaxed text-slate-600 dark:text-slate-300 prose-headings:font-display prose-headings:font-bold prose-a:text-rose-600 hover:prose-a:text-rose-700"
               set:html={event.description}
             ></div>
+
+            {/* --- NEU: VIDEO PLAYER BEREICH --- */}
+            {event.video_url && (
+                <div class="mt-16 pt-8 border-t border-slate-100 dark:border-slate-800">
+                    <h3 class="font-display font-black text-2xl md:text-3xl text-slate-900 dark:text-white uppercase mb-6">
+                        Event <span class="text-rose-500">Video</span>
+                    </h3>
+                    <VideoPlayer url={event.video_url} poster={heroImage ? `${ASSET_URL}/${heroImage}` : undefined} />
+                </div>
+            )}
+
           </div>
 
           {/* --- ASIDE: Facts & Tickets & Sticky Logic --- */}

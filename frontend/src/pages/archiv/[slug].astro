@@ -1,28 +1,23 @@
 ---
 import MainLayout from '../../layouts/layout.astro';
 import ImageGallery from '../../components/common/ImageGallery.astro';
+// NEU: VideoPlayer importieren
+import VideoPlayer from '../../components/common/VideoPlayer.astro';
 import { getArchiv } from '../../lib/api';
 
-// WICHTIG: SSR aktivieren (KEIN prerender = true mehr!)
-// FIX: Zwingt Astro explizit in den SSR-Modus für diese dynamische Route
+// WICHTIG: SSR aktivieren
 export const prerender = false;
 
 const { slug } = Astro.params;
 
-// 1. Daten holen (nutzt intern die neue directus.ts mit process.env)
+// 1. Daten holen
 const allItems = await getArchiv();
 
-// 2. DEBUGGING: Taucht in den Server-Logs auf
+// 2. DEBUGGING
 console.log('--- DEBUG START: Archiv Detail ---');
 console.log(`Gesuchter Slug: "${slug}"`);
 console.log(`Anzahl Items im Archiv: ${allItems?.length ?? 0}`);
 
-if (allItems && allItems.length > 0) {
-    // Logge die ersten paar Slugs zum Vergleich
-    console.log('Verfügbare Slugs (Auszug):', allItems.slice(0, 3).map((i: any) => i.slug || i.id));
-}
-
-// 3. Robuste Suche (String Vergleich & Trim)
 const item = allItems?.find((a: any) => String(a.slug || a.id).trim() === String(slug).trim());
 
 if (item) {
@@ -33,7 +28,7 @@ if (item) {
 console.log('--- DEBUG ENDE ---');
 
 
-// FIX: Bilder für den Browser müssen über die ÖFFENTLICHE URL geladen werden!
+// FIX: Public URL für Bilder
 const ASSET_URL = (import.meta.env.PUBLIC_API_URL || 'https://api.diebruecke.social') + '/assets';
 const currentUrl = Astro.url.href;
 ---
@@ -72,7 +67,6 @@ const currentUrl = Astro.url.href;
                                 </a>
                             </div>
                             
-                            {/* FIX: Clamp Logic für responsive Titelgröße + Break Words */}
                             <h1 class="text-[clamp(2.5rem,10vw,8rem)] font-display font-bold text-white mb-8 leading-[0.85] tracking-tighter uppercase break-words hyphens-auto">
                                 {item.title}
                             </h1>
@@ -134,8 +128,19 @@ const currentUrl = Astro.url.href;
                                 set:html={item.description}
                             />
 
+                            {/* --- NEU: VIDEO PLAYER --- */}
+                            {/* Wir nehmen 'video_url' aus dem Item. Falls 'getArchiv' das Feld nicht holt, muss api.ts angepasst werden! */}
+                            {item.video_url && (
+                                <div class="mt-16 mb-12 pt-8 border-t border-slate-100 dark:border-slate-800">
+                                    <h3 class="font-display font-black text-2xl md:text-3xl text-slate-900 dark:text-white uppercase mb-6">
+                                        Zeitzeugen & <span class="text-rose-500">Film</span>
+                                    </h3>
+                                    <VideoPlayer url={item.video_url} poster={`${ASSET_URL}/${item.image}`} />
+                                </div>
+                            )}
+
                             {/* UNTERES BILD */}
-                            <div class="mt-24 mb-16 rounded-[48px] overflow-hidden bg-slate-50 dark:bg-slate-900 p-2 shadow-sm border border-slate-100 dark:border-slate-800">
+                            <div class="mt-12 mb-16 rounded-[48px] overflow-hidden bg-slate-50 dark:bg-slate-900 p-2 shadow-sm border border-slate-100 dark:border-slate-800">
                                 <img 
                                     src={`${ASSET_URL}/${item.image}?key=system-large-cover`} 
                                     class="w-full h-auto rounded-[40px] grayscale hover:grayscale-0 transition-all duration-700" 

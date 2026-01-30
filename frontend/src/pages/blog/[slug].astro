@@ -4,6 +4,8 @@ import BlogShare from '../../components/blog/BlogShare.astro';
 import RelatedPosts from '../../components/blog/RelatedPosts.astro';
 import BlogSocials from '../../components/blog/BlogSocials.astro';
 import ImageGallery from '../../components/common/ImageGallery.astro';
+// NEU: VideoPlayer importieren
+import VideoPlayer from '../../components/common/VideoPlayer.astro';
 import { getBlogPosts, getSidebarEvent, getSidebarService } from '../../lib/api';
 import { Image } from 'astro:assets';
 
@@ -37,8 +39,9 @@ while ((match = h2Regex.exec(post.content)) !== null) {
 
 const words = post.content.split(' ').length;
 const readingTime = Math.ceil(words / 200);
-// Wir nutzen die produktive URL für Assets
-const ASSET_URL = 'https://api.diebruecke.social/assets';
+
+// Wir nutzen die produktive URL für Assets (Public URL für Browser)
+const ASSET_URL = (import.meta.env.PUBLIC_API_URL || 'https://api.diebruecke.social') + '/assets';
 const currentUrl = Astro.url.href;
 
 // Normalisierung für das Dataset
@@ -88,11 +91,6 @@ const formatDate = (dateString: string) => {
               </a>
             </nav>
             
-            {/* OPTIMIERT: 
-                - break-words & hyphens-auto für mobile Umbrüche
-                - md:text-6xl statt 7xl (besser für iPad Mini)
-                - lg:text-8xl für große Screens
-            */}
             <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tighter leading-[1.1] md:leading-[1.15] mb-8 py-2 break-words hyphens-auto">
               {post.title}
             </h1>
@@ -125,11 +123,9 @@ const formatDate = (dateString: string) => {
     {/* --- MAIN ARTICLE & SIDEBARS --- */}
     <section class="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
       
-      {/* LAYOUT: Stapelt sich auf Mobile/Tablet, nebeneinander auf XL */}
       <div class="flex flex-col xl:flex-row gap-8 md:gap-12 xl:gap-24 items-start">
 
         {/* --- LEFT SIDEBAR (TOC - DESKTOP ONLY) --- */}
-        {/* Nur sichtbar ab xl (Desktop) */}
         <aside class="hidden xl:block w-[240px] shrink-0 sticky top-32 h-fit space-y-10 mb-12">
           <div class="px-2">
             <span class="block text-[10px] font-black uppercase tracking-[0.3em] text-rose-500 mb-2 font-mono font-bold">Kategorie</span>
@@ -169,7 +165,7 @@ const formatDate = (dateString: string) => {
         {/* --- ARTICLE AREA --- */}
         <article class="flex-1 min-w-0 w-full">
           
-          {/* MOBILE/TABLET TOC (Accordion) - Nur sichtbar UNTER xl */}
+          {/* MOBILE/TABLET TOC (Accordion) */}
           {headings.length > 0 && (
             <details class="xl:hidden mb-12 bg-slate-50 dark:bg-slate-900/50 rounded-[32px] border border-slate-200 dark:border-slate-800 group">
                 <summary class="flex items-center justify-between p-6 cursor-pointer list-none">
@@ -190,10 +186,23 @@ const formatDate = (dateString: string) => {
             </details>
           )}
 
+          {/* MAIN CONTENT */}
           <div class="prose prose-lg md:prose-xl dark:prose-invert prose-slate prose-headings:font-display prose-headings:uppercase prose-headings:tracking-tighter prose-headings:font-black prose-a:text-rose-500 prose-img:rounded-[32px] max-w-none prose-p:leading-relaxed prose-p:text-slate-600 dark:prose-p:text-slate-400 mb-12 break-words hyphens-auto">
             <div set:html={modifiedContent} />
           </div>
 
+          {/* --- VIDEO PLAYER --- */}
+          {post.video_url && (
+            <div class="mb-12">
+               <h3 class="font-display font-black text-2xl md:text-3xl text-slate-900 dark:text-white uppercase mb-6">
+                 Video <span class="text-rose-500">Beitrag</span>
+               </h3>
+               {/* Nutzt das Hauptbild als Poster, falls vorhanden */}
+               <VideoPlayer url={post.video_url} poster={post.main_image ? `${ASSET_URL}/${post.main_image}` : undefined} />
+            </div>
+          )}
+
+          {/* GALERIE */}
           {post.gallery && <ImageGallery gallery={post.gallery} />}
           
           <div class="mt-16 pt-12 border-t border-slate-100 dark:border-slate-800">
@@ -202,7 +211,6 @@ const formatDate = (dateString: string) => {
         </article>
 
         {/* --- RIGHT SIDEBAR (CTA & SOCIALS) --- */}
-        {/* Layout Anpassung: Auf Mobile/Tablet untereinander, ab xl sticky rechts */}
         <aside class="w-full max-w-2xl mx-auto xl:max-w-none xl:w-[300px] shrink-0 xl:sticky xl:top-32 h-fit mt-8 mb-24 xl:mt-0 xl:mb-12 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-1 gap-8 xl:gap-12 items-start">
           
           {/* Box 1: Dynamic CTA */}
@@ -286,7 +294,6 @@ const formatDate = (dateString: string) => {
 })} />
 
 <script>
-  // Script Logik (CTA, Progress Bar) wie gehabt beibehalten...
   function safeParseJSON(value) {
     try {
       if (!value || value === "null") return null;
