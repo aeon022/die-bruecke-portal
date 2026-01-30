@@ -91,7 +91,10 @@ const formatDate = (dateString: string) => {
               </a>
             </nav>
             
-            <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tighter leading-[1.1] md:leading-[1.15] mb-8 py-2 break-words hyphens-auto">
+            {/* ÄNDERUNG: Titel-Größe reduziert für bessere Lesbarkeit bei langen Headlines */}
+            {/* Alt: text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl */}
+            {/* Neu: text-3xl sm:text-4xl md:text-5xl lg:text-6xl */}
+            <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tighter leading-tight mb-8 py-2 break-words hyphens-auto">
               {post.title}
             </h1>
             
