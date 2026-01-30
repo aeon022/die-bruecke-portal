@@ -7,7 +7,7 @@ import { Image } from 'astro:assets';
 // 1. Daten laden
 const camps = await directus.request(readItems('camps', {
     filter: { status: { _eq: 'published' } },
-    sort: ['date_range'] 
+    sort: ['sort'] 
 }));
 
 const ASSET_URL = "https://api.diebruecke.social/assets";
