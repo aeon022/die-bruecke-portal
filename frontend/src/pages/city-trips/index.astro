@@ -7,13 +7,21 @@ import { Image } from 'astro:assets';
 // 1. Daten laden (Collection: city_trips)
 const trips = await directus.request(readItems('city_trips', {
     filter: { status: { _eq: 'published' } },
-    sort: ['sort', 'date_range'] 
+    // WICHTIG: Sortierung nach dem 'sort' Feld (Drag & Drop Reihenfolge)
+    sort: ['sort'] 
 }));
 
 const ASSET_URL = "https://api.diebruecke.social/assets";
 
-// Hilfsfunktion für Directus-Bildoptimierung (spart ca. 80-90% Datenmenge)
+// Hilfsfunktion für Directus-Bildoptimierung
 const getOptimizedImg = (id, width = 800) => `${ASSET_URL}/${id}?width=${width}&format=webp&quality=80`;
+
+// FIX: Diese Funktion muss hier definiert sein, damit kein ReferenceError kommt!
+const cleanText = (html) => {
+    if (!html) return "";
+    // Entfernt HTML Tags, behält aber Entities wie &uuml; bei
+    return html.replace(/<[^>]*>?/gm, '').trim();
+};
 
 // 2. Featured-Logik
 const featuredTrip = trips.find((t: any) => t.is_featured) || trips[0];
@@ -72,13 +80,15 @@ const seoImage = featuredTrip?.image ? getOptimizedImg(featuredTrip.image, 1200)
                             Highlight-Trip
                         </div>
 
-                        {/* Leading fix für Umlaute */}
                         <h1 class="text-5xl md:text-8xl font-display font-black text-white mb-6 leading-[1.02] tracking-tighter uppercase">
                             {featuredTrip.title}
                         </h1>
                         
-                        <p class="text-xl text-slate-300 mb-10 leading-relaxed line-clamp-3 font-medium border-l-4 border-indigo-500 pl-6">
-                            {featuredTrip.description?.replace(/<[^>]*>?/gm, '')}
+                        {/* cleanText wird jetzt gefunden! */}
+                        <p 
+                            class="text-xl text-slate-300 mb-10 leading-relaxed line-clamp-3 font-medium border-l-4 border-indigo-500 pl-6"
+                            set:html={cleanText(featuredTrip.description)}
+                        >
                         </p>
                         
                         <div class="flex flex-wrap gap-6 mb-10 text-[10px] font-black uppercase tracking-widest text-slate-200">
@@ -139,7 +149,6 @@ const seoImage = featuredTrip?.image ? getOptimizedImg(featuredTrip.image, 1200)
                             </div>
                             
                             <h3 class="text-2xl font-display font-bold text-slate-900 dark:text-white mb-4 leading-tight group-hover:text-indigo-600 transition-colors uppercase tracking-tight">
-                                {/* STRETCHED LINK: Gesamte Karte klickbar + Cursorpointer */}
                                 <a href={`/city-trips/${trip.slug}`} class="before:absolute before:inset-0 before:z-20">
                                     {trip.title}
                                 </a>
