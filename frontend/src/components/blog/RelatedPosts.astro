@@ -1,6 +1,6 @@
 ---
 import { getBlogPosts } from '../../lib/api';
-import { Image } from 'astro:assets'; // <--- NEU
+import { Image } from 'astro:assets'; 
 
 const { currentSlug } = Astro.props;
 const allPosts = await getBlogPosts();
@@ -11,7 +11,8 @@ const related = allPosts
     .sort(() => Math.random() - 0.5)
     .slice(0, 3);
 
-const ASSET_URL = import.meta.env.DIRECTUS_URL + '/assets';
+// FIX: Wir müssen die ÖFFENTLICHE URL nehmen, damit der Browser die Bilder laden kann!
+const ASSET_URL = (import.meta.env.PUBLIC_API_URL || 'https://api.diebruecke.social') + '/assets';
 
 const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('de-DE', {
