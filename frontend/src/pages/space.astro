@@ -1,6 +1,29 @@
 ---
 import MainLayout from '../layouts/layout.astro';
+import { directus } from '../lib/directus';
+import { readItems } from '@directus/sdk';
 import { Image } from 'astro:assets'; 
+
+// --- DIRECTUS & BILD LOGIK ---
+const ASSET_URL = "https://api.diebruecke.social/assets";
+const getImg = (id: string, w = 1200) => id ? `${ASSET_URL}/${id}?width=${w}&format=webp&quality=80` : null;
+
+let pageSettings = null;
+
+try {
+    const pagesData = await directus.request(readItems('pages', {
+        filter: { 
+            slug: { _eq: 'space' }
+        },
+        limit: 1
+    }));
+    
+    if (pagesData && pagesData.length > 0) {
+        pageSettings = pagesData[0];
+    }
+} catch (error) {
+    console.error("Fehler beim Laden der Space-Daten:", error);
+}
 
 // "Hard Facts" & Equipment kombiniert
 const equipment = [
@@ -50,10 +73,17 @@ const useCases = [
     }
 ];
 
-// --- SEO KONFIGURATION (Das muss knallen für Google!) ---
-const seoTitle = "Raumvermietung Graz | Seminarraum & Eventlocation";
-const seoDescription = "Dein Raum im Zentrum von Graz. Perfekt für Seminare, Workshops und private Feiern. 150m² flexibel nutzbar, 100% barrierefrei, inkl. Profi-Technik & Garten.";
-const seoImage = "https://images.unsplash.com/photo-1517457373958-b7bdd4587205"; // Hero Image als Share-Bild
+// --- SEO & BILD KONFIGURATION ---
+const fallbackImage = "https://images.unsplash.com/photo-1517457373958-b7bdd4587205";
+
+// Logik: Directus Bild > Fallback
+const heroImage = (pageSettings && pageSettings.hero_image) 
+    ? getImg(pageSettings.hero_image, 1600) 
+    : fallbackImage;
+
+const seoTitle = pageSettings?.title || "Raumvermietung Graz | Seminarraum & Eventlocation";
+const seoDescription = pageSettings?.seo_description || "Dein Raum im Zentrum von Graz. Perfekt für Seminare, Workshops und private Feiern. 150m² flexibel nutzbar, 100% barrierefrei, inkl. Profi-Technik & Garten.";
+const seoImage = heroImage;
 ---
 
 <MainLayout 
@@ -62,20 +92,21 @@ const seoImage = "https://images.unsplash.com/photo-1517457373958-b7bdd4587205";
     image={seoImage}
 >
     
-    {/* --- HERO SECTION --- */}
+{/* --- HERO SECTION --- */}
     <section class="px-4 sm:px-6 pt-6 pb-20 dark:bg-slate-900">
         <div class="relative bg-slate-900 rounded-[48px] overflow-hidden min-h-[60vh] flex items-center px-6 md:px-16 py-24">
             
-            {/* ATMOSPHERIC IMAGE LAYER (Rechts) */}
-            <div class="absolute top-0 right-0 w-full lg:w-1/2 h-full pointer-events-none overflow-hidden [mask-image:linear-gradient(to_left,black_40%,transparent)]">
+            {/* ATMOSPHERIC IMAGE LAYER (Rechts) - OPTIMIERT FÜR SERVICES-LOOK */}
+            {/* Änderungen: lg:w-2/3 (breiter), black_30% (weicherer Verlauf) */}
+            <div class="absolute top-0 right-0 w-full lg:w-2/3 h-full pointer-events-none overflow-hidden [mask-image:linear-gradient(to_left,black_30%,transparent)]">
                 {/* PERFORMANCE: Eager loading für LCP */}
                 <Image 
-                    src={seoImage}
+                    src={heroImage}
                     alt="Eventlocation Die Brücke Graz"
                     width={1200}
                     height={800}
                     loading="eager"
-                    class="w-full h-full object-cover opacity-30 lg:opacity-45 grayscale"
+                    class="w-full h-full object-cover opacity-30 lg:opacity-50 grayscale"
                 />
             </div>
 

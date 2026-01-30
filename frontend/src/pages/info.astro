@@ -1,15 +1,53 @@
 ---
 import MainLayout from '../layouts/layout.astro';
 import { directus } from '../lib/directus';
-import { readSingleton } from '@directus/sdk';
+import { readSingleton, readItems } from '@directus/sdk';
+import { Image } from 'astro:assets';
 
-// 1. Daten laden (Logik 1:1 aus contact.astro übernommen)
-let settings;
+// --- HILFSFUNKTIONEN ---
+const ASSET_URL = "https://api.diebruecke.social/assets";
+const getImg = (id: string, w = 1200) => id ? `${ASSET_URL}/${id}?width=${w}&format=webp&quality=80` : null;
+
+// --- DATEN LADEN ---
+let settings = null;
+let pageSettings = null;
+
 try {
-    settings = await directus.request(readSingleton('global_settings'));
+    const [globalData, pagesData] = await Promise.all([
+        // 1. Globale Settings
+        directus.request(readSingleton('global_settings')),
+        
+        // 2. Page Settings für 'info' (Exakter Match)
+        directus.request(readItems('pages', {
+            filter: { 
+                slug: { _eq: 'info' }
+            },
+            limit: 1
+        }))
+    ]);
+
+    settings = globalData;
+    
+    if (pagesData && pagesData.length > 0) {
+        pageSettings = pagesData[0];
+    }
+
 } catch (error) {
-    console.error("Info: Konnte Global Settings nicht laden", error);
+    console.error("Fehler beim Laden der Daten (Info):", error);
 }
+
+// --- LOGIK FÜR HERO BILD ---
+const fallbackImage = "https://images.unsplash.com/photo-1516382799247-87df95d790b7?q=80&w=1200";
+
+const heroImage = (pageSettings && pageSettings.hero_image) 
+    ? getImg(pageSettings.hero_image, 1600) 
+    : fallbackImage;
+
+// SEO
+const seoTitle = pageSettings?.title || "Infozentrum";
+const seoDescription = pageSettings?.seo_description || "Das Infozentrum ist deine erste Adresse für alles, was den Alltag betrifft. Rechte, Anträge oder einfach ein offenes Ohr – unbürokratisch und menschlich.";
+const seoImage = heroImage;
+
 
 // --- DATEN-LOGIK: ÖFFNUNGSZEITEN ---
 const defaultOpeningHours = [
@@ -28,7 +66,7 @@ const defaultAccessItems = [
 ];
 const accessibilityItems = settings?.accessibility_items || defaultAccessItems;
 
-// --- EIGENE DATEN FÜR INFOZENTRUM ---
+// --- STATIC CONTENT ---
 const tasks = [
     { 
         title: "Rechte & Kosten", 
@@ -66,30 +104,30 @@ const faqs = [
         a: "Für das Erstgespräch gar nichts – komm einfach so. Falls du bereits Bescheide, Arztbriefe oder den Behindertenpass hast, bring sie gerne mit. Das hilft uns, die Situation schneller zu erfassen." 
     }
 ];
-
-// --- SEO KONFIGURATION ---
-const seoDescription = "Das Infozentrum ist deine erste Adresse für alles, was den Alltag betrifft. Rechte, Anträge oder einfach ein offenes Ohr – unbürokratisch und menschlich.";
-const seoImage = "https://images.unsplash.com/photo-1516382799247-87df95d790b7?q=80&w=1200";
 ---
 
 <MainLayout 
-    title="Infozentrum" 
+    title={seoTitle} 
     description={seoDescription}
     image={seoImage}
 >
     
-    {/* --- HERO SECTION: INFOZENTRUM (STABLE 2-LINE LAYERED) --- */}
+    {/* --- HERO SECTION: INFOZENTRUM --- */}
     <section class="px-4 sm:px-6 pt-6 pb-20">
         <div class="relative bg-slate-900 rounded-[48px] overflow-hidden min-h-[60vh] flex items-center px-6 md:px-16 py-24">
             
-            {/* DAS BILD: Jetzt als atmosphärischer Layer im Hintergrund rechts */}
-            <div class="absolute top-0 right-0 w-full lg:w-1/2 h-full pointer-events-none overflow-hidden">
-                <div class="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/60 to-transparent z-10"></div>
-                <img 
-                    src={seoImage} 
-                    alt="Infozentrum Welcome" 
-                    class="w-full h-full object-cover opacity-30 lg:opacity-45 grayscale"
-                />
+            {/* DAS BILD */}
+            <div class="absolute top-0 right-0 w-full lg:w-2/3 h-full pointer-events-none overflow-hidden [mask-image:linear-gradient(to_left,black_30%,transparent)]">
+                {heroImage && (
+                    <Image 
+                        src={heroImage} 
+                        alt="Infozentrum Welcome" 
+                        width={1200}
+                        height={800}
+                        loading="eager"
+                        class="w-full h-full object-cover opacity-30 lg:opacity-50 grayscale"
+                    />
+                )}
             </div>
 
             {/* Background Effects */}
@@ -115,8 +153,7 @@ const seoImage = "https://images.unsplash.com/photo-1516382799247-87df95d790b7?q
                     </div>
                     
                     <h1 class="text-4xl md:text-6xl lg:text-7xl font-display font-black text-white mb-8 leading-[0.95] tracking-tighter uppercase">
-                        Orientierung & <br class="hidden sm:block"/>
-                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-400 to-indigo-400 whitespace-nowrap">Rückhalt.</span>
+                        {pageSettings?.title ? pageSettings.title : "Orientierung & Rückhalt"}
                     </h1>
                     
                     <p class="text-lg md:text-xl text-slate-300 leading-relaxed mb-10 max-w-lg font-medium border-l-4 border-rose-500 pl-6">

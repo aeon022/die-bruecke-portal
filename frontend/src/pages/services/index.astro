@@ -24,7 +24,7 @@ try {
     directus.request(readItems('pages', {
       filter: { 
         slug: { _eq: 'services' },
-        status: { _eq: 'Live' } // Haben wir vorhin auf 'Live' angepasst
+        status: { _eq: 'live' } // Haben wir vorhin auf 'live' angepasst
       },
       limit: 1
     }))
