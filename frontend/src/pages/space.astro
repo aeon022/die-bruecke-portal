@@ -4,6 +4,17 @@ import { directus } from '../lib/directus';
 import { readItems } from '@directus/sdk';
 import { Image } from 'astro:assets'; 
 
+// --- NEU: LOKALE BILDER & FALLBACKS ---
+// 1. Die alten Unsplash-Links (sicher geparkt)
+const FALLBACK_SEMINAR = "https://images.unsplash.com/photo-1517048676732-d65bc937f952";
+const FALLBACK_PARTY = "https://images.unsplash.com/photo-1516997121675-4c2d1684aa3e";
+
+// 2. Die neuen lokalen Bilder
+// WICHTIG: Diese Dateien MÜSSEN in 'src/assets/' liegen, sonst bricht der Build ab!
+// Um den Fallback zu nutzen, kommentiere den Import aus und nutze unten die Variable FALLBACK_...
+import seminarImg from '../assets/seminar.webp';
+import partyImg from '../assets/party.webp';
+
 // --- DIRECTUS & BILD LOGIK ---
 const ASSET_URL = "https://api.diebruecke.social/assets";
 const getImg = (id: string, w = 1200) => id ? `${ASSET_URL}/${id}?width=${w}&format=webp&quality=80` : null;
@@ -56,20 +67,24 @@ const equipment = [
     { icon: "fa-microphone-lines", label: "Profi-Audio", desc: "Mikrofone & PA-Anlage" }
 ];
 
+// --- USE CASES (lokale bilder) ---
 const useCases = [
     {
         title: "Seminare & Workshops",
         subtitle: "Dein Raum am Vormittag",
         desc: "Nutze unsere zentrale Lage für deine Business-Events. Helle Atmosphäre, Bestuhlung nach Wunsch und volle technische Ausstattung.",
         features: ["Flipcharts inklusive", "Kaffee-Catering möglich", "Barrierefreier Zugang"],
-        image: "https://images.unsplash.com/photo-1517048676732-d65bc937f952" 
+        // HIER: Wir nutzen das importierte Bild. 
+        // Falls du zurück zu Unsplash willst: Ändere 'seminarImg' zu 'FALLBACK_SEMINAR'
+        image: seminarImg 
     },
     {
         title: "Private Feiern",
         subtitle: "Dein Raum am Abend",
         desc: "Geburtstage, Jubiläen oder Vereinsfeiern. Die Brücke verwandelt sich abends in einen stimmungsvollen Partyraum.",
         features: ["Flexibel für dich", "Essen: Dein Caterer oder DIY", "Lichttechnik für Stimmung"],
-        image: "https://images.unsplash.com/photo-1516997121675-4c2d1684aa3e" 
+        // HIER: Das lokale Party-Bild
+        image: partyImg
     }
 ];
 
