@@ -177,7 +177,7 @@ const seoImage = heroImage;
         </div>
     </section>
 
-    {/* --- USE CASES --- */}
+    {/* --- USE CASES (Optimiert für Schärfe) --- */}
     <section id="details" class="px-4 sm:px-6 pb-32">
         <div class="max-w-7xl mx-auto space-y-32">
             {useCases.map((useCase, idx) => (
@@ -186,12 +186,15 @@ const seoImage = heroImage;
                     {/* Image Side */}
                     <div class="flex-1 w-full">
                         <div class="relative aspect-[4/3] rounded-[48px] overflow-hidden shadow-2xl group border border-slate-100 dark:border-slate-800">
-                            {/* PERFORMANCE: Lazy Loading für Content Images */}
+                            {/* PERFORMANCE: High-Res Einstellungen für Schärfe */}
                             <Image 
                                 src={useCase.image}
                                 alt={useCase.title}
-                                width={800}
-                                height={600}
+                                width={1200}  /* ERHÖHT: Basisgröße für schärfere Darstellung */
+                                height={900}  /* ERHÖHT: Passend zum 4:3 Verhältnis */
+                                format="webp"
+                                quality={90}  /* ERHÖHT: Mehr Details */
+                                densities={[1.5, 2]} /* WICHTIG: Retina/High-DPI Support */
                                 class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-[1.5s]"
                             />
                             <div class="absolute inset-0 bg-slate-900/10 group-hover:bg-transparent transition"></div>
