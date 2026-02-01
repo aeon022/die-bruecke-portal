@@ -16,13 +16,14 @@ const part2 = parts.length > 1 ? parts.slice(1).join('<br>') : null;
 ---
 
 {/* --- HERO SECTION --- */}
-{/* FIX: px-4 mobil (statt px-6) für mehr Platz auf iPhone SE */}
-<section class="relative z-10 w-full min-h-[85vh] flex items-center overflow-hidden px-4 sm:px-16 lg:px-24 py-12 lg:py-20 group/hero bg-gradient-to-br from-slate-50 via-white to-rose-50/30 dark:from-slate-950 dark:via-slate-950 dark:to-rose-950/20 transition-colors duration-500 rounded-[40px] mb-10">
+<section class="relative z-10 w-full min-h-[85vh] lg:min-h-[90vh] flex items-center overflow-hidden px-4 sm:px-16 lg:px-24 py-12 lg:py-20 group/hero bg-gradient-to-br from-slate-50 via-white to-rose-50/30 dark:from-slate-950 dark:via-slate-950 dark:to-rose-950/20 transition-colors duration-500 rounded-[24px] sm:rounded-[40px] mb-6 sm:mb-10">
 
-    <div class="max-w-[1600px] mx-auto w-full grid grid-cols-12 gap-8 lg:gap-0 relative items-center">
+    {/* GRID: Zurück zur stabilen Basis. Gap-0 auf Desktop für nahtlosen Übergang. */}
+    <div class="max-w-[1600px] mx-auto w-full grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-0 relative items-center">
 
         {/* 1. TEXT CONTENT */}
-        <div class="relative z-30 col-span-12 lg:col-span-5 pointer-events-none">
+        {/* Basis: 5 Spalten. WICHTIG: z-30 sorgt dafür, dass alles hier DRÜBER liegt. */}
+        <div class="relative z-30 col-span-1 lg:col-span-5 flex flex-col items-start order-1 lg:order-none pointer-events-none">
 
             {/* BADGE */}
             <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-slate-700 text-xs font-bold text-rose-600 dark:text-rose-400 mb-6 sm:mb-8 uppercase tracking-widest shadow-sm whitespace-nowrap pointer-events-auto">
@@ -33,54 +34,57 @@ const part2 = parts.length > 1 ? parts.slice(1).join('<br>') : null;
                 Seit 1983
             </div>
 
-            {/* HEADLINE (UNVERÄNDERT) */}
-            <h1 class="text-6xl sm:text-6xl xl:text-8xl font-display font-extrabold text-slate-900 dark:text-white tracking-tighter leading-[1.05] mb-12 sm:mb-8 drop-shadow-sm lg:drop-shadow-none group-hover/hero:text-slate-900 transition-colors duration-500 sm:whitespace-nowrap pointer-events-auto">
+            {/* HEADLINE */}
+            {/* DER TRICK: lg:w-[140%] 
+                Auf Desktop darf die Überschrift 140% der Spaltenbreite nutzen. 
+                Dadurch ragt sie physisch in das Bild hinein, ohne das Grid zu zerstören. */}
+            <h1 class="text-4xl xs:text-5xl sm:text-6xl xl:text-8xl font-display font-extrabold text-slate-900 dark:text-white tracking-tighter leading-[1.1] sm:leading-[1.05] mb-8 sm:mb-8 drop-shadow-md lg:drop-shadow-xl group-hover/hero:text-slate-900 transition-colors duration-500 break-words hyphens-auto w-full lg:w-[140%] pointer-events-auto">
                 
                 {/* Teil 1 */}
-                <span set:html={part1}></span>
+                <span class="lg:whitespace-nowrap" set:html={part1}></span>
 
                 {/* Teil 2 */}
                 {part2 && (
                     <>
-                        <br />
-                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-orange-500" set:html={part2}></span>
+                        {/* Desktop: <br> macht die neue Zeile. Span ragt weiter ins Bild. */}
+                        <br class="hidden sm:block" />
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-orange-500 block sm:inline mt-1 sm:mt-0 lg:whitespace-nowrap" set:html={part2}></span>
                     </>
                 )}
             </h1>
 
             {/* SUBLINE */}
-            {/* FIX: break-words und pr-2 verhindern Abschneiden am rechten Rand */}
+            {/* Auch hier: Darf etwas breiter sein (120%) für den lockeren Look */}
             <p 
-                class="relative z-30 text-lg sm:text-xl text-slate-700 dark:text-slate-200 leading-relaxed border-l-4 border-rose-500 pl-4 sm:pl-6 font-medium mb-8 sm:mb-10 w-full sm:max-w-4xl lg:w-[120%] group-hover/hero:text-slate-900 dark:group-hover/hero:text-white transition-colors duration-500 pointer-events-auto drop-shadow-sm break-words pr-2 sm:pr-0"
+                class="relative z-30 text-base sm:text-xl text-slate-700 dark:text-slate-200 leading-relaxed border-l-4 border-rose-500 pl-4 sm:pl-6 font-medium mb-8 sm:mb-10 w-full sm:max-w-2xl lg:w-[120%] group-hover/hero:text-slate-900 dark:group-hover/hero:text-white transition-colors duration-500 pointer-events-auto drop-shadow-md lg:drop-shadow-lg break-words pr-0"
                 set:html={subline}
             >
             </p>
 
             {/* BUTTONS */}
-            {/* FIX: px-5 (statt 8) mobil -> passt besser auf 320px Breite */}
             <div class="flex flex-col sm:flex-row gap-4 pointer-events-auto w-full sm:w-auto">
-                <a href="/events" class="w-full sm:w-auto justify-center bg-rose-600 text-white px-5 sm:px-8 py-3.5 sm:py-4 rounded-full font-bold hover:bg-slate-900 dark:hover:bg-white dark:hover:text-slate-900 transition-all shadow-lg shadow-rose-500/20 hover:-translate-y-1 text-center text-sm sm:text-base flex items-center">
+                <a href="/events" class="w-full sm:w-auto justify-center bg-rose-600 text-white px-6 py-4 rounded-full font-bold hover:bg-slate-900 dark:hover:bg-white dark:hover:text-slate-900 transition-all shadow-lg shadow-rose-500/20 hover:-translate-y-1 text-center text-base flex items-center">
                     Event Kalender
                 </a>
-                <a href="/about" class="w-full sm:w-auto justify-center bg-transparent text-slate-900 dark:text-white border-2 border-slate-200 dark:border-slate-700 px-5 sm:px-8 py-3.5 sm:py-4 rounded-full font-bold hover:border-rose-500 dark:hover:border-rose-500 transition-all hover:-translate-y-1 text-center text-sm sm:text-base flex items-center">
+                <a href="/about" class="w-full sm:w-auto justify-center bg-transparent text-slate-900 dark:text-white border-2 border-slate-200 dark:border-slate-700 px-6 py-4 rounded-full font-bold hover:border-rose-500 dark:hover:border-rose-500 transition-all hover:-translate-y-1 text-center text-base flex items-center">
                     Über uns
                 </a>
             </div>
         </div>
 
         {/* 2. BILD CONTAINER */}
-        <div class="relative col-span-12 lg:col-span-7 h-[50vh] lg:h-[75vh] z-10 pointer-events-auto group/image mt-8 lg:mt-0">
+        {/* Basis: 7 Spalten. z-10 (liegt UNTER dem Text). */}
+        <div class="relative col-span-1 lg:col-span-7 h-[40vh] sm:h-[50vh] lg:h-[75vh] w-full z-10 pointer-events-auto group/image mt-0 order-2 lg:order-none">
             
-            {/* FIX: rounded-[24px] mobil (statt 40px) gibt dem Bild mehr Platz an den Ecken */}
-            <div class="absolute right-0 top-0 bottom-0 h-full rounded-[24px] sm:rounded-[40px] lg:rounded-[80px] overflow-hidden shadow-2xl bg-slate-900 ring-4 ring-white dark:ring-slate-800
-                        w-full group-hover/image:w-[130%] transition-[width] duration-[1.0s] ease-out">
+            <div class="absolute right-0 top-0 bottom-0 left-0 lg:left-auto h-full rounded-[24px] sm:rounded-[40px] lg:rounded-[80px] overflow-hidden shadow-2xl bg-slate-900 ring-4 ring-white dark:ring-slate-800
+                        w-full lg:w-full group-hover/image:lg:w-[130%] transition-[width] duration-[1.0s] ease-out">
 
                 <Image
                 src={image}
                 alt="Impression aus der Brücke Graz"
                 quality={60}
                 widths={[480, 800, 1200, 1600]}
-                sizes="(max-width: 768px) 90vw, (max-width: 1200px) 60vw, 800px"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 60vw, 800px"
                 width={1600}
                 height={900}
                 loading="eager"
@@ -93,8 +97,8 @@ const part2 = parts.length > 1 ? parts.slice(1).join('<br>') : null;
                 <div class="absolute inset-0 bg-slate-900/40 opacity-0 group-hover/image:opacity-100 transition-opacity duration-700 backdrop-blur-[1px]"></div>
 
                 {/* WATERMARK */}
-                <div class="absolute -bottom-10 -right-10 pointer-events-none select-none opacity-50 group-hover/image:opacity-80 transition-opacity duration-700">
-                    <p class="text-[120px] sm:text-[160px] xl:text-[220px] font-display font-black tracking-tighter leading-none text-white/10 uppercase">
+                <div class="absolute -bottom-6 -right-6 sm:-bottom-10 sm:-right-10 pointer-events-none select-none opacity-30 sm:opacity-50 group-hover/image:opacity-80 transition-opacity duration-700">
+                    <p class="text-[80px] sm:text-[160px] xl:text-[220px] font-display font-black tracking-tighter leading-none text-white/10 uppercase">
                         Brücke
                     </p>
                 </div>
