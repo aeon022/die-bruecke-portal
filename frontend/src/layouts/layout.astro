@@ -15,14 +15,22 @@ import '@fontsource-variable/plus-jakarta-sans';
 const { 
   title, 
   description = "Die Brücke Graz – Inklusion, Kultur und Begegnung. Wir schaffen Raum für ein Miteinander ohne Barrieren.",
-  image = "/assets/share-image.jpg" // Fallback Bild
+  image // Image Prop kann jetzt leer sein, Fallback wird unten behandelt
 } = Astro.props;
 
 const fullTitle = title ? `${title} - Die Brücke` : 'Die Brücke - Studio';
 
 // FIX: Fallback für Astro.site, damit es lokal und ohne Config nicht crasht
-const siteUrl = Astro.site || 'https://beta.diebruecke.social';
+const siteUrl = Astro.site ? Astro.site.toString() : 'https://beta.diebruecke.social';
 const canonicalURL = new URL(Astro.url.pathname, siteUrl);
+
+// LOGIK: Absolute URLs für Social Media Bilder erzwingen
+// Wenn kein Bild übergeben wurde, nutze ein Standard-Fallback.
+// Wenn das Bild relativ ist (z.B. /assets/...), hänge die Domain davor.
+const socialImage = image 
+    ? (image.startsWith('http') ? image : new URL(image, siteUrl).toString())
+    : new URL('/assets/share-image.jpg', siteUrl).toString(); // Fallback Bild (muss existieren!)
+
 ---
 
 <!DOCTYPE html> 
@@ -33,15 +41,26 @@ const canonicalURL = new URL(Astro.url.pathname, siteUrl);
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
 
+    {/* --- SEO & OPEN GRAPH UPDATE --- */}
     <title>{fullTitle}</title>   
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalURL} />
 
+    {/* Standard Open Graph (Facebook, LinkedIn, WhatsApp) */}
     <meta property="og:type" content="website" />
-    <meta property="og:url" content={Astro.url} />
+    <meta property="og:url" content={canonicalURL} />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content={image} />
+    <meta property="og:image" content={socialImage} />
+    <meta property="og:site_name" content="Die Brücke Graz" />
+    <meta property="og:locale" content="de_AT" />
+
+    {/* Twitter Card (X) - Wichtig für große Bilder */}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={canonicalURL} />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImage} />
     
     {/* --- PERFORMANCE OPTIMIERUNGEN --- */}
     <link rel="preconnect" href="https://api.diebruecke.social" crossorigin>
@@ -63,8 +82,6 @@ const canonicalURL = new URL(Astro.url.pathname, siteUrl);
     <noscript>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     </noscript>
-
-    {/* HINWEIS: Google Fonts Preconnects entfernt, da du @fontsource nutzt (lokal ist schneller!) */}
 
     <script is:inline>
       const themeKey = 'theme';
@@ -163,7 +180,8 @@ const canonicalURL = new URL(Astro.url.pathname, siteUrl);
         <Header />
       </div>
 
-      <main id="main-content" class="flex-grow dark:text-slate-200">
+      {/* WICHTIG: id="main-content" und tabindex="-1" für Fokus-Management */}
+      <main id="main-content" tabindex="-1" class="outline-none flex-grow dark:text-slate-200">
         <slot />
       </main>
 
@@ -172,5 +190,5 @@ const canonicalURL = new URL(Astro.url.pathname, siteUrl);
     </div>
 
     <CommandPalette />
-  </body>     
+  </body>
 </html>
