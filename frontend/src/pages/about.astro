@@ -68,7 +68,7 @@ const seoImage = "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q
                     </div>
                     
                     <div class="max-w-7xl">
-                        {/* HERO: Final State (abgenommen) */}
+                        {/* HERO: Final State */}
                         <h1 class="font-display font-black text-slate-900 dark:text-white tracking-tighter leading-none mb-12 w-full max-w-full">
                             <span class="block md:hidden drop-shadow-sm w-full">
                                 <span class="block text-[11vw] font-black leading-[0.85] tracking-tighter break-words">
@@ -114,11 +114,7 @@ const seoImage = "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q
                     </div>
                 </div>
 
-                {/* WATERMARK FIX: 
-                   1. text-[18rem] -> text-[10rem] (passt nun vertikal in den Container)
-                   2. right-[-5%] -> right-0 (sauberer am Rand)
-                   3. opacity leicht erhöht, da es kleiner ist (0.02 -> 0.03/0.06)
-                */}
+                {/* WATERMARK */}
                 <div class="absolute right-0 top-1/2 -translate-y-1/2 hidden 2xl:block opacity-[0.03] dark:opacity-[0.06] pointer-events-none select-none">
                     <span class="text-[10rem] font-black uppercase origin-center rotate-90 inline-block whitespace-nowrap tracking-widest text-slate-900 dark:text-white">VEREIN</span>
                 </div>
@@ -257,32 +253,21 @@ const seoImage = "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q
 
                 <div class="grid lg:grid-cols-12 gap-12 lg:gap-20 items-end mb-24">
                     <div class="lg:col-span-8">
-                        
-                        {/* --- MANIFEST FIX MOBILE --- 
-                            1. text-[11vw] für "kein Standard.", damit es nicht rechts abgeschnitten wird.
-                            2. pr-12 (Padding Right) massiv erhöht für den Italic-Overhang.
-                        */}
                         <div class="block md:hidden text-left drop-shadow-sm w-full overflow-hidden">
                             <span class="block text-[14vw] font-black text-slate-900 dark:text-white uppercase tracking-tighter leading-[0.8] mb-1">
                                 Haltung
                             </span>
-                            
                             <span class="block text-4xl font-black text-slate-900 dark:text-white leading-none mb-1 pl-1">
                                 ist bei uns
                             </span>
-                            
-                            {/* FIX: text-[11vw] statt 13vw und pr-12 */}
                             <span class="block whitespace-nowrap text-transparent bg-clip-text bg-gradient-to-r from-rose-500 via-fuchsia-600 to-indigo-600 italic font-black text-[11vw] leading-[0.85] pb-2 pr-12">
                                 kein Standard.
                             </span>
                         </div>
-
-                        {/* DESKTOP */}
                         <h2 class="hidden md:block font-display font-black text-slate-900 dark:text-white tracking-tighter leading-[1.1] uppercase text-[clamp(2rem,5.5vw,6rem)]">
                             <span class="block whitespace-nowrap">Haltung ist bei uns</span>
                             <span class="block whitespace-nowrap text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-indigo-600 italic pb-2 pr-6">kein Standard.</span>
                         </h2>
-
                     </div>
                     <div class="lg:col-span-4">
                         <p class="text-slate-500 dark:text-slate-400 font-medium leading-relaxed border-l border-slate-100 dark:border-slate-800 pl-6 text-sm">
@@ -330,9 +315,50 @@ const seoImage = "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q
             </div>
         </section>
 
-        {/* --- TEAM SECTION, JOIN US, FINAL STATEMENT, EXIT SECTION --- */}
-        {/* (Rest bleibt unverändert, ist im obigen Block bereits korrekt enthalten) */}
-        
+{/* --- NEU: BUFFET / UNVERZICHTBARER HILFSBETRIEB --- */}
+        <section class="mt-20 px-6 sm:px-10 pb-32">
+            <div class="max-w-5xl mx-auto">
+                {/* Dezent: Warmes Orange/Amber (Sandfarben), sehr hell, wirkt gemütlich/warm (Kaffee-Vibe) */}
+                <div class="relative bg-gradient-to-br from-amber-80 via-white to-amber-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 rounded-[40px] p-10 md:p-16 border border-orange-100 dark:border-slate-700 shadow-xl overflow-hidden text-center md:text-left group hover:shadow-2xl hover:shadow-orange-500/5 transition-all duration-500">
+                    
+                    {/* Deco Icon */}
+                    <div class="absolute -top-10 -right-10 text-[15rem] text-orange-500/5 rotate-12 pointer-events-none">
+                        <i class="fa-solid fa-mug-hot"></i>
+                    </div>
+
+                    <div class="relative z-10 grid md:grid-cols-[1fr_auto] gap-10 items-center">
+                        <div>
+                            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-100 dark:bg-orange-900/20 text-orange-700 dark:text-orange-400 text-xs font-bold uppercase tracking-widest mb-6">
+                                <i class="fa-solid fa-heart"></i>
+                                Unverzichtbarer Hilfsbetrieb
+                            </div>
+                            
+                            <h2 class="text-3xl md:text-5xl font-display font-black text-slate-900 dark:text-white mb-6 leading-tight">
+                                Das <span class="text-orange-600 dark:text-orange-500">Wohnzimmer.</span>
+                            </h2>
+                            
+                            <p class="text-lg text-slate-600 dark:text-slate-300 mb-8 leading-relaxed font-medium">
+                                Unser Buffet ist mehr als nur Kaffee und Kuchen. Es ist der soziale Kitt unseres Hauses. Hier gilt eine eiserne Regel: <strong class="text-slate-900 dark:text-white">Kein Konsumzwang.</strong> Du darfst hier sitzen, solange du willst, Menschen treffen oder einfach nur da sein – auch wenn du nur ein Glas Leitungswasser trinkst.
+                            </p>
+
+                            <div class="flex flex-wrap gap-4 justify-center md:justify-start">
+                                <a href="/info" class="px-8 py-4 bg-white text-slate-900 border-2 border-orange-100 dark:bg-slate-800 dark:text-white dark:border-slate-700 rounded-full font-bold hover:border-orange-500 dark:hover:border-orange-500 hover:text-orange-600 dark:hover:text-orange-400 transition-all shadow-sm inline-flex items-center gap-2">
+                                    Mehr Infos & Öffnungszeiten <i class="fa-solid fa-arrow-right text-xs"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="hidden md:flex justify-center">
+                            <div class="w-32 h-32 rounded-full bg-white dark:bg-slate-800 text-orange-500 flex items-center justify-center text-5xl shadow-2xl shadow-orange-500/10 rotate-3 group-hover:-rotate-3 transition-transform duration-700 border border-orange-50 dark:border-slate-700">
+                                <i class="fa-solid fa-utensils"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
         {/* --- TEAM SECTION --- */}
         <section class="px-6 sm:px-10 py-32 bg-white dark:bg-slate-950 transition-colors duration-500">
             <div class="max-w-7xl mx-auto text-left">
