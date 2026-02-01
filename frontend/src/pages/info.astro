@@ -43,8 +43,17 @@ const heroImage = (pageSettings && pageSettings.hero_image)
     ? getImg(pageSettings.hero_image, 1600) 
     : fallbackImage;
 
-// SEO
-const seoTitle = pageSettings?.title || "Infozentrum";
+// --- TITEL-LOGIK (SEPARATOR: | ) ---
+// Directus Eingabe: "Infozentrum | Orientierung & Rückhalt"
+const rawTitle = pageSettings?.title || "Infozentrum | Orientierung & Rückhalt";
+
+// Wir splitten am "|" Zeichen
+const parts = rawTitle.split('|').map(p => p.trim());
+const titleMain = parts[0]; // Erster Teil (Weiß)
+const titleSub = parts.length > 1 ? parts.slice(1).join(' ') : null; // Zweiter Teil (Gradient)
+
+// SEO (Pipe durch Bindestrich ersetzen für Meta-Title)
+const seoTitle = rawTitle.replace('|', ' - ');
 const seoDescription = pageSettings?.seo_description || "Das Infozentrum ist deine erste Adresse für alles, was den Alltag betrifft. Rechte, Anträge oder einfach ein offenes Ohr – unbürokratisch und menschlich.";
 const seoImage = heroImage;
 
@@ -152,8 +161,20 @@ const faqs = [
                         Anlaufstelle & Beratung
                     </div>
                     
-                    <h1 class="text-4xl md:text-6xl lg:text-7xl font-display font-black text-white mb-8 leading-[0.95] tracking-tighter uppercase">
-                        {pageSettings?.title ? pageSettings.title : "Orientierung & Rückhalt"}
+                    {/* TITEL ANZEIGE */}
+                    <h1 class="text-4xl md:text-6xl lg:text-7xl font-display font-black text-white mb-8 leading-[0.95] tracking-tighter uppercase break-words hyphens-auto">
+                        {/* Teil 1: Immer weiß */}
+                        {titleMain}
+
+                        {/* Teil 2: Wenn vorhanden, neue Zeile & Gradient */}
+                        {titleSub && (
+                            <>
+                                <br />
+                                <span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-orange-500">
+                                    {titleSub}
+                                </span>
+                            </>
+                        )}
                     </h1>
                     
                     <p class="text-lg md:text-xl text-slate-300 leading-relaxed mb-10 max-w-lg font-medium border-l-4 border-rose-500 pl-6">
