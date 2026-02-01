@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://beta.diebruecke.social/sitemap-index.xml
+# Verweis auf die dynamische Sitemap (wird durch sitemap.xml.ts generiert)
+Sitemap: https://diebruecke.social/sitemap.xml

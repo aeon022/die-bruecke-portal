@@ -8,7 +8,8 @@ import PinyAstro from '@pinegrow/piny-astro';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-
+  // WICHTIG: Die Live-Domain hier definieren
+  site: 'https://diebruecke.social',
 
   output: 'server',
   adapter: node({ mode: 'standalone' }),
@@ -18,7 +19,7 @@ export default defineConfig({
       'images.unsplash.com',
       'images.pexels.com',
       'api.diebruecke.social',     // Live API
-      'cms.beta.diebruecke.social' // WICHTIG: Beta API (hier liegen aktuell die Bilder)
+      'cms.beta.diebruecke.social' // Beta API
     ],
   },
 
@@ -28,6 +29,8 @@ export default defineConfig({
     PinyAstro({
       hotReload: true, 
     }), 
+    // Das Sitemap-Plugin generiert eine Basis-Sitemap für statische Seiten.
+    // Unsere dynamische 'src/pages/sitemap.xml.ts' überschreibt/ergänzt das für Events.
     sitemap()
   ],
 
