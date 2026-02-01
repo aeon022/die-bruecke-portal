@@ -95,3 +95,5 @@ networks:
 
 volumes:
   db_data:
+    external: true
+    name: directus_db_data
