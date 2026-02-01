@@ -1,7 +1,9 @@
 ---
+import { Image } from 'astro:assets';
+
 interface Props {
   url: string;
-  poster?: string; // Optionales Vorschaubild (nehmen wir vom Camp Cover)
+  poster?: string; // Optionales Vorschaubild (z.B. vom Event/Camp)
 }
 
 const { url, poster } = Astro.props;
@@ -11,61 +13,125 @@ const getVideoType = (link: string) => {
   if (!link) return null;
   if (link.includes('youtube.com') || link.includes('youtu.be')) return 'youtube';
   if (link.includes('vimeo.com')) return 'vimeo';
-  if (link.match(/\.(mp4|webm|ogg)$/i) || link.includes('/assets/')) return 'file'; // Erkennt Endungen oder Directus Assets
+  if (link.match(/\.(mp4|webm|ogg)$/i) || link.includes('/assets/')) return 'file'; 
   return null;
 };
 
-// --- Helper: Embed URL generieren ---
-const getEmbedUrl = (link: string, type: string) => {
+// --- Helper: Embed URL & ID generieren ---
+const getVideoData = (link: string, type: string) => {
   if (type === 'youtube') {
     const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
     const match = link.match(regExp);
     const id = (match && match[2].length === 11) ? match[2] : null;
-    return id ? `https://www.youtube-nocookie.com/embed/${id}` : null;
+    return {
+      id,
+      embed: id ? `https://www.youtube-nocookie.com/embed/${id}?autoplay=1` : null, // Autoplay wichtig nach Klick
+      thumbnail: id ? `https://img.youtube.com/vi/${id}/maxresdefault.jpg` : null
+    };
   }
   if (type === 'vimeo') {
     const regExp = /vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/(?:[^\/]*)\/videos\/|album\/(?:\d+)\/video\/|video\/|)(\d+)(?:$|\/|\?)/;
     const match = link.match(regExp);
     const id = match ? match[1] : null;
-    return id ? `https://player.vimeo.com/video/${id}?badge=0&autopause=0&player_id=0&app_id=58479` : null;
+    return {
+      id,
+      embed: id ? `https://player.vimeo.com/video/${id}?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1` : null,
+      thumbnail: null // Vimeo Thumbnails brauchen API, daher Fallback nutzen
+    };
   }
-  return link; // Für lokale Files bleibt der Link gleich
+  return { id: null, embed: link, thumbnail: null };
 };
 
 const type = getVideoType(url);
-const embedSrc = getEmbedUrl(url, type || '');
+const videoData = getVideoData(url, type || '');
+
+// Priorität für Thumbnail: 1. Übergebenes Poster -> 2. YouTube Auto-Thumb -> 3. Fallback Grau
+const finalPoster = poster 
+    ? (poster.startsWith('http') ? poster : `https://api.diebruecke.social/assets/${poster}`)
+    : videoData.thumbnail;
+
+// Eindeutige ID für dieses Widget (falls mehrere auf einer Seite sind)
+const widgetId = 'video-' + Math.random().toString(36).substr(2, 9);
 ---
 
-{embedSrc && (
-  <div class="w-full rounded-[32px] overflow-hidden shadow-2xl bg-black border border-slate-200 dark:border-slate-800 my-12">
+{videoData.embed && (
+  <div class="w-full rounded-[32px] overflow-hidden shadow-2xl bg-black border border-slate-200 dark:border-slate-800 my-12 group/video relative">
     
-    {/* Aspect Ratio Container 16:9 */}
-    <div class="relative aspect-video w-full">
+    <div class="relative aspect-video w-full bg-slate-900">
       
-      {/* YOUTUBE & VIMEO */}
-      {(type === 'youtube' || type === 'vimeo') && (
-        <iframe 
-          src={embedSrc} 
-          title="Video Player" 
-          frameborder="0" 
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-          allowfullscreen
-          class="absolute inset-0 w-full h-full"
-        ></iframe>
-      )}
-
-      {/* LOKALE DATEI (DIRECTUS) */}
-      {type === 'file' && (
+      {/* 1. LOKALES FILE: Sofort laden (hier kein Datenschutz-Problem) */}
+      {type === 'file' ? (
         <video 
           controls 
-          poster={poster} 
+          poster={finalPoster || undefined} 
           class="absolute inset-0 w-full h-full object-cover"
         >
-          <source src={embedSrc} type="video/mp4" />
+          <source src={videoData.embed} type="video/mp4" />
           Ihr Browser unterstützt dieses Video-Format nicht.
         </video>
+      ) : (
+        /* 2. EXTERNE DIENSTE (YouTube/Vimeo): 2-Klick-Lösung */
+        <div id={widgetId} class="absolute inset-0 w-full h-full">
+            
+            {/* PLATZHALTER (Datenschutz-Layer) */}
+            <div class="video-placeholder absolute inset-0 cursor-pointer group-hover/video:scale-[1.01] transition-transform duration-700 z-10">
+                {finalPoster ? (
+                    <img src={finalPoster} alt="Video Vorschau" class="w-full h-full object-cover opacity-60 group-hover/video:opacity-40 transition-opacity" />
+                ) : (
+                    <div class="w-full h-full bg-slate-800 flex items-center justify-center text-slate-500">
+                        <i class="fa-solid fa-film text-6xl opacity-20"></i>
+                    </div>
+                )}
+                
+                {/* PLAY BUTTON & TEXT */}
+                <div class="absolute inset-0 flex flex-col items-center justify-center text-center p-6">
+                    <div class="w-20 h-20 bg-rose-600 rounded-full flex items-center justify-center text-white text-3xl shadow-xl mb-4 group-hover/video:scale-110 transition-transform duration-300">
+                        <i class="fa-solid fa-play ml-1"></i>
+                    </div>
+                    <p class="text-white font-bold text-lg drop-shadow-md">
+                        Video laden
+                    </p>
+                    <p class="text-xs text-slate-300 max-w-xs mt-2 drop-shadow-md bg-black/50 px-3 py-1 rounded-full backdrop-blur-sm">
+                        Mit dem Klick akzeptierst du die Datenschutzerklärung von {type === 'youtube' ? 'Google/YouTube' : 'Vimeo'}.
+                    </p>
+                </div>
+            </div>
+
+            {/* IFRAME CONTAINER (Wird per JS gefüllt) */}
+            <template id={`${widgetId}-template`}>
+                <iframe 
+                    src={videoData.embed} 
+                    title="Video Player" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen
+                    class="absolute inset-0 w-full h-full"
+                ></iframe>
+            </template>
+
+        </div>
       )}
 
     </div>
   </div>
 )}
+
+<script define:vars={{ widgetId }}>
+    // Logik für die Aktivierung des Videos
+    const container = document.getElementById(widgetId);
+    if (container) {
+        const placeholder = container.querySelector('.video-placeholder');
+        const template = document.getElementById(`${widgetId}-template`);
+
+        if (placeholder && template) {
+            placeholder.addEventListener('click', () => {
+                // 1. Placeholder ausblenden (oder entfernen)
+                placeholder.style.display = 'none';
+                
+                // 2. Iframe aus Template klonen und einfügen
+                const clone = template.content.cloneNode(true);
+                container.appendChild(clone);
+            });
+        }
+    }
+</script>
