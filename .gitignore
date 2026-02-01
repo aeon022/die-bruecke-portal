@@ -29,9 +29,11 @@ backend/database/
 backend/uploads/
 backend/extensions/
 !backend/extensions/.keep
+.zip
 # Wir behalten backend/docker-compose.yml im Repo für Backups/Referenz
 
 # --- Frontend Specific ---
 frontend/.astro/
 frontend/dist/
 # Wir behalten frontend/docker-compose.yml & Dockerfile für das Server-Deployment!
+**/*.zip
