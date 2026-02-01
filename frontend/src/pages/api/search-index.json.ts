@@ -1,3 +1,4 @@
+// Suche Index API Route; generiert einen Suchindex aus verschiedenen Directus-Kollektionen. Bleibt dynamisch, um aktuelle Daten zu gewährleisten. Im Cache für 60 Minuten.
 import { directus } from '../../lib/directus';
 import { readItems } from '@directus/sdk';
 
