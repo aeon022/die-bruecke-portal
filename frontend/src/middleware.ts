@@ -1,74 +1,81 @@
 import { defineMiddleware } from "astro:middleware";
 
-// MAPPING: Alte WordPress-Pfad -> Neue Astro-Route
+// MAPPING: Alte WordPress-Pfad (/cms/...) -> Neue Astro-Route
 const redirects: Record<string, string> = {
-  // Startseite & Basics
+  // --- HAUPTNAVIGATION ---
   "/cms/": "/",
   "/cms": "/",
+  "/cms/startseite": "/",
+  
+  // Über uns & Kontakt
   "/cms/ueber-uns": "/about",
-  "/cms/ueber-uns/": "/about",
-  "/cms/contact": "/contact",
-  "/cms/contact/": "/contact",
-  "/cms/kontakt": "/contact", // Sicherheitshalber
-  "/cms/unterstuetzung": "/join", // "Ehrenamtlich engagieren" -> Join
-  "/cms/unterstuetzung/": "/join",
-
+  "/cms/kontakt": "/contact",
+  "/cms/anfahrt": "/contact",
+  "/cms/impressum": "/impressum",
+  "/cms/datenschutz": "/datenschutz",
+  
   // Infozentrum
   "/cms/infozentrum": "/info",
-  "/cms/infozentrum/": "/info",
+  "/cms/beratung": "/info",
 
-  // Events
-  "/cms/event-kalender": "/events",
-  "/cms/event-kalender/": "/events",
-  "/cms/event-directory": "/events", // Scheint die Listenansicht zu sein
-  "/cms/programm": "/events", // Oft synonym verwendet
-
-  // Soziale Dienste (Mapping basierend auf Analyse)
-  "/cms/familienentlastung": "/services/fed",
+  // Soziale Dienste (Mapping auf neue Struktur)
   "/cms/freizeitassistenz": "/services/fass",
+  "/cms/fass": "/services/fass",
+  "/cms/familienentlastung": "/services/fed",
+  "/cms/fed": "/services/fed",
   "/cms/wohnassistenz": "/services/wass",
+  "/cms/wass": "/services/wass",
+  "/cms/reisen": "/camps",
+  "/cms/urlaubsaktionen": "/camps",
+
+  // Events & Kultur
+  "/cms/event-kalender": "/events",
+  "/cms/veranstaltungen": "/events",
+  "/cms/programm": "/events",
+  "/cms/kultur": "/events",
   
-  // Alte Projekt-Seiten (Falls vorhanden)
-  "/cms/projekte": "/projects",
+  // Shop (falls alte Links existieren)
+  "/cms/shop": "/shop",
+  "/cms/produkte": "/shop",
+  
+  // Mitmachen
+  "/cms/ehrenamt": "/join",
+  "/cms/zivildienst": "/join",
+  "/cms/jobs": "/join",
+  "/cms/spenden": "/supporters",
 };
 
 export const onRequest = defineMiddleware(async (context, next) => {
   const url = new URL(context.request.url);
-  const pathname = url.pathname;
+  let pathname = url.pathname;
 
-  // 1. EXAKTE TREFFER (Schnellster Weg)
-  // Entfernt trailing slashes für den Vergleich, um Duplikate zu vermeiden
-  const normalizedPath = pathname.endsWith('/') && pathname !== '/' 
-    ? pathname.slice(0, -1) 
-    : pathname;
-
-  if (redirects[normalizedPath] || redirects[pathname]) {
-    const target = redirects[normalizedPath] || redirects[pathname];
-    return context.redirect(target, 301);
+  // 1. Normalisierung: Trailing Slash entfernen für exakten Vergleich
+  if (pathname.length > 1 && pathname.endsWith("/")) {
+    pathname = pathname.slice(0, -1);
   }
 
-  // 2. INTELLIGENTE PATTERN MATCHING (Falls wir was vergessen haben)
+  // 2. EXAKTER MATCH (Schnell)
+  if (redirects[pathname]) {
+    return context.redirect(redirects[pathname], 301);
+  }
+
+  // 3. INTELLIGENTE MUSTER (Catch-All für Unterseiten)
   
-  // Fall: /cms/event-details/123-konzert -> /events (Besser als 404)
-  if (pathname.includes("event-details") || pathname.includes("veranstaltung")) {
+  // Alte Event-Details (/cms/event-kalender/details/xyz...) -> /events
+  // (Wir können die ID meist nicht mappen, daher zur Übersicht)
+  if (pathname.includes("/event-kalender/") || pathname.includes("/veranstaltung/")) {
     return context.redirect("/events", 301);
   }
 
-  // Fall: /cms/shop/produkt-xy -> /shop
-  if (pathname.includes("/shop") || pathname.includes("/produkt")) {
+  // Alte Shop-Produkte -> /shop
+  if (pathname.includes("/shop/") || pathname.includes("/produkt/")) {
     return context.redirect("/shop", 301);
   }
 
-  // 3. CATCH-ALL FÜR /cms/*
-  // Wenn jemand eine alte URL aufruft, die wir nicht kennen, leiten wir ihn
-  // NICHT auf 404, sondern versuchen, das /cms wegzuschneiden oder zur Startseite zu führen.
+  // 4. NOTFALL-NETZ: Alles was noch mit /cms beginnt und nicht gefangen wurde
+  // Leitet zur Startseite, statt 404 zu werfen. (Geschmacksache, aber sicher)
   if (pathname.startsWith("/cms")) {
-    // Option A: Hart auf Startseite (Sicherste Variante)
     return context.redirect("/", 301);
-    
-    // Option B (Experimentell): Versuchen, den Pfad ohne /cms zu nutzen
-    // const newPath = pathname.replace("/cms", "");
-    // return context.redirect(newPath, 301); 
   }
 
   return next();
