@@ -244,7 +244,7 @@ const seoImage = "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q
         </section>
 
         {/* --- DAS MANIFEST --- */}
-        <section class="px-6 sm:px-10 py-24 bg-white dark:bg-slate-950 transition-colors duration-500">
+        <section class="px-4 sm:px-10 py-24 bg-white dark:bg-slate-950 transition-colors duration-500">
             <div class="max-w-6xl mx-auto">
                 <div class="flex items-center gap-6 mb-16">
                     <div class="h-[1px] w-12 bg-rose-500"></div>
@@ -252,7 +252,7 @@ const seoImage = "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q
                 </div>
 
                 <div class="grid lg:grid-cols-12 gap-12 lg:gap-20 items-end mb-24">
-                    <div class="lg:col-span-8">
+                    <div class="lg:col-span-8 min-w-0">
                         <div class="block md:hidden text-left drop-shadow-sm w-full overflow-hidden">
                             <span class="block text-[14vw] font-black text-slate-900 dark:text-white uppercase tracking-tighter leading-[0.8] mb-1">
                                 Haltung
@@ -260,7 +260,8 @@ const seoImage = "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q
                             <span class="block text-4xl font-black text-slate-900 dark:text-white leading-none mb-1 pl-1">
                                 ist bei uns
                             </span>
-                            <span class="block whitespace-nowrap text-transparent bg-clip-text bg-gradient-to-r from-rose-500 via-fuchsia-600 to-indigo-600 italic font-black text-[11vw] leading-[0.85] pb-2 pr-12">
+                            {/* FIX: pr-12 auf pr-2 reduziert für Mobile, damit es nicht den Rahmen sprengt */}
+                            <span class="block whitespace-nowrap text-transparent bg-clip-text bg-gradient-to-r from-rose-500 via-fuchsia-600 to-indigo-600 italic font-black text-[11vw] leading-[0.85] pb-2 pr-2 sm:pr-12">
                                 kein Standard.
                             </span>
                         </div>
@@ -269,9 +270,11 @@ const seoImage = "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q
                             <span class="block whitespace-nowrap text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-indigo-600 italic pb-2 pr-6">kein Standard.</span>
                         </h2>
                     </div>
-                    <div class="lg:col-span-4">
-                        <p class="text-slate-500 dark:text-slate-400 font-medium leading-relaxed border-l border-slate-100 dark:border-slate-800 pl-6 text-sm">
-                            Seit 1983 brechen wir starre Strukturen auf, um Platz für echte Lebensentwürfe zu machen. Ohne Wenn und Aber.
+                    {/* FIX: min-w-0 verhindert Grid-Blowout auf kleinen Screens */}
+                    <div class="lg:col-span-4 min-w-0">
+                        {/* FIX: pl-4 statt pl-6 für Mobile, break-words für Sicherheit */}
+                        <p class="text-slate-500 dark:text-slate-400 font-medium leading-relaxed border-l border-slate-100 dark:border-slate-800 pl-4 md:pl-6 text-sm break-words hyphens-auto">
+                            Wir haben Barrieren in den Köpfen eingerissen, lange bevor Inklusion zum Modewort wurde. Wir sind stolz auf unsere Geschichte, aber bleiben hungrig auf Veränderung.
                         </p>
                     </div>
                 </div>
@@ -279,35 +282,35 @@ const seoImage = "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q
                 <div class="grid md:grid-cols-3 gap-12 lg:gap-16 border-t border-slate-50 dark:border-slate-900 pt-16 mb-20">
                     <div class="space-y-4">
                         <span class="text-rose-500 font-mono text-[10px]">01 —</span>
-                        <h3 class="text-xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tight">Radikale Begegnung</h3>
+                        <h3 class="text-xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tight">Pioniere mit Schmäh</h3>
                         <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
-                            Wir verwalten keine Fälle, wir gestalten Lebensräume. Inklusion passiert bei uns zwanglos zwischen Kultur und Alltag.
+                            Was man heute schick „Inklusion“ nennt, war bei uns von Anfang an Standard: Der Mensch in seiner ganzen bunten Vielfalt steht im Mittelpunkt.
                         </p>
                     </div>
                     <div class="space-y-4">
                         <span class="text-rose-500 font-mono text-[10px]">02 —</span>
-                        <h3 class="text-xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tight">Kultur als Brücke</h3>
+                        <h3 class="text-xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tight">Kunst zum Angreifen</h3>
                         <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
-                            Teilhabe ist ein Grundrecht. Wir nutzen Kunst, um Barrieren in den Köpfen einfach verschwinden lassen.
+                            Künstlerischer Anspruch und soziale Verantwortung sind bei uns wie Gitarre und Verstärker: Unzertrennlich. Wir betreuen nicht nur – wir ermöglichen.
                         </p>
                     </div>
                     <div class="space-y-4">
                         <span class="text-rose-500 font-mono text-[10px]">03 —</span>
-                        <h3 class="text-xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tight">Echter Rückenwind</h3>
+                        <h3 class="text-xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tight">Von Mensch zu Mensch</h3>
                         <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
-                            Wir fördern Autonomie. Wir begleiten dich professionell auf deinem Weg, ohne dich zu bevormunden.
+                            Wir bieten Freiraum ohne Bürokratie. Wir bleiben der Ort, an dem Inklusion kein kompliziertes Konzept ist, sondern ein Zuhause hat.
                         </p>
                     </div>
                 </div>
 
                 <div class="flex justify-start">
                     <a 
-                        href="/Leitbild.pdf" 
+                        href="/Leitbild-2026.pdf" 
                         target="_blank"
-                        class="group inline-flex items-center gap-4 px-8 py-4 bg-slate-50 dark:bg-slate-900 hover:bg-rose-500 transition-all duration-500 rounded-full border border-slate-100 dark:border-slate-800 hover:border-rose-500 shadow-sm"
+                        class="group inline-flex items-center gap-4 px-8 py-4 bg-slate-50 dark:bg-slate-900 hover:bg-rose-500 transition-all duration-500 rounded-full border border-slate-100 dark:border-slate-800 hover:border-rose-500 shadow-sm w-full sm:w-auto justify-center sm:justify-start"
                     >
                         <span class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-900 dark:text-white group-hover:text-white">Das ganze Leitbild lesen</span>
-                        <div class="w-8 h-8 rounded-full bg-white dark:bg-slate-800 flex items-center justify-center group-hover:translate-x-2 transition-transform shadow-sm">
+                        <div class="w-8 h-8 rounded-full bg-white dark:bg-slate-800 flex items-center justify-center group-hover:translate-x-2 transition-transform shadow-sm flex-shrink-0">
                             <i class="fa-solid fa-arrow-down-long text-xs text-rose-500"></i>
                         </div>
                     </a>

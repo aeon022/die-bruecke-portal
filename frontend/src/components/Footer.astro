@@ -8,13 +8,12 @@ const currentYear = new Date().getFullYear();
 let settings;
 let logoUrl = null;
 let projectName = 'Die Brücke';
-let legalName = 'Verein Die Brücke'; // FIX: Variable hier deklarieren
+let legalName = 'Verein Die Brücke'; 
 
 try {
     settings = await directus.request(readSingleton('global_settings'));
     if (settings) {
         projectName = settings.project_name || 'Die Brücke';
-        // FIX: Wert aus Directus zuweisen
         legalName = settings.legal_name || 'Verein Die Brücke'; 
         
         if (settings.logo) {
@@ -55,6 +54,8 @@ const association = [
   { name: 'Über uns', href: '/about' },
   { name: 'Team & Kontakt', href: '/contact' },
   { name: 'Mitmachen', href: '/join' },
+  // NEU: Unterstützer & Partner (Donator Wall)
+  { name: 'Unterstützer', href: '/supporters' },
   { name: 'Raumvermietung', href: '/space' },
 ];
 

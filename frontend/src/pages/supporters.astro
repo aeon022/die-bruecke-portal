@@ -1,42 +1,48 @@
 ---
 import MainLayout from '../layouts/layout.astro';
+import { directus } from '../lib/directus';
+import { readItems } from '@directus/sdk';
+
+// --- DATA FETCHING ---
+let supporters = [];
+try {
+    supporters = await directus.request(readItems('sponsors', {
+        // Wir filtern nur nach Status (muss in Directus angelegt sein!)
+        filter: { status: { _eq: 'published' } },
+        // Wir sortieren nur nach der manuellen Sortier-Nummer
+        sort: ['sort'], 
+        limit: -1
+    }));
+} catch (error) {
+    console.error("Fehler beim Laden der Supporter:", error);
+}
+
+const ASSET_URL = "https://api.diebruecke.social/assets";
 
 // --- CONFIGURATION ---
-// TIER 1: "Die Fundamente" (Groß)
-// TIER 2: "Die Pfeiler" (Mittel)
-// TIER 3: "Die Bausteine" (Klein/Liste)
-
-const supporters = [
-  { name: "TechVision GmbH", tier: 1, url: "https://example.com", logo: "" },
-  { name: "Stadt Graz Kultur", tier: 1, url: "#", logo: "" },
-  { name: "Bäckerei Schmidt", tier: 2, url: "#", logo: "" },
-  { name: "Architekturbüro Plan B", tier: 2, url: "#", logo: "" },
-  { name: "Medienhaus Süd", tier: 2, url: "#", logo: "" },
-  { name: "Familie Müller", tier: 3, url: null, logo: "" },
-  { name: "Max Mustermann", tier: 3, url: null, logo: "" },
-  { name: "Lisa & Tom", tier: 3, url: null, logo: "" },
-  { name: "Anonym", tier: 3, url: null, logo: "" },
-  { name: "Dr. A. Bauer", tier: 3, url: null, logo: "" },
-  { name: "Verein der Freunde", tier: 3, url: null, logo: "" },
-];
-
 const getTierStyles = (tier) => {
   switch(tier) {
-    case 1: 
+    // TIER 1: "Die Fundamente" & Fördergeber (Groß)
+    case 'base':
+    case 'funding_body': 
       return "col-span-2 md:col-span-3 text-3xl md:text-5xl font-display font-bold bg-indigo-600 text-white shadow-xl hover:scale-[1.02] hover:shadow-indigo-500/50";
-    case 2: 
+    
+    // TIER 2: "Die Pfeiler" & Partner (Mittel)
+    case 'pillar':
+    case 'partner':
       return "col-span-1 md:col-span-2 text-xl md:text-2xl font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-white border-2 border-slate-100 dark:border-slate-700 hover:border-rose-300 dark:hover:border-rose-700 hover:-rotate-1";
-    case 3: 
-      return "col-span-1 text-sm md:text-base font-medium bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800 hover:bg-white dark:hover:bg-slate-800";
+    
+    // TIER 3: "Die Bausteine" (Klein/Liste)
+    case 'brick':
     default:
-      return "col-span-1";
+      return "col-span-1 text-sm md:text-base font-medium bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800 hover:bg-white dark:hover:bg-slate-800";
   }
 };
 ---
 
 <MainLayout title="Unsere Unterstützer | Die Brücke">
   
-  {/* --- HERO SECTION (Studio Canvas Style) --- */}
+  {/* --- HERO SECTION --- */}
   <section class="px-4 sm:px-6 pt-6 pb-12">
     <div class="relative bg-slate-900 rounded-[48px] overflow-hidden min-h-[50vh] flex items-center justify-center text-center px-6 py-20">
         
@@ -79,27 +85,38 @@ const getTierStyles = (tier) => {
     </div>
   </section>
 
-  {/* --- THE WALL (Shuffle Grid) --- */}
+  {/* --- THE WALL --- */}
   <section class="px-4 sm:px-6 pb-32 bg-white dark:bg-slate-950">
     <div class="max-w-7xl mx-auto">
       
       {/* Grid Wrapper */}
       <div id="wall-grid" class="grid grid-cols-2 md:grid-cols-6 gap-4 auto-rows-[minmax(120px,auto)]">
-        {supporters.map((s) => (
+        {supporters.length > 0 ? supporters.map((s) => (
           <a 
             href={s.url || null} 
+            target={s.url ? "_blank" : "_self"}
+            rel={s.url ? "noopener noreferrer" : ""}
             class={`
               ${getTierStyles(s.tier)} 
-              relative rounded-3xl flex items-center justify-center p-6 text-center transition-all duration-500 group overflow-hidden
+              relative rounded-3xl flex items-center justify-center p-6 text-center transition-all duration-500 group overflow-hidden flex-col gap-4
               ${!s.url ? 'cursor-default' : 'cursor-pointer'}
             `}
           >
             {/* Background Gradient für Tier 1 */}
-            {s.tier === 1 && (
+            {(s.tier === 'base' || s.tier === 'funding_body') && (
                <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.2),transparent)] opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
             )}
             
-            <span class="relative z-10 break-words w-full">{s.name}</span>
+            {/* Logo oder Text */}
+            {s.logo ? (
+                <img 
+                    src={`${ASSET_URL}/${s.logo}?key=system-medium-contain`} 
+                    alt={s.name}
+                    class="max-w-[80%] max-h-[60px] object-contain grayscale group-hover:grayscale-0 transition-all duration-500"
+                />
+            ) : (
+                <span class="relative z-10 break-words w-full">{s.name}</span>
+            )}
 
             {/* Icon für Links */}
             {s.url && (
@@ -108,7 +125,13 @@ const getTierStyles = (tier) => {
                 </div>
             )}
           </a>
-        ))}
+        )) : (
+            <div class="col-span-full py-12 text-center text-slate-400 bg-slate-50 dark:bg-slate-900 rounded-3xl border border-dashed border-slate-300 dark:border-slate-800">
+                <i class="fa-solid fa-heart-crack text-3xl mb-4 text-slate-300 block"></i>
+                <p>Noch keine Unterstützer geladen.</p>
+                <p class="text-xs mt-2 opacity-50">(Bitte in Directus "status" auf "published" setzen)</p>
+            </div>
+        )}
       </div>
 
       {/* CTA Footer Block */}
@@ -128,13 +151,16 @@ const getTierStyles = (tier) => {
   </section>
 
   <script>
-    // Client-Side Shuffle für Zufalls-Anordnung bei jedem Reload
+    // Client-Side Shuffle
     document.addEventListener('DOMContentLoaded', () => {
       const grid = document.getElementById('wall-grid');
-      if(grid) {
-        for (let i = grid.children.length; i >= 0; i--) {
-          grid.appendChild(grid.children[Math.random() * i | 0]);
+      if(grid && grid.children.length > 1) { // Nur shuffeln wenn > 1 Element
+        const items = Array.from(grid.children);
+        for (let i = items.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [items[i], items[j]] = [items[j], items[i]];
         }
+        items.forEach(item => grid.appendChild(item));
       }
     });
   </script>
