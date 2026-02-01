@@ -1,10 +1,14 @@
 ---
 // WICHTIG: SSR aktivieren (Server-Side Rendering) für dynamische Routen
 export const prerender = false;
+
 import MainLayout from '../../layouts/layout.astro';
 import { directus } from '../../lib/directus';
 import { readItems } from '@directus/sdk';
 import { Image } from 'astro:assets';
+
+// NEU: Importiere den sicheren Video Player
+import VideoPlayer from '../../components/common/VideoPlayer.astro';
 
 // Parameter holen
 const { slug } = Astro.params;
@@ -120,21 +124,16 @@ const videoThumbnail = videoId ? `https://img.youtube.com/vi/${videoId}/hqdefaul
                     <div set:html={project.content} />
                 </div>
 
-                {/* 2. PROJECT VIDEO */}
+                {/* 2. PROJECT VIDEO (UPDATE: DSGVO KONFORM) */}
                 {project.video && (
                     <div class="mt-16">
                          <h3 class="text-2xl font-display font-bold text-slate-900 mb-6">Einblick ins Projekt</h3>
-                        <div class="aspect-video rounded-[32px] overflow-hidden shadow-xl border border-slate-100 bg-slate-900">
-                            <iframe 
-                                width="100%" 
-                                height="100%" 
-                                src={`https://www.youtube-nocookie.com/embed/${project.video}`} 
-                                title="YouTube video player" 
-                                frameborder="0" 
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                                allowfullscreen
-                            ></iframe>
-                        </div>
+                         
+                         {/* Wir bauen aus der ID eine URL, damit der Player sie versteht */}
+                         <VideoPlayer 
+                            url={`https://youtube.com/watch?v=${project.video}`} 
+                            poster={project.image ? `${ASSET_URL}/${project.image}` : undefined}
+                         />
                     </div>
                 )}
 
