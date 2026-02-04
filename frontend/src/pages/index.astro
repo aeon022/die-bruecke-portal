@@ -16,12 +16,12 @@ import CTA from '../components/home/CTA.astro';
 
 const ASSET_URL = 'https://api.diebruecke.social/assets'; 
 
-// Hilfsfunktion für Hero-Bilder (hier brauchen wir die ganze URL)
+// Hilfsfunktion für Hero-Bilder
 const getOptimizedImg = (id, w = 800) => {
     if (!id) return null;
     if (typeof id === 'object') id = id.id;
-    if (id.startsWith('http')) return `${id}?auto=format&fit=crop&w=${w}&q=60`; // Hier q=60
-    return `${ASSET_URL}/${id}?width=${w}&format=webp&quality=60`; // Und hier quality=60
+    if (id.startsWith('http')) return `${id}?auto=format&fit=crop&w=${w}&q=60`;
+    return `${ASSET_URL}/${id}?width=${w}&format=webp&quality=60`;
 };
 
 // 1. Daten laden
@@ -38,7 +38,7 @@ const [settings, allEvents, dbServices, dbPartners] = await Promise.all([
   }))
 ]);
 
-// 2. Event Logik (bleibt gleich)
+// 2. Event Logik
 const today = new Date();
 today.setHours(0,0,0,0);
 const highlightCandidates = allEvents.filter(e => {
@@ -56,13 +56,16 @@ const upcomingEvents = allEvents
   .filter(e => new Date(e.date_start || e.start_date || e.date) >= today)
   .slice(0, 3);
 
-// 3. Daten für Hero vorbereiten
-// Wir fügen hier HTML-Klassen für den Gradient hinzu
-const heroHeadline = settings?.hero_headline || `Kultur verbindet.<br> <span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-orange-500">Inklusion stärkt.</span>`;
+// 3. Daten für Hero vorbereiten (UPDATED)
+// Mapping auf die neuen Directus Keys
+const heroRow1 = settings?.hero_headline || "Kultur verbindet.";
+const heroRow2 = settings?.hero_headline_row2; // Neu: Zeile 2
+const heroGradient = settings?.hero_gradient;  // Neu: Gradient Klassen
+
 const heroSubline = settings?.hero_subline || "Die Brücke ist dein Rückenwind für ein selbstbestimmtes Leben. Wir verbinden Menschen durch Kultur, Freizeit und Unterstützung im Alltag – barrierefrei, bunt und mitten in Graz.";
 const heroImg = getOptimizedImg(settings?.hero_image || 'https://images.unsplash.com/photo-1511632765486-a01980e01a18', 1600);
 
-// --- FIX: PARTNER NUR ALS ID ÜBERGEBEN ---
+// Partner
 const optimizedPartners = dbPartners.map(p => ({
     ...p,
     logo: typeof p.logo === 'object' ? p.logo.id : p.logo
@@ -86,7 +89,15 @@ const seoDescription = heroSubline.replace(/<[^>]*>/g, '');
     </script>
 
     <article class="home-content w-full">
-        <Hero headline={heroHeadline} subline={heroSubline} image={heroImg} />
+        {/* Hier werden die neuen Props übergeben */}
+        <Hero 
+            headlineRow1={heroRow1} 
+            headlineRow2={heroRow2}
+            gradientClasses={heroGradient}
+            subline={heroSubline} 
+            image={heroImg} 
+        />
+        
         <Events highlightEvent={highlightEvent} upcomingEvents={upcomingEvents} />
         <Services services={dbServices} />
         <Foundation />
