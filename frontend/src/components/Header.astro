@@ -5,8 +5,6 @@ import { readSingleton } from '@directus/sdk';
 let projectName = 'Die Brücke';
 let logoUrl = null;
 let settings;
-
-// Standard-Werte (Fallback)
 let contactAddress = 'Grabenstraße 39a, 8010 Graz';
 
 try {
@@ -14,18 +12,14 @@ try {
   if (settings) {
     projectName = settings.project_name || 'Die Brücke';
     if (settings.logo) {
-      // PERF FIX: Optimierte Größe via Directus anfordern
       logoUrl = `https://api.diebruecke.social/assets/${settings.logo}?width=200&format=webp`;
     }
-    if (settings.address) {
-      contactAddress = settings.address;
-    }
+    if (settings.address) contactAddress = settings.address;
   }
 } catch (error) {
   console.error("Header: Fehler beim Laden der Settings", error);
 }
 
-// SOCIAL MEDIA LOGIK (Dynamisch aus Directus)
 const rawSocials = [
     { key: 'social_facebook', icon: 'fa-facebook-f', label: 'Facebook', fallback: 'https://www.facebook.com/brueckegraz' },
     { key: 'social_instagram', icon: 'fa-instagram', label: 'Instagram', fallback: 'https://www.instagram.com/die.bruecke.graz' },
@@ -39,8 +33,6 @@ const activeSocials = rawSocials.map(s => {
     return url ? { ...s, href: url } : null;
 }).filter(Boolean);
 
-
-// MENÜ-KONZEPT (12 Punkte)
 const menuItems = [
   { number: '01', title: 'Kalender', href: '/events', desc: 'Termine & Kultur.' },
   { number: '02', title: 'Angebote', href: '/services', desc: 'Begleitung & Alltag.' },
@@ -57,22 +49,20 @@ const menuItems = [
 ];
 ---
 
-<div id="navBackdrop" class="fixed inset-0 z-[80] bg-slate-950/40 backdrop-blur-[2px] nav-backdrop" data-state="closed" aria-hidden="true"></div>
+<div id="navBackdrop" class="hidden md:block fixed inset-0 z-[80] bg-slate-950/40 backdrop-blur-[2px] nav-backdrop" data-state="closed" aria-hidden="true"></div>
 
 <div id="header-shell" class="sticky top-0 z-[90] header-shell">
   
-  <header id="main-header" class="relative flex items-center justify-between px-4 sm:px-6 pt-6 pb-4 md:px-10 md:pt-8 md:pb-6 transition-[padding,background-color,box-shadow,transform,border-radius,border] duration-300 ease-in-out">
+  <header id="main-header" class="relative z-[91] flex items-center justify-between px-4 sm:px-6 pt-6 pb-4 md:px-10 md:pt-8 md:pb-6 transition-[padding,background-color,box-shadow,transform,border-radius,border] duration-300 ease-in-out bg-transparent">
     
     <a href="/" class="flex items-center gap-3 group" aria-label="Zur Startseite">
       <div id="logo-container" class={`rounded-xl bg-transparent flex items-center justify-center transition-all duration-300 overflow-hidden text-slate-900 dark:text-white ${logoUrl ? 'w-auto h-14 md:h-16 px-2 md:px-5' : 'w-12 h-12'}`}>
         {logoUrl ? (
-             /* REDUNDANZ FIX: alt leer / PERF FIX: width+height */
              <img src={logoUrl} alt="" width="160" height="60" class="h-full w-auto object-contain p-1 logo-img" />
         ) : (
              <div class="w-3 h-3 rounded-sm bg-rose-500"></div>
         )}
       </div>
-      
       {!logoUrl && (
         <span class="text-xl font-bold font-display tracking-tight text-slate-900 dark:text-white brand-text">
           {projectName}
@@ -82,12 +72,11 @@ const menuItems = [
     </a>
 
     <div class="flex items-center gap-2 sm:gap-3">
-      
-      <button id="btnAccessibility" data-tooltip="Barrierefreiheit anzeigen mit Shift + / oder Strg + K" class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/5 flex items-center justify-center text-rose-600 dark:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/30 transition cursor-pointer shadow-sm focus:outline-none focus:ring-2 focus:ring-rose-500" type="button" aria-label="Barrierefreiheit">
+      <button id="btnAccessibility" class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/5 flex items-center justify-center text-rose-600 dark:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/30 transition cursor-pointer shadow-sm focus:outline-none focus:ring-2 focus:ring-rose-500" type="button" aria-label="Barrierefreiheit">
          <i class="fa-solid fa-wheelchair text-base md:text-lg" aria-hidden="true"></i>
       </button>
 
-      <button id="themeToggle" data-tooltip="Design Hell/Dunkel" class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/5 flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-700 transition cursor-pointer shadow-sm relative focus:outline-none overflow-hidden group" type="button" aria-label="Design wechseln">
+      <button id="themeToggle" class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/5 flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-700 transition cursor-pointer shadow-sm relative focus:outline-none overflow-hidden group" type="button" aria-label="Design wechseln">
         <span class="theme-moon absolute inset-0 flex items-center justify-center transition-all duration-500 rotate-0 scale-100 opacity-100 dark:rotate-90 dark:scale-0 dark:opacity-0 text-slate-600">
           <i class="fa-solid fa-moon text-base md:text-lg" aria-hidden="true"></i>
         </span>
@@ -96,7 +85,7 @@ const menuItems = [
         </span>
       </button>
 
-      <button id="btnOpenNav" class="h-10 md:h-12 pl-3 pr-4 md:pr-5 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/5 flex items-center justify-center gap-2 text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-700 transition cursor-pointer shadow-sm relative focus:outline-none group" aria-label="Menü öffnen" aria-expanded="false" aria-controls="navOverlay">
+      <button id="btnOpenNav" class="h-10 md:h-12 pl-3 pr-4 md:pr-5 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/5 flex items-center justify-center gap-2 text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-700 transition cursor-pointer shadow-sm relative focus:outline-none group z-[92]" aria-label="Menü öffnen" aria-expanded="false" aria-controls="navOverlay">
         <div class="relative w-6 h-6 flex items-center justify-center">
             <span class="icon-bars pointer-events-none transition-opacity duration-300 absolute inset-0 flex items-center justify-center">
               <i class="fa-solid fa-bars text-lg md:text-xl group-hover:scale-110 transition-transform" aria-hidden="true"></i>
@@ -107,13 +96,48 @@ const menuItems = [
         </div>
         <span class="font-bold text-xs md:text-sm tracking-wide">Menü</span>
       </button>
-
     </div>
   </header>
 
-  <div id="navOverlay" class="-mt-px w-full bg-slate-700/95 dark:bg-slate-800/95 text-white border-x border-b border-white/10 dark:border-white/5 rounded-[40px] overflow-hidden nav-panel nav-transition shadow-2xl backdrop-blur-xl" data-state="closed" aria-hidden="true" role="region" aria-label="Hauptnavigation">
+  <div id="navOverlay" 
+       class="
+         /* --- MOBILE: Z-INDEX 100 (ÜBER HEADER) --- */
+         fixed inset-0 z-[100] h-[100dvh] w-screen
+         pt-0 pb-10 px-0
+         overflow-y-auto overflow-x-hidden
+         bg-slate-50 dark:bg-slate-900 
+         text-slate-900 dark:text-white
+         nav-panel nav-transition
+
+         /* --- DESKTOP: RELATIVE & SOLID --- */
+         md:relative md:inset-auto md:w-full md:h-auto md:z-auto
+         md:-mt-px md:rounded-[40px] md:overflow-hidden 
+         md:pt-0 md:pb-0 md:px-0
+         md:bg-slate-700 md:dark:bg-slate-800 
+         md:text-white md:border-x md:border-b md:border-white/10 md:dark:border-white/5
+         md:shadow-2xl
+       " 
+       data-state="closed" 
+       aria-hidden="true" 
+       role="region" 
+       aria-label="Hauptnavigation">
     
-    <div class="max-w-7xl mx-auto w-full px-6 sm:px-10 py-5 flex items-center justify-between border-b border-white/10">
+    <div class="md:hidden flex items-center justify-between px-6 pt-6 pb-4 bg-slate-50 dark:bg-slate-900 sticky top-0 z-[101]">
+        <div class="flex items-center gap-3">
+            {logoUrl ? (
+                <img src={logoUrl} alt={projectName} width="140" height="50" class="h-10 w-auto object-contain logo-img" />
+            ) : (
+                <span class="text-xl font-bold font-display tracking-tight text-slate-900 dark:text-white">
+                    {projectName}
+                </span>
+            )}
+        </div>
+        <button id="btnCloseNavMobile" class="w-10 h-10 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/10 flex items-center justify-center text-slate-900 dark:text-white shadow-sm active:scale-95 transition-transform" aria-label="Menü schließen">
+             <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+    </div>
+
+    <div class="hidden md:flex max-w-7xl mx-auto w-full px-6 sm:px-10 py-5 items-center justify-between border-b border-white/10">
       <div class="flex items-center gap-2">
         <span class="inline-block w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
         <span class="text-[11px] font-bold uppercase tracking-widest text-white/80">Navigation</span>
@@ -123,23 +147,29 @@ const menuItems = [
       </div>
     </div>
 
-    <div class="max-w-7xl mx-auto w-full px-6 sm:px-10 py-6">
-      <nav class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 w-full">
+    <div class="max-w-7xl mx-auto w-full px-4 sm:px-10 md:py-6">
+      <nav class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 w-full gap-2 md:gap-0">
         {menuItems.map((item) => (
           <a 
             href={item.disabled ? '#' : item.href} 
             class={`
-              group relative p-6 md:p-8 
-              border border-transparent hover:bg-white/5 
-              rounded-2xl md:rounded-none transition duration-300 
-              flex flex-col justify-center min-h-[140px] md:min-h-[160px]
+              group relative p-5 md:p-8 
+              /* Mobile: Helle Karten */
+              bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-white/5
+              /* Desktop: Transparent */
+              md:bg-transparent md:dark:bg-transparent md:rounded-none md:shadow-none md:border-0 md:border-transparent
+              md:hover:bg-white/5 
+
+              /* MENU ITEM TRANSITION CLASS (Für den Stagger Effect) */
+              menu-item-anim
+
+              transition duration-300 
+              flex flex-col justify-center min-h-[100px] md:min-h-[160px]
               
-              /* Border Logic für Tablet (2 Cols) */
+              /* Desktop Border Logic */
               md:border-b md:border-r md:border-white/10
               md:[&:nth-child(2n)]:border-r-0 
               md:[&:nth-child(n+11)]:border-b-0
-
-              /* Border Logic Reset & Override für Desktop (4 Cols) */
               lg:[&:nth-child(2n)]:border-r 
               lg:[&:nth-child(4n)]:border-r-0
               lg:[&:nth-child(n+9)]:border-b-0
@@ -147,48 +177,43 @@ const menuItems = [
               ${item.disabled ? 'opacity-50 cursor-not-allowed hover:bg-transparent' : ''}
             `}
           >
-            <div class="flex justify-between items-start mb-2">
-               {/* KONTRAST BOOST: slate-400 -> slate-500 */}
-               <span class={`font-bold text-xs tracking-widest uppercase ${item.highlight ? 'text-rose-400' : 'text-slate-500 group-hover:text-rose-400 transition-colors'}`}>
+            <div class="flex justify-between items-start mb-1 md:mb-2">
+               <span class={`font-bold text-[10px] md:text-xs tracking-widest uppercase ${item.highlight ? 'text-rose-500 md:text-rose-400' : 'text-slate-400 md:text-slate-500 group-hover:text-rose-500 md:group-hover:text-rose-400 transition-colors'}`}>
                  {item.number}
                </span>
                {item.badge && (
-                 <span class="bg-rose-500/20 text-rose-300 text-[9px] font-bold px-2 py-0.5 rounded-full border border-rose-500/20 uppercase tracking-wider">
+                 <span class="bg-rose-500/10 text-rose-600 dark:text-rose-400 md:bg-rose-500/20 md:text-rose-300 text-[9px] font-bold px-2 py-0.5 rounded-full border border-rose-500/10 md:border-rose-500/20 uppercase tracking-wider">
                    {item.badge}
                  </span>
                )}
             </div>
 
-            <span class="block text-2xl md:text-3xl font-display font-extrabold tracking-tight group-hover:text-rose-400 transition-colors uppercase leading-none mb-2">
+            <span class="block text-xl md:text-3xl font-display font-extrabold tracking-tight text-slate-900 dark:text-white md:text-white group-hover:text-rose-600 md:group-hover:text-rose-400 transition-colors uppercase leading-none mb-1 md:mb-2">
               {item.title}
             </span>
             
-            <span class="block text-slate-300 text-xs md:text-sm group-hover:text-white transition-colors font-medium max-w-[90%] leading-snug">
+            <span class="block text-slate-500 dark:text-slate-400 md:text-slate-300 text-xs md:text-sm md:group-hover:text-white transition-colors font-medium max-w-[90%] leading-snug">
               {item.desc}
             </span>
             
             {!item.disabled && (
-               <i class="fa-solid fa-arrow-right absolute bottom-6 right-6 text-sm text-white/10 group-hover:text-rose-400 group-hover:-rotate-45 transition-all duration-300" aria-hidden="true"></i>
+               <i class="fa-solid fa-arrow-right absolute bottom-5 right-5 md:bottom-6 md:right-6 text-sm text-slate-300 md:text-white/10 group-hover:text-rose-500 md:group-hover:text-rose-400 group-hover:-rotate-45 transition-all duration-300" aria-hidden="true"></i>
             )}
           </a>
         ))}
       </nav>
     </div>
 
-    {/* FOOTER BEREICH IM HEADER OVERLAY (DYNAMISCH) */}
-    <div class="px-6 sm:px-10 py-5 border-t border-white/10 bg-black/10">
-      <div class="max-w-7xl mx-auto w-full flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-slate-300 text-xs font-medium">
-        
-        {/* Adresse aus Directus */}
+    {/* FOOTER */}
+    <div class="px-6 sm:px-10 py-6 md:py-5 mt-4 md:mt-0 border-t border-slate-200 dark:border-white/5 md:border-white/10 bg-slate-50 dark:bg-black/10 md:bg-black/10 pb-32 md:pb-5">
+      <div class="max-w-7xl mx-auto w-full flex flex-col md:flex-row justify-between items-start md:items-center gap-6 md:gap-4 text-slate-500 dark:text-slate-400 md:text-slate-300 text-xs font-medium">
         <span class="flex items-center gap-2">
             <i class="fa-solid fa-location-dot text-rose-500" aria-hidden="true"></i> {contactAddress}
         </span>
-
-        {/* Socials aus Directus */}
-        <div class="flex gap-6">
+        <div class="flex gap-8 md:gap-6">
            {activeSocials.map((social) => (
-              <a href={social.href} target="_blank" rel="noopener noreferrer" aria-label={social.label} class="hover:text-white transition-colors">
-                  <i class={`fa-brands ${social.icon} text-base`} aria-hidden="true"></i>
+              <a href={social.href} target="_blank" rel="noopener noreferrer" aria-label={social.label} class="hover:text-rose-500 md:hover:text-white transition-colors text-slate-400 md:text-slate-300">
+                  <i class={`fa-brands ${social.icon} text-lg md:text-base`} aria-hidden="true"></i>
               </a>
            ))}
         </div>
@@ -198,123 +223,146 @@ const menuItems = [
 </div>
 
 <style is:global>
-  /* LOGO AUTO-INVERT IM DARKMODE */
   html.dark .logo-img { filter: brightness(0) invert(1); }
   .brand-text { transition: color 300ms ease; }
 
-  /* Nav Backdrop & Overlay Animation */
+  /* Nav Backdrop */
   .nav-backdrop { opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 500ms ease, visibility 0s linear 500ms; }
   #navBackdrop[data-state='open'] { opacity: 1; visibility: visible; pointer-events: auto; transition: opacity 500ms ease; }
   
-  .nav-transition { transition: max-height 600ms cubic-bezier(0.16, 1, 0.3, 1), opacity 500ms ease, transform 600ms cubic-bezier(0.16, 1, 0.3, 1); }
-  #navOverlay[data-state='closed'] { max-height: 0; opacity: 0; transform: translateY(-8px); pointer-events: none; }
-  #navOverlay[data-state='open'] { max-height: 90vh; opacity: 1; transform: translateY(0); pointer-events: auto; overflow-y: auto; }
+  .nav-transition { transition: opacity 400ms ease, transform 400ms cubic-bezier(0.16, 1, 0.3, 1), max-height 600ms ease; }
 
+  /* --- MOBILE STATES --- */
+  #navOverlay[data-state='closed'] { opacity: 0; pointer-events: none; transform: translateY(-10px); }
+  #navOverlay[data-state='open'] { opacity: 1; transform: translateY(0); pointer-events: auto; }
+
+  /* --- DESKTOP STATES --- */
+  @media (min-width: 768px) {
+      #navOverlay[data-state='closed'] { transform: translateY(-8px); max-height: 0; opacity: 0; }
+      #navOverlay[data-state='open'] { transform: translateY(0); max-height: 90vh; opacity: 1; overflow-y: auto; }
+  }
+
+  /* --- STICKY HEADER LOGIC --- */
   #header-shell.header-shell { padding: 0; transition: padding 300ms ease; }
-  
   #main-header { border-radius: 40px; border: 1px solid transparent; }
-  html.dark #main-header { border: 1px solid rgba(255, 255, 255, 0.05); }
-
-  /* STICKY "ISLAND" DESIGN */
+  
   #header-shell.is-float { padding: 0.75rem 1rem 0; }
-  @media (min-width: 768px) { #header-shell.is-float { padding-left: 2rem; padding-right: 2rem; } }
+  @media (min-width: 768px) { #header-shell.is-float { padding: 0.75rem 2rem 0; } }
+
+  #header-shell.is-float #main-header { 
+      border-radius: 24px !important; 
+      background-color: rgba(255, 255, 255, 0.85) !important;
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(0, 0, 0, 0.08) !important;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.03) !important;
+  }
+  html.dark #header-shell.is-float #main-header { 
+      background-color: rgba(15, 23, 42, 0.85) !important;
+      border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  }
+
+  /* Desktop Overlay Position */
+  @media (min-width: 768px) { 
+      #header-shell.is-float #navOverlay {
+        margin-top: 0.75rem; border-radius: 24px !important; 
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
+        background-color: rgb(51, 65, 85); 
+      }
+      html.dark #header-shell.is-float #navOverlay { background-color: rgb(30, 41, 59); }
+  }
+
+  /* --- MOBILE FIX: Ghost Header --- */
+  @media (max-width: 767px) {
+    #header-shell.menu-open {
+        background: transparent !important;
+        backdrop-filter: none !important;
+        box-shadow: none !important;
+        pointer-events: none; 
+    }
+    #header-shell.menu-open #main-header {
+        opacity: 0; 
+        pointer-events: none; 
+    }
+    
+    /* STAGGERED ANIMATION (Mobile Only) */
+    /* Geschlossen: Items sind unten und unsichtbar */
+    #navOverlay[data-state='closed'] .menu-item-anim {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    /* Offen: Items gleiten rein */
+    #navOverlay[data-state='open'] .menu-item-anim {
+        opacity: 1;
+        transform: translateY(0);
+        transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    /* Delays für den Kaskaden-Effekt (Loop Ersatz) */
+    #navOverlay[data-state='open'] a:nth-child(1) { transition-delay: 50ms; }
+    #navOverlay[data-state='open'] a:nth-child(2) { transition-delay: 100ms; }
+    #navOverlay[data-state='open'] a:nth-child(3) { transition-delay: 150ms; }
+    #navOverlay[data-state='open'] a:nth-child(4) { transition-delay: 200ms; }
+    #navOverlay[data-state='open'] a:nth-child(5) { transition-delay: 250ms; }
+    #navOverlay[data-state='open'] a:nth-child(6) { transition-delay: 300ms; }
+    #navOverlay[data-state='open'] a:nth-child(7) { transition-delay: 350ms; }
+    #navOverlay[data-state='open'] a:nth-child(8) { transition-delay: 400ms; }
+    #navOverlay[data-state='open'] a:nth-child(9) { transition-delay: 450ms; }
+    #navOverlay[data-state='open'] a:nth-child(10) { transition-delay: 500ms; }
+    #navOverlay[data-state='open'] a:nth-child(11) { transition-delay: 550ms; }
+    #navOverlay[data-state='open'] a:nth-child(12) { transition-delay: 600ms; }
+  }
 
   #main-header.is-shrink { padding-top: 0.75rem !important; padding-bottom: 0.75rem !important; }
   #main-header.is-shrink #logo-container { height: 2.5rem; transition: all 0.3s ease-in-out; }
-
-  /* LIGHT MODE STICKY */
-  #header-shell.is-float #main-header {
-    border-radius: 24px !important; 
-    background-color: rgba(255, 255, 255, 0.85) !important; 
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(0, 0, 0, 0.08) !important;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.03) !important;
-  }
-  #header-shell.is-float .brand-text { color: #0f172a !important; }
-
-  /* DARK MODE STICKY */
-  html.dark #header-shell.is-float #main-header {
-    background-color: rgba(15, 23, 42, 0.85) !important; 
-    border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  }
-  html.dark #header-shell.is-float .brand-text { color: #ffffff !important; }
-
-  /* NAV OVERLAY IM STICKY MODUS */
-  #header-shell.is-float #navOverlay {
-    margin-top: 0.75rem; 
-    border-radius: 24px !important; 
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
-    background-color: rgba(51, 65, 85, 0.98); 
-  }
-  
-  html.dark #header-shell.is-float #navOverlay { background-color: rgba(30, 41, 59, 0.98); }
-
   #btnOpenNav .icon-bars, #btnOpenNav .icon-x { display: inline-flex; transition: transform 400ms ease, opacity 200ms ease; }
-  @media (prefers-reduced-motion: reduce) { .nav-backdrop, .nav-transition { transition: none !important; } }
 </style>
 
 <script>
-  // Diese Funktion kümmert sich um die Logik
   function setupThemeLogic() {
       const themeToggle = document.getElementById('themeToggle');
       const systemMedia = window.matchMedia('(prefers-color-scheme: dark)');
-
-      // 1. INITIAL
       const storedTheme = localStorage.getItem('theme');
-      
       if (storedTheme === 'dark' || (!storedTheme && systemMedia.matches)) {
         document.documentElement.classList.add('dark');
       } else {
         document.documentElement.classList.remove('dark');
       }
-
-      // 2. SYSTEM-LISTENER
       const handleSystemChange = (e) => {
           if (e.matches) {
-              document.documentElement.classList.add('dark');
-              localStorage.setItem('theme', 'dark');
+              document.documentElement.classList.add('dark'); localStorage.setItem('theme', 'dark');
           } else {
-              document.documentElement.classList.remove('dark');
-              localStorage.setItem('theme', 'light');
+              document.documentElement.classList.remove('dark'); localStorage.setItem('theme', 'light');
           }
       };
-
-      if (window._themeListener) {
-          systemMedia.removeEventListener('change', window._themeListener);
-      }
+      if (window._themeListener) systemMedia.removeEventListener('change', window._themeListener);
       window._themeListener = handleSystemChange;
       systemMedia.addEventListener('change', handleSystemChange);
 
-
-      // 3. BUTTON CLICK
       if (themeToggle) {
         const newToggle = themeToggle.cloneNode(true);
         themeToggle.parentNode.replaceChild(newToggle, themeToggle);
-        
         newToggle.addEventListener('click', () => {
             const html = document.documentElement;
             if (html.classList.contains('dark')) {
-                html.classList.remove('dark');
-                localStorage.setItem('theme', 'light');
+                html.classList.remove('dark'); localStorage.setItem('theme', 'light');
             } else {
-                html.classList.add('dark');
-                localStorage.setItem('theme', 'dark');
+                html.classList.add('dark'); localStorage.setItem('theme', 'dark');
             }
         });
       }
   }
 
-  // --- STANDARD INITIALISIERUNG ---
   function init() {
     setupThemeLogic();
-
     const btnOpenNav = document.getElementById('btnOpenNav');
     const navOverlay = document.getElementById('navOverlay');
     const navBackdrop = document.getElementById('navBackdrop');
     const headerShell = document.getElementById('header-shell');
-    const mainHeader = document.getElementById('main-header');
     const btnAccessibility = document.getElementById('btnAccessibility');
+    
+    const btnCloseNavMobile = document.getElementById('btnCloseNavMobile');
 
     if (btnAccessibility) {
         const newBtn = btnAccessibility.cloneNode(true);
@@ -327,18 +375,26 @@ const menuItems = [
     const toggleMenu = () => {
       const isOpen = navOverlay?.getAttribute('data-state') === 'open';
       const newState = isOpen ? 'closed' : 'open';
+      
       navOverlay?.setAttribute('data-state', newState);
       navBackdrop?.setAttribute('data-state', newState);
       btnOpenNav?.setAttribute('aria-expanded', !isOpen);
       
+      if (window.innerWidth < 768) {
+        headerShell?.classList.toggle('menu-open', newState === 'open');
+      }
+
+      if (newState === 'open' && window.innerWidth < 768) {
+          document.body.style.overflow = 'hidden';
+      } else {
+          document.body.style.overflow = '';
+      }
+      
       const bars = document.querySelector('#btnOpenNav .icon-bars');
       const x = document.querySelector('#btnOpenNav .icon-x');
-      
       if (bars && x) {
-          bars.style.opacity = isOpen ? '1' : '0';
-          bars.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
-          x.style.opacity = isOpen ? '0' : '1';
-          x.style.transform = isOpen ? 'rotate(-180deg)' : 'rotate(0deg)';
+          bars.style.opacity = isOpen ? '1' : '0'; bars.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+          x.style.opacity = isOpen ? '0' : '1'; x.style.transform = isOpen ? 'rotate(-180deg)' : 'rotate(0deg)';
       }
     };
 
@@ -346,6 +402,12 @@ const menuItems = [
       const nBtn = btnOpenNav.cloneNode(true);
       btnOpenNav.parentNode.replaceChild(nBtn, btnOpenNav);
       nBtn.addEventListener('click', toggleMenu);
+    }
+    
+    if (btnCloseNavMobile) {
+        const nClose = btnCloseNavMobile.cloneNode(true);
+        btnCloseNavMobile.parentNode.replaceChild(nClose, btnCloseNavMobile);
+        nClose.addEventListener('click', toggleMenu);
     }
 
     if (navBackdrop) {
@@ -358,10 +420,10 @@ const menuItems = [
          if(navOverlay.getAttribute('data-state') === 'open') toggleMenu();
     }));
 
-    // Scroll Logic
     const handleScroll = () => {
         const scrolled = (window.scrollY || 0) > 20;
         headerShell?.classList.toggle('is-float', scrolled);
+        const mainHeader = document.getElementById('main-header');
         mainHeader?.classList.toggle('is-shrink', scrolled);
     };
     
