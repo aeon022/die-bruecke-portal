@@ -15,7 +15,7 @@ const ASSET_URL = "https://api.diebruecke.social/assets";
 const featuredCamp = camps.find((c: any) => c.is_featured) || camps[0];
 
 // Hilfsfunktion für Directus-Optimierung (Serverseitig)
-const getImg = (id, w = 800) => `${ASSET_URL}/${id}?width=${w}&format=webp&quality=80`;
+const getImg = (id: string, w = 800) => `${ASSET_URL}/${id}?width=${w}&format=webp&quality=80`;
 
 const getFlag = (location: string) => {
     if (!location) return '📍';
@@ -82,7 +82,6 @@ const seoImage = featuredCamp?.image ? getImg(featuredCamp.image, 1200) : "https
                             {featuredCamp.title}
                         </h1>
                         
-                        {/* FIX: set:html nutzen, damit Sonderzeichen korrekt dargestellt werden */}
                         <p 
                             class="text-xl md:text-2xl text-slate-200 mb-12 leading-relaxed font-medium border-l-4 border-rose-500 pl-8 max-w-2xl"
                             set:html={cleanDesc(featuredCamp.description) + '...'}
@@ -104,9 +103,12 @@ const seoImage = featuredCamp?.image ? getImg(featuredCamp.image, 1200) : "https
                             <a href={`/camps/${featuredCamp.slug}`} class="bg-rose-600 text-white px-10 py-5 rounded-full font-black uppercase tracking-widest text-xs hover:bg-white hover:text-slate-900 transition-all shadow-xl shadow-rose-900/20 transform hover:-translate-y-1">
                                 Details & Anmeldung
                             </a>
-                            <div class="px-10 py-5 border border-white/20 backdrop-blur-md text-white rounded-full font-black text-xs uppercase tracking-widest">
-                                ab € {featuredCamp.price},-
-                            </div>
+                            {/* FIX: Preis im Hero nur anzeigen, wenn vorhanden */}
+                            {featuredCamp.price != null && (
+                                <div class="px-10 py-5 border border-white/20 backdrop-blur-md text-white rounded-full font-black text-xs uppercase tracking-widest">
+                                    ab € {featuredCamp.price},-
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -143,9 +145,13 @@ const seoImage = featuredCamp?.image ? getImg(featuredCamp.image, 1200) : "https
                             ) : (
                                 <div class="w-full h-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-300"><i class="fa-solid fa-plane-up text-5xl"></i></div>
                             )}
+                            
                             <div class="absolute top-6 left-6 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md px-4 py-2 rounded-2xl text-xs font-black text-slate-900 dark:text-white shadow-xl flex items-center gap-3 z-10">
                                 <span class="text-xl">{getFlag(camp.location)}</span> 
-                                <span>€ {camp.price}</span>
+                                {/* FIX: Preis nur anzeigen, wenn nicht null */}
+                                {camp.price != null && (
+                                    <span>€ {camp.price}</span>
+                                )}
                             </div>
                         </div>
                         
@@ -155,7 +161,6 @@ const seoImage = featuredCamp?.image ? getImg(featuredCamp.image, 1200) : "https
                             </div>
                             
                             <h3 class="text-3xl font-display font-bold text-slate-900 dark:text-white mb-6 leading-tight group-hover:text-rose-600 transition-colors uppercase tracking-tight">
-                                {/* STRETCHED LINK: Macht die gesamte Karte zum Link und ändert den Cursor */}
                                 <a href={`/camps/${camp.slug}`} class="before:absolute before:inset-0 before:z-20">
                                     {camp.title}
                                 </a>
@@ -177,7 +182,6 @@ const seoImage = featuredCamp?.image ? getImg(featuredCamp.image, 1200) : "https
                                     )}
                                 </div>
                                 
-                                {/* Der optische Button */}
                                 <div class="w-12 h-12 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-400 group-hover:bg-rose-600 group-hover:text-white transition-all duration-300 relative z-10">
                                     <i class="fa-solid fa-arrow-right"></i>
                                 </div>
