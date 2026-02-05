@@ -3,8 +3,8 @@ import { Image } from 'astro:assets';
 
 interface Props {
   headlineRow1: string;
-  headlineRow2?: string; // Optional, falls mal leer
-  gradientClasses?: string; // Optional
+  headlineRow2?: string;
+  gradientClasses?: string;
   subline: string;
   image: string;
 }
@@ -12,12 +12,11 @@ interface Props {
 const { 
   headlineRow1, 
   headlineRow2, 
-  gradientClasses, // z.B. "from-rose-500 to-orange-500"
+  gradientClasses, 
   subline, 
   image 
 } = Astro.props;
 
-// Fallback für den Gradient, falls im CMS nichts eingetragen ist
 const finalGradient = gradientClasses || 'from-rose-500 to-orange-500';
 ---
 
@@ -28,10 +27,10 @@ const finalGradient = gradientClasses || 'from-rose-500 to-orange-500';
     <div class="max-w-[1600px] mx-auto w-full grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-0 relative items-center">
 
         {/* 1. TEXT CONTENT */}
-        <div class="relative z-30 col-span-1 lg:col-span-5 flex flex-col items-start order-1 lg:order-none pointer-events-none">
+        <div class="relative col-span-1 lg:col-span-5 flex flex-col items-start order-1 lg:order-none pointer-events-none">
 
             {/* BADGE */}
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-slate-700 text-xs font-bold text-rose-600 dark:text-rose-400 mb-6 sm:mb-8 uppercase tracking-widest shadow-sm whitespace-nowrap pointer-events-auto">
+            <div class="relative z-30 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-slate-700 text-xs font-bold text-rose-600 dark:text-rose-400 mb-6 sm:mb-8 uppercase tracking-widest shadow-sm whitespace-nowrap pointer-events-auto">
                 <span class="relative flex h-2 w-2 mb-0.5">
                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
                     <span class="relative inline-flex rounded-full h-2 w-2 bg-rose-600"></span>
@@ -40,14 +39,10 @@ const finalGradient = gradientClasses || 'from-rose-500 to-orange-500';
             </div>
 
             {/* HEADLINE */}
-            <h1 class="text-4xl xs:text-5xl sm:text-6xl xl:text-8xl font-display font-extrabold text-slate-900 dark:text-white tracking-tighter leading-[0.45] sm:leading-[0.45] mb-8 sm:mb-8 drop-shadow-md lg:drop-shadow-xl group-hover/hero:text-slate-900 transition-colors duration-500 break-words hyphens-auto w-full lg:w-[140%] pointer-events-auto">
-                
-                {/* Zeile 1 (Standard Text) */}
+            <h1 class="relative z-30 text-4xl xs:text-5xl sm:text-6xl xl:text-8xl font-display font-extrabold text-slate-900 dark:text-white tracking-tighter leading-[0.85] lg:leading-[0.45] sm:leading-[0.85] md:leading-[0.75] mb-8 sm:mb-8 drop-shadow-md lg:drop-shadow-xl group-hover/hero:text-slate-900 transition-colors duration-500 break-words hyphens-auto w-full lg:w-[140%] pointer-events-auto">
                 <span class="lg:whitespace-nowrap">
                     {headlineRow1}
                 </span>
-
-                {/* Zeile 2 (Mit Gradient) - Nur rendern wenn vorhanden */}
                 {headlineRow2 && (
                     <>
                         <br class="hidden sm:block" />
@@ -63,15 +58,26 @@ const finalGradient = gradientClasses || 'from-rose-500 to-orange-500';
                 )}
             </h1>
 
-            {/* SUBLINE */}
-            <p 
-                class="relative z-30 text-base sm:text-xl text-slate-700 dark:text-slate-200 leading-relaxed border-l-4 border-rose-500 pl-4 sm:pl-6 font-medium mb-8 sm:mb-10 w-full sm:max-w-2xl lg:w-[120%] group-hover/hero:text-slate-900 dark:group-hover/hero:text-white transition-colors duration-500 pointer-events-auto drop-shadow-md lg:drop-shadow-lg break-words pr-0"
-                set:html={subline}
-            >
-            </p>
+            {/* SUBLINE - FIX: Trennung von Border und Text */}
+            {/* Wrapper: Positioniert alles, aber KEIN z-index hier! */}
+            <div class="relative w-full sm:max-w-2xl lg:w-[120%] mb-8 sm:mb-10 pointer-events-auto">
+                
+                {/* 1. DIE BORDER (Separat) */}
+                {/* Liegt absolut links, hat z-30, ist Rot. Kein Blend-Mode. */}
+                <div class="absolute left-0 top-1 bottom-1 w-1 bg-rose-500 z-30"></div>
+
+                {/* 2. DER TEXT */}
+                {/* font-extrabold: Mehr Fläche für den Kontrast */}
+                {/* mix-blend-exclusion: Stabileres Schwarz */}
+                <div 
+                    class="relative z-30 pl-4 sm:pl-6 text-base sm:text-xl leading-relaxed font-extrabold text-white mix-blend-exclusion break-words pr-0 [&_*]:!text-white"
+                    set:html={subline}
+                >
+                </div>
+            </div>
 
             {/* BUTTONS */}
-            <div class="flex flex-col sm:flex-row gap-4 pointer-events-auto w-full sm:w-auto">
+            <div class="relative z-30 flex flex-col sm:flex-row gap-4 pointer-events-auto w-full sm:w-auto">
                 <a href="/events" class="w-full sm:w-auto justify-center bg-rose-600 text-white px-6 py-4 rounded-full font-bold hover:bg-slate-900 dark:hover:bg-white dark:hover:text-slate-900 transition-all shadow-lg shadow-rose-500/20 hover:-translate-y-1 text-center text-base flex items-center">
                     Event Kalender
                 </a>
