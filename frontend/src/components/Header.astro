@@ -53,7 +53,7 @@ const menuItems = [
 
 <div id="header-shell" class="sticky top-0 z-[90] header-shell">
   
-  {/* FIX: 'transform' aus transition entfernt, damit Z-Index Stapelung sauber bleibt */}
+  {/* HAUPT-HEADER: Verschwindet per CSS, wenn .menu-open aktiv ist */}
   <header id="main-header" class="relative z-[91] flex items-center justify-between px-4 sm:px-6 pt-6 pb-4 md:px-10 md:pt-8 md:pb-6 transition-[padding,background-color,box-shadow,border-radius,border] duration-300 ease-in-out bg-transparent">
     
     <a href="/" class="flex items-center gap-3 group" aria-label="Zur Startseite">
@@ -102,16 +102,18 @@ const menuItems = [
 
   <div id="navOverlay" 
        class="
-         /* --- MOBILE: Z-INDEX 200 (FIXED) --- */
-         /* FIX: mt-0 erzwingen, damit es ganz oben bleibt */
-         fixed inset-0 z-[200] h-[100dvh] w-screen
-         pt-0 pb-10 px-0 mt-0
-         overflow-y-auto overflow-x-hidden
          bg-slate-50 dark:bg-slate-900 
          text-slate-900 dark:text-white
          nav-panel nav-transition
 
-         /* --- DESKTOP: RELATIVE & SOLID --- */
+         /* --- MOBILE --- */
+         /* Nimmt den ganzen Screen ein */
+         fixed inset-0 z-[200]
+         w-screen h-[100dvh]
+         overflow-y-auto overflow-x-hidden
+         pt-0 pb-10 px-0
+
+         /* --- DESKTOP OVERRIDES --- */
          md:relative md:inset-auto md:w-full md:h-auto md:z-auto
          md:-mt-px md:rounded-[40px] md:overflow-hidden 
          md:pt-0 md:pb-0 md:px-0
@@ -123,7 +125,9 @@ const menuItems = [
        role="region" 
        aria-label="Hauptnavigation">
     
-    <div class="md:hidden flex items-center justify-between px-6 pt-6 pb-4 bg-slate-50 dark:bg-slate-900 sticky top-0 z-[201]">
+    {/* --- INTERNER HEADER IM OVERLAY (NUR MOBILE) --- */}
+    {/* Wir nutzen diesen Header zum Schließen, da der Haupt-Header ausgeblendet wird */}
+    <div class="md:hidden flex items-center justify-between px-4 sm:px-6 pt-6 pb-4 bg-slate-50 dark:bg-slate-900 sticky top-0 z-[201]">
         <div class="flex items-center gap-3">
             {logoUrl ? (
                 <img src={logoUrl} alt={projectName} width="140" height="50" class="h-10 w-auto object-contain logo-img" />
@@ -133,8 +137,11 @@ const menuItems = [
                 </span>
             )}
         </div>
-        <button id="btnCloseNavMobile" class="w-10 h-10 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/10 flex items-center justify-center text-slate-900 dark:text-white shadow-sm active:scale-95 transition-transform" aria-label="Menü schließen">
-             <i class="fa-solid fa-xmark text-lg"></i>
+        
+        {/* Schließen Button */}
+        <button id="btnCloseNavMobile" class="h-10 md:h-12 pl-3 pr-4 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/10 flex items-center justify-center gap-2 text-slate-900 dark:text-white shadow-sm active:scale-95 transition-transform" aria-label="Menü schließen">
+             <i class="fa-solid fa-xmark text-lg text-rose-600"></i>
+             <span class="font-bold text-xs tracking-wide">Schließen</span>
         </button>
     </div>
 
@@ -161,7 +168,7 @@ const menuItems = [
               md:bg-transparent md:dark:bg-transparent md:rounded-none md:shadow-none md:border-0 md:border-transparent
               md:hover:bg-white/5 
 
-              /* MENU ITEM TRANSITION CLASS (Für den Stagger Effect) */
+              /* MENU ITEM TRANSITION CLASS */
               menu-item-anim
 
               transition duration-300 
@@ -273,34 +280,46 @@ const menuItems = [
       html.dark #header-shell.is-float #navOverlay { background-color: rgb(30, 41, 59); }
   }
 
-  /* --- MOBILE FIX: Ghost Header --- */
+  /* --- MOBILE IOS HARD FIX: HEADER WEG --- */
   @media (max-width: 767px) {
     #header-shell.menu-open {
+        /* Container wird top-level und fixed */
+        position: fixed !important; 
+        inset: 0 !important;
+        width: 100vw !important;
+        height: 100dvh !important;
+        z-index: 99999 !important;
+        
+        /* Kein Sticky-Verhalten mehr, kein Hintergrund */
         background: transparent !important;
         backdrop-filter: none !important;
-        box-shadow: none !important;
-        pointer-events: none; 
-    }
-    #header-shell.menu-open #main-header {
-        opacity: 0; 
-        pointer-events: none; 
+        -webkit-backdrop-filter: none !important;
+        overflow: hidden !important; 
     }
     
-    /* STAGGERED ANIMATION (Mobile Only) */
-    /* Geschlossen: Items sind unten und unsichtbar */
-    #navOverlay[data-state='closed'] .menu-item-anim {
-        opacity: 0;
-        transform: translateY(20px);
+    /* RADIKALE LÖSUNG: Main Header AUSBLENDEN */
+    #header-shell.menu-open #main-header {
+        display: none !important;
+    }
+    
+    /* Overlay übernimmt den Laden */
+    #header-shell.menu-open #navOverlay {
+         position: absolute !important;
+         inset: 0 !important;
+         z-index: 200;
+         height: 100% !important;
+         width: 100% !important;
+         overflow-y: auto !important;
+         -webkit-overflow-scrolling: touch; 
+         pointer-events: auto !important;
+         /* WICHTIG: Kein Padding oben nötig, da Header weg ist */
+         padding-top: 0 !important; 
     }
 
-    /* Offen: Items gleiten rein */
-    #navOverlay[data-state='open'] .menu-item-anim {
-        opacity: 1;
-        transform: translateY(0);
-        transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
-    }
-
-    /* Delays für den Kaskaden-Effekt (Loop Ersatz) */
+    /* Animationen für Items */
+    #navOverlay[data-state='closed'] .menu-item-anim { opacity: 0; transform: translateY(20px); }
+    #navOverlay[data-state='open'] .menu-item-anim { opacity: 1; transform: translateY(0); transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); }
+    
     #navOverlay[data-state='open'] a:nth-child(1) { transition-delay: 50ms; }
     #navOverlay[data-state='open'] a:nth-child(2) { transition-delay: 100ms; }
     #navOverlay[data-state='open'] a:nth-child(3) { transition-delay: 150ms; }
@@ -383,12 +402,16 @@ const menuItems = [
       
       if (window.innerWidth < 768) {
         headerShell?.classList.toggle('menu-open', newState === 'open');
-      }
-
-      if (newState === 'open' && window.innerWidth < 768) {
-          document.body.style.overflow = 'hidden';
-      } else {
-          document.body.style.overflow = '';
+        
+        if (newState === 'open') {
+             document.body.style.overflow = 'hidden';
+             document.body.style.position = 'fixed'; 
+             document.body.style.width = '100%';
+        } else {
+             document.body.style.overflow = '';
+             document.body.style.position = '';
+             document.body.style.width = '';
+        }
       }
       
       const bars = document.querySelector('#btnOpenNav .icon-bars');
