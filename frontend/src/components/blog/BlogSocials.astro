@@ -1,17 +1,13 @@
 ---
-import { directus } from '../../lib/directus'; 
-import { readSingleton } from '@directus/sdk';
+// WICHTIG: Wir nutzen jetzt die zentrale API, statt direkt Directus zu rufen.
+// Die API-Funktion fängt Fehler ab und verhindert den Crash.
+import { getGlobalSettings } from '../../lib/api';
 
-// 1. Daten laden
-let settings;
-try {
-    settings = await directus.request(readSingleton('global_settings'));
-} catch (error) {
-    console.error("BlogSocials: Konnte Global Settings nicht laden", error);
-}
+// 1. Daten laden (Die API-Funktion liefert bei Fehler ein Fallback-Objekt, keinen Crash)
+const settings = await getGlobalSettings();
 
 // 2. Helper: Handle aus URL extrahieren (macht aus https://instagram.com/user -> @user)
-const getHandle = (urlStr) => {
+const getHandle = (urlStr: string) => {
     if (!urlStr) return '';
     try {
         const url = new URL(urlStr);
@@ -23,7 +19,7 @@ const getHandle = (urlStr) => {
     }
 };
 
-// 3. Konfiguration der Netzwerke (Mapping Directus-Feld -> Icon/Style)
+// 3. Konfiguration der N   etzwerke (Mapping Directus-Feld -> Icon/Style)
 const networks = [
     {
         key: 'social_instagram',
@@ -59,6 +55,7 @@ const networks = [
 
 // 4. Aktive Liste generieren (Nur Links, die in Directus existieren)
 const activeSocials = networks.map(net => {
+    // settings ist jetzt sicher definiert (notfalls leer), daher kein Crash bei Zugriff
     const url = settings?.[net.key];
     if (!url) return null;
     
@@ -69,7 +66,7 @@ const activeSocials = networks.map(net => {
     };
 }).filter(Boolean);
 
-// E-Mail aus Settings holen
+// E-Mail aus Settings holen (Fallback greift sicher)
 const contactEmail = settings?.email || 'office@diebruecke.cc';
 ---
 
@@ -78,7 +75,7 @@ const contactEmail = settings?.email || 'office@diebruecke.cc';
     
     <div class="space-y-7">
         {activeSocials.length > 0 ? (
-            activeSocials.map((social) => (
+            activeSocials.map((social: any) => (
                 <a 
                     href={social.url} 
                     target="_blank" 

@@ -2,105 +2,44 @@
 import { directus } from './directus';
 import { readItems, readSingleton } from '@directus/sdk';
 
-// HILFSFUNKTION: Normalisiert Kategorienamen
+// --- HELPER ---
+
 function getSafeLabel(obj: any) {
   if (!obj) return 'Unbenannt';
   return obj.name || obj.title || obj.label || obj.bezeichnung || obj.titel || 'Kategorie';
 }
 
-// FILTER-LOGIK: Im Production-Mode nur veröffentlichte Inhalte zeigen
 const statusFilter = import.meta.env.PROD
   ? { status: { _eq: 'published' } }
   : {};
 
-// Helper: Random Element aus Array
-function pickRandom<T>(arr: T[]) {
-  return arr[Math.floor(Math.random() * arr.length)];
-}
+// --- EVENTS ---
 
-/**
- * Holt Events und baut die M2M-Beziehung MANUELL zusammen.
- */
 export async function getEvents() {
   try {
-    // 1. Hole alle Events (mit Status-Filter!)
-    const eventsPromise = directus.request(
+    const events = await directus.request(
       readItems('events', {
-        fields: ['*', 'is_highlight'],
+        fields: [
+          '*', 
+          'event_categories.event_categories_id.id',
+          'event_categories.event_categories_id.name',
+          'event_categories.event_categories_id.color',
+        ],
         filter: statusFilter,
-        sort: ['start_date'], // nächste Termine zuerst
+        sort: ['start_date'],
         limit: -1,
       })
     );
 
-    // 2. Hole die Junction Table
-    const junctionPromise = directus
-      .request(
-        readItems('events_event_categories', {
-          fields: ['*'],
-          limit: -1,
-        })
-      )
-      .catch((err) => {
-        console.warn('Konnte Junction Table nicht laden:', err);
-        return [];
-      });
+    if (!events) return [];
 
-    // 3. Hole die Kategorien
-    const categoriesPromise = directus
-      .request(
-        readItems('event_categories', {
-          fields: ['*'],
-          limit: -1,
-        })
-      )
-      .catch(() => []);
-
-    const [events, junctions, categories] = await Promise.all([
-      eventsPromise,
-      junctionPromise,
-      categoriesPromise,
-    ]);
-
-    // 4. Mapping
-    const catMap = new Map();
-    categories.forEach((c: any) => {
-      if (c.id) catMap.set(String(c.id), c);
-    });
-
-    const relationsMap = new Map<string, string[]>();
-    junctions.forEach((rel: any) => {
-      // Directus Junction IDs können variieren, wir prüfen beide Richtungen
-      const eId = rel.events_id || rel.event_id;
-      const cId = rel.event_categories_id || rel.event_category_id || rel.category_id;
-
-      if (eId && cId) {
-        const eKey = String(eId);
-        if (!relationsMap.has(eKey)) relationsMap.set(eKey, []);
-        relationsMap.get(eKey)?.push(String(cId));
-      }
-    });
-
-    return (events ?? []).map((e: any) => {
-      const myCatIds = relationsMap.get(String(e.id)) || [];
-      const simulatedRelations = myCatIds.map((cId) => {
-        const catObj = catMap.get(cId);
-        return {
-          event_categories_id: {
-            id: cId,
-            name: getSafeLabel(catObj),
-          },
-        };
-      });
-
-      return {
-        ...e,
-        is_highlight: Boolean(e?.is_highlight),
-        event_categories: simulatedRelations,
-      };
-    });
+    return events.map((e: any) => ({
+      ...e,
+      is_highlight: Boolean(e?.is_highlight),
+      event_categories: e.event_categories || [] 
+    }));
   } catch (error) {
-    console.error('Fehler beim Laden der Events:', error);
+    console.error('API Error (getEvents):', error);
     return [];
   }
 }
@@ -118,26 +57,39 @@ export async function getEventCategories() {
 }
 
 export async function getEventBySlug(slug: string) {
-  const all = await getEvents();
-  return all.find((e: any) => e.slug === slug) || null;
+  try {
+    const events = await directus.request(
+      readItems('events', {
+        filter: { ...statusFilter, slug: { _eq: slug } },
+        fields: [
+          '*',
+          'event_categories.event_categories_id.id',
+          'event_categories.event_categories_id.name',
+        ],
+        limit: 1
+      })
+    );
+    return events[0] || null;
+  } catch (e) {
+    console.error('API Error (getEventBySlug):', e);
+    return null;
+  }
 }
 
-// --- Services Products Global Settings ---
+// --- SERVICES & PRODUCTS & SETTINGS ---
 
 export async function getServices() {
   try {
-    return await directus.request(readItems('services')).catch(() => []);
+    return await directus.request(readItems('services', { filter: statusFilter }));
   } catch (error) {
-    console.error('Fehler beim Laden der Services:', error);
     return [];
   }
 }
 
 export async function getProducts() {
   try {
-    return await directus.request(readItems('shop_products')).catch(() => []);
+    return await directus.request(readItems('shop_products', { filter: statusFilter }));
   } catch (error) {
-    console.error('Fehler beim Laden der Produkte:', error);
     return [];
   }
 }
@@ -147,84 +99,113 @@ export async function getGlobalSettings() {
     return await directus.request(readSingleton('global_settings'));
   } catch (error) {
     console.warn('Global Settings konnten nicht geladen werden.');
+    return { project_name: 'Die Brücke' };
+  }
+}
+
+// --- ARCHIV ---
+
+// 1. Übersicht (Mit Retry-Schutz gegen Timeouts)
+export async function getArchiv() {
+  let attempts = 0;
+  // Wir probieren es 3x, falls das Netzwerk wackelt
+  while (attempts < 3) {
+      try {
+        return await directus.request(
+          readItems('archiv', {
+            fields: [
+              'id', 'slug', 'title', 'teaser',
+              'year', 'image', 'aspect', 
+              'category'
+            ],
+            filter: statusFilter,
+            sort: ['-year'],
+            limit: -1,
+          })
+        );
+      } catch (error) {
+        attempts++;
+        if (attempts >= 3) {
+            console.error(`API Error (getArchiv) nach 3 Versuchen:`, error);
+            return [];
+        }
+        // Kurze Pause vor dem nächsten Versuch (500ms)
+        await new Promise(resolve => setTimeout(resolve, 500));
+      }
+  }
+  return [];
+}
+
+// 2. Detail (Mit 500er Fix & Retry-Schutz)
+export async function getArchivBySlug(slug: string) {
+  try {
+    const items = await directus.request(
+      readItems('archiv', {
+        // Fix: Nur Slug-Suche (verhindert Crash bei ID-Konflikt)
+        filter: { 
+            ...statusFilter, 
+            slug: { _eq: slug } 
+        },
+        // Fix: Explizite Felder (verhindert Crash bei zu großer Rekursion)
+        fields: [
+            'id', 'slug', 'title', 'teaser', 'description', 'info_text',
+            'year', 'image', 'aspect', 'category',
+            'video_url', 
+            'pdf_file',
+            'gallery.directus_files_id.id',
+            'gallery.directus_files_id.filename_disk',
+            'gallery.directus_files_id.width',
+            'gallery.directus_files_id.height',
+            'gallery.directus_files_id.title'
+        ],
+        limit: 1
+      })
+    );
+    return items[0] || null;
+  } catch (error) {
+    console.error('API Error (getArchivBySlug):', error);
     return null;
   }
 }
 
-// Holt alle Archiv-Einträge für die Zeitreise.
-export async function getArchiv() {
-  try {
-    const response = await directus.request(
-      readItems('archiv', {
-        fields: [
-          'id', 
-          'slug', 
-          'title', 
-          'description', 
-          'teaser', 
-          'info_text', 
-          'year', 
-          'image', 
-          'aspect',
-          'pdf_file', // <--- WICHTIG: Das PDF-Feld wurde hinzugefügt!
-          // WICHTIG: Holt die Verknüpfung UND das eigentliche Bild-Objekt
-          'gallery.directus_files_id.*', 
-          'gallery.*',
-          'video_url',  
-          'category'
-        ],
-        limit: -1,
-      })
-    );
-    return response;
-  } catch (error) {
-    console.error('Fehler beim Laden des Archivs:', error);
-    return [];
-  }
-}
+// --- BLOG ---
 
-// Holt die Blog-Einträge für die News-Seite.
 export async function getBlogPosts() {
   try {
-    const response = await directus.request(
-      readItems('blog', { // HINWEIS: Stelle sicher, dass deine Collection in Directus wirklich 'blog' heißt (vorher war es 'posts')
+    return await directus.request(
+      readItems('blog', {
         fields: [
-          'id', 
-          'slug', 
-          'title', 
-          'author', 
-          'main_image', 
-          'excerpt', 
-          'content', 
-          'tags', 
-          'date_created', 
-          'category', 
-          'gallery.directus_files_id.*',
-          'video_url'
+          'id', 'slug', 'title', 'author', 'main_image', 'excerpt', 
+          'tags', 'date_created', 'category'
         ],
-        filter: { status: { _eq: 'published' } },
+        filter: statusFilter,
         sort: ['-date_created'],
         limit: -1,
       })
     );
-    return response;
   } catch (error) {
-    console.error('Fehler beim Laden des Blogs:', error);
+    console.error('API Error (getBlogPosts):', error);
     return [];
   }
 }
 
-/**
- * ✅ BLOG SIDEBAR EVENTS
- * - mode: 'highlight' => nur is_highlight=true
- * - mode: 'latest' => neueste Events (nach Datum)
- * - random: true => zufälliges Element aus den geladenen Events
- *
- * Wichtig:
- * - nutzt statusFilter (DEV zeigt auch nicht-published)
- * - lädt mehrere Events (limit) damit random Sinn macht
- */
-// Blog Sidebar Event - Highlight random ODER aktuellste Events
+export async function getBlogPostBySlug(slug: string) {
+  try {
+    const posts = await directus.request(
+      readItems('blog', {
+        filter: { ...statusFilter, slug: { _eq: slug } },
+        fields: ['*', 'gallery.directus_files_id.*'],
+        limit: 1
+      })
+    );
+    return posts[0] || null;
+  } catch (error) {
+    return null;
+  }
+}
+
+// --- SIDEBAR ---
+
 export async function getSidebarEvent(options?: {
   mode?: 'highlight' | 'latest';
   limit?: number;
@@ -234,38 +215,34 @@ export async function getSidebarEvent(options?: {
     const mode = options?.mode ?? 'latest';
     const limit = options?.limit ?? 10;
     const random = options?.random ?? true;
+    const today = new Date().toISOString().split('T')[0];
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const filter: any = {
+      ...statusFilter,
+      start_date: { _gte: today }
+    };
 
     const response = await directus.request(
       readItems('events', {
         fields: ['title', 'slug', 'description', 'image', 'is_highlight', 'start_date', 'video_url'],
-        filter: {
-          ...(import.meta.env.PROD ? { status: { _eq: 'published' } } : {}),
-        },
+        filter: filter,
         sort: ['start_date'],
-        limit: -1 // Wir holen alle verfügbaren für die manuelle Filterung
+        limit: 20 
       })
     );
 
-    let pool = (response || []).filter((e: any) => {
-      const dateStr = e.start_date || e.date_start || e.date;
-      if (!dateStr) return false;
-      const d = new Date(dateStr);
-      return d >= today;
-    });
+    let pool = response || [];
 
-    // WICHTIG: Manuelle Filterung auf Highlights, da Checkboxen als Arrays gespeichert sein können
     if (mode === 'highlight') {
-      pool = pool.filter(e => 
-        e.is_highlight === true || 
-        (Array.isArray(e.is_highlight) && e.is_highlight.includes('true'))
-      );
+       pool = pool.filter((e: any) => 
+         e.is_highlight === true || 
+         (Array.isArray(e.is_highlight) && e.is_highlight.includes('true'))
+       );
     }
 
-    // Fallback: Wenn keine Highlights/Zukünftigen da sind, nimm die aktuellsten
-    if (!pool.length) pool = response || [];
+    if (pool.length === 0 && mode === 'highlight') {
+        pool = response || [];
+    }
 
     const shortlist = pool.slice(0, limit);
     if (!shortlist.length) return null;
@@ -275,14 +252,10 @@ export async function getSidebarEvent(options?: {
       : shortlist[0];
 
   } catch (e) {
-    console.error("Sidebar Event API Fehler:", e);
     return null;
   }
 }
 
-/**
- * Sidebar Service nach Type (z.B. "sozial", "kultur", "verein", "aktion")
- */
 export async function getSidebarService(type: string) {
   try {
     const response = await directus.request(

@@ -6,16 +6,19 @@ import BlogSocials from '../../components/blog/BlogSocials.astro';
 import ImageGallery from '../../components/common/ImageGallery.astro';
 // NEU: VideoPlayer importieren
 import VideoPlayer from '../../components/common/VideoPlayer.astro';
-import { getBlogPosts, getSidebarEvent, getSidebarService } from '../../lib/api';
+// WICHTIG: Hier 'getBlogPostBySlug' statt 'getBlogPosts' nutzen!
+import { getBlogPostBySlug, getSidebarEvent, getSidebarService } from '../../lib/api';
 import { Image } from 'astro:assets';
 
 export const prerender = false;
-
 const { slug } = Astro.params;
 
-// 1. Post live aus der API suchen
-const allPosts = await getBlogPosts();
-const post = allPosts?.find((p: any) => p.slug === slug);
+if (!slug) {
+  return Astro.redirect('/blog');
+}
+
+// 1. Post live aus der API suchen (Detail-Abfrage MIT Content)
+const post = await getBlogPostBySlug(slug);
 
 // 2. Wenn nicht gefunden -> 404 oder Redirect
 if (!post) {
@@ -23,21 +26,27 @@ if (!post) {
 }
 
 // --- TOC LOGIK ---
-let modifiedContent = post.content;
+// Safety Check: Falls Content leer ist, leeren String nutzen, damit es nicht crasht
+let modifiedContent = post.content || '';
+
 const headings: { title: string; id: string }[] = [];
 const h2Regex = /<h2[^>]*>(.*?)<\/h2>/g;
 let match;
 let i = 0;
 
-while ((match = h2Regex.exec(post.content)) !== null) {
-  const title = match[1].replace(/<[^>]*>/g, '');
-  const id = `section-${i}`;
-  headings.push({ title, id });
-  modifiedContent = modifiedContent.replace(match[0], `<h2 id="${id}">${match[1]}</h2>`);
-  i++;
+// Nur ausführen, wenn Content da ist
+if (post.content) {
+  while ((match = h2Regex.exec(post.content)) !== null) {
+    const title = match[1].replace(/<[^>]*>/g, '');
+    const id = `section-${i}`;
+    headings.push({ title, id });
+    modifiedContent = modifiedContent.replace(match[0], `<h2 id="${id}">${match[1]}</h2>`);
+    i++;
+  }
 }
 
-const words = post.content.split(' ').length;
+// Safety Check für Wort-Zählung
+const words = modifiedContent ? modifiedContent.split(' ').length : 0;
 const readingTime = Math.ceil(words / 200);
 
 // Wir nutzen die produktive URL für Assets (Public URL für Browser)
@@ -55,8 +64,7 @@ const seoDescription = cleanExcerpt.length > 160 ? cleanExcerpt.substring(0, 157
 const seoImage = post.main_image ? `${ASSET_URL}/${post.main_image}` : "/assets/share-journal.jpg";
 
 // --- DATEN AUS API ---
-const sidebarEvent =
-  logicCategory === 'kultur'
+const sidebarEvent =  logicCategory === 'kultur'
     ? await getSidebarEvent({ mode: 'highlight', limit: 10, random: true })
     : logicCategory === 'aktion'
       ? await getSidebarEvent({ mode: 'latest', limit: 10, random: true })
@@ -78,10 +86,10 @@ const formatDate = (dateString: string) => {
   <div class="fixed top-0 left-0 w-full h-1.5 z-[100] pointer-events-none">
      <div id="progress-bar" class="h-full bg-rose-500 w-0 transition-all duration-150 ease-out shadow-[0_0_10px_rgba(244,63,94,0.5)]"></div>
   </div>
-  
+
   <main class="bg-white dark:bg-slate-950 transition-colors duration-500 rounded-[32px] md:rounded-[48px] lg:rounded-[64px] m-2 md:m-4 border border-slate-200 dark:border-slate-800 shadow-2xl min-h-screen relative overflow-clip">
-     
-     <header class="pt-24 pb-12 md:pb-16 px-6">
+      
+    <header class="pt-24 pb-12 md:pb-16 px-6">
         <div class="absolute top-0 right-0 w-[400px] md:w-[600px] h-[600px] bg-rose-500/5 rounded-full blur-[120px] pointer-events-none -translate-y-1/2 translate-x-1/2"></div>
         <div class="max-w-4xl mx-auto text-center relative z-10">
             <nav class="mb-12">
@@ -91,9 +99,7 @@ const formatDate = (dateString: string) => {
               </a>
             </nav>
             
-            {/* ÄNDERUNG: Titel-Größe reduziert für bessere Lesbarkeit bei langen Headlines */}
-            {/* Alt: text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl */}
-            {/* Neu: text-3xl sm:text-4xl md:text-5xl lg:text-6xl */}
+            {/* Titel */}
             <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tighter leading-tight mb-8 py-2 break-words hyphens-auto">
               {post.title}
             </h1>
@@ -111,15 +117,17 @@ const formatDate = (dateString: string) => {
     {/* Hero Image Section */}
     <section class="max-w-7xl mx-auto px-4 sm:px-6 mb-16 md:mb-24 relative z-10">
       <div class="rounded-[32px] md:rounded-[48px] lg:rounded-[64px] overflow-hidden aspect-video shadow-2xl ring-1 ring-slate-200 dark:ring-slate-800">
+         {post.main_image && (
          <Image 
-            src={`${ASSET_URL}/${post.main_image}`} 
-            alt={post.title}
+             src={`${ASSET_URL}/${post.main_image}`} 
+             alt={post.title} 
             width={1200}
             height={675}
             loading="eager"
             fetchpriority="high"
-            class="w-full h-full object-cover" 
-         />
+            class="w-full h-full object-cover"
+          />
+         )}
       </div>
     </section>
 
@@ -196,7 +204,7 @@ const formatDate = (dateString: string) => {
 
           {/* --- VIDEO PLAYER --- */}
           {post.video_url && (
-            <div class="mb-12">
+            <div class="mb-12"> 
                <h3 class="font-display font-black text-2xl md:text-3xl text-slate-900 dark:text-white uppercase mb-6">
                  Video <span class="text-rose-500">Beitrag</span>
                </h3>
@@ -208,7 +216,7 @@ const formatDate = (dateString: string) => {
           {/* GALERIE */}
           {post.gallery && <ImageGallery gallery={post.gallery} />}
           
-          <div class="mt-16 pt-12 border-t border-slate-100 dark:border-slate-800">
+          <div class="mt-16 pt-12 border-t border-slate-100 dark:border-slate-800"> 
              <BlogShare title={post.title} url={currentUrl} />
           </div>
         </article>
@@ -217,7 +225,7 @@ const formatDate = (dateString: string) => {
         <aside class="w-full max-w-2xl mx-auto xl:max-w-none xl:w-[300px] shrink-0 xl:sticky xl:top-32 h-fit mt-8 mb-24 xl:mt-0 xl:mb-12 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-1 gap-8 xl:gap-12 items-start">
           
           {/* Box 1: Dynamic CTA */}
-          <div
+          <div 
             id="dynamic-cta-box"
             data-category={logicCategory}
             data-event={sidebarEvent ? JSON.stringify(sidebarEvent) : null}
@@ -234,18 +242,20 @@ const formatDate = (dateString: string) => {
           </div>
 
           {/* Box 2: Socials */}
-          <div class="bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-white/5 rounded-[40px] md:rounded-[48px] p-8 w-full xl:bg-transparent xl:border-0 xl:p-0 xl:rounded-none">
+          <div class="bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-white/5 rounded-[40px] md:rounded-[48px] p-8 w-full xl:bg-transparent xl:border-0 xl:p-0 xl:rounded-none"> 
              <BlogSocials />
           </div>
 
         </aside>
       </div>
+
     </section>
 
     {/* --- RELATED POSTS --- */}
     <footer class="max-w-7xl mx-auto px-6 pb-40">
         <RelatedPosts currentSlug={post.slug} category={displayCategory} />
     </footer>
+
   </main>
 </MainLayout>
 
@@ -315,6 +325,7 @@ const formatDate = (dateString: string) => {
   function updateCTA() {
     const box = document.getElementById("dynamic-cta-box");
     if (!box) return;
+
     const category = (box.dataset.category || "aktion").toLowerCase().trim();
     const dbEvent = safeParseJSON(box.dataset.event);
     const dbService = safeParseJSON(box.dataset.service);
