@@ -16,32 +16,43 @@ const statusFilter = import.meta.env.PROD
 // --- EVENTS ---
 
 export async function getEvents() {
-  try {
-    const events = await directus.request(
-      readItems('events', {
-        fields: [
-          '*', 
-          'event_categories.event_categories_id.id',
-          'event_categories.event_categories_id.name',
-          'event_categories.event_categories_id.color',
-        ],
-        filter: statusFilter,
-        sort: ['start_date'],
-        limit: -1,
-      })
-    );
+  let attempts = 0;
+  // RETRY-LOGIK: 3 Versuche, falls das Netzwerk hängt
+  while (attempts < 3) {
+    try {
+      const events = await directus.request(
+        readItems('events', {
+          fields: [
+            '*', 
+            'event_categories.event_categories_id.id',
+            'event_categories.event_categories_id.name',
+            'event_categories.event_categories_id.color',
+          ],
+          filter: statusFilter,
+          sort: ['start_date'],
+          limit: -1,
+        })
+      );
 
-    if (!events) return [];
+      if (!events) return [];
 
-    return events.map((e: any) => ({
-      ...e,
-      is_highlight: Boolean(e?.is_highlight),
-      event_categories: e.event_categories || [] 
-    }));
-  } catch (error) {
-    console.error('API Error (getEvents):', error);
-    return [];
+      return events.map((e: any) => ({
+        ...e,
+        is_highlight: Boolean(e?.is_highlight),
+        event_categories: e.event_categories || [] 
+      }));
+
+    } catch (error) {
+      attempts++;
+      if (attempts >= 3) {
+        console.error('API Error (getEvents) - Final failure:', error);
+        return [];
+      }
+      // Kurze Pause (500ms) vor dem nächsten Versuch
+      await new Promise(resolve => setTimeout(resolve, 500));
+    }
   }
+  return [];
 }
 
 export async function getEventCategories() {
@@ -65,6 +76,7 @@ export async function getEventBySlug(slug: string) {
           '*',
           'event_categories.event_categories_id.id',
           'event_categories.event_categories_id.name',
+          'event_categories.event_categories_id.color', // Color auch hier wichtig
         ],
         limit: 1
       })
@@ -105,10 +117,9 @@ export async function getGlobalSettings() {
 
 // --- ARCHIV ---
 
-// 1. Übersicht (Mit Retry-Schutz gegen Timeouts)
+// 1. Übersicht (Mit Retry-Schutz)
 export async function getArchiv() {
   let attempts = 0;
-  // Wir probieren es 3x, falls das Netzwerk wackelt
   while (attempts < 3) {
       try {
         return await directus.request(
@@ -126,10 +137,9 @@ export async function getArchiv() {
       } catch (error) {
         attempts++;
         if (attempts >= 3) {
-            console.error(`API Error (getArchiv) nach 3 Versuchen:`, error);
+            console.error(`API Error (getArchiv) - Final failure:`, error);
             return [];
         }
-        // Kurze Pause vor dem nächsten Versuch (500ms)
         await new Promise(resolve => setTimeout(resolve, 500));
       }
   }
@@ -141,12 +151,10 @@ export async function getArchivBySlug(slug: string) {
   try {
     const items = await directus.request(
       readItems('archiv', {
-        // Fix: Nur Slug-Suche (verhindert Crash bei ID-Konflikt)
         filter: { 
             ...statusFilter, 
             slug: { _eq: slug } 
         },
-        // Fix: Explizite Felder (verhindert Crash bei zu großer Rekursion)
         fields: [
             'id', 'slug', 'title', 'teaser', 'description', 'info_text',
             'year', 'image', 'aspect', 'category',
@@ -170,23 +178,32 @@ export async function getArchivBySlug(slug: string) {
 
 // --- BLOG ---
 
+// Auch hier Retry-Schutz eingebaut (Prophylaxe)
 export async function getBlogPosts() {
-  try {
-    return await directus.request(
-      readItems('blog', {
-        fields: [
-          'id', 'slug', 'title', 'author', 'main_image', 'excerpt', 
-          'tags', 'date_created', 'category'
-        ],
-        filter: statusFilter,
-        sort: ['-date_created'],
-        limit: -1,
-      })
-    );
-  } catch (error) {
-    console.error('API Error (getBlogPosts):', error);
-    return [];
+  let attempts = 0;
+  while (attempts < 3) {
+    try {
+      return await directus.request(
+        readItems('blog', {
+          fields: [
+            'id', 'slug', 'title', 'author', 'main_image', 'excerpt', 
+            'tags', 'date_created', 'category'
+          ],
+          filter: statusFilter,
+          sort: ['-date_created'],
+          limit: -1,
+        })
+      );
+    } catch (error) {
+        attempts++;
+        if (attempts >= 3) {
+            console.error('API Error (getBlogPosts) - Final failure:', error);
+            return [];
+        }
+        await new Promise(resolve => setTimeout(resolve, 500));
+    }
   }
+  return [];
 }
 
 export async function getBlogPostBySlug(slug: string) {
