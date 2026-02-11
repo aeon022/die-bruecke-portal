@@ -47,17 +47,13 @@ const getFlag = (location: string) => {
     return '🌍';
 };
 
-// NEU: Hilfsfunktion für die Farbcodierung
+// Hilfsfunktion für die Farbcodierung
 const getTheme = (basePath: string) => {
     const isCityTrip = basePath === 'city-trips';
     return {
-        // Badge Hintergrund (etwas dunkler für Kontrast auf Bild)
         badgeBg: isCityTrip ? 'bg-indigo-900/90' : 'bg-rose-900/90',
-        // Icon Farbe (heller)
         dateIcon: isCityTrip ? 'text-indigo-500' : 'text-rose-500',
-        // Hover Text Farbe
         hoverText: isCityTrip ? 'group-hover:text-indigo-600' : 'group-hover:text-rose-600',
-        // Hover Button Hintergrund
         hoverButton: isCityTrip ? 'group-hover:bg-indigo-600' : 'group-hover:bg-rose-600',
     };
 };
@@ -78,8 +74,7 @@ const seoImage = featuredTrip?.image ? getImg(featuredTrip.image, 1200) : "https
     image={seoImage}
 >
     
-    {/* --- HERO SECTION (FEATURED REISE) --- */}
-    {/* Der Hero bleibt vorerst im Standard "Rose" Look, da er das Highlight ist. */}
+    {/* --- HERO SECTION --- */}
     {featuredTrip && (
         <section class="px-4 sm:px-6 pt-6 pb-20 transition-colors duration-500">
             <div class="relative bg-slate-900 rounded-[48px] md:rounded-[64px] overflow-hidden min-h-[70vh] flex items-center shadow-2xl">
@@ -149,26 +144,39 @@ const seoImage = featuredTrip?.image ? getImg(featuredTrip.image, 1200) : "https
     )}
 
     {/* --- LISTE ALLER REISEN 2026 --- */}
-    <section class="px-6 sm:px-10 py-32 bg-white dark:bg-slate-950 transition-colors duration-500">
+    <section class="px-6 sm:px-10 py-32 bg-white dark:bg-slate-950 transition-colors duration-500" id="katalog">
         <div class="max-w-7xl mx-auto">
-            <div class="flex flex-col md:flex-row md:items-end justify-between mb-24 border-b border-slate-100 dark:border-slate-800 pb-12 gap-8">
+            
+            {/* Header & Filter */}
+            <div class="flex flex-col lg:flex-row lg:items-end justify-between mb-20 border-b border-slate-100 dark:border-slate-800 pb-12 gap-8">
                 <div>
                     <span class="text-rose-500 font-bold tracking-widest uppercase text-[10px] mb-4 block">Reisekatalog</span>
                     <h2 class="text-5xl md:text-7xl font-display font-black text-slate-900 dark:text-white tracking-tighter uppercase leading-none">
                         Unsere <span class="text-rose-600 italic">Reisen</span> 2026.
                     </h2>
                 </div>
+                
+                {/* FILTER BUTTONS (mit cursor-pointer) */}
+                <div class="flex flex-wrap gap-3" id="reise-filter">
+                    <button data-filter="all" class="filter-btn cursor-pointer px-6 py-3 rounded-full text-[10px] sm:text-xs font-black uppercase tracking-widest bg-rose-600 text-white shadow-xl transition-all hover:-translate-y-0.5">
+                        Alle Reisen
+                    </button>
+                    <button data-filter="camps" class="filter-btn cursor-pointer px-6 py-3 rounded-full text-[10px] sm:text-xs font-black uppercase tracking-widest bg-slate-100 dark:bg-slate-900 text-slate-500 dark:text-slate-400 hover:bg-rose-100 dark:hover:bg-rose-900/50 hover:text-rose-600 dark:hover:text-rose-400 transition-all hover:-translate-y-0.5">
+                        <i class="fa-solid fa-campground mr-2"></i> Sommercamps
+                    </button>
+                    <button data-filter="city-trips" class="filter-btn cursor-pointer px-6 py-3 rounded-full text-[10px] sm:text-xs font-black uppercase tracking-widest bg-slate-100 dark:bg-slate-900 text-slate-500 dark:text-slate-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all hover:-translate-y-0.5">
+                        <i class="fa-solid fa-city mr-2"></i> City Trips
+                    </button>
+                </div>
             </div>
             
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-12">
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-12" id="reise-grid">
                 {allReisen.map((trip: any) => {
-                    // Theme-Farben basierend auf dem Pfad holen
                     const theme = getTheme(trip.base_path);
                     
                     return (
-                    <article class="group relative bg-white dark:bg-slate-900 rounded-[48px] overflow-hidden border border-slate-100 dark:border-slate-800 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 flex flex-col h-full shadow-sm cursor-pointer">
+                    <article data-type={trip.base_path} class="reise-card group relative bg-white dark:bg-slate-900 rounded-[48px] overflow-hidden border border-slate-100 dark:border-slate-800 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 flex flex-col h-full shadow-sm cursor-pointer">
                         
-                        {/* Bild-Bereich */}
                         <div class="relative h-72 overflow-hidden bg-slate-100">
                             {trip.image ? (
                                 <Image 
@@ -189,19 +197,16 @@ const seoImage = featuredTrip?.image ? getImg(featuredTrip.image, 1200) : "https
                                 )}
                             </div>
                             
-                            {/* Kennzeichnung (Badge) mit dynamischer Farbe */}
                             <div class={`absolute top-6 right-6 ${theme.badgeBg} backdrop-blur-md px-3 py-1.5 rounded-xl text-[10px] font-black text-white uppercase tracking-widest z-10 border border-white/10 shadow-lg`}>
                                 {trip.base_path === 'city-trips' ? 'City Trip' : 'Camp'}
                             </div>
                         </div>
                         
                         <div class="p-10 flex flex-col flex-1">
-                            {/* Datums-Zeile mit dynamischer Icon-Farbe */}
                             <div class={`text-[10px] font-black ${theme.dateIcon} uppercase tracking-[0.3em] mb-6`}>
                                 <i class="fa-regular fa-calendar mr-2"></i> {trip.date_range}
                             </div>
                             
-                            {/* Titel mit dynamischer Hover-Farbe */}
                             <h3 class={`text-3xl font-display font-bold text-slate-900 dark:text-white mb-6 leading-tight ${theme.hoverText} transition-colors uppercase tracking-tight`}>
                                 <a href={`/${trip.base_path}/${trip.slug}`} class="before:absolute before:inset-0 before:z-20">
                                     {trip.title}
@@ -224,7 +229,6 @@ const seoImage = featuredTrip?.image ? getImg(featuredTrip.image, 1200) : "https
                                     )}
                                 </div>
                                 
-                                {/* Pfeil-Button mit dynamischer Hover-Farbe */}
                                 <div class={`w-12 h-12 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-400 ${theme.hoverButton} group-hover:text-white transition-all duration-300 relative z-10`}>
                                     <i class="fa-solid fa-arrow-right"></i>
                                 </div>
@@ -233,10 +237,20 @@ const seoImage = featuredTrip?.image ? getImg(featuredTrip.image, 1200) : "https
                     </article>
                 )})}
             </div>
+            
+            {/* Fallback, wenn ein Filter keine Ergebnisse hat */}
+            <div id="no-results" class="hidden text-center py-20 animate-fade-in-up">
+                <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 mb-6 text-2xl">
+                    <i class="fa-solid fa-ghost"></i>
+                </div>
+                <h3 class="text-2xl font-display font-bold text-slate-900 dark:text-white mb-2">Keine Reisen gefunden</h3>
+                <p class="text-slate-500">In dieser Kategorie sind aktuell keine Reisen verfügbar.</p>
+            </div>
+            
         </div>
     </section>
 
-    {/* --- CITY TRIPS CALLOUT (Bleibt unangetastet) --- */}
+    {/* --- CITY TRIPS CALLOUT --- */}
     <section class="px-6 sm:px-10 pb-32">
         <div class="max-w-7xl mx-auto">
             <a href="/city-trips" class="group relative block rounded-[48px] md:rounded-[64px] overflow-hidden bg-indigo-900 text-white shadow-2xl transition-all hover:scale-[1.01] duration-500">
@@ -277,6 +291,96 @@ const seoImage = featuredTrip?.image ? getImg(featuredTrip.image, 1200) : "https
     </section>
 
 </MainLayout>
+
+{/* --- CSS FÜR DEN FADE IN EFFEKT --- */}
+<style>
+    @keyframes fadeInUp {
+        0% {
+            opacity: 0;
+            transform: translateY(15px) scale(0.98);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+    .animate-fade-in-up {
+        animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+</style>
+
+{/* --- FILTER SCRIPT (Client-Side) --- */}
+<script>
+    document.addEventListener('astro:page-load', initFilter);
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initFilter);
+    } else {
+        initFilter();
+    }
+
+    function initFilter() {
+        const buttons = document.querySelectorAll('.filter-btn');
+        const cards = document.querySelectorAll('.reise-card');
+        const noResults = document.getElementById('no-results');
+
+        if (!buttons.length || !cards.length) return;
+
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                const filterValue = button.getAttribute('data-filter');
+
+                // 1. Reset alle Buttons
+                buttons.forEach(btn => {
+                    btn.classList.remove('bg-rose-600', 'bg-indigo-600', 'text-white', 'shadow-xl');
+                    btn.classList.add('bg-slate-100', 'dark:bg-slate-900', 'text-slate-500', 'dark:text-slate-400');
+                });
+
+                // 2. Active State
+                button.classList.remove('bg-slate-100', 'dark:bg-slate-900', 'text-slate-500', 'dark:text-slate-400');
+                if (filterValue === 'city-trips') {
+                    button.classList.add('bg-indigo-600', 'text-white', 'shadow-xl');
+                } else {
+                    button.classList.add('bg-rose-600', 'text-white', 'shadow-xl');
+                }
+
+                // 3. Karten filtern & animieren
+                let visibleCount = 0;
+                let delay = 0; // Für leichten Stagger-Effekt (optional, hier einfach direkt getriggert)
+                
+                cards.forEach(card => {
+                    const el = card as HTMLElement; 
+                    const cardType = el.getAttribute('data-type');
+                    
+                    if (filterValue === 'all' || cardType === filterValue) {
+                        el.style.display = 'flex';
+                        
+                        // Reflow erzwingen, um die Animation neu zu starten
+                        el.classList.remove('animate-fade-in-up');
+                        void el.offsetWidth; 
+                        el.classList.add('animate-fade-in-up');
+                        
+                        visibleCount++;
+                    } else {
+                        el.style.display = 'none';
+                        el.classList.remove('animate-fade-in-up');
+                    }
+                });
+
+                // 4. "Keine Ergebnisse" anzeigen
+                if (noResults) {
+                    if (visibleCount === 0) {
+                        noResults.classList.remove('hidden');
+                        noResults.classList.remove('animate-fade-in-up');
+                        void noResults.offsetWidth;
+                        noResults.classList.add('animate-fade-in-up');
+                    } else {
+                        noResults.classList.add('hidden');
+                    }
+                }
+            });
+        });
+    }
+</script>
 
 {/* SCHEMA.ORG */}
 <script type="application/ld+json" set:html={JSON.stringify({
