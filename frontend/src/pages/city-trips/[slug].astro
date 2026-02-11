@@ -6,7 +6,6 @@ import { directus } from '../../lib/directus';
 import { readItems } from '@directus/sdk';
 import { Image } from 'astro:assets';
 
-// NEU: Video Player Import
 import VideoPlayer from '../../components/common/VideoPlayer.astro';
 
 const { slug } = Astro.params;
@@ -19,7 +18,6 @@ try {
       slug: { _eq: slug },
       status: { _eq: 'published' }
     },
-    // WICHTIG: 'video_url' zur Abfrage hinzufügen
     fields: ['*', 'video_url'] 
   }));
   if (result && result.length > 0) trip = result[0];
@@ -49,7 +47,6 @@ const seoImage = heroImage || "https://diebruecke.cc/share-trips.jpg";
     <section class="px-4 sm:px-6 pt-6 pb-12 transition-colors duration-500">
         <div class="relative bg-slate-900 rounded-[48px] md:rounded-[64px] overflow-hidden min-h-[60vh] flex items-center shadow-2xl">
             
-            {/* Background Image Layer */}
             <div class="absolute inset-0 z-0">
                 {heroImage ? (
                     <img 
@@ -60,7 +57,6 @@ const seoImage = heroImage || "https://diebruecke.cc/share-trips.jpg";
                 ) : (
                     <div class="w-full h-full bg-slate-800"></div>
                 )}
-                {/* Studio Gradient Overlay */}
                 <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent"></div>
                 <div class="absolute inset-0 bg-gradient-to-r from-slate-900 via-transparent to-transparent opacity-80"></div>
             </div>
@@ -68,7 +64,6 @@ const seoImage = heroImage || "https://diebruecke.cc/share-trips.jpg";
             <div class="relative z-10 w-full px-8 md:px-16 py-20">
                 <div class="max-w-7xl mx-auto">
                     
-                    {/* --- NAVIGATION LINKS (ZURÜCK & WECHSEL) --- */}
                     <div class="mb-12 flex flex-wrap gap-3">
                         <a href="/city-trips" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-white/80 hover:text-white hover:bg-white/20 transition-all text-[10px] font-black uppercase tracking-widest group shadow-lg">
                             <i class="fa-solid fa-arrow-left group-hover:-translate-x-1 transition-transform"></i> 
@@ -101,7 +96,6 @@ const seoImage = heroImage || "https://diebruecke.cc/share-trips.jpg";
                             )}
                         </div>
 
-                        {/* Leading-Value auf 1.05 für Umlaute optimiert */}
                         <h1 class="text-5xl md:text-7xl lg:text-8xl font-display font-black text-white mb-8 leading-[1.05] tracking-tighter uppercase">
                             {trip.title}
                         </h1>
@@ -122,12 +116,10 @@ const seoImage = heroImage || "https://diebruecke.cc/share-trips.jpg";
         </div>
     </section>
 
-    {/* CONTENT SECTION */}
     <section class="py-24 px-6 bg-white dark:bg-slate-950 transition-colors duration-500">
         <div class="container mx-auto">
             <div class="grid lg:grid-cols-12 gap-16 max-w-7xl mx-auto">
                 
-                {/* --- LINKE SPALTE: TEXT & VIDEO --- */}
                 <div class="lg:col-span-8">
                     <div class="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-[10px] font-black text-rose-500 uppercase tracking-[0.2em] mb-8">
                         Trip Details
@@ -136,10 +128,8 @@ const seoImage = heroImage || "https://diebruecke.cc/share-trips.jpg";
                         Was wir gemeinsam <span class="text-indigo-600 italic">erleben.</span>
                     </h2>
                     
-                    {/* Beschreibung */}
                     <div class="prose prose-lg dark:prose-invert text-slate-600 dark:text-slate-400 prose-headings:font-display prose-headings:font-bold max-w-none" set:html={trip.description}></div>
 
-                    {/* --- NEU: VIDEO PLAYER --- */}
                     {trip.video_url && (
                         <div class="mt-16 pt-8 border-t border-slate-100 dark:border-slate-800">
                             <h3 class="font-display font-black text-2xl md:text-3xl text-slate-900 dark:text-white uppercase mb-6">
@@ -150,10 +140,9 @@ const seoImage = heroImage || "https://diebruecke.cc/share-trips.jpg";
                     )}
                 </div>
 
-                {/* --- RECHTE SPALTE: INFO BOX --- */}
                 <div class="lg:col-span-4">
                     <div class="bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-[48px] p-10 sticky top-24 shadow-sm">
-                        <h3 class="text-xs font-black text-slate-400 uppercase tracking-[0.3em] mb-10 text-center">Inkludierte Leistungen</h3>
+                        <h3 class="text-xs font-black text-slate-400 uppercase tracking-[0.3em] mb-10 text-center border-b border-slate-200 dark:border-slate-800 pb-4">Inkludierte Leistungen</h3>
                         
                         <div class="space-y-8 mb-12">
                             <div class="flex items-start gap-4">
@@ -176,12 +165,29 @@ const seoImage = heroImage || "https://diebruecke.cc/share-trips.jpg";
                                 </div>
                             </div>
                             
-                            <div class="p-8 bg-white dark:bg-slate-800 rounded-[32px] border border-slate-100 dark:border-slate-700 mt-6 shadow-inner text-center">
-                                <span class="text-slate-400 text-[10px] font-black uppercase tracking-widest block mb-2">Gesamtpreis</span>
-                                <div class="text-4xl font-display font-black text-slate-900 dark:text-white mb-2">
-                                    € {trip.price}
+                            {/* --- PREIS & FASS BOX --- */}
+                            <div class="p-6 md:p-8 bg-white dark:bg-slate-800 rounded-[24px] md:rounded-[32px] border border-slate-100 dark:border-slate-700 mt-6 shadow-inner text-center">
+                                
+                                {trip.price != null && (
+                                    <>
+                                        <span class="text-slate-400 text-[10px] font-black uppercase tracking-widest block mb-2">Selbstbehalt</span>
+                                        <div class="text-3xl md:text-4xl font-display font-black text-slate-900 dark:text-white mb-2">
+                                            € {trip.price}
+                                        </div>
+                                    </>
+                                )}
+                                
+                                {trip.fass_hours && (
+                                    <div class={`text-[9px] md:text-[10px] font-bold text-indigo-500 uppercase tracking-widest flex items-center justify-center gap-2 ${trip.price != null ? "mt-4 pt-4 border-t border-slate-50 dark:border-slate-700" : ""}`}>
+                                        <i class="fa-solid fa-circle-info"></i> {trip.fass_hours}h FASS / Tag
+                                    </div>
+                                )}
+
+                                {/* HINWEIS FÜR SELBSTZAHLER */}
+                                <div class="mt-4 pt-4 border-t border-slate-50 dark:border-slate-700 text-[10px] font-medium text-slate-500 dark:text-slate-400 leading-tight">
+                                    <i class="fa-solid fa-wallet text-slate-400 mr-1.5"></i> 
+                                    Die Teilnahme als Selbstzahler:in (ohne FASS-Bescheid) ist ebenfalls möglich!
                                 </div>
-                                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Inkl. aller Steuern</span>
                             </div>
                         </div>
 
@@ -205,7 +211,6 @@ const seoImage = heroImage || "https://diebruecke.cc/share-trips.jpg";
 </MainLayout>
 
 <style>
-    /* Sanfter Scale-In Effekt für das Hero-Bild */
     img {
         animation: hero-reveal 2s ease-out forwards;
     }
@@ -215,7 +220,6 @@ const seoImage = heroImage || "https://diebruecke.cc/share-trips.jpg";
     }
 </style>
 
-{/* --- SCHEMA.ORG: TOURIST TRIP --- */}
 <script type="application/ld+json" set:html={JSON.stringify({
   "@context": "https://schema.org",
   "@type": "TouristTrip",

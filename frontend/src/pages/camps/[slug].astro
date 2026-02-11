@@ -6,7 +6,6 @@ import { directus } from '../../lib/directus';
 import { readItems } from '@directus/sdk';
 import { Image } from 'astro:assets';
 
-// Import der Komponenten
 import ImageGallery from '../../components/common/ImageGallery.astro';
 import VideoPlayer from '../../components/common/VideoPlayer.astro';
 
@@ -20,7 +19,6 @@ try {
       slug: { _eq: slug },
       status: { _eq: 'published' }
     },
-    // WICHTIG: 'video_url' muss hier dabei sein!
     fields: ['*', 'gallery.*', 'gallery.directus_files_id.*', 'video_url']
   }));
   if (result && result.length > 0) camp = result[0];
@@ -30,11 +28,9 @@ try {
 
 if (!camp) return Astro.redirect('/404');
 
-// API URL Logik
 const ASSET_URL = (import.meta.env.PUBLIC_API_URL || "https://api.diebruecke.social") + "/assets";
 const heroImage = camp.image ? `${ASSET_URL}/${camp.image}` : null;
 
-// --- SEO GENERATOR ---
 const seoTitle = `${camp.title} 2026 | Inklusives Camp | Die Brücke Graz`;
 const cleanDescription = camp.description?.replace(/<[^>]*>/g, '').substring(0, 160).trim() + "...";
 const seoImage = heroImage || "https://diebruecke.cc/share-camps.jpg";
@@ -55,11 +51,9 @@ const getFlag = (location: string) => {
     image={seoImage}
 >
 
-    {/* --- HERO SECTION --- */}
     <section class="px-4 sm:px-6 pt-4 pb-12 transition-colors duration-500">
         <div class="relative bg-slate-900 rounded-[40px] md:rounded-[64px] overflow-hidden min-h-[60vh] md:min-h-[65vh] flex items-center shadow-2xl">
             
-            {/* Background Image Layer */}
             <div class="absolute inset-0 z-0">
                 {heroImage ? (
                     <img 
@@ -76,7 +70,6 @@ const getFlag = (location: string) => {
 
             <div class="relative z-10 w-full px-6 md:px-16 py-12 md:py-20">
                 <div class="max-w-7xl mx-auto">
-                    {/* Back Link */}
                     <div class="mb-8 md:mb-12">
                         <a href="/camps" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-white/80 hover:text-white hover:bg-white/20 transition-all text-[10px] md:text-xs font-bold uppercase tracking-widest group">
                             <i class="fa-solid fa-arrow-left group-hover:-translate-x-1 transition-transform"></i> 
@@ -125,12 +118,10 @@ const getFlag = (location: string) => {
         </div>
     </section>
 
-    {/* CONTENT SECTION */}
     <section class="py-12 md:py-24 px-4 md:px-6 bg-white dark:bg-slate-950 transition-colors duration-500">
         <div class="container mx-auto">
             <div class="grid lg:grid-cols-12 gap-10 md:gap-16 max-w-7xl mx-auto">
                 
-                {/* --- LINKE SPALTE: TEXT, VIDEO & GALERIE --- */}
                 <div class="lg:col-span-8">
                     <div class="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-[10px] font-black text-rose-500 uppercase tracking-[0.2em] mb-6 md:mb-8">
                         Camp Beschreibung
@@ -139,10 +130,8 @@ const getFlag = (location: string) => {
                         Zeit für <span class="text-rose-600 italic">Abenteuer.</span>
                     </h2>
                     
-                    {/* Beschreibungstext */}
                     <div class="prose prose-md md:prose-lg dark:prose-invert text-slate-600 dark:text-slate-400 prose-headings:font-display prose-headings:font-bold prose-a:text-rose-600 max-w-none" set:html={camp.description}></div>
 
-                    {/* --- VIDEO PLAYER BEREICH --- */}
                     {camp.video_url && (
                         <div class="mt-16 pt-8 border-t border-slate-100 dark:border-slate-800">
                             <h3 class="font-display font-black text-2xl md:text-3xl text-slate-900 dark:text-white uppercase mb-6">
@@ -152,7 +141,6 @@ const getFlag = (location: string) => {
                         </div>
                     )}
 
-                    {/* --- GALERIE BEREICH --- */}
                     {camp.gallery && camp.gallery.length > 0 && (
                         <div class="mt-16 pt-8 border-t border-slate-100 dark:border-slate-800">
                             <h3 class="font-display font-black text-2xl md:text-3xl text-slate-900 dark:text-white uppercase mb-6">
@@ -167,7 +155,6 @@ const getFlag = (location: string) => {
                     )}
                 </div>
 
-                {/* --- RECHTE SPALTE: INFO BOX --- */}
                 <div class="lg:col-span-4">
                     <div class="bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-[32px] md:rounded-[48px] p-8 md:p-10 sticky top-24 shadow-sm">
                         <h3 class="text-xs font-black text-slate-400 uppercase tracking-[0.3em] mb-8 md:mb-10 text-center border-b border-slate-200 dark:border-slate-800 pb-4">Reisedaten</h3>
@@ -205,7 +192,6 @@ const getFlag = (location: string) => {
                             
                            <div class="p-6 md:p-8 bg-white dark:bg-slate-800 rounded-[24px] md:rounded-[32px] border border-slate-100 dark:border-slate-700 mt-6 shadow-inner text-center">
                                 
-                                {/* LOGIK: Preis & Label nur anzeigen, wenn camp.price einen Wert hat (und nicht null ist) */}
                                 {camp.price != null && (
                                     <>
                                         <span class="text-slate-400 text-[10px] font-black uppercase tracking-widest block mb-2">Selbstbehalt</span>
@@ -215,21 +201,30 @@ const getFlag = (location: string) => {
                                     </>
                                 )}
                                 
-                                {/* LOGIK: FASS-Stunden */}
                                 {camp.fass_hours && (
                                     <div class={`text-[9px] md:text-[10px] font-bold text-indigo-500 uppercase tracking-widest flex items-center justify-center gap-2 ${camp.price != null ? "mt-4 pt-4 border-t border-slate-50 dark:border-slate-700" : ""}`}>
                                         <i class="fa-solid fa-circle-info"></i> {camp.fass_hours}h FASS / Tag
                                     </div>
                                 )}
+
+                                {/* HINWEIS FÜR SELBSTZAHLER */}
+                                <div class="mt-4 pt-4 border-t border-slate-50 dark:border-slate-700 text-[10px] font-medium text-slate-500 dark:text-slate-400 leading-tight">
+                                    <i class="fa-solid fa-wallet text-slate-400 mr-1.5"></i> 
+                                    Die Teilnahme als Selbstzahler:in (ohne FASS-Bescheid) ist ebenfalls möglich!
+                                </div>
                             </div>
                         </div>
 
+                        {/* --- CTA BUTTON WIE BEI CITY TRIPS --- */}
                         <div class="mt-10">
                             <a href={`/contact?subject=Anfrage für Camp: ${camp.title}`} 
-                               class="group block w-full py-4 md:py-5 bg-rose-600 hover:bg-slate-900 dark:hover:bg-white dark:hover:text-slate-900 text-white text-center font-black uppercase tracking-widest text-[10px] md:text-xs rounded-xl md:rounded-2xl transition-all shadow-xl shadow-rose-200 dark:shadow-none transform hover:-translate-y-1">
-                                Unverbindlich anfragen
+                               class="group block w-full py-5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-center font-black uppercase tracking-widest text-xs rounded-2xl transition-all shadow-xl hover:bg-rose-600 dark:hover:bg-rose-500 dark:hover:text-white transform hover:-translate-y-1">
+                                Jetzt Platz sichern
                                 <i class="fa-solid fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
                             </a>
+                            <p class="text-[10px] text-slate-400 text-center mt-6 font-bold uppercase tracking-widest">
+                                Begrenztes Kontingent
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -250,7 +245,6 @@ const getFlag = (location: string) => {
     }
 </style>
 
-{/* --- SCHEMA.ORG --- */}
 <script type="application/ld+json" set:html={JSON.stringify({
   "@context": "https://schema.org",
   "@type": "TouristTrip",
