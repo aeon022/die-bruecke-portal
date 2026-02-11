@@ -4,15 +4,31 @@ import { directus } from '../../lib/directus';
 import { readItems } from '@directus/sdk';
 import { Image } from 'astro:assets';
 
-// 1. Daten laden
-const camps = await directus.request(readItems('camps', {
+// 1. Daten laden: Camps und City Trips separat fetchen
+const rawCamps = await directus.request(readItems('camps', {
     filter: { status: { _eq: 'published' } },
     sort: ['sort'] 
 }));
 
+const rawCityTrips = await directus.request(readItems('city_trips', {
+    filter: { status: { _eq: 'published' } },
+    sort: ['sort'] 
+})).catch(() => []); // Fallback, falls die Collection z.B. citytrips heißt
+
+// 2. Arrays vorbereiten und mergen
+const camps = rawCamps.map((c: any) => ({ ...c, base_path: 'camps' }));
+const cityTrips = rawCityTrips.map((c: any) => ({ ...c, base_path: 'city-trips' }));
+
+const allReisen = [...camps, ...cityTrips].sort((a, b) => {
+    const sortA = a.sort !== null && a.sort !== undefined ? a.sort : 999;
+    const sortB = b.sort !== null && b.sort !== undefined ? b.sort : 999;
+    return sortA - sortB;
+});
+
 const ASSET_URL = "https://api.diebruecke.social/assets";
-// Wir suchen das Featured Camp, sonst nehmen wir das erste aus der Liste
-const featuredCamp = camps.find((c: any) => c.is_featured) || camps[0];
+
+// Wir suchen das Featured Item aus ALLEN Reisen, sonst nehmen wir das erste aus der gemischten Liste
+const featuredTrip = allReisen.find((c: any) => c.is_featured) || allReisen[0];
 
 // Hilfsfunktion für Directus-Optimierung (Serverseitig)
 const getImg = (id: string, w = 800) => `${ASSET_URL}/${id}?width=${w}&format=webp&quality=80`;
@@ -37,7 +53,7 @@ function cleanDesc(html: string) {
 
 const seoTitle = "Inklusive Sommercamps & barrierefreie Reisen 2026 | Die Brücke Graz";
 const seoDescription = "Entdecke unsere barrierefreien Sommercamps und inklusiven Reisen 2026. Abenteuer ohne Barrieren für Menschen mit Behinderung.";
-const seoImage = featuredCamp?.image ? getImg(featuredCamp.image, 1200) : "https://diebruecke.cc/share-camps.jpg";
+const seoImage = featuredTrip?.image ? getImg(featuredTrip.image, 1200) : "https://diebruecke.cc/share-camps.jpg";
 ---
 
 <MainLayout 
@@ -46,16 +62,16 @@ const seoImage = featuredCamp?.image ? getImg(featuredCamp.image, 1200) : "https
     image={seoImage}
 >
     
-    {/* --- HERO SECTION (FEATURED CAMP) --- */}
-    {featuredCamp && (
+    {/* --- HERO SECTION (FEATURED REISE) --- */}
+    {featuredTrip && (
         <section class="px-4 sm:px-6 pt-6 pb-20 transition-colors duration-500">
             <div class="relative bg-slate-900 rounded-[48px] md:rounded-[64px] overflow-hidden min-h-[70vh] flex items-center shadow-2xl">
                 
                 <div class="absolute inset-0 z-0">
-                    {featuredCamp.image && (
+                    {featuredTrip.image && (
                          <Image 
-                            src={getImg(featuredCamp.image, 1600)} 
-                            alt={featuredCamp.title}
+                            src={getImg(featuredTrip.image, 1600)} 
+                            alt={featuredTrip.title}
                             width={1600}
                             height={900}
                             loading="eager"
@@ -79,34 +95,33 @@ const seoImage = featuredCamp?.image ? getImg(featuredCamp.image, 1200) : "https
                         </div>
                         
                         <h1 class="text-5xl md:text-8xl font-display font-black text-white mb-8 tracking-tighter leading-[1.02] uppercase">
-                            {featuredCamp.title}
+                            {featuredTrip.title}
                         </h1>
                         
                         <p 
                             class="text-xl md:text-2xl text-slate-200 mb-12 leading-relaxed font-medium border-l-4 border-rose-500 pl-8 max-w-2xl"
-                            set:html={cleanDesc(featuredCamp.description) + '...'}
+                            set:html={cleanDesc(featuredTrip.description) + '...'}
                         >
                         </p>
                         
                         <div class="flex flex-wrap gap-10 mb-12 text-xs font-black uppercase tracking-[0.2em] text-slate-300">
                             <div class="flex items-center gap-3">
                                 <i class="fa-regular fa-calendar text-rose-500 text-xl"></i> 
-                                {featuredCamp.date_range}
+                                {featuredTrip.date_range}
                             </div>
                             <div class="flex items-center gap-3">
-                                <span class="text-3xl">{getFlag(featuredCamp.location)}</span> 
-                                <span class="text-white">{featuredCamp.location}</span>
+                                <span class="text-3xl">{getFlag(featuredTrip.location)}</span> 
+                                <span class="text-white">{featuredTrip.location}</span>
                             </div>
                         </div>
 
                         <div class="flex flex-wrap gap-4">
-                            <a href={`/camps/${featuredCamp.slug}`} class="bg-rose-600 text-white px-10 py-5 rounded-full font-black uppercase tracking-widest text-xs hover:bg-white hover:text-slate-900 transition-all shadow-xl shadow-rose-900/20 transform hover:-translate-y-1">
+                            <a href={`/${featuredTrip.base_path}/${featuredTrip.slug}`} class="bg-rose-600 text-white px-10 py-5 rounded-full font-black uppercase tracking-widest text-xs hover:bg-white hover:text-slate-900 transition-all shadow-xl shadow-rose-900/20 transform hover:-translate-y-1">
                                 Details & Anmeldung
                             </a>
-                            {/* FIX: Preis im Hero nur anzeigen, wenn vorhanden */}
-                            {featuredCamp.price != null && (
+                            {featuredTrip.price != null && (
                                 <div class="px-10 py-5 border border-white/20 backdrop-blur-md text-white rounded-full font-black text-xs uppercase tracking-widest">
-                                    ab € {featuredCamp.price},-
+                                    ab € {featuredTrip.price},-
                                 </div>
                             )}
                         </div>
@@ -129,15 +144,15 @@ const seoImage = featuredCamp?.image ? getImg(featuredCamp.image, 1200) : "https
             </div>
             
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-12">
-                {camps.map((camp: any) => (
+                {allReisen.map((trip: any) => (
                     <article class="group relative bg-white dark:bg-slate-900 rounded-[48px] overflow-hidden border border-slate-100 dark:border-slate-800 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 flex flex-col h-full shadow-sm cursor-pointer">
                         
                         {/* Bild-Bereich */}
                         <div class="relative h-72 overflow-hidden bg-slate-100">
-                            {camp.image ? (
+                            {trip.image ? (
                                 <Image 
-                                    src={getImg(camp.image, 800)} 
-                                    alt={camp.title}
+                                    src={getImg(trip.image, 800)} 
+                                    alt={trip.title}
                                     width={800}
                                     height={500}
                                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[1.5s]" 
@@ -147,33 +162,37 @@ const seoImage = featuredCamp?.image ? getImg(featuredCamp.image, 1200) : "https
                             )}
                             
                             <div class="absolute top-6 left-6 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md px-4 py-2 rounded-2xl text-xs font-black text-slate-900 dark:text-white shadow-xl flex items-center gap-3 z-10">
-                                <span class="text-xl">{getFlag(camp.location)}</span> 
-                                {/* FIX: Preis nur anzeigen, wenn nicht null */}
-                                {camp.price != null && (
-                                    <span>€ {camp.price}</span>
+                                <span class="text-xl">{getFlag(trip.location)}</span> 
+                                {trip.price != null && (
+                                    <span>€ {trip.price}</span>
                                 )}
+                            </div>
+                            
+                            {/* Kennzeichnung, ob City Trip oder Camp */}
+                            <div class="absolute top-6 right-6 bg-slate-900/80 backdrop-blur-md px-3 py-1.5 rounded-xl text-[10px] font-black text-white uppercase tracking-widest z-10 border border-white/10">
+                                {trip.base_path === 'city-trips' ? 'City Trip' : 'Camp'}
                             </div>
                         </div>
                         
                         <div class="p-10 flex flex-col flex-1">
                             <div class="text-[10px] font-black text-rose-500 uppercase tracking-[0.3em] mb-6">
-                                <i class="fa-regular fa-calendar mr-2"></i> {camp.date_range}
+                                <i class="fa-regular fa-calendar mr-2"></i> {trip.date_range}
                             </div>
                             
                             <h3 class="text-3xl font-display font-bold text-slate-900 dark:text-white mb-6 leading-tight group-hover:text-rose-600 transition-colors uppercase tracking-tight">
-                                <a href={`/camps/${camp.slug}`} class="before:absolute before:inset-0 before:z-20">
-                                    {camp.title}
+                                <a href={`/${trip.base_path}/${trip.slug}`} class="before:absolute before:inset-0 before:z-20">
+                                    {trip.title}
                                 </a>
                             </h3>
                             
-                            <div class="text-slate-500 dark:text-slate-400 leading-relaxed line-clamp-3 mb-10 text-base font-medium flex-1" set:html={cleanDesc(camp.description)}></div>
+                            <div class="text-slate-500 dark:text-slate-400 leading-relaxed line-clamp-3 mb-10 text-base font-medium flex-1" set:html={cleanDesc(trip.description)}></div>
                             
                             <div class="pt-8 border-t border-slate-50 dark:border-slate-800 flex items-center justify-between mt-auto">
                                 <div class="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest relative z-10">
-                                    {camp.free_spots > 0 ? (
+                                    {trip.free_spots > 0 ? (
                                         <span class="text-emerald-600 flex items-center gap-2">
                                             <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> 
-                                            {camp.free_spots} Plätze
+                                            {trip.free_spots} Plätze
                                         </span>
                                     ) : (
                                         <span class="text-rose-500 flex items-center gap-2">
@@ -193,7 +212,7 @@ const seoImage = featuredCamp?.image ? getImg(featuredCamp.image, 1200) : "https
         </div>
     </section>
 
-    {/* --- CITY TRIPS CALLOUT --- */}
+    {/* --- CITY TRIPS CALLOUT (Bleibt unangetastet) --- */}
     <section class="px-6 sm:px-10 pb-32">
         <div class="max-w-7xl mx-auto">
             <a href="/city-trips" class="group relative block rounded-[48px] md:rounded-[64px] overflow-hidden bg-indigo-900 text-white shadow-2xl transition-all hover:scale-[1.01] duration-500">
@@ -241,20 +260,20 @@ const seoImage = featuredCamp?.image ? getImg(featuredCamp.image, 1200) : "https
   "@type": "ItemList",
   "name": "Inklusive Sommercamps & Reisen 2026 Die Brücke Graz",
   "description": seoDescription,
-  "itemListElement": camps.map((camp: any, index: number) => ({
+  "itemListElement": allReisen.map((trip: any, index: number) => ({
     "@type": "ListItem",
     "position": index + 1,
     "item": {
         "@type": "TouristTrip",
-        "name": camp.title,
-        "description": cleanDesc(camp.description),
-        "url": `https://diebruecke.cc/camps/${camp.slug}`,
-        "image": camp.image ? `${ASSET_URL}/${camp.image}` : seoImage,
+        "name": trip.title,
+        "description": cleanDesc(trip.description),
+        "url": `https://diebruecke.cc/${trip.base_path}/${trip.slug}`,
+        "image": trip.image ? `${ASSET_URL}/${trip.image}` : seoImage,
         "offers": {
             "@type": "Offer",
-            "price": camp.price || "0",
+            "price": trip.price || "0",
             "priceCurrency": "EUR",
-            "availability": camp.free_spots > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"
+            "availability": trip.free_spots > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"
         }
     }
   }))
