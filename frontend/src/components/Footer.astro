@@ -32,10 +32,13 @@ const contactInfo = {
     zvr: settings?.zvr_number || "747612623"
 };
 
-// 3. Social Media Logik
+// 3. Social Media Logik (Synchronisiert mit Header)
 const rawSocials = [
     { key: 'social_facebook', icon: 'fa-facebook-f', label: 'Facebook', fallback: 'https://www.facebook.com/brueckegraz' },
     { key: 'social_instagram', icon: 'fa-instagram', label: 'Instagram', fallback: 'https://www.instagram.com/die.bruecke.graz' },
+    { key: 'social_x', icon: 'fa-x-twitter', label: 'X (Twitter)', fallback: null },
+    { key: 'social_youtube', icon: 'fa-youtube', label: 'YouTube', fallback: null },
+    { key: 'social_linkedin', icon: 'fa-linkedin-in', label: 'LinkedIn', fallback: null }
 ];
 
 const activeSocials = rawSocials.map(s => {
@@ -54,7 +57,6 @@ const association = [
   { name: 'Über uns', href: '/about' },
   { name: 'Team & Kontakt', href: '/contact' },
   { name: 'Mitmachen', href: '/join' },
-  // NEU: Unterstützer & Partner (Donator Wall)
   { name: 'Unterstützer', href: '/supporters' },
   { name: 'Raumvermietung', href: '/space' },
 ];
@@ -98,7 +100,7 @@ const legals = [
                         </a>
                         <p class="text-slate-700 dark:text-slate-400 text-sm leading-relaxed max-w-sm font-medium">
                             Inklusion, Kultur und Begegnung mitten in Graz. 
-                            Wir sind das Backup für deine Unabhängigkeit.
+                            Wir sind dein Rückenwind für ein selbstbestimmtes Leben.
                         </p>
                     </div>
 
@@ -118,7 +120,7 @@ const legals = [
                     </div>
 
                     {activeSocials.length > 0 && (
-                        <div class="flex gap-3">
+                        <div class="flex flex-wrap gap-3">
                             {activeSocials.map((social) => (
                                 <a href={social.href} target="_blank" rel="noopener noreferrer" aria-label={social.label} class="w-10 h-10 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 flex items-center justify-center text-slate-600 dark:text-slate-400 hover:bg-rose-600 hover:text-white hover:border-rose-500 dark:hover:bg-rose-600 dark:hover:text-white dark:hover:border-rose-500 transition-all duration-300 hover:-translate-y-1 shadow-sm hover:shadow-lg">
                                     <i class={`fa-brands ${social.icon}`} aria-hidden="true"></i>
