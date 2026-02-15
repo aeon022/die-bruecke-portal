@@ -4,18 +4,11 @@ import { directus } from '../lib/directus';
 import { readItems } from '@directus/sdk';
 import { Image } from 'astro:assets'; 
 
-// --- NEU: LOKALE BILDER & FALLBACKS ---
-// 1. Die alten Unsplash-Links (sicher geparkt)
-const FALLBACK_SEMINAR = "https://images.unsplash.com/photo-1517048676732-d65bc937f952";
-const FALLBACK_PARTY = "https://images.unsplash.com/photo-1516997121675-4c2d1684aa3e";
-
-// 2. Die neuen lokalen Bilder
-// WICHTIG: Diese Dateien MÜSSEN in 'src/assets/' liegen, sonst bricht der Build ab!
-// Um den Fallback zu nutzen, kommentiere den Import aus und nutze unten die Variable FALLBACK_...
+// 1. Die neuen lokalen Bilder
 import seminarImg from '../assets/seminar.webp';
 import partyImg from '../assets/party.webp';
 
-// --- DIRECTUS & BILD LOGIK ---
+// --- DIRECTUS LOGIK ---
 const ASSET_URL = "https://api.diebruecke.social/assets";
 const getImg = (id: string, w = 1200) => id ? `${ASSET_URL}/${id}?width=${w}&format=webp&quality=80` : null;
 
@@ -36,54 +29,35 @@ try {
     console.error("Fehler beim Laden der Space-Daten:", error);
 }
 
-// "Hard Facts" & Equipment kombiniert
+// --- EQUIPMENT GRID ---
 const equipment = [
     // Zeile 1: Die Raum-Facts
-    { 
-        icon: "fa-users", 
-        label: "Bis 400 Gäste", 
-        desc: "150 Innenraum / 250 Garten" 
-    },
-    { 
-        icon: "fa-chair", 
-        label: "Flexibler Saal", 
-        desc: "30-80 Pers. (Bistro bis Reihe)" 
-    },
-    { 
-        icon: "fa-utensils", 
-        label: "Catering Bereich", 
-        desc: "Buffet räumlich abtrennbar" 
-    },
-    { 
-        icon: "fa-wheelchair", 
-        label: "100% Barrierefrei", 
-        desc: "Rollstuhlgerechtes WC" 
-    },
+    { icon: "fa-users", label: "Bis 400 Gäste", desc: "150 Innenraum / 250 Garten" },
+    { icon: "fa-chair", label: "Flexibler Saal", desc: "30-80 Pers. (Bistro bis Reihe)" },
+    { icon: "fa-utensils", label: "Catering Bereich", desc: "Buffet räumlich abtrennbar" },
+    { icon: "fa-wheelchair", label: "100% Barrierefrei", desc: "Rollstuhlgerechtes WC" },
     
-    // Zeile 2: Die Technik
+    // Zeile 2: Die Technik (WLAN ersetzt durch Techniker, um das 8er-Grid sauber zu halten)
     { icon: "fa-video", label: "HD Beamer", desc: "Lichtstark für Präsentationen" },
     { icon: "fa-expand", label: "Große Leinwand", desc: "Motorisiert, 16:9 Format" },
-    { icon: "fa-wifi", label: "WLAN", desc: "Highspeed für alle Gäste" },
+    { icon: "fa-user-gear", label: "Technik-Support", desc: "Techniker auf Wunsch vermittelbar" }, // <-- HIER IST DER TECHNIKER
     { icon: "fa-microphone-lines", label: "Profi-Audio", desc: "Mikrofone & PA-Anlage" }
 ];
 
-// --- USE CASES (lokale bilder) ---
+// --- USE CASES ---
 const useCases = [
     {
         title: "Seminare & Workshops",
         subtitle: "Dein Raum am Vormittag",
         desc: "Nutze unsere zentrale Lage für deine Business-Events. Helle Atmosphäre, Bestuhlung nach Wunsch und volle technische Ausstattung.",
-        features: ["Flipchart buchbar", "Kaffee-Catering möglich", "Barrierefreier Zugang"],
-        // HIER: Wir nutzen das importierte Bild. 
-        // Falls du zurück zu Unsplash willst: Ändere 'seminarImg' zu 'FALLBACK_SEMINAR'
+        features: ["Flipchart buchbar", "Kaffee-Catering möglich", "Barrierefreier Zugang", "Technischer Betreuer möglich"], // <-- UPDATE
         image: seminarImg 
     },
     {
         title: "Private Feiern",
         subtitle: "Dein Raum am Abend",
         desc: "Geburtstage, Jubiläen oder Vereinsfeiern. Die Brücke verwandelt sich abends in einen stimmungsvollen Partyraum.",
-        features: ["Flexibel für dich", "Essen: Dein Caterer oder DIY", "Lichttechnik für Stimmung"],
-        // HIER: Das lokale Party-Bild
+        features: ["Flexibel für dich", "Essen: Dein Caterer oder DIY", "Lichttechnik für Stimmung", "Eigener Tontechniker zubuchbar"], // <-- UPDATE
         image: partyImg
     }
 ];
@@ -91,7 +65,6 @@ const useCases = [
 // --- SEO & BILD KONFIGURATION ---
 const fallbackImage = "https://images.unsplash.com/photo-1517457373958-b7bdd4587205";
 
-// Logik: Directus Bild > Fallback
 const heroImage = (pageSettings && pageSettings.hero_image) 
     ? getImg(pageSettings.hero_image, 1600) 
     : fallbackImage;
@@ -107,14 +80,11 @@ const seoImage = heroImage;
     image={seoImage}
 >
     
-{/* --- HERO SECTION --- */}
+    {/* --- HERO SECTION --- */}
     <section class="px-4 sm:px-6 pt-6 pb-20 dark:bg-slate-900">
         <div class="relative bg-slate-900 rounded-[48px] overflow-hidden min-h-[60vh] flex items-center px-6 md:px-16 py-24">
             
-            {/* ATMOSPHERIC IMAGE LAYER (Rechts) - OPTIMIERT FÜR SERVICES-LOOK */}
-            {/* Änderungen: lg:w-2/3 (breiter), black_30% (weicherer Verlauf) */}
             <div class="absolute top-0 right-0 w-full lg:w-2/3 h-full pointer-events-none overflow-hidden [mask-image:linear-gradient(to_left,black_30%,transparent)]">
-                {/* PERFORMANCE: Eager loading für LCP */}
                 <Image 
                     src={heroImage}
                     alt="Eventlocation Die Brücke Graz"
@@ -125,11 +95,9 @@ const seoImage = heroImage;
                 />
             </div>
 
-            {/* BACKGROUND FX */}
             <div class="absolute top-0 left-0 w-full h-full pointer-events-none">
                 <div class="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-indigo-500/20 rounded-full blur-[120px] animate-pulse-slow"></div>
                 <div class="absolute bottom-[-10%] right-[10%] w-[500px] h-[500px] bg-rose-500/10 rounded-full blur-[100px]"></div>
-                {/* Noise Textur */}
                 <div class="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay"></div>
             </div>
 
@@ -177,31 +145,28 @@ const seoImage = heroImage;
         </div>
     </section>
 
-    {/* --- USE CASES (Optimiert für Schärfe) --- */}
-    <section id="details" class="px-4 sm:px-6 pb-32">
+    {/* --- USE CASES --- */}
+    <section id="details" class="px-4 sm:px-6 pb-24">
         <div class="max-w-7xl mx-auto space-y-32">
             {useCases.map((useCase, idx) => (
                 <div class={`flex flex-col md:flex-row gap-16 items-center ${idx % 2 === 1 ? 'md:flex-row-reverse' : ''}`}>
                     
-                    {/* Image Side */}
                     <div class="flex-1 w-full">
                         <div class="relative aspect-[4/3] rounded-[48px] overflow-hidden shadow-2xl group border border-slate-100 dark:border-slate-800">
-                            {/* PERFORMANCE: High-Res Einstellungen für Schärfe */}
                             <Image 
                                 src={useCase.image}
                                 alt={useCase.title}
-                                width={1200}  /* ERHÖHT: Basisgröße für schärfere Darstellung */
-                                height={900}  /* ERHÖHT: Passend zum 4:3 Verhältnis */
+                                width={1200}  
+                                height={900}  
                                 format="webp"
-                                quality={90}  /* ERHÖHT: Mehr Details */
-                                densities={[1.5, 2]} /* WICHTIG: Retina/High-DPI Support */
+                                quality={90}  
+                                densities={[1.5, 2]} 
                                 class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-[1.5s]"
                             />
                             <div class="absolute inset-0 bg-slate-900/10 group-hover:bg-transparent transition"></div>
                         </div>
                     </div>
 
-                    {/* Content Side */}
                     <div class="flex-1 space-y-8">
                         <div class="inline-block px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-rose-600 dark:text-rose-400 font-bold text-xs uppercase tracking-widest">
                             {useCase.subtitle}
@@ -228,18 +193,25 @@ const seoImage = heroImage;
                         </ul>
 
                         <div class="pt-4">
-                            <a href="/contact" class="inline-flex items-center gap-3 text-slate-900 dark:text-white font-bold hover:text-rose-600 dark:hover:text-rose-400 transition-colors uppercase tracking-widest text-sm group">
-                                Verfügbarkeit anfragen 
-                                <span class="w-8 h-8 rounded-full border border-slate-200 dark:border-slate-700 flex items-center justify-center group-hover:bg-slate-100 dark:group-hover:bg-slate-800 transition-colors">
-                                    <i class="fa-solid fa-arrow-right group-hover:translate-x-0.5 transition-transform"></i>
-                                </span>
-                            </a>
-                        </div>
+    <a href="mailto:office@diebruecke.cc?subject=Anfrage%20Raummiete" class="inline-flex items-center gap-3 text-slate-900 dark:text-white font-bold hover:text-rose-600 dark:hover:text-rose-400 transition-colors uppercase tracking-widest text-sm group">
+        Verfügbarkeit anfragen 
+        <span class="w-8 h-8 rounded-full border border-slate-200 dark:border-slate-700 flex items-center justify-center group-hover:bg-slate-100 dark:group-hover:bg-slate-800 transition-colors">
+            <i class="fa-solid fa-arrow-right group-hover:translate-x-0.5 transition-transform"></i>
+        </span>
+    </a>
+</div>
                     </div>
                 </div>
             ))}
         </div>
     </section>
+
+    {/* --- DYNAMISCHER CMS CONTENT (Optional, falls in Directus Text hinterlegt ist) --- */}
+    {pageSettings?.content && (
+        <section class="px-4 sm:px-6 pb-24">
+            <div class="max-w-4xl mx-auto prose prose-lg prose-slate dark:prose-invert" set:html={pageSettings.content}></div>
+        </section>
+    )}
 
     {/* --- CTA BOX --- */}
     <section class="px-4 sm:px-6 pb-24">
@@ -255,10 +227,10 @@ const seoImage = heroImage;
                         Ob Workshop, Tagung oder Feier: Jede Veranstaltung hat ihren eigenen Rhythmus. Wir sorgen für den passenden Rahmen und helfen dir bei dem, was du wirklich brauchst. 
                         <br class="hidden md:block"/>
                     </p>
-                    <a href="/contact" class="bg-rose-600 text-white px-10 py-5 rounded-full font-bold shadow-xl hover:bg-slate-900 dark:hover:bg-white dark:hover:text-slate-900 transition-all transform hover:scale-105 inline-flex items-center gap-3">
-                        <i class="fa-regular fa-paper-plane"></i>
-                        Schreib uns eine Nachricht
-                    </a>
+                    <a href="mailto:office@diebruecke.cc?subject=Anfrage%20Raummiete" class="bg-rose-600 text-white px-10 py-5 rounded-full font-bold shadow-xl hover:bg-slate-900 dark:hover:bg-white dark:hover:text-slate-900 transition-all transform hover:scale-105 inline-flex items-center gap-3">
+    <i class="fa-regular fa-paper-plane"></i>
+    Schreib uns eine Nachricht
+</a>
                 </div>
             </div>
         </div>
