@@ -1,13 +1,10 @@
 ---
 import MainLayout from '../layouts/layout.astro';
+import LocationCard from '../components/LocationCard.astro'; // <-- KOMPONENTE IMPORTIERT
 import { directus } from '../lib/directus';
 import { readSingleton } from '@directus/sdk';
 
-// 1. Environment Variables
-const GOOGLE_KEY = import.meta.env.PUBLIC_GOOGLE_MAPS_KEY;
-const LAT_LNG = "47.0849,15.4348"; // Koordinaten für Static Map Zentrierung
-
-// 2. Daten laden
+// 1. Daten laden
 let settings;
 try {
     settings = await directus.request(readSingleton('global_settings'));
@@ -70,7 +67,6 @@ const departments = [
 // --- SEO KONFIGURATION ---
 const seoTitle = "Kontakt & Anfahrt | Die Brücke Graz";
 const seoDescription = "Erreichbarkeit, Öffnungszeiten und Anfahrt. Besuch uns in der Grabenstraße 39a oder schreib uns. Wir sind dein offenes Haus in Graz.";
-// Ein Bild der Location oder Karte macht hier Sinn
 const seoImage = "https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=1200"; 
 
 ---
@@ -114,104 +110,8 @@ const seoImage = "https://images.unsplash.com/photo-1497366216548-37526070297c?q
             
             <div class="space-y-12">
                 
-                {/* --- INFO BOX & KARTE --- */}
-                <div class="bg-slate-50 dark:bg-slate-900 rounded-[32px] border border-slate-100 dark:border-slate-800 overflow-hidden transition-colors duration-300">
-                    
-                    <div class="relative w-full h-64 bg-slate-200 dark:bg-slate-800 group" id="map-container">
-                        <iframe 
-                            id="google-map"
-                            class="w-full h-full absolute inset-0 hidden"
-                            loading="lazy"
-                            allowfullscreen
-                            referrerpolicy="no-referrer-when-downgrade">
-                        </iframe>
-
-                        {/* STATIC MAP PLACEHOLDER MIT API KEY */}
-                        <div id="map-placeholder" 
-                             data-key={GOOGLE_KEY}
-                             class="absolute inset-0 bg-cover bg-center flex flex-col items-center justify-center p-6 text-center transition-all cursor-pointer hover:bg-slate-300/50 dark:hover:bg-slate-700/50" 
-                             style={`background-image: url('https://maps.googleapis.com/maps/api/staticmap?center=${LAT_LNG}&zoom=15&size=800x400&maptype=roadmap&markers=color:red%7C${LAT_LNG}&style=feature:all|saturation:-100&key=${GOOGLE_KEY}'); background-color: #cbd5e1;`}>
-                             
-                            {/* Overlay Pattern */}
-                            <div class="absolute inset-0 bg-slate-200 dark:bg-slate-800 opacity-50" style="background-image: radial-gradient(#94a3b8 1px, transparent 1px); background-size: 20px 20px;"></div>
-                            
-                            <div class="relative z-10 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md p-6 rounded-2xl shadow-xl border border-white/50 dark:border-white/10 max-w-xs text-center">
-                                <div class="w-12 h-12 bg-rose-600 rounded-full flex items-center justify-center text-white text-xl mx-auto mb-3 shadow-lg">
-                                    <i class="fa-solid fa-location-dot"></i>
-                                </div>
-                                <h4 class="font-bold text-slate-900 dark:text-white mb-1">Karte laden</h4>
-                                <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">
-                                    Mit dem Klick akzeptierst du, dass Daten an Google Maps übertragen werden.
-                                </p>
-                                <button id="btn-load-map" class="bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-full hover:bg-rose-600 dark:hover:bg-rose-400 dark:hover:text-white transition-colors w-full">
-                                    Karte aktivieren
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="p-8">
-                        <div class="flex items-start gap-4 mb-8">
-                            <div>
-                                <h3 class="font-bold text-xl text-slate-900 dark:text-white leading-tight mb-2">Die Brücke <br><span class="text-sm font-normal text-slate-500 dark:text-slate-400">soziokulturelles Zentrum</span></h3>
-                                <p class="text-slate-500 dark:text-slate-400 leading-relaxed text-lg">
-                                    Grabenstraße 39a <br>
-                                    8010 Graz <br>
-                                    Österreich
-                                </p>
-                                <a href="https://www.google.com/maps/search/?api=1&query=Die+Brücke+Graz+Grabenstraße+39a" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-sm font-bold text-rose-600 dark:text-rose-400 mt-4 hover:underline">
-                                    In Google Maps öffnen <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                                </a>
-
-                                <div class="flex flex-wrap gap-4 mt-6 border-b border-slate-100 dark:border-slate-800 pb-6 mb-6">
-                                    <button id="vcard-btn" class="inline-flex items-center gap-2 text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 transition-colors cursor-pointer">
-                                        <i class="fa-regular fa-address-card"></i> Ins Adressbuch
-                                    </button>
-                                </div>
-
-                            </div>
-                        </div>
-
-                        <div class="h-px bg-slate-200 dark:bg-slate-800 w-full mb-8"></div>
-
-                        <h4 class="font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-                            <i class="fa-solid fa-bus text-slate-400"></i> Anfahrt mit Öffis
-                        </h4>
-                        
-                        <div class="space-y-6">
-                            <div>
-                                <p class="text-slate-900 dark:text-white text-sm font-bold mb-1">Straßenbahn (Richtung Andritz)</p>
-                                <p class="text-slate-500 dark:text-slate-400 text-sm mb-2">Haltestelle <strong class="text-slate-700 dark:text-slate-300">Hasnerplatz / Päd. Hochschule</strong>. Von dort kurzer Fußweg durch den Park.</p>
-                                <div class="flex flex-wrap gap-2">
-                                    <span class="px-2 py-1 rounded bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300">Linie 3</span>
-                                    <span class="px-2 py-1 rounded bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300">Linie 5</span>
-                                </div>
-                            </div>
-
-                            <div>
-                                <p class="text-slate-900 dark:text-white text-sm font-bold mb-1">Bus</p>
-                                <p class="text-slate-500 dark:text-slate-400 text-sm mb-2">Haltestelle <strong class="text-slate-700 dark:text-slate-300">Grabenstraße</strong>.</p>
-                                <div class="flex flex-wrap gap-2">
-                                    <span class="px-2 py-1 rounded bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300">Bus 39</span>
-                                    <span class="px-2 py-1 rounded bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300">Bus 63</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800/50">
-                            <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3">Routenplaner</p>
-                            <div class="flex flex-col sm:flex-row gap-3">
-                                <a href="https://www.google.com/maps/dir/?api=1&destination=Die+Brücke+Graz+Grabenstraße+39a" target="_blank" rel="noopener noreferrer" class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-emerald-500 hover:text-white dark:hover:bg-emerald-600 transition-all text-xs font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wide group">
-                                    <i class="fa-solid fa-route group-hover:scale-110 transition-transform"></i> Route berechnen
-                                </a>
-                                <a href="https://www.holding-graz.at/de/unternehmen/unsere-app-angebote/" target="_blank" class="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-emerald-500 hover:text-emerald-500 dark:hover:border-emerald-400 dark:hover:text-emerald-400 transition-all text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">
-                                    <i class="fa-solid fa-mobile-screen"></i> Graz Mobil App
-                                </a>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
+                {/* --- INFO BOX & KARTE VIA KOMPONENTE --- */}
+                <LocationCard />
 
                 {/* --- BARRIEREFREIHEIT --- */}
                 {accessibilityItems.length > 0 && (
@@ -464,30 +364,7 @@ const seoImage = "https://images.unsplash.com/photo-1497366216548-37526070297c?q
         container.classList.remove('hidden');
     }
 
-    // 2. Google Maps Logic
-    function initMapLogic() {
-        const placeholder = document.getElementById('map-placeholder');
-        const iframe = document.getElementById('google-map');
-        
-        if (placeholder && iframe) {
-            placeholder.addEventListener('click', () => {
-                const apiKey = placeholder.dataset.key;
-                if (!apiKey) {
-                    alert("Google Maps API Key nicht gefunden. Bitte .env prüfen.");
-                    return;
-                }
-                const query = "Die Brücke Graz Grabenstraße 39a";
-                // FIX: Korrekte Google Maps Embed API URL
-                const mapUrl = `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${encodeURIComponent(query)}`;
-                
-                iframe.setAttribute('src', mapUrl);
-                iframe.classList.remove('hidden');
-                placeholder.style.display = 'none';
-            });
-        }
-    }
-
-    // 3. Form Logic
+    // 2. Form Logic
     function initFormLogic() {
         const form = document.getElementById('contact-form');
         const msgBox = document.getElementById('form-message');
@@ -534,43 +411,9 @@ const seoImage = "https://images.unsplash.com/photo-1497366216548-37526070297c?q
         }
     }
 
-    // 4. vCard Logic
-    function initVCardLogic() {
-        const btn = document.getElementById('vcard-btn');
-        if(btn) {
-            btn.addEventListener('click', () => {
-                const vCardData = [
-                    "BEGIN:VCARD",
-                    "VERSION:3.0",
-                    "N:;Die Brücke;;;",
-                    "FN:Die Brücke Graz",
-                    "ORG:Die Brücke - soziokulturelles Zentrum;",
-                    "TEL;type=WORK;type=VOICE;type=pref:+43316672248",
-                    "EMAIL:office@diebruecke.cc",
-                    "ADR;type=WORK:;;Grabenstraße 39a;Graz;;8010;Austria",
-                    "URL:https://diebruecke.cc",
-                    "NOTE:Bürozeiten: Mo-Do 9-16, Fr 9-13 Uhr",
-                    "END:VCARD"
-                ].join("\n");
-
-                const blob = new Blob([vCardData], { type: "text/vcard" });
-                const url = URL.createObjectURL(blob);
-                
-                const link = document.createElement("a");
-                link.href = url;
-                link.setAttribute("download", "Die_Bruecke_Graz.vcf");
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            });
-        }
-    }
-
     const init = () => {
         updateOpeningStatus();
-        initMapLogic();
         initFormLogic();
-        initVCardLogic();
     }
     
     init();
