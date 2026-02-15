@@ -251,43 +251,30 @@ const seoImage = heroImage;
                 <LocationCard />
 
                 {/* Right: Downloads & Hard Facts */}
-                <div class="bg-slate-50 dark:bg-slate-800/20 p-8 md:p-10 rounded-[32px] border border-slate-100 dark:border-slate-800">
-                    <h3 class="text-2xl font-display font-bold text-slate-900 dark:text-white mb-2">Hard Facts</h3>
-                    <p class="text-slate-500 dark:text-slate-400 mb-8 text-sm">Alle technischen Details und Raumpläne für deine Planung auf einen Blick.</p>
+                {/* Right: Downloads & Hard Facts (ZWISCHENLÖSUNG) */}
+                <div class="bg-slate-50 dark:bg-slate-800/20 p-8 md:p-10 rounded-[32px] border border-slate-100 dark:border-slate-800 flex flex-col justify-center">
+                    <h3 class="text-2xl font-display font-bold text-slate-900 dark:text-white mb-2">Details & Planung</h3>
+                    <p class="text-slate-500 dark:text-slate-400 mb-8 text-sm">Unsere Info-Mappen mit allen Hard Facts werden aktuell überarbeitet. Wir senden dir die aktuellen Details für deine Planung gerne direkt zu.</p>
                     
-                    <div class="space-y-4">
-                        <a href="#" class="flex items-center p-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 hover:border-rose-500 dark:hover:border-rose-500 transition-colors group">
-                            <div class="w-10 h-10 rounded-full bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0 mr-4">
-                                <i class="fa-regular fa-file-pdf"></i>
-                            </div>
-                            <div class="flex-grow">
-                                <h4 class="font-bold text-slate-900 dark:text-white text-sm group-hover:text-rose-600 dark:group-hover:text-rose-400 transition-colors">Raumplan & Maße</h4>
-                                <p class="text-xs text-slate-500">PDF, ca. 2 MB</p>
-                            </div>
-                            <i class="fa-solid fa-download text-slate-300 dark:text-slate-600 group-hover:text-rose-500 transition-colors"></i>
-                        </a>
+                    <div class="p-8 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 text-center shadow-sm relative overflow-hidden group">
+                        {/* Deko-Hintergrund */}
+                        <div class="absolute -right-4 -top-4 w-24 h-24 bg-rose-50 dark:bg-rose-500/5 rounded-full blur-xl group-hover:bg-rose-100 dark:group-hover:bg-rose-500/10 transition-colors"></div>
 
-                        <a href="#" class="flex items-center p-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 hover:border-rose-500 dark:hover:border-rose-500 transition-colors group">
-                            <div class="w-10 h-10 rounded-full bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0 mr-4">
-                                <i class="fa-regular fa-file-pdf"></i>
+                        <div class="relative z-10">
+                            <div class="w-16 h-16 mx-auto bg-slate-50 dark:bg-slate-800 text-slate-400 dark:text-slate-500 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 group-hover:text-rose-500 transition-all duration-300">
+                                <i class="fa-regular fa-folder-open text-2xl"></i>
                             </div>
-                            <div class="flex-grow">
-                                <h4 class="font-bold text-slate-900 dark:text-white text-sm group-hover:text-rose-600 dark:group-hover:text-rose-400 transition-colors">Technik-Rider (Audio & Licht)</h4>
-                                <p class="text-xs text-slate-500">PDF, ca. 1.5 MB</p>
-                            </div>
-                            <i class="fa-solid fa-download text-slate-300 dark:text-slate-600 group-hover:text-rose-500 transition-colors"></i>
-                        </a>
+                            
+                            <ul class="text-sm text-slate-600 dark:text-slate-400 font-medium mb-6 space-y-2 inline-block text-left">
+                                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-rose-500 text-xs"></i> Raumplan & Maße</li>
+                                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-rose-500 text-xs"></i> Technik-Rider</li>
+                                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-rose-500 text-xs"></i> Preise & Konditionen</li>
+                            </ul>
 
-                        <a href="#" class="flex items-center p-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 hover:border-rose-500 dark:hover:border-rose-500 transition-colors group">
-                            <div class="w-10 h-10 rounded-full bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0 mr-4">
-                                <i class="fa-regular fa-file-pdf"></i>
-                            </div>
-                            <div class="flex-grow">
-                                <h4 class="font-bold text-slate-900 dark:text-white text-sm group-hover:text-rose-600 dark:group-hover:text-rose-400 transition-colors">Preisliste & Konditionen</h4>
-                                <p class="text-xs text-slate-500">PDF, ca. 1 MB</p>
-                            </div>
-                            <i class="fa-solid fa-download text-slate-300 dark:text-slate-600 group-hover:text-rose-500 transition-colors"></i>
-                        </a>
+                            <a href="mailto:office@diebruecke.cc?subject=Anfrage%20Infomaterial%20Raummiete" class="inline-flex items-center justify-center gap-2 px-6 py-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-xl font-bold text-sm hover:bg-rose-600 dark:hover:bg-rose-400 dark:hover:text-white transition-all w-full shadow-lg hover:shadow-rose-500/25">
+                                <i class="fa-regular fa-envelope"></i> Info-Paket anfragen
+                            </a>
+                        </div>
                     </div>
                 </div>
 
