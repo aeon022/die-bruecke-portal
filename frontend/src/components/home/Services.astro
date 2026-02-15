@@ -15,7 +15,11 @@ function cleanText(html: string) {
         '&nbsp;': ' ', '&amp;': '&', '&quot;': '"', '&lt;': '<', '&gt;': '>',
         '&auml;': 'ä', '&Auml;': 'Ä', '&ouml;': 'ö', '&Ouml;': 'Ö', 
         '&uuml;': 'ü', '&Uuml;': 'Ü', '&szlig;': 'ß', '&bdquo;': '„', '&ldquo;': '“',
-        '&#8211;': '–', '&#8217;': '’'
+        '&#8211;': '–', '&#8217;': '’',
+        // --- HIER SIND DIE NEUEN FIXES FÜR DIRECTUS ---
+        '&ndash;': '–', // Gedankenstrich / En Dash
+        '&mdash;': '—', // Langer Gedankenstrich / Em Dash
+        '&rsquo;': '’'  // Typografischer Apostroph
     };
     text = text.replace(/&[a-zA-Z0-9#]+;/g, (key) => entities[key] || key);
     return text.replace(/\s+/g, ' ').trim();
@@ -51,6 +55,10 @@ function cleanText(html: string) {
         <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 text-left">
             {services.map((service: any, index: number) => {
                 const colorClass = serviceColors[index % serviceColors.length];
+                
+                {/* Fallback Logik: Falls ihr im Directus ein Feld "teaser" verwendet, ansonsten "description" */}
+                const displayTeaser = service.teaser || service.description;
+
                 return (
                     <a href={`/services/${service.slug}`} class="group bg-white dark:bg-slate-900 p-6 md:p-8 rounded-[32px] border border-slate-100 dark:border-slate-800 hover:border-rose-500/30 hover:shadow-2xl hover:shadow-rose-500/5 transition-all duration-500 block flex flex-col h-full relative overflow-hidden">
                         
@@ -70,7 +78,7 @@ function cleanText(html: string) {
                             </div>
 
                             <p class="text-slate-700 dark:text-slate-400 text-sm leading-relaxed line-clamp-4 font-medium">
-                                {cleanText(service.description)}
+                                {cleanText(displayTeaser)}
                             </p>
                         </div>
                         
