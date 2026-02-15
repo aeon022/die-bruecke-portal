@@ -1,10 +1,11 @@
 ---
 import MainLayout from '../layouts/layout.astro';
+import LocationCard from '../components/LocationCard.astro'; // <-- HIER IST DER IMPORT
 import { directus } from '../lib/directus';
 import { readItems } from '@directus/sdk';
 import { Image } from 'astro:assets'; 
 
-// 1. Die neuen lokalen Bilder
+// 1. Lokale Bilder
 import seminarImg from '../assets/seminar.webp';
 import partyImg from '../assets/party.webp';
 
@@ -19,6 +20,8 @@ try {
         filter: { 
             slug: { _eq: 'space' }
         },
+        // WICHTIG: Wir holen explizit die gallery-Relationen mit
+        fields: ['*', 'gallery.*'],
         limit: 1
     }));
     
@@ -31,16 +34,13 @@ try {
 
 // --- EQUIPMENT GRID ---
 const equipment = [
-    // Zeile 1: Die Raum-Facts
     { icon: "fa-users", label: "Bis 400 Gäste", desc: "150 Innenraum / 250 Garten" },
     { icon: "fa-chair", label: "Flexibler Saal", desc: "30-80 Pers. (Bistro bis Reihe)" },
     { icon: "fa-utensils", label: "Catering Bereich", desc: "Buffet räumlich abtrennbar" },
     { icon: "fa-wheelchair", label: "100% Barrierefrei", desc: "Rollstuhlgerechtes WC" },
-    
-    // Zeile 2: Die Technik (WLAN ersetzt durch Techniker, um das 8er-Grid sauber zu halten)
     { icon: "fa-video", label: "HD Beamer", desc: "Lichtstark für Präsentationen" },
     { icon: "fa-expand", label: "Große Leinwand", desc: "Motorisiert, 16:9 Format" },
-    { icon: "fa-user-gear", label: "Technik-Support", desc: "Techniker auf Wunsch vermittelbar" }, // <-- HIER IST DER TECHNIKER
+    { icon: "fa-user-gear", label: "Technik-Support", desc: "Techniker auf Wunsch vermittelbar" },
     { icon: "fa-microphone-lines", label: "Profi-Audio", desc: "Mikrofone & PA-Anlage" }
 ];
 
@@ -50,14 +50,14 @@ const useCases = [
         title: "Seminare & Workshops",
         subtitle: "Dein Raum am Vormittag",
         desc: "Nutze unsere zentrale Lage für deine Business-Events. Helle Atmosphäre, Bestuhlung nach Wunsch und volle technische Ausstattung.",
-        features: ["Flipchart buchbar", "Kaffee-Catering möglich", "Barrierefreier Zugang", "Technischer Betreuer möglich"], // <-- UPDATE
+        features: ["Flipchart buchbar", "Kaffee-Catering möglich", "Barrierefreier Zugang", "Technischer Betreuer möglich"], 
         image: seminarImg 
     },
     {
         title: "Private Feiern",
         subtitle: "Dein Raum am Abend",
         desc: "Geburtstage, Jubiläen oder Vereinsfeiern. Die Brücke verwandelt sich abends in einen stimmungsvollen Partyraum.",
-        features: ["Flexibel für dich", "Essen: Dein Caterer oder DIY", "Lichttechnik für Stimmung", "Eigener Tontechniker zubuchbar"], // <-- UPDATE
+        features: ["Flexibel für dich", "Essen: Dein Caterer oder DIY", "Lichttechnik für Stimmung", "Eigener Tontechniker zubuchbar"], 
         image: partyImg
     }
 ];
@@ -193,20 +193,109 @@ const seoImage = heroImage;
                         </ul>
 
                         <div class="pt-4">
-    <a href="mailto:office@diebruecke.cc?subject=Anfrage%20Raummiete" class="inline-flex items-center gap-3 text-slate-900 dark:text-white font-bold hover:text-rose-600 dark:hover:text-rose-400 transition-colors uppercase tracking-widest text-sm group">
-        Verfügbarkeit anfragen 
-        <span class="w-8 h-8 rounded-full border border-slate-200 dark:border-slate-700 flex items-center justify-center group-hover:bg-slate-100 dark:group-hover:bg-slate-800 transition-colors">
-            <i class="fa-solid fa-arrow-right group-hover:translate-x-0.5 transition-transform"></i>
-        </span>
-    </a>
-</div>
+                            <a href="mailto:office@diebruecke.cc?subject=Anfrage%20Raummiete" class="inline-flex items-center gap-3 text-slate-900 dark:text-white font-bold hover:text-rose-600 dark:hover:text-rose-400 transition-colors uppercase tracking-widest text-sm group">
+                                Verfügbarkeit anfragen 
+                                <span class="w-8 h-8 rounded-full border border-slate-200 dark:border-slate-700 flex items-center justify-center group-hover:bg-slate-100 dark:group-hover:bg-slate-800 transition-colors">
+                                    <i class="fa-solid fa-arrow-right group-hover:translate-x-0.5 transition-transform"></i>
+                                </span>
+                            </a>
+                        </div>
                     </div>
                 </div>
             ))}
         </div>
     </section>
 
-    {/* --- DYNAMISCHER CMS CONTENT (Optional, falls in Directus Text hinterlegt ist) --- */}
+    {/* --- BILDERGALERIE (DIRECTUS) --- */}
+    {pageSettings?.gallery && pageSettings.gallery.length > 0 && (
+        <section class="px-4 sm:px-6 pb-24">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-display font-bold text-slate-900 dark:text-white">
+                        Eindrücke aus der Location
+                    </h2>
+                </div>
+                
+                {/* Masonry-Style Grid */}
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 auto-rows-[200px] md:auto-rows-[250px]">
+                    {pageSettings.gallery.map((item: any, index: number) => {
+                        const fileId = item.directus_files_id || item; 
+                        if (!fileId || typeof fileId !== 'string') return null;
+
+                        const isLarge = index === 0 || index === 3;
+
+                        return (
+                            <div class={`relative rounded-[32px] overflow-hidden group shadow-lg border border-slate-100 dark:border-slate-800 ${isLarge ? 'col-span-2 row-span-2' : 'col-span-1 row-span-1'}`}>
+                                <Image 
+                                    src={getImg(fileId, isLarge ? 1200 : 600)}
+                                    alt="Impression Eventlocation Die Brücke"
+                                    width={isLarge ? 1200 : 600}
+                                    height={isLarge ? 1200 : 600}
+                                    class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-[1.5s]"
+                                />
+                                <div class="absolute inset-0 bg-slate-900/10 group-hover:bg-transparent transition"></div>
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
+        </section>
+    )}
+
+    {/* --- LOCATION & DOWNLOADS --- */}
+    <section class="px-4 sm:px-6 pb-24 relative z-10">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid md:grid-cols-2 gap-12 md:gap-16">
+                
+                {/* Left: Anfahrt & Erreichbarkeit via Komponente */}
+                <LocationCard />
+
+                {/* Right: Downloads & Hard Facts */}
+                <div class="bg-slate-50 dark:bg-slate-800/20 p-8 md:p-10 rounded-[32px] border border-slate-100 dark:border-slate-800">
+                    <h3 class="text-2xl font-display font-bold text-slate-900 dark:text-white mb-2">Hard Facts</h3>
+                    <p class="text-slate-500 dark:text-slate-400 mb-8 text-sm">Alle technischen Details und Raumpläne für deine Planung auf einen Blick.</p>
+                    
+                    <div class="space-y-4">
+                        <a href="#" class="flex items-center p-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 hover:border-rose-500 dark:hover:border-rose-500 transition-colors group">
+                            <div class="w-10 h-10 rounded-full bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0 mr-4">
+                                <i class="fa-regular fa-file-pdf"></i>
+                            </div>
+                            <div class="flex-grow">
+                                <h4 class="font-bold text-slate-900 dark:text-white text-sm group-hover:text-rose-600 dark:group-hover:text-rose-400 transition-colors">Raumplan & Maße</h4>
+                                <p class="text-xs text-slate-500">PDF, ca. 2 MB</p>
+                            </div>
+                            <i class="fa-solid fa-download text-slate-300 dark:text-slate-600 group-hover:text-rose-500 transition-colors"></i>
+                        </a>
+
+                        <a href="#" class="flex items-center p-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 hover:border-rose-500 dark:hover:border-rose-500 transition-colors group">
+                            <div class="w-10 h-10 rounded-full bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0 mr-4">
+                                <i class="fa-regular fa-file-pdf"></i>
+                            </div>
+                            <div class="flex-grow">
+                                <h4 class="font-bold text-slate-900 dark:text-white text-sm group-hover:text-rose-600 dark:group-hover:text-rose-400 transition-colors">Technik-Rider (Audio & Licht)</h4>
+                                <p class="text-xs text-slate-500">PDF, ca. 1.5 MB</p>
+                            </div>
+                            <i class="fa-solid fa-download text-slate-300 dark:text-slate-600 group-hover:text-rose-500 transition-colors"></i>
+                        </a>
+
+                        <a href="#" class="flex items-center p-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 hover:border-rose-500 dark:hover:border-rose-500 transition-colors group">
+                            <div class="w-10 h-10 rounded-full bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0 mr-4">
+                                <i class="fa-regular fa-file-pdf"></i>
+                            </div>
+                            <div class="flex-grow">
+                                <h4 class="font-bold text-slate-900 dark:text-white text-sm group-hover:text-rose-600 dark:group-hover:text-rose-400 transition-colors">Preisliste & Konditionen</h4>
+                                <p class="text-xs text-slate-500">PDF, ca. 1 MB</p>
+                            </div>
+                            <i class="fa-solid fa-download text-slate-300 dark:text-slate-600 group-hover:text-rose-500 transition-colors"></i>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    {/* --- DYNAMISCHER CMS CONTENT --- */}
     {pageSettings?.content && (
         <section class="px-4 sm:px-6 pb-24">
             <div class="max-w-4xl mx-auto prose prose-lg prose-slate dark:prose-invert" set:html={pageSettings.content}></div>
@@ -228,9 +317,9 @@ const seoImage = heroImage;
                         <br class="hidden md:block"/>
                     </p>
                     <a href="mailto:office@diebruecke.cc?subject=Anfrage%20Raummiete" class="bg-rose-600 text-white px-10 py-5 rounded-full font-bold shadow-xl hover:bg-slate-900 dark:hover:bg-white dark:hover:text-slate-900 transition-all transform hover:scale-105 inline-flex items-center gap-3">
-    <i class="fa-regular fa-paper-plane"></i>
-    Schreib uns eine Nachricht
-</a>
+                        <i class="fa-regular fa-paper-plane"></i>
+                        Schreib uns eine Nachricht
+                    </a>
                 </div>
             </div>
         </div>
