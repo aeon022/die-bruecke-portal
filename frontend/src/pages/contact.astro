@@ -1,10 +1,10 @@
 ---
 import MainLayout from '../layouts/layout.astro';
-import LocationCard from '../components/LocationCard.astro'; // <-- KOMPONENTE IMPORTIERT
+import LocationCard from '../components/LocationCard.astro';
 import { directus } from '../lib/directus';
-import { readSingleton } from '@directus/sdk';
+import { readSingleton, readItems } from '@directus/sdk';
 
-// 1. Daten laden
+// 1. Globale Settings laden
 let settings;
 try {
     settings = await directus.request(readSingleton('global_settings'));
@@ -12,13 +12,30 @@ try {
     console.error("Kontakt: Konnte Global Settings nicht laden", error);
 }
 
+// 2. Events laden (Um zu wissen, ob heute eine Veranstaltung ist)
+let upcomingEvents = [];
+try {
+    const todayStr = new Date().toISOString().split('T')[0];
+    upcomingEvents = await directus.request(readItems('events', {
+        filter: { 
+            status: { _eq: 'published' },
+            start_date: { _gte: todayStr }
+        },
+        fields: ['start_date'], 
+        limit: 30
+    }));
+} catch (error) {
+    console.error("Kontakt: Konnte Events nicht laden", error);
+}
+
 // --- DATEN-LOGIK MIT FALLBACKS ---
 
 // A) Öffnungszeiten
 const defaultOpeningHours = [
-    { label: "Montag – Donnerstag", time: "09:00 – 16:00", highlight: false },
-    { label: "Freitag", time: "09:00 – 13:00", highlight: false },
-    { label: "Veranstaltungen", time: "Je nach Programm", highlight: true }
+    { label: "Montag", time: "09:00 – 13:00", highlight: false },
+    { label: "Mittwoch", time: "09:00 – 13:00", highlight: false },
+    { label: "Donnerstag", time: "16:00 – 20:00", highlight: false },
+    { label: "Veranstaltungstage", time: "17:30 – 23:30", highlight: true }
 ];
 const openingHours = settings?.opening_hours || defaultOpeningHours;
 
@@ -69,6 +86,50 @@ const seoTitle = "Kontakt & Anfahrt | Die Brücke Graz";
 const seoDescription = "Erreichbarkeit, Öffnungszeiten und Anfahrt. Besuch uns in der Grabenstraße 39a oder schreib uns. Wir sind dein offenes Haus in Graz.";
 const seoImage = "https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=1200"; 
 
+// --- SCHEMA.ORG DATEN BEREITSTELLEN (Bugfix: Aus dem HTML hier hochgezogen) ---
+const schemaData = {
+  "@context": "https://schema.org",
+  "@type": "CommunityCenter",
+  "name": "Die Brücke - soziokulturelles Zentrum",
+  "description": seoDescription,
+  "url": "https://diebruecke.cc",
+  "telephone": "+43 316 67 22 48",
+  "email": "office@diebruecke.cc",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Grabenstraße 39a",
+    "addressLocality": "Graz",
+    "postalCode": "8010",
+    "addressCountry": "AT"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": 47.085, 
+    "longitude": 15.435 
+  },
+  "openingHoursSpecification": openingHours.map(h => {
+      let days = [];
+      const l = h.label.toLowerCase();
+      if(/\b(mo|montag)\b/.test(l)) days.push("Monday");
+      if(/\b(di|dienstag)\b/.test(l)) days.push("Tuesday");
+      if(/\b(mi|mittwoch)\b/.test(l)) days.push("Wednesday");
+      if(/\b(do|donnerstag)\b/.test(l)) days.push("Thursday");
+      if(/\b(fr|freitag)\b/.test(l)) days.push("Friday");
+      if(/\b(sa|samstag)\b/.test(l)) days.push("Saturday");
+      if(/\b(so|sonntag)\b/.test(l)) days.push("Sunday");
+      
+      if (l.includes('montag - donnerstag') || l.includes('mo - do') || l.includes('montag bis donnerstag')) {
+          days = ["Monday", "Tuesday", "Wednesday", "Thursday"];
+      }
+
+      const times = h.time.match(/\d{1,2}:\d{2}/g);
+      let opens = "09:00", closes = "16:00";
+      if (times && times.length >= 2) {
+          opens = times[0]; closes = times[1];
+      }
+      return { "@type": "OpeningHoursSpecification", "dayOfWeek": days, "opens": opens, "closes": closes };
+  }).filter(o => o.dayOfWeek.length > 0)
+};
 ---
 
 <MainLayout 
@@ -76,6 +137,9 @@ const seoImage = "https://images.unsplash.com/photo-1497366216548-37526070297c?q
     description={seoDescription}
     image={seoImage}
 >
+    {/* JSON-Data-Islands für das Live-Script */}
+    <script id="opening-hours-data" type="application/json" set:html={JSON.stringify(openingHours)}></script>
+    <script id="events-data" type="application/json" set:html={JSON.stringify(upcomingEvents)}></script>
     
     <div class="home-content px-4 md:px-6">
 
@@ -87,10 +151,8 @@ const seoImage = "https://images.unsplash.com/photo-1497366216548-37526070297c?q
                     Erreichbarkeit
                 </span>
                 
-                {/* STATUS BADGE CONTAINER (Wird per JS gefüllt) */}
-                <div id="opening-status" class="hidden animate-fade-in">
-                    {/* JavaScript injects content here */}
-                </div>
+                {/* STATUS BADGE CONTAINER */}
+                <div id="opening-status" class="hidden animate-fade-in"></div>
             </div>
 
             <h1 class="text-5xl md:text-7xl lg:text-8xl font-display font-extrabold text-slate-900 dark:text-white tracking-tighter mb-8 leading-[0.9]">
@@ -298,74 +360,91 @@ const seoImage = "https://images.unsplash.com/photo-1497366216548-37526070297c?q
     </div>
 </MainLayout>
 
-{/* --- SEO: SCHEMA.ORG (JSON-LD) --- */}
-<script type="application/ld+json" set:html={JSON.stringify({
-  "@context": "https://schema.org",
-  "@type": "CommunityCenter",
-  "name": "Die Brücke - soziokulturelles Zentrum",
-  "description": seoDescription,
-  "url": "https://diebruecke.cc",
-  "telephone": "+43 316 67 22 48",
-  "email": "office@diebruecke.cc",
-  "address": {
-    "@type": "PostalAddress",
-    "streetAddress": "Grabenstraße 39a",
-    "addressLocality": "Graz",
-    "postalCode": "8010",
-    "addressCountry": "AT"
-  },
-  "geo": {
-    "@type": "GeoCoordinates",
-    "latitude": 47.085, 
-    "longitude": 15.435 
-  },
-  "openingHoursSpecification": openingHours.map(h => {
-      let days = [];
-      if(h.label.includes('Montag')) days.push("Monday");
-      if(h.label.includes('Dienstag')) days.push("Tuesday");
-      if(h.label.includes('Mittwoch')) days.push("Wednesday");
-      if(h.label.includes('Donnerstag')) days.push("Thursday");
-      if(h.label.includes('Freitag')) days.push("Friday");
-      if(h.label.includes('Samstag')) days.push("Saturday");
-      if(h.label.includes('Sonntag')) days.push("Sunday");
-      if(h.label.includes('Montag') && h.label.includes('Donnerstag')) days = ["Monday", "Tuesday", "Wednesday", "Thursday"];
-      return { "@type": "OpeningHoursSpecification", "dayOfWeek": days, "opens": h.time.split('–')[0]?.trim() || "09:00", "closes": h.time.split('–')[1]?.trim() || "16:00" };
-  }).filter(o => o.dayOfWeek.length > 0)
-})} />
+{/* --- SEO: SCHEMA.ORG (JSON-LD) GEFIXTER AUFRUF --- */}
+<script type="application/ld+json" set:html={JSON.stringify(schemaData)} />
 
 <script>
-    // 1. Live-Status
     function updateOpeningStatus() {
         const container = document.getElementById('opening-status');
-        if (!container) return;
+        const hoursDataEl = document.getElementById('opening-hours-data');
+        const eventsDataEl = document.getElementById('events-data');
+        
+        if (!container || !hoursDataEl || !eventsDataEl) return;
+
+        let hoursData = [];
+        let eventsData = [];
+        try {
+            hoursData = JSON.parse(hoursDataEl.textContent);
+            eventsData = JSON.parse(eventsDataEl.textContent);
+        } catch(e) { return; }
 
         const now = new Date();
-        const day = now.getDay(); 
-        const hour = now.getHours();
+        const currentDay = now.getDay(); 
+        const currentMinutesOfDay = now.getHours() * 60 + now.getMinutes();
         let isOpen = false;
 
-        // Mo-Do (1-4): 9-16 Uhr, Fr (5): 9-13 Uhr
-        if (day >= 1 && day <= 4 && hour >= 9 && hour < 16) isOpen = true;
-        if (day === 5 && hour >= 9 && hour < 13) isOpen = true;
+        // 1. REGULÄRE ZEITEN PRÜFEN
+        hoursData.forEach(slot => {
+            const l = slot.label.toLowerCase();
+            let activeDays = [];
+            
+            if (/\b(mo|montag)\b/.test(l)) activeDays.push(1);
+            if (/\b(di|dienstag)\b/.test(l)) activeDays.push(2);
+            if (/\b(mi|mittwoch)\b/.test(l)) activeDays.push(3);
+            if (/\b(do|donnerstag)\b/.test(l)) activeDays.push(4);
+            if (/\b(fr|freitag)\b/.test(l)) activeDays.push(5);
+            if (/\b(sa|samstag)\b/.test(l)) activeDays.push(6);
+            if (/\b(so|sonntag)\b/.test(l)) activeDays.push(0);
 
+            if (activeDays.includes(currentDay)) {
+                const times = slot.time.match(/\d{1,2}:\d{2}/g);
+                if (times && times.length >= 2) {
+                    const [startH, startM] = times[0].split(':').map(Number);
+                    const [endH, endM] = times[1].split(':').map(Number);
+                    
+                    const startMin = startH * 60 + startM;
+                    const endMin = endH * 60 + endM;
+                    
+                    if (currentMinutesOfDay >= startMin && currentMinutesOfDay < endMin) {
+                        isOpen = true;
+                    }
+                }
+            }
+        });
+
+        // 2. EVENTS PRÜFEN
+        const todayStr = now.toISOString().split('T')[0];
+        const hasEventToday = eventsData.some(ev => ev.start_date && ev.start_date.startsWith(todayStr));
+
+        if (hasEventToday) {
+            const eventStartMin = 17 * 60 + 30; // 17:30 in Minuten
+            const eventEndMin = 23 * 60 + 30;   // 23:30 in Minuten
+            
+            if (currentMinutesOfDay >= eventStartMin && currentMinutesOfDay < eventEndMin) {
+                isOpen = true;
+            }
+        }
+
+        // 3. AMPEL RENDERN
         if (isOpen) {
             container.innerHTML = `
-                <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-xs font-bold uppercase tracking-widest border border-emerald-200 dark:border-emerald-800">
+                <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-xs font-bold uppercase tracking-widest border border-emerald-200 dark:border-emerald-800 shadow-sm">
                     <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Jetzt geöffnet
                 </span>
             `;
         } else {
             container.innerHTML = `
-                <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-400 text-xs font-bold uppercase tracking-widest border border-rose-200 dark:border-rose-800">
-                    <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span> Gerade geschlossen
+                <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-400 text-xs font-bold uppercase tracking-widest border border-rose-200 dark:border-rose-800 shadow-sm">
+                    <span class="w-2 h-2 rounded-full bg-rose-500"></span> Gerade geschlossen
                 </span>
             `;
         }
         container.classList.remove('hidden');
     }
 
-    // 2. Form Logic
-    function initFormLogic() {
+    function initContactLogic() {
+        updateOpeningStatus();
+        
         const form = document.getElementById('contact-form');
         const msgBox = document.getElementById('form-message');
         const submitBtn = document.getElementById('submit-btn');
@@ -373,7 +452,6 @@ const seoImage = "https://images.unsplash.com/photo-1497366216548-37526070297c?q
         if(form && msgBox && submitBtn) {
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
-                
                 const originalBtnText = submitBtn.innerHTML;
                 submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Senden...';
                 submitBtn.setAttribute('disabled', 'true');
@@ -388,7 +466,6 @@ const seoImage = "https://images.unsplash.com/photo-1497366216548-37526070297c?q
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(data)
                     });
-
                     const result = await response.json();
 
                     if(response.ok) {
@@ -398,9 +475,7 @@ const seoImage = "https://images.unsplash.com/photo-1497366216548-37526070297c?q
                     } else {
                         throw new Error(result.message || 'Fehler beim Senden');
                     }
-
                 } catch (error) {
-                    console.error(error);
                     msgBox.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> ${error.message || 'Verbindungsfehler.'}`;
                     msgBox.className = "p-4 rounded-xl text-sm font-bold mb-4 bg-rose-100 text-rose-800 border border-rose-200 block";
                 } finally {
@@ -411,13 +486,8 @@ const seoImage = "https://images.unsplash.com/photo-1497366216548-37526070297c?q
         }
     }
 
-    const init = () => {
-        updateOpeningStatus();
-        initFormLogic();
-    }
-    
-    init();
-    document.addEventListener('astro:after-swap', init);
+    initContactLogic();
+    document.addEventListener('astro:after-swap', initContactLogic);
 </script>
 
 <style>
