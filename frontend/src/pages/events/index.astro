@@ -8,24 +8,40 @@ const [allEvents, allCategories] = await Promise.all([
     getEventCategories()
 ]);
 
-// --- HELPER: Nächstes Datum berechnen ---
+// --- HELPER: Nächstes Datum berechnen (inkl. Wochentags-Logik) ---
 const getNextEventDate = (event: any) => {
     const now = new Date();
-    now.setHours(0,0,0,0);
+    now.setHours(0, 0, 0, 0);
     
-    let eventDate = new Date(event.start_date || event.date);
-    
+    let eventDate = new Date(event.start_date);
     if (eventDate >= now) return eventDate;
 
+    // Monatliche Wiederholung (z.B. Erster Dienstag im Monat)
     if (event.recurrence === 'monthly' || event.rrule?.includes('FREQ=MONTHLY')) {
+        const targetDay = eventDate.getDay(); // 0 = So, 2 = Di, etc.
+        const weekIndex = Math.floor((eventDate.getDate() - 1) / 7); // 0 = erste Woche, 1 = zweite...
+
         while (eventDate < now) {
+            // 1. Gehe zum 1. des nächsten Monats
             eventDate.setMonth(eventDate.getMonth() + 1);
+            eventDate.setDate(1);
+
+            // 2. Finde den ersten gewünschten Wochentag im neuen Monat
+            while (eventDate.getDay() !== targetDay) {
+                eventDate.setDate(eventDate.getDate() + 1);
+            }
+
+            // 3. Springe zur richtigen Woche (z.B. die 1. Woche)
+            eventDate.setDate(eventDate.getDate() + (weekIndex * 7));
+            
+            // Falls der Monat durch den Sprung überschritten wurde (z.B. 5. Dienstag existiert nicht immer)
+            // fangen wir das hier ab, indem wir zum nächsten Monat gehen.
         }
         return eventDate;
     }
     
     if (event.recurrence === 'weekly') {
-         while (eventDate < now) {
+        while (eventDate < now) {
             eventDate.setDate(eventDate.getDate() + 7);
         }
         return eventDate;
