@@ -255,7 +255,6 @@ const getFlag = (location: string) => {
                                     </>
                                 )}
                                 
-                                {/* GEÄNDERT: FASS Text */}
                                 {camp.fass_hours && (
                                     <div class={`text-[9px] md:text-[10px] font-bold text-indigo-500 uppercase tracking-widest flex items-center justify-center gap-2 ${camp.price != null ? "mt-4 pt-4 border-t border-slate-50 dark:border-slate-700" : ""}`}>
                                         <i class="fa-solid fa-circle-info"></i> {camp.fass_hours}h vom gültigen FASS Bescheid 
@@ -266,6 +265,16 @@ const getFlag = (location: string) => {
                                     <i class="fa-solid fa-wallet text-slate-400 mr-1.5"></i> 
                                     Die Teilnahme als Selbstzahler:in (ohne FASS-Bescheid) ist ebenfalls möglich!
                                 </div>
+
+                                {/* ERGÄNZT: Preis für Selbstzahler */}
+                                {camp.direct_payment != null && (
+                                    <div class="mt-3 pt-3 border-t border-slate-50/50 dark:border-slate-700/50">
+                                        <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-1">Vollpreis (Selbstzahler)</span>
+                                        <div class="text-xl font-display font-black text-slate-700 dark:text-slate-200">
+                                            € {camp.direct_payment}
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
 
