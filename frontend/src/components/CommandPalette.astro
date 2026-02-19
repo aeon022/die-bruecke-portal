@@ -76,6 +76,11 @@
                     <div class="w-8 h-8 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center"><i class="fa-solid fa-lightbulb text-xs"></i></div>
                     <span class="text-slate-700 dark:text-slate-200 font-medium">Projekte</span>
                 </a>
+                
+                <a href="/supporters" class="cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group" data-keywords="unterstützer partner sponsoren förderer fundamente danke support wand">
+                    <div class="w-8 h-8 rounded-lg bg-cyan-100 text-cyan-600 flex items-center justify-center"><i class="fa-solid fa-handshake text-xs"></i></div>
+                    <span class="text-slate-700 dark:text-slate-200 font-medium">Unterstützer & Partner</span>
+                </a>
 
                 <a href="/contact" class="cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group" data-keywords="kontakt email adresse anfahrt nachricht">
                     <div class="w-8 h-8 rounded-lg bg-slate-200 text-slate-600 flex items-center justify-center"><i class="fa-regular fa-envelope text-xs"></i></div>
@@ -134,7 +139,6 @@
         searchIcon?.classList.add('hidden');
 
         try {
-            // PRODUKTION: Normaler Fetch, Browser nutzt Cache-Control Header (1h)
             const res = await fetch('/api/search-index.json');
             if (res.ok) {
                 searchData = await res.json();
@@ -186,28 +190,35 @@
         if(staticNav) staticNav.classList.remove('hidden');
         if(settingsGroup) settingsGroup.classList.remove('hidden');
         
-        // Reset Static Filter
+        // Alle Static-Items wieder einblenden
         document.querySelectorAll('#cp-static-nav .cp-item').forEach(el => el.classList.remove('hidden'));
     }
 
-    function renderResults(results) {
+    // NEU: renderResults steuert jetzt intelligent die Sichtbarkeit der statischen Liste
+    function renderResults(results, hasStaticMatches) {
         const list = dynamicResults?.querySelector('.cp-list-content');
         if (!list) return;
         
         list.innerHTML = '';
         
+        // Einstellungen beim Suchen ausblenden, um Platz zu sparen
+        settingsGroup?.classList.add('hidden');
+        
+        // Statische Liste nur anzeigen, wenn es Treffer gibt
+        if (hasStaticMatches) {
+            staticNav?.classList.remove('hidden');
+        } else {
+            staticNav?.classList.add('hidden');
+        }
+
         if (results.length > 0) {
             dynamicResults.classList.remove('hidden');
-            // Hide static nav when searching to avoid clutter
-            staticNav?.classList.add('hidden');
-            settingsGroup?.classList.add('hidden');
-
-            results.slice(0, 10).forEach((item, idx) => { // Limit to 10
+            
+            results.slice(0, 10).forEach((item, idx) => {
                 const el = document.createElement('a');
                 el.href = item.url;
-                el.className = `cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group transition-colors ${idx === 0 ? 'bg-slate-50 dark:bg-slate-800' : ''}`;
+                el.className = `cp-item flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer group transition-colors`;
                 
-                // Icon Logic based on type
                 let iconClass = 'bg-slate-200 text-slate-600';
                 let iconContent = '<i class="fa-solid fa-link text-xs"></i>';
                 
@@ -215,18 +226,8 @@
                 if (item.type === 'Projekt') { iconClass = 'bg-purple-100 text-purple-600'; iconContent = '<i class="fa-solid fa-lightbulb text-xs"></i>'; }
                 if (item.type === 'Service') { iconClass = 'bg-indigo-100 text-indigo-600'; iconContent = '<i class="fa-solid fa-hand-holding-heart text-xs"></i>'; }
                 if (item.type === 'Blog') { iconClass = 'bg-amber-100 text-amber-600'; iconContent = '<i class="fa-solid fa-newspaper text-xs"></i>'; }
-                
-                // Icons für Camps & Trips (mit Orange und Flugzeug)
-                if (item.type === 'Camp' || item.type === 'City Trip') { 
-                    iconClass = 'bg-orange-100 text-orange-600'; 
-                    iconContent = '<i class="fa-solid fa-plane text-xs"></i>'; 
-                }
-
-                // NEU: Icons für Archiv
-                if (item.type === 'Archiv') {
-                    iconClass = 'bg-amber-100 text-amber-600';
-                    iconContent = '<i class="fa-solid fa-box-archive text-xs"></i>';
-                }
+                if (item.type === 'Camp' || item.type === 'City Trip') { iconClass = 'bg-orange-100 text-orange-600'; iconContent = '<i class="fa-solid fa-plane text-xs"></i>'; }
+                if (item.type === 'Archiv') { iconClass = 'bg-amber-100 text-amber-600'; iconContent = '<i class="fa-solid fa-box-archive text-xs"></i>'; }
 
                 el.innerHTML = `
                     <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${iconClass}">${iconContent}</div>
@@ -240,39 +241,51 @@
                 list.appendChild(el);
             });
         } else {
-            // No results
-            list.innerHTML = `<div class="p-4 text-center text-slate-500 text-sm">Keine Treffer gefunden.</div>`;
-            dynamicResults.classList.remove('hidden');
+            // Wenn es gar keine Treffer gibt (weder statisch noch dynamisch)
+            if (!hasStaticMatches) {
+                list.innerHTML = `<div class="p-4 text-center text-slate-500 text-sm">Keine Treffer gefunden.</div>`;
+                dynamicResults.classList.remove('hidden');
+            } else {
+                // Nur dynamisch ausblenden, statisch wird ja noch angezeigt
+                dynamicResults.classList.add('hidden');
+            }
         }
+        
+        // Reset Auswahl
+        selectedIndex = 0;
     }
 
     // --- EVENT LISTENERS ---
-
     input?.addEventListener('input', (e) => {
         const val = e.target.value.toLowerCase().trim();
         
         if (val.length < 2) {
             resetView();
-            // Filter static items locally
-            const staticItems = document.querySelectorAll('#cp-static-nav .cp-item');
-            staticItems.forEach(item => {
-                const keywords = item.getAttribute('data-keywords') || '';
-                const text = item.innerText.toLowerCase();
-                if (val === '' || text.includes(val) || keywords.includes(val)) {
-                    item.classList.remove('hidden');
-                } else {
-                    item.classList.add('hidden');
-                }
-            });
             return;
         }
 
-        // Filter loaded JSON data
+        // 1. Filtere die STATISCHEN Links (damit die Unterstützer etc. nicht verschwinden)
+        let hasStaticMatches = false;
+        const staticItems = document.querySelectorAll('#cp-static-nav .cp-item');
+        staticItems.forEach(item => {
+            const keywords = item.getAttribute('data-keywords') || '';
+            const text = item.innerText.toLowerCase();
+            if (text.includes(val) || keywords.includes(val)) {
+                item.classList.remove('hidden');
+                hasStaticMatches = true;
+            } else {
+                item.classList.add('hidden');
+            }
+        });
+
+        // 2. Filtere die DYNAMISCHEN Links (JSON)
         const filtered = searchData.filter(item => 
             item.title.toLowerCase().includes(val) || 
             (item.desc && item.desc.toLowerCase().includes(val))
         );
-        renderResults(filtered);
+        
+        // 3. Kombiniere das Rendern
+        renderResults(filtered, hasStaticMatches);
     });
 
     // Keyboard Shortcuts
@@ -306,7 +319,7 @@
             items[selectedIndex]?.scrollIntoView({ block: 'nearest' });
         }
         if (e.key === 'Enter') {
-            const active = items[selectedIndex]; // Or document.activeElement
+            const active = items[selectedIndex]; 
             if(active) {
                 active.click();
             }
@@ -314,11 +327,9 @@
     });
 
     backdrop?.addEventListener('click', (e) => { if (e.target === backdrop) closeCP(); });
-
-    // Open Event (z.B. vom Header Button)
     window.addEventListener('open-search', openCP);
 
-    // --- ACCESSIBILITY LOGIC (Dein bestehender Code) ---
+    // --- ACCESSIBILITY LOGIC ---
     function updateToggleUI(btn, isActive, labelOverride = null) {
         if(!btn) return;
         const status = btn.querySelector('.toggle-status');
@@ -349,7 +360,6 @@
         updateToggleUI(btnTheme, isDark, isDark ? "DUNKEL" : "HELL");
     }
 
-    // Toggle Listeners
     btnContrast?.addEventListener('click', () => {
         const isActive = document.documentElement.classList.toggle('high-contrast');
         localStorage.setItem('high-contrast', String(isActive));
@@ -369,7 +379,7 @@
         const isDark = document.documentElement.classList.toggle('dark');
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
         updateToggleUI(btnTheme, isDark, isDark ? "DUNKEL" : "HELL");
-        window.dispatchEvent(new Event('theme-change')); // Sync with Header
+        window.dispatchEvent(new Event('theme-change')); 
     });
 
 </script>
