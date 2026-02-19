@@ -7,9 +7,7 @@ import { readItems } from '@directus/sdk';
 let supporters = [];
 try {
     supporters = await directus.request(readItems('sponsors', {
-        // Wir filtern nur nach Status (muss in Directus angelegt sein!)
         filter: { status: { _eq: 'published' } },
-        // Wir sortieren nur nach der manuellen Sortier-Nummer
         sort: ['sort'], 
         limit: -1
     }));
@@ -19,25 +17,35 @@ try {
 
 const ASSET_URL = "https://api.diebruecke.social/assets";
 
-// --- CONFIGURATION ---
+// --- CONFIGURATION: FARBEN & STYLES ---
 const getTierStyles = (tier) => {
+  const baseClasses = "relative rounded-[32px] flex items-center justify-center p-6 text-center transition-all duration-500 group overflow-hidden flex-col gap-4 backdrop-blur-xl";
+  
   switch(tier) {
-    // TIER 1: "Die Fundamente" & Fördergeber (Hochformat, Glassmorphism, Strong Glow)
-    case 'base':
     case 'funding_body': 
-      return "col-span-2 md:col-span-2 row-span-2 text-2xl md:text-4xl font-display font-bold bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl text-slate-800 dark:text-white border border-indigo-200/60 dark:border-indigo-500/30 hover:bg-white/90 dark:hover:bg-slate-900/80 hover:border-indigo-400 dark:hover:border-indigo-400 hover:shadow-2xl hover:shadow-indigo-500/25 hover:-translate-y-2";
+      return `${baseClasses} col-span-2 md:col-span-3 row-span-2 text-2xl md:text-4xl font-display font-bold bg-gradient-to-br from-white/90 to-indigo-50/30 dark:from-slate-900/90 dark:to-indigo-950/30 text-slate-900 dark:text-white border border-indigo-300/50 dark:border-indigo-700/50 hover:border-indigo-400 dark:hover:border-indigo-400 hover:shadow-2xl hover:shadow-indigo-500/25 hover:-translate-y-2`;
     
-    // TIER 2: "Die Pfeiler" & Partner (Breit, Glassmorphism, Rose Glow)
-    case 'pillar':
     case 'partner':
-      return "col-span-2 md:col-span-2 row-span-1 text-lg md:text-xl font-bold bg-white/60 dark:bg-slate-800/50 backdrop-blur-lg text-slate-800 dark:text-white border border-slate-200/60 dark:border-slate-700/50 hover:bg-white/80 dark:hover:bg-slate-800/70 hover:border-rose-300 dark:hover:border-rose-500/60 hover:shadow-xl hover:shadow-rose-500/20 hover:-translate-y-1";
+      return `${baseClasses} col-span-2 md:col-span-2 row-span-2 text-xl md:text-3xl font-display font-bold bg-gradient-to-br from-white/80 to-rose-50/30 dark:from-slate-900/80 dark:to-rose-950/30 text-slate-900 dark:text-white border border-rose-300/50 dark:border-rose-700/50 hover:border-rose-400 dark:hover:border-rose-400 hover:shadow-2xl hover:shadow-rose-500/25 hover:-translate-y-2`;
+
+    case 'base':
+      return `${baseClasses} col-span-2 md:col-span-2 row-span-1 text-lg md:text-xl font-bold bg-white/75 dark:bg-slate-800/75 text-slate-800 dark:text-slate-100 border border-slate-300/50 dark:border-slate-600/50 hover:bg-white/90 dark:hover:bg-slate-800/90 hover:border-slate-400 dark:hover:border-slate-500/60 hover:shadow-xl hover:shadow-slate-500/20 hover:-translate-y-1`;
     
-    // TIER 3: "Die Bausteine" (Klein & Kompakt, leichtes Glass)
+    case 'pillar':
+      return `${baseClasses} col-span-1 md:col-span-1 row-span-2 text-md md:text-lg font-medium bg-white/70 dark:bg-slate-800/70 text-slate-700 dark:text-slate-200 border border-slate-300/50 dark:border-slate-600/50 hover:bg-white/90 dark:hover:bg-slate-800/80 hover:border-slate-300 dark:hover:border-slate-500/60 hover:-translate-y-1 hover:shadow-md`;
+    
     case 'brick':
     default:
-      return "col-span-1 md:col-span-1 row-span-1 text-sm md:text-base font-medium bg-slate-50/60 dark:bg-slate-900/40 backdrop-blur-md text-slate-600 dark:text-slate-400 border border-slate-200/50 dark:border-slate-800/50 hover:bg-white/80 dark:hover:bg-slate-800/60 hover:border-slate-300 dark:hover:border-slate-600 hover:-translate-y-0.5 hover:shadow-md";
+      return `${baseClasses} col-span-1 md:col-span-1 row-span-1 text-sm md:text-base font-medium bg-slate-50/60 dark:bg-slate-900/60 backdrop-blur-md text-slate-600 dark:text-slate-400 border border-slate-200/60 dark:border-slate-800/60 hover:bg-white/80 dark:hover:bg-slate-800/80 hover:border-slate-300 dark:hover:border-slate-600 hover:-translate-y-0.5 hover:shadow-sm`;
   }
 };
+
+const getHoverGlow = (tier) => {
+    if (tier === 'funding_body') return "from-indigo-400/20 to-transparent dark:from-indigo-600/20";
+    if (tier === 'partner') return "from-rose-400/20 to-transparent dark:from-rose-600/20";
+    if (tier === 'base' || tier === 'pillar') return "from-slate-400/20 to-transparent dark:from-slate-600/20";
+    return ""; 
+}
 ---
 
 <MainLayout title="Unsere Unterstützer | Die Brücke">
@@ -85,32 +93,35 @@ const getTierStyles = (tier) => {
     </div>
   </section>
 
-  {/* --- THE WALL (mit Glassmorphism Background-Blobs) --- */}
+  {/* --- THE WALL --- */}
   <section class="relative px-4 sm:px-6 pb-32 bg-slate-50 dark:bg-slate-950 overflow-hidden">
     
-    {/* Ambiente-Hintergrund für den Milchglas-Effekt */}
+    {/* Ambiente-Hintergrund */}
     <div class="absolute top-40 left-10 w-[500px] h-[500px] bg-rose-200/30 dark:bg-rose-900/20 rounded-full blur-[120px] pointer-events-none"></div>
     <div class="absolute bottom-40 right-10 w-[600px] h-[600px] bg-indigo-200/30 dark:bg-indigo-900/20 rounded-full blur-[150px] pointer-events-none"></div>
 
     <div class="relative z-10 max-w-7xl mx-auto pt-12">
       
-      {/* Grid Wrapper: Feste Basis-Höhe (160px) für saubere Hochformate */}
+      {/* Grid Wrapper */}
       <div id="wall-grid" class="grid grid-cols-2 md:grid-cols-6 gap-4 auto-rows-[160px] grid-flow-dense">
-        {supporters.length > 0 ? supporters.map((s) => (
+        {supporters.length > 0 ? supporters.map((s) => {
+          const glowColors = getHoverGlow(s.tier);
+          
+          // Kommentar verschoben, um Compiler-Fehler zu vermeiden
+          return (
           <a 
-            href={s.url || undefined} 
-            target={s.url ? "_blank" : "_self"}
-            rel={s.url ? "noopener noreferrer" : ""}
+            href={s.website_url ? s.website_url : undefined} 
+            target={s.website_url ? "_blank" : "_self"}
+            rel={s.website_url ? "noopener noreferrer" : undefined}
             class={`
               ${getTierStyles(s.tier)} 
-              relative rounded-[32px] flex items-center justify-center p-6 text-center transition-all duration-500 group overflow-hidden flex-col gap-4
-              ${!s.url ? 'cursor-default' : 'cursor-pointer'}
+              ${!s.website_url ? 'cursor-default' : 'cursor-pointer'}
             `}
           >
             
-            {/* Subtle Inner Glow für Tier 1 */}
-            {(s.tier === 'base' || s.tier === 'funding_body') && (
-               <div class="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent dark:from-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+            {/* Farbiger Inner Glow bei Hover */}
+            {glowColors && (
+               <div class={`absolute inset-0 bg-gradient-to-br ${glowColors} opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none`}></div>
             )}
             
             {/* Logo oder Text */}
@@ -119,7 +130,7 @@ const getTierStyles = (tier) => {
                     src={`${ASSET_URL}/${s.logo}?key=system-medium-contain`} 
                     alt={s.name}
                     class={`relative z-10 max-w-[80%] object-contain transition-all duration-500 ${
-                        (s.tier === 'base' || s.tier === 'funding_body') 
+                        (s.tier === 'funding_body' || s.tier === 'partner') 
                         ? 'max-h-[120px] filter drop-shadow-sm group-hover:drop-shadow-lg group-hover:scale-105' 
                         : 'max-h-[60px] grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100'
                     }`}
@@ -128,14 +139,14 @@ const getTierStyles = (tier) => {
                 <span class="relative z-10 break-words w-full">{s.name}</span>
             )}
 
-            {/* Icon für Links (Dezenter Pfeil rechts oben) */}
-            {s.url && (
+            {/* Icon für Links */}
+            {s.website_url && (
                 <div class="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-200/50 dark:bg-slate-800/50 backdrop-blur-sm flex items-center justify-center text-xs opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 z-20">
                     <i class="fa-solid fa-arrow-right text-slate-700 dark:text-slate-200"></i>
                 </div>
             )}
           </a>
-        )) : (
+        )}) : (
             <div class="col-span-full py-12 text-center text-slate-500 bg-white/50 dark:bg-slate-900/50 backdrop-blur-md rounded-[32px] border border-dashed border-slate-300 dark:border-slate-700">
                 <i class="fa-solid fa-heart-crack text-3xl mb-4 text-slate-400 block"></i>
                 <p>Noch keine Unterstützer geladen.</p>
@@ -161,10 +172,9 @@ const getTierStyles = (tier) => {
   </section>
 
   <script>
-    // Client-Side Shuffle
     document.addEventListener('DOMContentLoaded', () => {
       const grid = document.getElementById('wall-grid');
-      if(grid && grid.children.length > 1) { // Nur shuffeln wenn > 1 Element
+      if(grid && grid.children.length > 1) { 
         const items = Array.from(grid.children);
         for (let i = items.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
