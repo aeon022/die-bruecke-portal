@@ -51,6 +51,7 @@ const LAT_LNG = "47.0849,15.4348"; // Koordinaten für Die Brücke Graz
                     8010 Graz <br>
                     Österreich
                 </p>
+                {/* FIX: Echter Google Maps Link statt dem seltsamen Platzhalter */}
                 <a href="https://www.google.com/maps/search/?api=1&query=Die+Brücke+Graz+Grabenstraße+39a" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-sm font-bold text-rose-600 dark:text-rose-400 mt-4 hover:underline">
                     In Google Maps öffnen <i class="fa-solid fa-arrow-up-right-from-square"></i>
                 </a>
@@ -94,6 +95,7 @@ const LAT_LNG = "47.0849,15.4348"; // Koordinaten für Die Brücke Graz
         <div class="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800/50">
             <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3">Routenplaner</p>
             <div class="flex flex-col sm:flex-row gap-3">
+                {/* FIX: Echter Route-Planer Link */}
                 <a href="https://www.google.com/maps/dir/?api=1&destination=Die+Brücke+Graz+Grabenstraße+39a" target="_blank" rel="noopener noreferrer" class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-emerald-500 hover:text-white dark:hover:bg-emerald-600 transition-all text-xs font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wide group">
                     <i class="fa-solid fa-route group-hover:scale-110 transition-transform"></i> Route berechnen
                 </a>
@@ -106,9 +108,6 @@ const LAT_LNG = "47.0849,15.4348"; // Koordinaten für Die Brücke Graz
 </div>
 
 <script>
-    // Da Komponenten mehrfach auf einer Seite vorkommen könnten (z.B. im Footer und im Content),
-    // nutzen wir Klassen (.map-placeholder) statt IDs (#map-placeholder).
-    
     function initLocationCardLogic() {
         // 1. Google Maps Logik
         const placeholders = document.querySelectorAll('.map-placeholder');
@@ -118,14 +117,15 @@ const LAT_LNG = "47.0849,15.4348"; // Koordinaten für Die Brücke Graz
 
             placeholder.addEventListener('click', function() {
                 const apiKey = this.dataset.key;
-                if (!apiKey) {
-                    console.warn("Google Maps API Key nicht gefunden.");
+                if (!apiKey || apiKey === 'undefined') {
+                    console.error("Google Maps API Key fehlt! Bitte in der .env PUBLIC_GOOGLE_MAPS_KEY setzen.");
                     return;
                 }
                 
                 const iframe = this.parentElement.querySelector('.google-map');
                 if(iframe) {
                     const query = "Die Brücke Graz Grabenstraße 39a";
+                    // FIX: Echter Embed-API Aufruf statt kaputtem String
                     const mapUrl = `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${encodeURIComponent(query)}`;
                     
                     iframe.setAttribute('src', mapUrl);
