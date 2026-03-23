@@ -39,8 +39,8 @@ const finalGradient = gradientClasses || 'from-rose-500 to-orange-500';
             </div>
 
             {/* HEADLINE */}
-            <h1 class="relative z-30 text-4xl xs:text-5xl sm:text-6xl xl:text-8xl font-display font-extrabold text-slate-900 dark:text-white tracking-tighter 
-                leading-[0.85] sm:leading-[0.85] md:leading-[0.75] lg:leading-[0.75] xl:leading-[0.45] 
+            <h1 class="relative z-30 text-3xl xs:text-5xl sm:text-6xl xl:text-8xl font-display font-extrabold text-slate-900 dark:text-white tracking-tighter 
+                leading-[1.15] sm:leading-[0.85] md:leading-[0.75] lg:leading-[0.75] xl:leading-[0.45] 
                 mb-8 sm:mb-8 drop-shadow-md lg:drop-shadow-xl group-hover/hero:text-slate-900 transition-colors duration-500 break-words hyphens-auto w-full lg:w-[140%] pointer-events-auto">
                 <span class="lg:whitespace-nowrap">
                     {headlineRow1}
@@ -112,13 +112,15 @@ const finalGradient = gradientClasses || 'from-rose-500 to-orange-500';
                 <div class="absolute inset-0 bg-[radial-gradient(circle_at_70%_40%,rgba(244,63,94,0.1),transparent_60%)]"></div>
                 <div class="absolute inset-0 bg-slate-900/40 opacity-0 group-hover/image:opacity-100 transition-opacity duration-700 backdrop-blur-[1px]"></div>
 
-                {/* WATERMARK */}
-                <div class="absolute -bottom-6 -right-6 sm:-bottom-10 sm:-right-10 pointer-events-none select-none opacity-30 sm:opacity-50 group-hover/image:opacity-80 transition-opacity duration-700">
-                    <p class="text-[80px] sm:text-[160px] xl:text-[220px] font-display font-black tracking-tighter leading-none text-white/10 uppercase">
-                        Brücke
-                    </p>
-                </div>
-
+                
+                {/* WATERMARK - Vorerst deaktiviert gemäß Anweisung
+                                <div class="absolute -bottom-6 -right-6 sm:-bottom-10 sm:-right-10 pointer-events-none select-none opacity-30 sm:opacity-50 group-hover/image:opacity-80 transition-opacity duration-700">
+                                    <p class="text-[80px] sm:text-[160px] xl:text-[220px] font-display font-black tracking-tighter leading-none text-white/10 uppercase">
+                                        Brücke
+                                    </p>
+                                </div>
+                                */}
+                
                 <div class="absolute inset-0 ring-1 ring-inset ring-white/10 pointer-events-none"></div>
             </div>
         </div>
