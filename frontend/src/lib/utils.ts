@@ -1,21 +1,17 @@
+import he from 'he'; // Importiere das gesamte Modul als Standard-Export
+const { decode } = he; // Extrahiere die 'decode'-Funktion aus dem Standard-Export
+
 export function cleanText(html: string | null | undefined) {
     if (!html) return '';
-    
-    // 1. Tags durch Leerzeichen ersetzen
-    let text = html.replace(/<[^>]*>?/gm, ' ');
-    
-    // 2. Gängige Entities manuell decodieren
-    const entities: Record<string, string> = {
-        '&nbsp;': ' ', '&amp;': '&', '&quot;': '"', '&lt;': '<', '&gt;': '>',
-        '&auml;': 'ä', '&Auml;': 'Ä', '&ouml;': 'ö', '&Ouml;': 'Ö', 
-        '&uuml;': 'ü', '&Uuml;': 'Ü', '&szlig;': 'ß', '&bdquo;': '„', '&ldquo;': '“',
-        '&#8211;': '–', '&#8217;': '’'
-    };
-    
-    text = text.replace(/&[a-zA-Z0-9#]+;/g, (key) => entities[key] || key);
-    
-    // 3. Doppelte Leerzeichen entfernen und trimmen
-    return text.replace(/\s+/g, ' ').trim();
+
+    // 1. HTML-Tags entfernen
+    const textWithTagsRemoved = html.replace(/<[^>]*>?/gm, ' ');
+
+    // 2. HTML-Entities (z.B. &amp;) mit einer robusten Bibliothek dekodieren
+    const decodedText = decode(textWithTagsRemoved);
+
+    // 3. Mehrfache Leerzeichen reduzieren und trimmen
+    return decodedText.replace(/\s+/g, ' ').trim();
 }
 
 export function formatEventDate(dateObj: Date, timeStr?: string) {

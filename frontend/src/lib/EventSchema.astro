@@ -1,0 +1,67 @@
+---
+// src/components/EventSchema.astro
+import type { Event } from '../lib/directus-types';
+import { getOptimizedImage, cleanText } from '../lib/utils';
+
+interface Props {
+    event: Event;
+}
+const { event } = Astro.props;
+
+// Basis-URL der Website. Muss in astro.config.mjs gesetzt sein.
+const siteUrl = Astro.site ? String(Astro.site) : 'https://diebruecke.social';
+
+// Bild-URL generieren. Geht davon aus, dass `image` die ID oder ein Objekt mit ID ist.
+const imageUrl = event.image ? getOptimizedImage(typeof event.image === 'string' ? event.image : event.image.id, 1200) : null;
+
+const schema = {
+    "@context": "https://schema.org",
+    "@type": "Event",
+    "name": event.title,
+    "startDate": event.start_date,
+    "endDate": event.end_date,
+    "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+    "eventStatus": "https://schema.org/EventScheduled",
+    "location": {
+        "@type": "Place",
+        "name": event.location || "Die Brücke",
+        "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "Grabenstraße 39A",
+            "addressLocality": "Graz",
+            "postalCode": "8010",
+            "addressCountry": "AT"
+        }
+    },
+    // Nur hinzufügen, wenn ein Bild vorhanden ist
+    ...(imageUrl && { "image": [imageUrl] }),
+    // Beschreibung: Teaser bevorzugen, da er kürzer ist. Ansonsten die volle Beschreibung.
+    "description": cleanText(event.teaser || event.description),
+    "offers": {
+        "@type": "Offer",
+        // Die URL sollte direkt zum Ticket-Link führen, falls vorhanden.
+        // Ansonsten verweist sie auf die Event-Detailseite.
+        "url": event.pretix_link || new URL(Astro.url.pathname, siteUrl).href,
+        
+        // PREIS: Dies ist eine Vereinfachung.
+        // TODO: Füge ein 'price' Feld in Directus für Events hinzu.
+        // - Wenn das Event kostenlos ist, setze den Preis auf "0".
+        // - Wenn es einen Preis hat, nutze diesen.
+        // - Wenn der Preis variabel ist oder nicht bekannt, lass 'price' weg.
+        "price": event.price ?? "0", // Annahme: event.price existiert. Fallback auf "0".
+        "priceCurrency": "EUR",
+        "availability": "https://schema.org/InStock",
+
+        // validFrom gibt an, ab wann das Angebot (Ticket) gültig ist.
+        // Normalerweise ist das der Verkaufsstart. Hier als Vereinfachung das Event-Datum.
+        // Link zur Ticket-Seite, falls vorhanden
+        ...(event.pretix_link && { "validFrom": event.start_date })
+    },
+    "organizer": {
+        "@type": "Organization",
+        "name": "Die Brücke",
+        "url": siteUrl
+    }
+};
+---
+<script type="application/ld+json" set:html={JSON.stringify(schema)} />
