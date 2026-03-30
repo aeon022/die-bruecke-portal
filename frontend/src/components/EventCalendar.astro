@@ -180,59 +180,68 @@ let highlightCounter = 0;
 </style>
 
 <script>
-    const buttons = document.querySelectorAll('.filter-btn');
-    const cards = Array.from(document.querySelectorAll('.event-card'));
-    const filterContainer = document.getElementById('filter-container');
-    const sentinel = document.getElementById('sticky-sentinel');
-
-    // Sticky Logic (unverändert)
-    if (sentinel && filterContainer) {
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (!entry.isIntersecting && entry.boundingClientRect.top < 0) {
-                    filterContainer.classList.add('is-stuck');
-                } else {
-                    filterContainer.classList.remove('is-stuck');
-                }
-            });
-        }, { rootMargin: '-100px 0px 0px 0px', threshold: 0 });
-        observer.observe(sentinel);
-    }
-
     const activeClasses = ['bg-slate-900', 'text-white', 'shadow-md', 'dark:bg-white', 'dark:text-slate-900'];
     const inactiveClasses = ['bg-transparent', 'text-slate-500', 'hover:bg-slate-100', 'hover:text-slate-900', 'dark:text-slate-400', 'dark:hover:bg-slate-800', 'dark:hover:text-white'];
-    
-    // --- FLÜSSIGE ANIMATION LOGIK ---
-    let isAnimating = false; // Spam-Schutz für Buttons
 
-    buttons.forEach(btn => {
-        btn.addEventListener('click', async () => {
-            if (isAnimating) return;
-            const category = btn.getAttribute('data-category');
-            
-            // 1. Buttons sofort updaten (Feedback)
-            buttons.forEach(b => {
-                b.classList.remove(...activeClasses);
-                b.classList.add(...inactiveClasses);
-                b.classList.remove('active');
-                b.setAttribute('aria-pressed', 'false');
+    function initEventCalendar() {
+        const filterContainer = document.getElementById('filter-container');
+        const sentinel = document.getElementById('sticky-sentinel');
+        const grid = document.getElementById('events-grid');
+
+        if (!filterContainer || !grid) return;
+        if (filterContainer.dataset.initialized === 'true') return;
+
+        filterContainer.dataset.initialized = 'true';
+
+        if (sentinel) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting && entry.boundingClientRect.top < 0) {
+                        filterContainer.classList.add('is-stuck');
+                    } else {
+                        filterContainer.classList.remove('is-stuck');
+                    }
+                });
+            }, { rootMargin: '-100px 0px 0px 0px', threshold: 0 });
+            observer.observe(sentinel);
+        }
+
+        let isAnimating = false;
+
+        filterContainer.addEventListener('click', async (event) => {
+            const button = event.target instanceof Element ? event.target.closest('.filter-btn') : null;
+            if (!button || isAnimating) return;
+
+            const buttons = Array.from(filterContainer.querySelectorAll('.filter-btn'));
+            const cards = Array.from(grid.querySelectorAll('.event-card'));
+            const category = button.getAttribute('data-category');
+
+            if (!category) return;
+
+            buttons.forEach(btn => {
+                btn.classList.remove(...activeClasses);
+                btn.classList.add(...inactiveClasses);
+                btn.classList.remove('active');
+                btn.setAttribute('aria-pressed', 'false');
             });
-            btn.classList.remove(...inactiveClasses);
-            btn.classList.add(...activeClasses);
-            btn.classList.add('active'); 
-            btn.setAttribute('aria-pressed', 'true');
+
+            button.classList.remove(...inactiveClasses);
+            button.classList.add(...activeClasses);
+            button.classList.add('active');
+            button.setAttribute('aria-pressed', 'true');
 
             isAnimating = true;
 
-            // 2. Sortieren: Wer muss weg? Wer darf bleiben?
             const toHide = [];
             const toShow = [];
 
             cards.forEach(card => {
-                const cardCats = card.getAttribute('data-cats') || '';
+                const cardCats = (card.getAttribute('data-cats') || '')
+                    .split(',')
+                    .map(cat => cat.trim())
+                    .filter(Boolean);
                 const isMatch = category === 'all' || cardCats.includes(category);
-                
-                // Wir betrachten nur Karten, die ihren Zustand ändern müssen
+
                 if (isMatch) {
                     toShow.push(card);
                 } else {
@@ -240,47 +249,44 @@ let highlightCounter = 0;
                 }
             });
 
-            // SCHRITT A: ALLES WAS WEG MUSS, AUSBLENDEN (Fade Out)
-            // Wir filtern nur die, die gerade sichtbar sind, um unnötige Arbeit zu sparen
-            const visibleToHide = toHide.filter(c => !c.classList.contains('card-hidden'));
-            
+            const visibleToHide = toHide.filter(card => !card.classList.contains('card-hidden'));
+
             if (visibleToHide.length > 0) {
                 visibleToHide.forEach(el => el.classList.add('card-out'));
-                // Warten bis CSS Transition fertig (300ms im CSS definiert)
-                await new Promise(r => setTimeout(r, 300));
+                await new Promise(resolve => setTimeout(resolve, 300));
             }
 
-            // SCHRITT B: LAYOUT SWITCH (Der harte Cut)
-            // Jetzt setzen wir display:none. Da opacity schon 0 ist, sieht man den "Sprung" nicht,
-            // aber das Grid klappt zusammen.
-            toHide.forEach(el => el.classList.add('card-hidden'));
-            
-            // Die neuen Elemente vorbereiten (Display block, aber noch unsichtbar)
-            toShow.forEach(el => {
-                el.classList.remove('card-hidden'); // Layout Platz nehmen
-                el.classList.add('card-out');       // Startposition: unsichtbar & klein
+            toHide.forEach(el => {
+                el.classList.add('card-hidden');
+                el.classList.remove('card-in');
             });
 
-            // Browser zwingen, das neue Layout zu berechnen, bevor wir animieren
-            // (Reflow Hack)
+            toShow.forEach(el => {
+                el.classList.remove('card-hidden');
+                el.classList.add('card-out');
+            });
+
             void filterContainer.offsetHeight;
 
-            // SCHRITT C: EINFLEGEN LASSEN (Staggered Fade In)
-            // Wir nutzen requestAnimationFrame für flüssigen Start
             requestAnimationFrame(() => {
                 toShow.forEach((el, index) => {
-                    // Kleine Verzögerung für den "Domino"-Effekt
                     setTimeout(() => {
                         el.classList.remove('card-out');
                         el.classList.add('card-in');
-                    }, index * 40); // 40ms Abstand = schön zackig
+                    }, index * 40);
                 });
             });
 
-            // Cleanup & Unlock nach Animation
             setTimeout(() => {
                 isAnimating = false;
             }, toShow.length * 40 + 300);
         });
-    });
+    }
+
+    document.addEventListener('astro:page-load', initEventCalendar);
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initEventCalendar);
+    } else {
+        initEventCalendar();
+    }
 </script>

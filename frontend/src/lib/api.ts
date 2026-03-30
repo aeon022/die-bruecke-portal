@@ -24,6 +24,9 @@ export async function getEvents() {
         readItems('events', {
           fields: [
             '*', 
+            'categories.event_categories_id.id',
+            'categories.event_categories_id.name',
+            'categories.event_categories_id.color',
             'event_categories.event_categories_id.id',
             'event_categories.event_categories_id.name',
             'event_categories.event_categories_id.color',
@@ -39,7 +42,8 @@ export async function getEvents() {
       return events.map((e: any) => ({
         ...e,
         is_highlight: Boolean(e?.is_highlight),
-        event_categories: e.event_categories || [] 
+        categories: e.categories || e.event_categories || [],
+        event_categories: e.event_categories || e.categories || []
       }));
 
     } catch (error) {
@@ -74,6 +78,9 @@ export async function getEventBySlug(slug: string) {
         filter: { ...statusFilter, slug: { _eq: slug } },
         fields: [
           '*',
+          'categories.event_categories_id.id',
+          'categories.event_categories_id.name',
+          'categories.event_categories_id.color',
           'event_categories.event_categories_id.id',
           'event_categories.event_categories_id.name',
           'event_categories.event_categories_id.color', // Color auch hier wichtig
@@ -81,7 +88,13 @@ export async function getEventBySlug(slug: string) {
         limit: 1
       })
     );
-    return events[0] || null;
+    const event = events[0];
+    if (!event) return null;
+    return {
+      ...event,
+      categories: event.categories || event.event_categories || [],
+      event_categories: event.event_categories || event.categories || []
+    };
   } catch (e) {
     console.error('API Error (getEventBySlug):', e);
     return null;

@@ -59,7 +59,7 @@ const catLookup = new Map();
 });
 
 let eventsWithCats = allEvents.map(event => {
-    const rawCats = event.event_categories || [];
+    const rawCats = event.categories || event.event_categories || [];
     const validNames = rawCats.map(rel => {
         let targetId = null;
         if (rel.event_categories_id) {

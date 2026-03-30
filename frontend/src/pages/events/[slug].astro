@@ -144,6 +144,7 @@ const weekday = displayDate.toLocaleDateString('de-DE', { weekday: 'long' });
 
 const relatedEvents = allEvents.filter((e: any) => e.id !== event.id).slice(0, 3);
 
+const eventCategories = event.categories || event.event_categories || [];
 const getCatName = (cat: any) => cat.event_categories_id?.name || cat.event_categories_id?.title || 'Event';
 
 const formatGCalDate = (date: Date) => date.toISOString().replace(/-|:|\.\d\d\d/g, '');
@@ -232,7 +233,7 @@ const shareLinkedIn = 'https://www.linkedin.com/sharing/share-offsite/?url=' + e
                 </div>
 
                 <div class="flex flex-wrap gap-3 mb-8 no-print">
-                  {event.event_categories?.map((cat: any) => (
+                  {eventCategories?.map((cat: any) => (
                     <span class="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
                       {getCatName(cat)}
                     </span>
