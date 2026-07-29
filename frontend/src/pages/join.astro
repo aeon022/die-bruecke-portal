@@ -92,33 +92,45 @@ const seoImage = "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q
             <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 
                 {/* 1. Die Crew */}
-                <div class="reveal group bg-slate-50 dark:bg-slate-800/50 rounded-[40px] p-10 border border-slate-100 dark:border-slate-800 hover:shadow-2xl transition-all duration-500">
+                <div class="reveal group flex flex-col bg-slate-50 dark:bg-slate-800/50 rounded-[40px] p-10 border border-slate-100 dark:border-slate-800 hover:shadow-2xl transition-all duration-500">
                     <div class="w-14 h-14 rounded-2xl bg-white dark:bg-slate-700 flex items-center justify-center text-rose-500 text-xl mb-8 shadow-sm group-hover:bg-rose-500 group-hover:text-white transition-all">
                         <i class="fa-solid fa-bolt-lightning"></i>
                     </div>
                     <h3 class="text-2xl font-display font-bold text-slate-900 dark:text-white mb-4 tracking-tight">Die Crew</h3>
                     <p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed mb-6 font-medium">Schenke Zeit und werde Teil unserer Backstage-Crew bei Konzerten, Slams oder auf Reisen.</p>
-                    <span class="text-xs font-bold text-rose-500 dark:text-rose-400">Backstage-Vibe inklusive</span>
+                    <span class="text-xs font-bold text-rose-500 dark:text-rose-400 mb-6">Backstage-Vibe inklusive</span>
+                    <a href="mailto:office@diebruecke.cc?subject=Teil%20der%20Crew" class="mt-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-rose-500 text-white rounded-full font-bold text-sm hover:bg-rose-600 transition-all shadow-lg shadow-rose-500/20">
+                        Jetzt melden
+                        <i class="fa-solid fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
+                    </a>
                 </div>
 
                 {/* 2. Praktikum */}
-                <div class="reveal group bg-slate-50 dark:bg-slate-800/50 rounded-[40px] p-10 border border-slate-100 dark:border-slate-800 hover:shadow-2xl transition-all duration-500" style="transition-delay: 100ms;">
+                <div class="reveal group flex flex-col bg-slate-50 dark:bg-slate-800/50 rounded-[40px] p-10 border border-slate-100 dark:border-slate-800 hover:shadow-2xl transition-all duration-500" style="transition-delay: 100ms;">
                     <div class="w-14 h-14 rounded-2xl bg-white dark:bg-slate-700 flex items-center justify-center text-indigo-500 text-xl mb-8 shadow-sm group-hover:bg-indigo-500 group-hover:text-white transition-all">
                         <i class="fa-solid fa-graduation-cap"></i>
                     </div>
                     <h3 class="text-2xl font-display font-bold text-slate-900 dark:text-white mb-4 tracking-tight">Praktikum</h3>
                     <p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed mb-6 font-medium">Lerne von den Pionieren. Wir bieten Plätze für Soziale Arbeit, Kulturmanagement oder Pädagogik mit echtem Impact.</p>
-                    <span class="text-xs font-bold text-indigo-500 dark:text-indigo-400">Pionier-Erfahrung inklusive</span>
+                    <span class="text-xs font-bold text-indigo-500 dark:text-indigo-400 mb-6">Pionier-Erfahrung inklusive</span>
+                    <a href="mailto:office@diebruecke.cc?subject=Praktikum" class="mt-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-indigo-500 text-white rounded-full font-bold text-sm hover:bg-indigo-600 transition-all shadow-lg shadow-indigo-500/20">
+                        Jetzt bewerben
+                        <i class="fa-solid fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
+                    </a>
                 </div>
 
                 {/* 3. Mitgliedschaft */}
-                <div class="reveal group bg-slate-50 dark:bg-slate-800/50 rounded-[40px] p-10 border border-slate-100 dark:border-slate-800 hover:shadow-2xl transition-all duration-500" style="transition-delay: 200ms;">
+                <div class="reveal group flex flex-col bg-slate-50 dark:bg-slate-800/50 rounded-[40px] p-10 border border-slate-100 dark:border-slate-800 hover:shadow-2xl transition-all duration-500" style="transition-delay: 200ms;">
                     <div class="w-14 h-14 rounded-2xl bg-white dark:bg-slate-700 flex items-center justify-center text-emerald-500 text-xl mb-8 shadow-sm group-hover:bg-emerald-500 group-hover:text-white transition-all">
                         <i class="fa-solid fa-id-card"></i>
                     </div>
                     <h3 class="text-2xl font-display font-bold text-slate-900 dark:text-white mb-4 tracking-tight">Mitgliedschaft</h3>
                     <p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed mb-6 font-medium">Werde Teil des Kern-Teams. Mit deinem Beitrag sicherst du unsere radikale Unabhängigkeit seit 1983.</p>
-                    <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400">Mitglieder-Tickets inklusive</span>
+                    <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400 mb-6">Mitglieder-Tickets inklusive</span>
+                    <a href="/join/mitgliedschaft" class="mt-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-emerald-500 text-white rounded-full font-bold text-sm hover:bg-emerald-600 transition-all shadow-lg shadow-emerald-500/20">
+                        Mehr erfahren
+                        <i class="fa-solid fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
+                    </a>
                 </div>
 
                 {/* 4. Partnerschaft */}
@@ -131,15 +143,18 @@ const seoImage = "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q
                         <h3 class="text-2xl font-display font-bold text-white mb-4 tracking-tight leading-tight">Partnerschaft</h3>
                         
                         <p class="text-slate-400 text-sm leading-relaxed font-medium mb-6 flex-grow">
-                            Investiere in echte Inklusion statt in heiße Luft. Wir bieten <span class="text-white font-bold">Firmenmitgliedschaften</span> mit exklusiven <span class="text-white font-bold">Team-Specials</span>.
+                            Mehr als eine Mitgliedschaft: eine strategische Kooperation mit echter <span class="text-white font-bold">Sichtbarkeit</span>. Wir entwickeln gemeinsam, was zu eurer Marke passt – langfristig statt einmalig.
                         </p>
-                        
+
                         <div class="space-y-3 mb-10">
                             <div class="flex items-center gap-2 text-[10px] font-bold text-rose-400 uppercase tracking-widest">
-                                <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> Exklusive Crew-Vorteile
+                                <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> Branding bei unseren Formaten
                             </div>
                             <div class="flex items-center gap-2 text-[10px] font-bold text-rose-400 uppercase tracking-widest">
-                                <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> Premium Branding
+                                <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> Sachsponsoring statt nur Geld
+                            </div>
+                            <div class="flex items-center gap-2 text-[10px] font-bold text-rose-400 uppercase tracking-widest">
+                                <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> Praktikums- & Jobplätze für Inklusion
                             </div>
                         </div>
 
@@ -151,6 +166,30 @@ const seoImage = "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q
                 </div>
 
             </div>
+
+            {/* --- FIRMENMITGLIEDSCHAFT & TEAMBUILDING --- */}
+            <a href="/join/mitgliedschaft#firmen" class="reveal group relative block overflow-hidden rounded-[40px] p-10 md:p-14 mt-6 max-w-7xl mx-auto bg-gradient-to-br from-amber-400 via-orange-500 to-rose-600 shadow-2xl hover:shadow-orange-500/20 hover:-translate-y-1 transition-all duration-500">
+                <div class="absolute -right-16 -top-16 w-72 h-72 bg-white/10 rounded-full blur-3xl"></div>
+                <div class="absolute -left-10 -bottom-10 w-56 h-56 bg-slate-900/10 rounded-full blur-3xl"></div>
+
+                <div class="relative z-10 grid md:grid-cols-[1fr_auto] gap-10 items-center">
+                    <div>
+                        <div class="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white text-xl mb-6 shadow-lg">
+                            <i class="fa-solid fa-people-group"></i>
+                        </div>
+                        <h3 class="text-3xl md:text-4xl font-display font-bold text-white mb-3 tracking-tight leading-tight">
+                            Firmenmitgliedschaft &amp; Teambuilding
+                        </h3>
+                        <p class="text-white/90 text-base md:text-lg leading-relaxed font-medium max-w-2xl">
+                            Verbinde soziales Engagement mit einem Teamevent, das hängen bleibt. Dein Unternehmen wird Brückenpfeiler – dein Team packt mit an.
+                        </p>
+                    </div>
+                    <div class="inline-flex items-center gap-3 px-8 py-4 bg-slate-900 text-white rounded-full font-bold shadow-lg shrink-0 group-hover:bg-white group-hover:text-slate-900 transition-all">
+                        Mehr erfahren
+                        <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+                </div>
+            </a>
         </section>
 
         {/* --- SPENDEN --- */}

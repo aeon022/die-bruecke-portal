@@ -98,7 +98,9 @@ export interface InboxMembership {
 	last_name?: string | null;
 	email?: string | null;
 	address?: string | null;
-	membership_type?: `Förderndes Mitglied` | `Jugend Mitglied (bis 18)` | 'Familienmitgliedschaft' | 'Firmenmitgliedschaft' | null;
+	phone?: string | null;
+	message?: string | null;
+	membership_type?: 'Mitgliedschaft' | 'Fördermitgliedschaft' | 'Firmenmitgliedschaft' | null;
 }
 
 export interface InboxVolunteer {
