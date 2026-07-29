@@ -29,6 +29,7 @@ backend/database/
 backend/uploads/
 backend/extensions/
 !backend/extensions/.keep
+backend/backup/
 .zip
 # Wir behalten backend/docker-compose.yml im Repo für Backups/Referenz
 
