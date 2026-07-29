@@ -59,6 +59,13 @@ services:
       WEBSOCKETS_ENABLED: 'false'
       FLOWS_EXEC_ALLOWED_MODULES: "*"
       FLOWS_EXEC_DRIVER: "nodejs"
+      EMAIL_TRANSPORT: 'smtp'
+      EMAIL_FROM: ${EMAIL_SMTP_USER}
+      EMAIL_SMTP_HOST: ${EMAIL_SMTP_HOST}
+      EMAIL_SMTP_PORT: ${EMAIL_SMTP_PORT}
+      EMAIL_SMTP_USER: ${EMAIL_SMTP_USER}
+      EMAIL_SMTP_PASSWORD: ${EMAIL_SMTP_PASSWORD}
+      EMAIL_SMTP_SECURE: ${EMAIL_SMTP_SECURE}
     volumes:
       # Pfade angepasst auf Root-Ebene
       - ./backend/uploads:/directus/uploads
