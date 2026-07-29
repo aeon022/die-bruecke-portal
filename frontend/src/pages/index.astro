@@ -42,19 +42,58 @@ const [settings, allEvents, dbServices, dbPartners] = await Promise.all([
 // 2. Event Logik
 const today = new Date();
 today.setHours(0,0,0,0);
-const highlightCandidates = allEvents.filter(e => {
-    const eventDate = new Date(e.date_start || e.start_date || e.date); 
-    return e.is_highlight === true && eventDate >= today;
+
+// HELPER: Nächstes Datum berechnen (inkl. Wochentags-Logik für wiederkehrende Events)
+// Gleiche Logik wie in src/pages/events/index.astro, damit wiederkehrende Events
+// überall den nächsten (nicht den ursprünglichen) Termin anzeigen.
+const getNextEventDate = (event) => {
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+
+    let eventDate = new Date(event.date_start || event.start_date || event.date);
+    if (eventDate >= now) return eventDate;
+
+    if (event.recurrence === 'monthly' || event.rrule?.includes('FREQ=MONTHLY')) {
+        const targetDay = eventDate.getDay();
+        const weekIndex = Math.floor((eventDate.getDate() - 1) / 7);
+
+        while (eventDate < now) {
+            eventDate.setMonth(eventDate.getMonth() + 1);
+            eventDate.setDate(1);
+
+            while (eventDate.getDay() !== targetDay) {
+                eventDate.setDate(eventDate.getDate() + 1);
+            }
+
+            eventDate.setDate(eventDate.getDate() + (weekIndex * 7));
+        }
+        return eventDate;
+    }
+
+    if (event.recurrence === 'weekly' || event.recurrence === 'biweekly') {
+        const step = event.recurrence === 'biweekly' ? 14 : 7;
+        while (eventDate < now) {
+            eventDate.setDate(eventDate.getDate() + step);
+        }
+        return eventDate;
+    }
+    return eventDate;
+};
+
+const eventsWithDisplayDate = allEvents.map(e => ({
+    ...e,
+    _displayDate: getNextEventDate(e),
+}));
+
+const highlightCandidates = eventsWithDisplayDate.filter(e => {
+    return e.is_highlight === true && e._displayDate >= today;
 });
-highlightCandidates.sort((a, b) => {
-    const dateA = new Date(a.date_start || a.start_date || a.date).getTime();
-    const dateB = new Date(b.date_start || b.start_date || b.date).getTime();
-    return dateA - dateB;
-});
-const highlightEvent = highlightCandidates.length > 0 ? highlightCandidates[0] : allEvents[0];
-const upcomingEvents = allEvents
-  .filter(e => e.id !== highlightEvent?.id) 
-  .filter(e => new Date(e.date_start || e.start_date || e.date) >= today)
+highlightCandidates.sort((a, b) => a._displayDate.getTime() - b._displayDate.getTime());
+const highlightEvent = highlightCandidates.length > 0 ? highlightCandidates[0] : eventsWithDisplayDate[0];
+const upcomingEvents = eventsWithDisplayDate
+  .filter(e => e.id !== highlightEvent?.id)
+  .filter(e => e._displayDate >= today)
+  .sort((a, b) => a._displayDate.getTime() - b._displayDate.getTime())
   .slice(0, 3);
 
 // 3. Daten für Hero vorbereiten (UPDATED)
