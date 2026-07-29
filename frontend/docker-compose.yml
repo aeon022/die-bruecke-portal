@@ -1,7 +1,7 @@
 services:
   beta_frontend:
     build:
-      context: ./app/frontend
+      context: .
       dockerfile: Dockerfile
       # WICHTIG: Das hier hat gefehlt!
       args:
