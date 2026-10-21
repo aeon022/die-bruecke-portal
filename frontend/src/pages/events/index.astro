@@ -1,6 +1,7 @@
 ---
 import MainLayout from '../../layouts/layout.astro';
 import EventCalendar from '../../components/EventCalendar.astro';
+import NewsletterForm from '../../components/NewsletterForm.astro';
 import { getEvents, getEventCategories } from '../../lib/api';
 
 const [allEvents, allCategories] = await Promise.all([
@@ -136,6 +137,11 @@ const seoImage = "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?q
                 <EventCalendar events={eventsWithCats} categories={allCategories} />
             </div>
         </div>
+    </section>
+
+    {/* --- NEWSLETTER --- */}
+    <section class="px-6 sm:px-10 py-16 bg-white dark:bg-slate-900 transition-colors">
+        <div class="max-w-xl mx-auto"><NewsletterForm /></div>
     </section>
 
     {/* --- FOOTER TEASER --- */}

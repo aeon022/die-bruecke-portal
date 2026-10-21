@@ -1,5 +1,6 @@
 ---
 import MainLayout from '../layouts/layout.astro';
+import NewsletterForm from '../components/NewsletterForm.astro';
 import LocationCard from '../components/LocationCard.astro';
 import { directus } from '../lib/directus';
 import { readSingleton, readItems } from '@directus/sdk';
@@ -349,6 +350,11 @@ const schemaData = {
                 </div>
             </a>
         </div>
+    </section>
+
+    {/* --- NEWSLETTER --- */}
+    <section class="px-6 sm:px-10 py-16 bg-white dark:bg-slate-950 transition-colors">
+        <div class="max-w-xl mx-auto"><NewsletterForm /></div>
     </section>
 
     {/* --- EXIT --- */}
