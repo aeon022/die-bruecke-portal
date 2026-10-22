@@ -1,0 +1,77 @@
+---
+import MainLayout from '../layouts/layout.astro';
+import NewsletterForm from '../components/NewsletterForm.astro';
+
+const steps = [
+    { icon: 'fa-envelope', title: 'Anmelden', text: 'Trag deine E-Mail-Adresse ein und setz den Haken bei der Einwilligung.' },
+    { icon: 'fa-circle-check', title: 'Bestätigen', text: 'Du bekommst eine Mail von uns. Ein Klick auf den Link, und du bist im Lostopf.' },
+    { icon: 'fa-ticket', title: 'Gewinnen', text: 'Wir losen zwei Karten für eine Veranstaltung aus und melden uns per Mail.' },
+];
+---
+
+<MainLayout title="Gewinnspiel" description="Newsletter anmelden und mit etwas Glück zwei Karten für eine Veranstaltung in der Brücke gewinnen.">
+    <div class="px-4 md:px-6 pb-16 md:pb-24">
+
+        {/* --- HERO + FORMULAR --- */}
+        <section class="relative z-10 px-6 sm:px-10 pt-20 pb-24 bg-white dark:bg-slate-900 rounded-t-[48px] md:rounded-t-[64px] overflow-hidden transition-colors duration-500">
+            <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+                <div class="absolute top-10 -left-10 w-72 h-72 bg-rose-500/10 rounded-full blur-3xl animate-pulse"></div>
+                <div class="absolute bottom-0 right-0 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl"></div>
+            </div>
+
+            <div class="max-w-5xl mx-auto relative z-10 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+                <div>
+                    <div class="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-bold mb-8">
+                        <span class="relative flex h-2 w-2">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
+                        </span>
+                        Gewinnspiel
+                    </div>
+                    <h1 class="text-5xl md:text-7xl font-display font-black tracking-tight leading-[0.95] mb-8 text-transparent bg-clip-text bg-gradient-to-br from-rose-500 via-rose-600 to-indigo-700">
+                        Zwei Karten.<br/>Ein Abend in der Brücke.
+                    </h1>
+                    <p class="text-lg md:text-xl text-slate-600 dark:text-slate-400 leading-relaxed font-medium max-w-md">
+                        Die Brücke ist ein soziokulturelles Zentrum in Graz: Konzerte, Workshops und Begegnungen für alle. Melde dich zu unserem Newsletter an und gewinne mit etwas Glück zwei Karten für eine Veranstaltung.
+                    </p>
+                </div>
+
+                <div class="relative">
+                    <div class="absolute -top-5 -right-3 hidden lg:block float-animation z-10" aria-hidden="true">
+                        <div class="px-4 py-2 rounded-2xl bg-white dark:bg-slate-800 shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-slate-100 dark:border-slate-700 rotate-6 flex items-center gap-2">
+                            <span class="text-lg">🎟️</span>
+                            <span class="text-slate-900 dark:text-white font-bold text-sm">2 × Eintritt</span>
+                        </div>
+                    </div>
+                    <div class="absolute -bottom-5 right-10 hidden lg:block float-animation-delayed z-10" aria-hidden="true">
+                        <div class="px-4 py-2 rounded-2xl bg-white dark:bg-slate-800 shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-slate-100 dark:border-slate-700 -rotate-3 flex items-center gap-2">
+                            <span class="text-lg">🍀</span>
+                            <span class="text-slate-900 dark:text-white font-bold text-sm">Viel Glück</span>
+                        </div>
+                    </div>
+                    <NewsletterForm />
+                </div>
+            </div>
+        </section>
+
+        {/* --- ABLAUF --- */}
+        <section class="px-6 sm:px-10 py-20 bg-slate-50 dark:bg-slate-950 rounded-b-[48px] md:rounded-b-[64px] transition-colors duration-500">
+            <div class="max-w-5xl mx-auto">
+                <h2 class="text-3xl md:text-4xl font-display font-black text-slate-900 dark:text-white mb-12">So nimmst du teil</h2>
+                <ol class="grid md:grid-cols-3 gap-6">
+                    {steps.map((s, i) => (
+                        <li class="relative bg-white dark:bg-slate-900 rounded-3xl p-8 border border-slate-200 dark:border-slate-800">
+                            <span class="absolute top-6 right-8 text-5xl font-display font-black text-slate-100 dark:text-slate-800" aria-hidden="true">{i + 1}</span>
+                            <i class={`fa-solid ${s.icon} text-2xl text-rose-500 mb-5`} aria-hidden="true"></i>
+                            <h3 class="font-display font-bold text-xl text-slate-900 dark:text-white mb-2">{s.title}</h3>
+                            <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-sm">{s.text}</p>
+                        </li>
+                    ))}
+                </ol>
+                <p class="mt-10 text-xs text-slate-600 dark:text-slate-400 leading-relaxed max-w-2xl">
+                    Teilnahme ab Bestätigung der Anmeldung. Die Gewinner:innen werden per E-Mail verständigt. Der Rechtsweg ist ausgeschlossen. Du kannst den Newsletter jederzeit abbestellen.
+                </p>
+            </div>
+        </section>
+    </div>
+</MainLayout>
