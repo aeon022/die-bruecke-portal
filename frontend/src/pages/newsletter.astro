@@ -1,0 +1,15 @@
+---
+import MainLayout from '../layouts/layout.astro';
+import NewsletterForm from '../components/NewsletterForm.astro';
+---
+
+<MainLayout title="Newsletter" description="Neuigkeiten und Termine der Brücke direkt ins Postfach.">
+    <div class="px-4 md:px-6 pb-16 md:pb-24">
+        <section class="max-w-xl mx-auto py-20 text-center space-y-6">
+            <i class="fa-solid fa-paper-plane text-4xl text-rose-500" aria-hidden="true"></i>
+            <h1 class="text-4xl font-display font-black text-slate-900 dark:text-white">Newsletter</h1>
+            <p class="text-slate-700 dark:text-slate-400">Neuigkeiten und Termine der Brücke direkt ins Postfach.</p>
+            <div class="text-left"><NewsletterForm /></div>
+        </section>
+    </div>
+</MainLayout>
