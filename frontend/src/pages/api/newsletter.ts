@@ -41,7 +41,7 @@ export const POST: APIRoute = async ({ request }) => {
         return json('Anmeldung gerade nicht möglich. Bitte versuche es später erneut.', 502);
       }
     }
-    return json('Fast geschafft – bitte bestätige deine E-Mail-Adresse.');
+    return json('Fast geschafft – bitte bestätige deine E-Mail-Adresse. Falls du schon angemeldet bist, musst du nichts weiter tun.');
   } catch (e) {
     console.error('Newsletter-API', e);
     return json('Anmeldung gerade nicht möglich. Bitte versuche es später erneut.', 500);
