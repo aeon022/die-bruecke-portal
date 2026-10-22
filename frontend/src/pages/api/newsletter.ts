@@ -16,13 +16,18 @@ export const POST: APIRoute = async ({ request }) => {
       return json('Bitte gib eine gültige E-Mail-Adresse an und stimme der Datenschutzerklärung zu.', 400);
     }
 
+    // Gewinnspiel: zusätzlich in die eigene Liste (nur wenn BREVO_GEWINNSPIEL_LIST_ID gesetzt)
+    const lists = [Number(env('BREVO_LIST_ID'))];
+    const giveawayList = Number(env('BREVO_GEWINNSPIEL_LIST_ID'));
+    if (data.source === 'gewinnspiel' && giveawayList) lists.push(giveawayList);
+
     // Double-Opt-In: Brevo schickt die Bestätigungsmail, der Kontakt landet erst nach Klick in der Liste
     const res = await fetch('https://api.brevo.com/v3/contacts/doubleOptinConfirmation', {
       method: 'POST',
       headers: { 'api-key': env('BREVO_API_KEY'), 'content-type': 'application/json' },
       body: JSON.stringify({
         email,
-        includeListIds: [Number(env('BREVO_LIST_ID'))],
+        includeListIds: lists,
         templateId: Number(env('BREVO_DOI_TEMPLATE_ID')),
         redirectionUrl: env('BREVO_DOI_REDIRECT_URL') || 'https://diebruecke.social/newsletter-bestaetigt',
       }),

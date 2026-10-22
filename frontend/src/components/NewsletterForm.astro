@@ -1,10 +1,12 @@
 ---
+const { gewinnspiel = false } = Astro.props;
 ---
 
 <form class="newsletter-form bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-lg shadow-slate-200/50 dark:shadow-none space-y-3">
                         <h3 class="font-display font-bold text-slate-900 dark:text-white">Newsletter</h3>
                         <p class="text-slate-700 dark:text-slate-400 text-xs leading-relaxed font-medium">Neuigkeiten und Termine direkt ins Postfach. Mit etwas Glück gewinnst du zwei Freikarten.</p>
                                                 <input name="email" aria-label="E-Mail-Adresse" type="email" required autocomplete="email" placeholder="deine@email.at" class="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 px-4 py-3 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-rose-500" />
+                        {gewinnspiel && <input type="hidden" name="source" value="gewinnspiel" />}
                         <input type="text" name="website_check" tabindex="-1" autocomplete="off" aria-hidden="true" class="hidden" />
                         <label class="flex items-start gap-2 text-[11px] text-slate-600 dark:text-slate-400 leading-snug">
                             <input type="checkbox" name="consent" required class="mt-0.5 accent-rose-600" />
@@ -24,7 +26,7 @@
             const res = await fetch('/api/newsletter', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email: fd.get('email'), consent: fd.get('consent') === 'on', website_check: fd.get('website_check') }),
+                body: JSON.stringify({ email: fd.get('email'), consent: fd.get('consent') === 'on', website_check: fd.get('website_check'), source: fd.get('source') }),
             }).catch(() => null);
             const body = res ? await res.json().catch(() => ({})) : {};
             msg.textContent = body.message || 'Anmeldung gerade nicht möglich.';
