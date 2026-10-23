@@ -49,7 +49,7 @@ const instagramProfile = "https://www.instagram.com/die.bruecke.graz";
 const seoTitle = `${project.title} - Inklusionsprojekt Graz | Die Brücke`;
 const cleanDesc = project.description?.replace(/<[^>]*>/g, '') || "";
 const seoDescription = cleanDesc.length > 160 ? cleanDesc.substring(0, 157) + "..." : cleanDesc;
-const seoImage = project.image ? `${ASSET_URL}/${project.image}` : "https://images.unsplash.com/photo-1531482615713-2afd69097998?q=80&w=1200";
+const seoImage = project.image ? `${ASSET_URL}/${project.image}` : "/images/stock/unsplash-1531482615713.jpg";
 
 // Youtube Thumbnail für Video-Schema (falls vorhanden)
 const videoId = project.video; 

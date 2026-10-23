@@ -21,6 +21,7 @@ const ASSET_URL = 'https://api.diebruecke.social/assets';
 const getOptimizedImg = (id, w = 800) => {
     if (!id) return null;
     if (typeof id === 'object') id = id.id;
+    if (id.startsWith('/')) return id; // lokales Bild aus public/
     if (id.startsWith('http')) return `${id}?auto=format&fit=crop&w=${w}&q=60`;
     return `${ASSET_URL}/${id}?width=${w}&format=webp&quality=60`;
 };
@@ -103,7 +104,7 @@ const heroRow2 = settings?.hero_headline_row2; // Neu: Zeile 2
 const heroGradient = settings?.hero_gradient;  // Neu: Gradient Klassen
 
 const heroSubline = settings?.hero_subline || "Die Brücke ist dein Rückenwind für ein selbstbestimmtes Leben. Wir verbinden Menschen durch Kultur, Freizeit und Unterstützung im Alltag – barrierefrei, bunt und mitten in Graz.";
-const heroImg = getOptimizedImg(settings?.hero_image || 'https://images.unsplash.com/photo-1511632765486-a01980e01a18', 1600);
+const heroImg = getOptimizedImg(settings?.hero_image || '/images/stock/unsplash-1511632765486.jpg', 1600);
 
 // Partner
 const optimizedPartners = dbPartners.map(p => ({
@@ -114,7 +115,7 @@ const optimizedPartners = dbPartners.map(p => ({
 const seoDescription = heroSubline.replace(/<[^>]*>/g, '');
 ---
 
-<MainLayout title="Startseite" description={seoDescription} image={heroImg}>
+<MainLayout title="Die Brücke – soziokulturelles Zentrum Graz" description={seoDescription} image={heroImg}>
     <style is:inline>
         .home-content { visibility: hidden; }
         html.home-ready .home-content { visibility: visible; }

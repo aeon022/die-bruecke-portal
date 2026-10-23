@@ -128,10 +128,11 @@ if (urlDateParam) {
 const displayEndDate = new Date(displayDate.getTime() + duration);
 
 // --- SEO CONFIG ---
-const seoTitle = `${event.title} Graz | Event | Die Brücke`;
+// Datum im Titel: wiederkehrende Events (z. B. Mord vor Ort) haben sonst identische Titel
+const seoTitle = `${event.title} am ${displayDate.toLocaleDateString("de-AT", { day: "2-digit", month: "2-digit", year: "numeric" })} | Die Brücke Graz`;
 const rawDesc = event.subtitle || event.description || "Veranstaltung im soziokulturellen Zentrum Die Brücke Graz.";
 const seoDescription = rawDesc.replace(/<[^>]*>/g, '').substring(0, 160).trim() + "...";
-const seoImage = heroImage ? `${ASSET_URL}/${heroImage}` : "https://diebruecke.cc/share-image.jpg";
+const seoImage = heroImage ? `${ASSET_URL}/${heroImage}` : "/social-fallback.jpg";
 
 // --- FORMATIERUNG ---
 const dateString = displayDate.toLocaleDateString('de-DE', {

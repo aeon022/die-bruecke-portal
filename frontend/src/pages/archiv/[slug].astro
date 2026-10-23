@@ -91,10 +91,10 @@ const currentUrl = Astro.url.href;
                                 <div class="pt-8 border-t border-slate-50 dark:border-slate-900">
                                     <h4 class="text-slate-400 text-[10px] font-black uppercase tracking-[0.4em] mb-6">Teilen</h4>
                                     <div class="flex gap-3">
-                                        <a href={`https://wa.me/?text=${currentUrl}`} target="_blank" class="w-10 h-10 rounded-full border border-slate-100 dark:border-slate-800 flex items-center justify-center hover:bg-green-500 hover:text-white transition-all text-slate-400 text-sm"><i class="fa-brands fa-whatsapp"></i></a>
-                                        <a href={`https://www.facebook.com/sharer/sharer.php?u=${currentUrl}`} target="_blank" class="w-10 h-10 rounded-full border border-slate-100 dark:border-slate-800 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all text-slate-400 text-sm"><i class="fa-brands fa-facebook-f"></i></a>
-                                        <a href={`https://twitter.com/intent/tweet?url=${currentUrl}`} target="_blank" class="w-10 h-10 rounded-full border border-slate-100 dark:border-slate-800 flex items-center justify-center hover:bg-black hover:text-white transition-all text-slate-400 text-sm"><i class="fa-brands fa-x-twitter"></i></a>
-                                        <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${currentUrl}`} target="_blank" class="w-10 h-10 rounded-full border border-slate-100 dark:border-slate-800 flex items-center justify-center hover:bg-blue-700 hover:text-white transition-all text-slate-400 text-sm"><i class="fa-brands fa-linkedin-in"></i></a>
+                                        <a href={`https://wa.me/?text=${currentUrl}`} target="_blank" rel="noopener noreferrer" aria-label="Auf WhatsApp teilen" class="w-10 h-10 rounded-full border border-slate-100 dark:border-slate-800 flex items-center justify-center hover:bg-green-500 hover:text-white transition-all text-slate-400 text-sm"><i class="fa-brands fa-whatsapp"></i></a>
+                                        <a href={`https://www.facebook.com/sharer/sharer.php?u=${currentUrl}`} target="_blank" rel="noopener noreferrer" aria-label="Auf Facebook teilen" class="w-10 h-10 rounded-full border border-slate-100 dark:border-slate-800 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all text-slate-400 text-sm"><i class="fa-brands fa-facebook-f"></i></a>
+                                        <a href={`https://twitter.com/intent/tweet?url=${currentUrl}`} target="_blank" rel="noopener noreferrer" aria-label="Auf X teilen" class="w-10 h-10 rounded-full border border-slate-100 dark:border-slate-800 flex items-center justify-center hover:bg-black hover:text-white transition-all text-slate-400 text-sm"><i class="fa-brands fa-x-twitter"></i></a>
+                                        <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${currentUrl}`} target="_blank" rel="noopener noreferrer" aria-label="Auf LinkedIn teilen" class="w-10 h-10 rounded-full border border-slate-100 dark:border-slate-800 flex items-center justify-center hover:bg-blue-700 hover:text-white transition-all text-slate-400 text-sm"><i class="fa-brands fa-linkedin-in"></i></a>
                                     </div>
                                 </div>
                             </div>
@@ -130,7 +130,7 @@ const currentUrl = Astro.url.href;
                             {item.image && (
                                 <div class="mt-12 mb-16 rounded-[48px] overflow-hidden bg-slate-50 dark:bg-slate-900 p-2 shadow-sm border border-slate-100 dark:border-slate-800">
                                     <img 
-                                        src={`${ASSET_URL}/${item.image}?key=system-large-cover`} 
+                                        src={`${ASSET_URL}/${item.image}?width=480&height=480&fit=cover&format=webp&quality=75`} 
                                         class="w-full h-auto rounded-[40px] grayscale hover:grayscale-0 transition-all duration-700" 
                                         alt="Fragment Detail"
                                     />

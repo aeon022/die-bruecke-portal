@@ -41,7 +41,7 @@ try {
 }
 
 // --- LOGIK FÜR HERO BILD ---
-const fallbackImage = "https://images.pexels.com/photos/1438072/pexels-photo-1438072.jpeg?auto=compress&cs=tinysrgb&w=1200";
+const fallbackImage = "/images/stock/pexels-1438072.jpg";
 
 const heroImage = pageSettings?.hero_image 
     ? getImg(pageSettings.hero_image, 1600) 
@@ -72,7 +72,7 @@ const highlights = [
     title: "City Trips",
     subtitle: "Europa ruft.",
     desc: "Prag, Wien oder Ljubljana? Wir warten nicht auf den Bus, wir starten das Abenteuer.",
-    image: "https://images.unsplash.com/photo-1541849546-216549ae216d?q=80&w=1000&auto=format&fit=crop", 
+    image: "/images/stock/unsplash-1541849546.jpg", 
     tags: ["Travel", "Culture"],
     link: "/city-trips", // NEU: Link hinzugefügt
     comingSoon: false
@@ -81,7 +81,7 @@ const highlights = [
     title: "Adventure Gang",
     subtitle: "Adrenalin statt Alltag.",
     desc: "Ob beim Segeln oder am Fels – hier geht es nicht um 'Barrierefrei', sondern um 'Grenzenlos'.",
-    image: "https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=1000&auto=format&fit=crop", 
+    image: "/images/stock/unsplash-1534447677768.jpg", 
     tags: ["Action", "Sport"],
     link: null,
     comingSoon: true // NEU: Coming Soon Flag

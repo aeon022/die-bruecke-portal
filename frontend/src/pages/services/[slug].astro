@@ -48,7 +48,7 @@ const cleanTeaser = service.teaser || service.description?.replace(/<[^>]*>/g, '
 const seoDescription = cleanTeaser.length > 160 ? cleanTeaser.substring(0, 157) + "..." : cleanTeaser;
 
 // Image: Service Image oder Fallback
-const seoImage = serviceImage || "https://images.pexels.com/photos/1438072/pexels-photo-1438072.jpeg";
+const seoImage = serviceImage || "/images/stock/pexels-1438072.jpg";
 ---
 
 <MainLayout 

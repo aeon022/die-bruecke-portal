@@ -37,7 +37,7 @@ try {
 }
 
 // --- LOGIK FÜR HERO BILD ---
-const fallbackImage = "https://images.unsplash.com/photo-1516382799247-87df95d790b7?q=80&w=1200";
+const fallbackImage = "/images/stock/unsplash-1516382799247.jpg";
 
 const heroImage = (pageSettings && pageSettings.hero_image) 
     ? getImg(pageSettings.hero_image, 1600) 
@@ -284,7 +284,7 @@ const faqs = [
                 
                 <div class="relative aspect-square rounded-[48px] overflow-hidden border border-white/10 group shadow-2xl">
                     <img 
-                        src="https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?auto=compress&cs=tinysrgb&w=1200" 
+                        src="/images/stock/pexels-3184418.jpg" 
                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[1.5s]" 
                         alt="Begegnung im Infozentrum" 
                     />
