@@ -121,7 +121,7 @@ const seoImage = heroImage || "https://diebruecke.cc/share-trips.jpg";
             <div class="grid lg:grid-cols-12 gap-16 max-w-7xl mx-auto">
                 
                 {/* --- LINKE SPALTE --- */}
-                <div class="lg:col-span-8">
+                <div class="lg:col-span-8 min-w-0">
                     <div class="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-[10px] font-black text-rose-500 uppercase tracking-[0.2em] mb-8">
                         Trip Details
                     </div>
@@ -129,7 +129,7 @@ const seoImage = heroImage || "https://diebruecke.cc/share-trips.jpg";
                         Was wir gemeinsam <span class="text-indigo-600 italic">erleben.</span>
                     </h2>
                     
-                    <div class="prose prose-lg dark:prose-invert text-slate-600 dark:text-slate-400 prose-headings:font-display prose-headings:font-bold max-w-none" set:html={trip.description}></div>
+                    <div class="prose prose-lg dark:prose-invert text-slate-600 dark:text-slate-400 prose-headings:font-display prose-headings:font-bold max-w-none break-words prose-table:block prose-table:overflow-x-auto" set:html={trip.description?.replace(/<(\/?)h1\b/gi, "<$1h2")}></div>
 
                     {trip.video_url && (
                         <div class="mt-16 pt-8 border-t border-slate-100 dark:border-slate-800">

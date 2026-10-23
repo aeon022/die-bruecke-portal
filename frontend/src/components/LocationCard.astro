@@ -3,7 +3,6 @@
 // Wiederverwendbare Komponente für interaktive Map, Anfahrt, Adresse und Öffi-Infos
 
 const GOOGLE_KEY = import.meta.env.PUBLIC_GOOGLE_MAPS_KEY;
-const LAT_LNG = "47.0849,15.4348"; // Koordinaten für Die Brücke Graz
 const MAP_QUERY = "Die Brücke Graz Grabenstraße 39a";
 ---
 
@@ -18,11 +17,11 @@ const MAP_QUERY = "Die Brücke Graz Grabenstraße 39a";
             referrerpolicy="no-referrer-when-downgrade">
         </iframe>
 
-        {/* STATIC MAP PLACEHOLDER MIT API KEY */}
+        {/* PLATZHALTER: lädt bewusst nichts von Google, erst der Klick lädt die Karte (DSGVO) */}
         <div class="map-placeholder absolute inset-0 bg-cover bg-center flex flex-col items-center justify-center p-6 text-center transition-all cursor-pointer hover:bg-slate-300/50 dark:hover:bg-slate-700/50" 
              data-key={GOOGLE_KEY}
              data-query={MAP_QUERY}
-             style={`background-image: url('https://maps.googleapis.com/maps/api/staticmap?center=${LAT_LNG}&zoom=15&size=800x400&maptype=roadmap&markers=color:red%7C${LAT_LNG}&style=feature:all|saturation:-100&key=${GOOGLE_KEY}'); background-color: #cbd5e1;`}>
+             style="background-color: #cbd5e1;">
              
             {/* Overlay Pattern */}
             <div class="absolute inset-0 bg-slate-200 dark:bg-slate-800 opacity-50" style="background-image: radial-gradient(#94a3b8 1px, transparent 1px); background-size: 20px 20px;"></div>
