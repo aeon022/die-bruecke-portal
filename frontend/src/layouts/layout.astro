@@ -84,23 +84,30 @@ const socialImage = image
     </noscript>
 
     <script is:inline>
+      // Einzige Theme-Logik: 'light' | 'dark' gespeichert, kein Eintrag = System folgen
       const themeKey = 'theme';
+      const systemDark = window.matchMedia('(prefers-color-scheme: dark)');
+      const getMode = () => {
+        try { return localStorage.getItem(themeKey) || 'system'; } catch { return 'system'; }
+      };
       const updateTheme = () => {
-        const local = typeof localStorage !== 'undefined' ? localStorage.getItem(themeKey) : null;
-        const system = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-        const mode = local || system;
-        document.documentElement.classList.toggle('dark', mode === 'dark');
-        document.documentElement.style.colorScheme = mode;
+        const mode = getMode();
+        const dark = mode === 'dark' || (mode === 'system' && systemDark.matches);
+        document.documentElement.classList.toggle('dark', dark);
+        document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
+        document.documentElement.dataset.themeMode = mode;
       };
       updateTheme();
-      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-        if (!localStorage.getItem(themeKey)) updateTheme();
-      });
-      window.toggleTheme = () => {
-        const isDark = document.documentElement.classList.contains('dark');
-        localStorage.setItem(themeKey, isDark ? 'light' : 'dark');
+      systemDark.addEventListener('change', () => { if (getMode() === 'system') updateTheme(); });
+      document.addEventListener('astro:after-swap', updateTheme);
+      window.getThemeMode = getMode;
+      // Hell -> Dunkel -> System -> Hell
+      window.cycleTheme = () => {
+        const next = { light: 'dark', dark: 'system', system: 'light' }[getMode()];
+        try { next === 'system' ? localStorage.removeItem(themeKey) : localStorage.setItem(themeKey, next); } catch {}
         updateTheme();
         window.dispatchEvent(new Event('theme-change'));
+        return next;
       };
     </script>
     

@@ -356,9 +356,15 @@
             document.documentElement.classList.add('reduced-motion');
             updateToggleUI(btnMotion, true);
         }
-        const isDark = document.documentElement.classList.contains('dark');
-        updateToggleUI(btnTheme, isDark, isDark ? "DUNKEL" : "HELL");
+        showThemeMode();
     }
+
+    const THEME_STATUS = { light: 'HELL', dark: 'DUNKEL', system: 'AUTO' };
+    function showThemeMode() {
+        const mode = window.getThemeMode();
+        updateToggleUI(btnTheme, mode !== 'system', THEME_STATUS[mode]);
+    }
+    window.addEventListener('theme-change', showThemeMode);
 
     btnContrast?.addEventListener('click', () => {
         const isActive = document.documentElement.classList.toggle('high-contrast');
@@ -375,12 +381,7 @@
         localStorage.setItem('reduced-motion', String(isActive));
         updateToggleUI(btnMotion, isActive);
     });
-    btnTheme?.addEventListener('click', () => {
-        const isDark = document.documentElement.classList.toggle('dark');
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        updateToggleUI(btnTheme, isDark, isDark ? "DUNKEL" : "HELL");
-        window.dispatchEvent(new Event('theme-change')); 
-    });
+    btnTheme?.addEventListener('click', () => window.cycleTheme());
 
 </script>
 
