@@ -113,7 +113,8 @@
     // --- STATE ---
     let searchData = [];
     let isOpen = false;
-    let selectedIndex = 0;
+    let selectedIndex = -1;
+    let lastFocus = null;
 
     // --- DOM REFERENCES ---
     const backdrop = document.getElementById('command-palette-backdrop');
@@ -130,6 +131,8 @@
     const btnFontSize = document.getElementById('cp-toggle-fontsize');
     const btnMotion = document.getElementById('cp-toggle-motion');
     const btnTheme = document.getElementById('cp-toggle-theme');
+
+    const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
     // --- DATA LOADING (Lazy) ---
     async function loadSearchIndex() {
@@ -161,6 +164,8 @@
         modal.classList.remove('scale-95');
         
         document.body.style.overflow = 'hidden';
+        lastFocus = document.activeElement;
+        selectedIndex = -1;
         if(input) { 
             input.value = ''; 
             resetView(); 
@@ -178,6 +183,8 @@
         modal.classList.add('scale-95');
         document.body.style.overflow = '';
         setTimeout(() => { backdrop.classList.add('hidden'); }, 200);
+        input?.blur();
+        if (lastFocus instanceof HTMLElement && lastFocus !== input) lastFocus.focus();
         isOpen = false;
     }
 
@@ -211,6 +218,14 @@
             staticNav?.classList.add('hidden');
         }
 
+        // Seiten, die schon als Treffer oben stehen, in der Navigation darunter nicht doppelt zeigen
+        const resultUrls = new Set(results.slice(0, 10).map((r) => r.url));
+        document.querySelectorAll('#cp-static-nav .cp-item').forEach((a) => {
+            if (resultUrls.has(a.getAttribute('href'))) a.classList.add('hidden');
+        });
+        hasStaticMatches = [...document.querySelectorAll('#cp-static-nav .cp-item')].some((a) => !a.classList.contains('hidden'));
+        staticNav?.classList.toggle('hidden', !hasStaticMatches);
+
         if (results.length > 0) {
             dynamicResults.classList.remove('hidden');
             
@@ -232,10 +247,10 @@
                 el.innerHTML = `
                     <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${iconClass}">${iconContent}</div>
                     <div class="min-w-0 flex-1">
-                        <span class="block text-slate-900 dark:text-white font-bold truncate">${item.title}</span>
-                        ${item.desc ? `<span class="block text-[10px] text-slate-500 dark:text-slate-400 truncate">${item.desc}</span>` : ''}
+                        <span class="block text-slate-900 dark:text-white font-bold truncate">${esc(item.title)}</span>
+                        ${item.desc ? `<span class="block text-[10px] text-slate-500 dark:text-slate-400 truncate">${esc(item.desc)}</span>` : ''}
                     </div>
-                    <span class="text-[9px] uppercase font-bold text-slate-400 border border-slate-200 dark:border-slate-700 px-1.5 py-0.5 rounded">${item.type}</span>
+                    <span class="text-[9px] uppercase font-bold text-slate-400 border border-slate-200 dark:border-slate-700 px-1.5 py-0.5 rounded">${esc(item.type)}</span>
                 `;
                 el.addEventListener('click', closeCP);
                 list.appendChild(el);
@@ -252,7 +267,7 @@
         }
         
         // Reset Auswahl
-        selectedIndex = 0;
+        selectedIndex = -1;
     }
 
     // --- EVENT LISTENERS ---
@@ -303,7 +318,8 @@
         if (!isOpen) return;
         if (e.key === 'Escape') closeCP();
 
-        const items = document.querySelectorAll('.cp-item:not(.hidden)');
+        // nur sichtbare Einträge (ausgeblendete Gruppen wie die Einstellungen beim Suchen überspringen)
+        const items = [...document.querySelectorAll('.cp-item:not(.hidden)')].filter((el) => el.offsetParent !== null);
         if (items.length === 0) return;
 
         if (e.key === 'ArrowDown') {
@@ -314,12 +330,12 @@
         }
         if (e.key === 'ArrowUp') {
             e.preventDefault();
-            selectedIndex = (selectedIndex - 1 + items.length) % items.length;
+            selectedIndex = selectedIndex <= 0 ? items.length - 1 : selectedIndex - 1;
             items[selectedIndex]?.focus();
             items[selectedIndex]?.scrollIntoView({ block: 'nearest' });
         }
         if (e.key === 'Enter') {
-            const active = items[selectedIndex]; 
+            const active = items[Math.max(selectedIndex, 0)]; 
             if(active) {
                 active.click();
             }

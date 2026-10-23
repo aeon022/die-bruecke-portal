@@ -1,4 +1,4 @@
-import { createDirectus, rest } from '@directus/sdk';
+import { createDirectus, rest, staticToken } from '@directus/sdk';
 import type { Schema } from './directus-types'; // Stelle sicher, dass diese Datei existiert, sonst entfern die Zeile und nutze <any>
 
 // STRICT LIVE STRATEGY
@@ -13,3 +13,9 @@ if (import.meta.env.DEV) {
 
 export const directus = createDirectus<Schema>(DIRECTUS_URL)
   .with(rest());
+// Formulare (Kontakt, Mitgliedschaft) schreiben mit eigenem Token in den Posteingang.
+// Ohne DIRECTUS_FORM_TOKEN fällt das auf den öffentlichen Zugriff zurück (bisheriges Verhalten).
+const FORM_TOKEN = process.env.DIRECTUS_FORM_TOKEN || import.meta.env.DIRECTUS_FORM_TOKEN;
+export const directusForms = FORM_TOKEN
+  ? createDirectus<Schema>(DIRECTUS_URL).with(staticToken(FORM_TOKEN)).with(rest())
+  : directus;

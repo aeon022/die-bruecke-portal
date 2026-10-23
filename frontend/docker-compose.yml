@@ -15,6 +15,7 @@ services:
       - PUBLIC_DIRECTUS_URL=https://api.diebruecke.social 
       - HOST=0.0.0.0
       - PORT=4321
+      - DIRECTUS_FORM_TOKEN=${DIRECTUS_FORM_TOKEN:-}
       - BREVO_API_KEY=${BREVO_API_KEY}
       - BREVO_LIST_ID=${BREVO_LIST_ID}
       - BREVO_GEWINNSPIEL_LIST_ID=${BREVO_GEWINNSPIEL_LIST_ID:-}

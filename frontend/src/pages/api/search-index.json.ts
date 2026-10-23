@@ -20,7 +20,7 @@ export async function GET() {
     };
 
     const [events, projects, services, blog, camps, cityTrips, archiv] = await Promise.all([
-      fetchCollection('events', ['title', 'slug', 'description']),
+      fetchCollection('events', ['title', 'slug', 'description', 'start_date']),
       fetchCollection('projects', ['title', 'slug', 'description']),
       fetchCollection('services', ['title', 'slug', 'description']),
       // Blog: 'excerpt' statt 'teaser' (laut Screenshot)
@@ -30,6 +30,15 @@ export async function GET() {
       // Archiv: 'description' und 'teaser' (laut Screenshot)
       fetchCollection('archiv', ['title', 'slug', 'description', 'teaser'])
     ]);
+
+    // Kommende Termine zuerst (nächster oben), danach vergangene (neueste oben)
+    const sortEvents = (list: any[]) => {
+      const now = Date.now();
+      const t = (e: any) => (e.start_date ? new Date(e.start_date).getTime() : 0);
+      const upcoming = list.filter((e) => t(e) >= now).sort((a, b) => t(a) - t(b));
+      const past = list.filter((e) => t(e) < now).sort((a, b) => t(b) - t(a));
+      return [...upcoming, ...past];
+    };
 
     const staticPages = [
       { title: 'Startseite', url: '/', type: 'Seite', desc: 'Willkommen bei der Brücke' },
@@ -44,8 +53,8 @@ export async function GET() {
 
     const searchIndex = [
       ...staticPages,
-      ...events.map((e: any) => ({
-        title: e.title,
+      ...sortEvents(events).map((e: any) => ({
+        title: e.start_date ? `${e.title} · ${new Date(e.start_date).toLocaleDateString('de-AT', { day: '2-digit', month: '2-digit', year: 'numeric' })}` : e.title,
         url: `/events/${e.slug}`,
         type: 'Event',
         desc: e.description?.replace(/<[^>]*>/g, '').substring(0, 100)

@@ -94,6 +94,16 @@ const socialImage = image
         window.dispatchEvent(new Event('theme-change'));
         return next;
       };
+      // Barrierefreiheit (Kontrast, große Schrift, wenig Bewegung) auf jeder Seite sofort anwenden, nicht erst beim Öffnen der Palette
+      const applyA11y = () => {
+        try {
+          for (const k of ['high-contrast', 'large-text', 'reduced-motion']) {
+            document.documentElement.classList.toggle(k, localStorage.getItem(k) === 'true');
+          }
+        } catch {}
+      };
+      applyA11y();
+      document.addEventListener('astro:after-swap', applyA11y);
     </script>
     
     <style is:global>

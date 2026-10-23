@@ -78,5 +78,12 @@ export const onRequest = defineMiddleware(async (context, next) => {
     return context.redirect("/", 301);
   }
 
-  return next();
+  // 5. Sicherheits-Header für alle Seiten (CSP bewusst noch nicht: viele Inline-Skripte)
+  const response = await next();
+  response.headers.set("Strict-Transport-Security", "max-age=31536000");
+  response.headers.set("X-Content-Type-Options", "nosniff");
+  response.headers.set("X-Frame-Options", "SAMEORIGIN");
+  response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+  response.headers.set("Permissions-Policy", "camera=(), microphone=(), geolocation=(), interest-cohort=()");
+  return response;
 });

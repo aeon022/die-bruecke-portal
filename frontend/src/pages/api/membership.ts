@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { directus } from '../../lib/directus';
+import { directusForms } from '../../lib/directus';
 import { createItem } from '@directus/sdk';
 
 export const POST: APIRoute = async ({ request }) => {
@@ -18,6 +18,14 @@ export const POST: APIRoute = async ({ request }) => {
         message: "Bitte fülle alle Pflichtfelder aus."
       }), { status: 400 });
     }
+    // Plausibilität und Längen begrenzen (schützt den Directus-Posteingang vor Müll)
+    const tooLong = ['first_name', 'last_name', 'email', 'membership_type', 'phone'].some((k) => String(data[k] || '').length > 200)
+      || String(data.address || '').length > 500 || String(data.message || '').length > 5000;
+    if (tooLong || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(data.email).trim())) {
+      return new Response(JSON.stringify({
+        message: "Bitte prüfe deine Angaben (gültige E-Mail, Nachricht höchstens 5000 Zeichen)."
+      }), { status: 400 });
+    }
 
     // Optionale Felder nur mitschicken, wenn sie einen Wert haben - `phone` hat in
     // Directus eine Regex-Validierung (^\+43...$), die bei explizitem `null` sonst
@@ -32,7 +40,7 @@ export const POST: APIRoute = async ({ request }) => {
     if (data.phone) payload.phone = data.phone;
     if (data.message) payload.message = data.message;
 
-    await directus.request(createItem('inbox_memberships', payload));
+    await directusForms.request(createItem('inbox_memberships', payload));
 
     return new Response(JSON.stringify({
       message: "Anfrage erfolgreich gesendet!"

@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { directus } from '../../lib/directus';
+import { directusForms } from '../../lib/directus';
 import { createItem } from '@directus/sdk';
 
 export const POST: APIRoute = async ({ request }) => {
@@ -22,9 +22,17 @@ export const POST: APIRoute = async ({ request }) => {
         message: "Bitte fülle alle Pflichtfelder aus." 
       }), { status: 400 });
     }
+    // Plausibilität und Längen begrenzen (schützt den Directus-Posteingang vor Müll)
+    const tooLong = String(data.name).length > 200 || String(data.email).length > 200
+      || String(data.subject || '').length > 300 || String(data.message).length > 5000;
+    if (tooLong || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(data.email).trim())) {
+      return new Response(JSON.stringify({
+        message: "Bitte prüfe deine Angaben (gültige E-Mail, Nachricht höchstens 5000 Zeichen)."
+      }), { status: 400 });
+    }
 
     // 3. An Directus senden
-    await directus.request(createItem('inbox', {
+    await directusForms.request(createItem('inbox', {
         name: data.name,
         email: data.email,
         subject: data.subject || 'Anfrage via Website',

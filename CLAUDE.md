@@ -6,7 +6,8 @@ Monorepo: `frontend/` (Astro 5, SSR via `@astrojs/node` standalone, Tailwind) un
 - Frontend-Container: `bruecke_beta` (`frontend/docker-compose.yml`), Port 4321
 - Dev: `cd frontend && npm run dev` (Port 4321)
 - `.env` liegt im Repo-Root (gitignored), `frontend/.env` ist ein Symlink darauf
-- Formulare posten an `frontend/src/pages/api/*.ts` (JSON, Honeypot-Feld `website_check`, deutsche Fehlermeldungen)
+- Formulare posten an `frontend/src/pages/api/*.ts` (JSON, Honeypot-Feld `website_check`, deutsche Fehlermeldungen). Kontakt und Mitgliedschaft schreiben über `directusForms` (`src/lib/directus.ts`) mit `DIRECTUS_FORM_TOKEN` in `inbox`/`inbox_memberships`; ohne Token öffentlicher Zugriff (Fallback)
+- Sicherheits-Header setzt `frontend/src/middleware.ts`
 - Rechtstexte (Datenschutz, Impressum) kommen aus Directus, nicht aus dem Code
 
 ## Newsletter (Brevo)
