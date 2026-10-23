@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Immer im Projektordner arbeiten (Cron startet woanders, relative Pfade und docker compose brauchen ~/portal)
+cd "$(dirname "$0")" || exit 1
+
 # ==========================================
 # BACKUP LIGHT (NUR DATENBANK & SCHEMA)
 # ==========================================
