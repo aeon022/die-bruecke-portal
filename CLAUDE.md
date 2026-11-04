@@ -19,3 +19,11 @@ Monorepo: `frontend/` (Astro 5, SSR via `@astrojs/node` standalone, Tailwind) un
 - Brevo blockt API-Aufrufe von nicht freigegebenen IPs (https://app.brevo.com/security/authorised_ips). Lokal und Server-IP müssen freigegeben sein. Der Key hat keine Rechte auf Templates/Sender.
 - Kein Google reCAPTCHA (Datenschutz): Spam-Schutz nur über Honeypot.
 - Keine Secrets in Code, Commits oder Chat. Beim Wechsel des Keys nur `.env` ändern und den Container neu bauen.
+
+## Directus-Zugang für Claude
+
+- Konto für Inhaltspflege (Rolle Administrator): `DIRECTUS_AGENT_EMAIL` / `DIRECTUS_AGENT_PASSWORD` in der Repo-Root-`.env` (gitignored). Login per `POST /auth/login`, Token nur im Speicher halten.
+
+## Zeitung
+
+- Seite `/zeitung` (`frontend/src/pages/zeitung.astro`), PDFs und Titelbilder in `frontend/public/zeitung/`. Neue Ausgabe: Dateien tauschen, Werte oben in der Seite anpassen. Verlinkt in Footer, Command Palette und `/about`.
