@@ -44,15 +44,15 @@ const openingHours = settings?.opening_hours || defaultOpeningHours;
 // B) Barrierefreiheit
 const defaultAccessItems = [
     { label: "Ebenerdiger Zugang (Rampe)", icon: "wheelchair" },
-    { label: "Euro-Key Behinderten-WC", icon: "restroom" },
-    { label: "Behinderten-Parkplatz (Hof)", icon: "square-parking" },
+    { label: "Rollstuhlgerechtes WC", icon: "restroom" },
+    { label: "Parkplatz am Areal", icon: "square-parking" },
     { label: "Assistenzhunde willkommen", icon: "dog" }
 ];
 const accessibilityItems = settings?.accessibility_items || defaultAccessItems;
 
 // C) FAQ
 const defaultFaqs = [
-    { question: "Ist die Brücke barrierefrei?", answer: "Ja, zu 100%. Der Zugang ist ebenerdig, wir verfügen über ein Euro-Key Behinderten-WC und breite Türen im gesamten Veranstaltungsbereich." },
+    { question: "Ist die Brücke barrierefrei?", answer: "Ja, zu 100%. Der Zugang ist ebenerdig, wir haben ein rollstuhlgerechtes WC und breite Türen im gesamten Veranstaltungsbereich." },
     { question: "Kann man Räume mieten?", answer: "Ja, unsere Seminarräume und der Veranstaltungssaal können gemietet werden. Schreib uns einfach eine Anfrage an kultur@diebruecke.cc." },
     { question: "Muss ich Tickets reservieren?", answer: "Für größere Konzerte empfehlen wir eine Reservierung (via Mail oder Pretix). Bei den meisten offenen Abenden gilt: Einfach vorbeikommen!" },
     { question: "Kann ich ein Praktikum machen?", answer: "Gerne! Wir bieten Plätze für Sozialpraktika, Zivildienst und ehrenamtliche Mitarbeit. Meld dich bei sozial@diebruecke.cc." }
@@ -150,7 +150,7 @@ const schemaData = {
     <h2>Offenes Haus</h2>
     <p>Jeden Donnerstag von 17 bis 20 Uhr.<br/>Du musst dich nicht anmelden.</p>
     <h2>Barrierefrei</h2>
-    <p>Du kommst ohne Stufen ins Haus. Es gibt eine Rampe.<br/>Es gibt ein WC für Menschen mit Behinderung.<br/>Du brauchst dafür den Euro-Key.<br/>Im Hof gibt es einen Parkplatz für Menschen mit Behinderung.</p>
+    <p>Du kommst ohne Stufen ins Haus. Es gibt eine Rampe.<br/>Es gibt ein WC für Menschen im Rollstuhl.<br/>Du kannst am Gelände parken.</p>
     <h2>Jeden Sonntag eine E-Mail</h2>
     <p>Du willst wissen, was in der Brücke los ist?<br/>Dann melde dich für unsere E-Mail an.<br/><a href="/newsletter">Hier anmelden</a></p>
 </Einfach>

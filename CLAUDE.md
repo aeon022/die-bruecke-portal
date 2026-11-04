@@ -35,3 +35,4 @@ Monorepo: `frontend/` (Astro 5, SSR via `@astrojs/node` standalone, Tailwind) un
 - Inhalte: `<Einfach title="…">…</Einfach>` (`components/Einfach.astro`, nur bei aktivem Schalter sichtbar), normaler Inhalt in `<div class="hide-on-ll">`. Seite mit `<MainLayout leicht>` markieren, sonst zeigt das Layout den Hinweis „noch nicht in einfacher Sprache“.
 - Vorhanden: Startseite, Über uns, Kontakt, Zeitung (Texte nach der Zeitung in einfacher Sprache; Prüfung durch Klient:innen offen).
 - Später: Felder `*_leicht` in Directus für CMS-Texte (wie kuin-at `ProseSwap`).
+- Barrierefreiheit (Stand 04.11.2026, Gerwin): ebenerdiger Zugang/Rampe, rollstuhlgerechtes WC (kein Euro-Key), Parkplatz am Areal, breite Türen. Eigene Seite „Barrierefrei zu uns“ später (Öffis, Begleitperson, Sitzplätze offen).
