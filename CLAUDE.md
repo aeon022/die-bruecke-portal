@@ -31,7 +31,7 @@ Monorepo: `frontend/` (Astro 5, SSR via `@astrojs/node` standalone, Tailwind) un
 
 ## Einfache Sprache
 
-- Umschalter im Header (`#btnLeicht`) und in der Command Palette; Logik in `layout.astro` (`window.toggleLeicht`, localStorage `leicht-lesen`, Attribut `data-ll` am `<html>`).
+- Umschalter im Barrierefreiheits-Menü (Rollstuhl-Button öffnet die Command Palette, `#cp-toggle-leicht` an erster Stelle); Logik in `layout.astro` (`window.toggleLeicht`, localStorage `leicht-lesen`, Attribut `data-ll` am `<html>`).
 - Inhalte: `<Einfach title="…">…</Einfach>` (`components/Einfach.astro`, nur bei aktivem Schalter sichtbar), normaler Inhalt in `<div class="hide-on-ll">`. Seite mit `<MainLayout leicht>` markieren, sonst zeigt das Layout den Hinweis „noch nicht in einfacher Sprache“.
 - Vorhanden: Startseite, Über uns, Kontakt, Zeitung (Texte nach der Zeitung in einfacher Sprache; Prüfung durch Klient:innen offen).
 - Später: Felder `*_leicht` in Directus für CMS-Texte (wie kuin-at `ProseSwap`).
