@@ -1,0 +1,95 @@
+---
+import MainLayout from '../layouts/layout.astro';
+
+// Neue Ausgabe = PDFs + Titelbilder in public/zeitung/ tauschen und diese Werte anpassen.
+const ausgabe = 'Ausgabe 1 · Winter 2026/27';
+const pdf = '/zeitung/Bruecke-Zeitung-Winter-2026-27.pdf';
+const pdfEinfach = '/zeitung/Bruecke-Zeitung-Einfache-Sprache-Winter-2026-27.pdf';
+
+const inhalt = [
+    [2, 'Ankommen. Bleiben. Mitmachen.', 'Editorial'],
+    [3, 'Ein Tag, zwei Welten, eine Tür', 'Reportage aus dem Haus'],
+    [4, 'Weniger Abende, kein bisschen leiser', 'Kultur 2025'],
+    [5, 'Das Jahr, in dem die Tür wieder weit aufging', 'Kultur 2026'],
+    [6, 'Ein Haus erfindet sich neu – und bleibt sich treu', 'Verein'],
+    [7, 'Freitags wird blaugemacht', 'Ausblick 2027'],
+    [8, 'Winter in der Brücke', 'Poster mit allen Terminen'],
+    [9, 'Das neue Jahr', 'Poster Vorschau 2027'],
+    [10, 'Rätseln mit der Brücke', 'Mit Gewinnspiel bis 31.12.'],
+    [11, 'Zum Nachschauen und Nachhören', 'Ein Jahr in Bildern'],
+    [12, 'Rucksack auf, los geht’s', 'Camps und City-Trips'],
+    [13, 'Nix für Couch-Potatoes', 'Freizeit'],
+    [14, 'Die, die aufsperren', 'Menschen'],
+    [15, 'Wie alles anfing', 'Damals: seit 1983'],
+    [16, 'Werde Teil der Brücke', 'Mitglied werden, Kontakt'],
+];
+---
+
+<MainLayout title="Brücke-Zeitung" description={`Die Brücke-Zeitung, ${ausgabe}: 16 Seiten über ein Jahr Brücke zum Lesen und Herunterladen, auch in einfacher Sprache.`}>
+    <div class="px-4 md:px-6 pb-16 md:pb-24">
+
+        <section class="relative z-10 px-6 sm:px-10 pt-20 pb-24 bg-white dark:bg-slate-900 rounded-t-[48px] md:rounded-t-[64px] overflow-hidden transition-colors duration-500">
+            <div class="max-w-5xl mx-auto relative z-10 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+                <div>
+                    <div class="inline-flex items-center px-4 py-2 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-bold mb-8">
+                        {ausgabe}
+                    </div>
+                    <h1 class="text-5xl md:text-7xl font-display font-black tracking-tight leading-[0.95] mb-8 text-transparent bg-clip-text bg-gradient-to-br from-rose-500 via-rose-600 to-indigo-700">
+                        Die Brücke-Zeitung
+                    </h1>
+                    <p class="text-lg md:text-xl text-slate-600 dark:text-slate-400 leading-relaxed font-medium max-w-md mb-10">
+                        16 Seiten über ein Jahr Brücke: eine Reportage aus dem Haus, alle Termine bis Weihnachten als Poster, ein Rätsel mit Gewinnspiel, ein Blick zurück auf 1983 und einer nach vorn auf 2027.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <a href={pdf} target="_blank" rel="noopener" class="inline-flex items-center justify-center gap-3 px-8 py-4 whitespace-nowrap rounded-full bg-rose-500 hover:bg-rose-600 text-white font-bold transition-colors">
+                            <i class="fa-solid fa-file-pdf" aria-hidden="true"></i> Zeitung lesen
+                        </a>
+                        <a href={pdfEinfach} target="_blank" rel="noopener" class="inline-flex items-center justify-center gap-3 px-8 py-4 whitespace-nowrap rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-900 dark:text-white font-bold transition-colors">
+                            <i class="fa-solid fa-book-open" aria-hidden="true"></i> In einfacher Sprache
+                        </a>
+                    </div>
+                    <p class="mt-6 text-sm text-slate-500 dark:text-slate-400">PDF, 6,6 MB bzw. 2,7 MB. Gedruckt liegt die Zeitung bei uns im Haus in der Grabenstraße 39a zum Mitnehmen auf.</p>
+                </div>
+                <a href={pdf} target="_blank" rel="noopener" class="block justify-self-center">
+                    <img src="/zeitung/titel.webp" width="900" height="1273" alt="Titelseite der Brücke-Zeitung: „Wir schaffen Raum.“ mit Foto eines Konzerts im Garten" class="w-full max-w-sm rounded-xl shadow-[0_30px_60px_rgba(0,0,0,0.18)] -rotate-2 hover:rotate-0 transition-transform duration-500" />
+                </a>
+            </div>
+        </section>
+
+        <section class="px-6 sm:px-10 py-20 bg-slate-50 dark:bg-slate-950 transition-colors duration-500">
+            <div class="max-w-5xl mx-auto">
+                <h2 class="text-3xl md:text-4xl font-display font-black text-slate-900 dark:text-white mb-12">In dieser Ausgabe</h2>
+                <ol class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {inhalt.map(([seite, titel, rubrik]) => (
+                        <li class="flex gap-4 bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800">
+                            <span class="text-2xl font-display font-black text-rose-500 w-8 shrink-0">{seite}</span>
+                            <span>
+                                <span class="block font-display font-bold text-slate-900 dark:text-white leading-snug">{titel}</span>
+                                <span class="block text-sm text-slate-500 dark:text-slate-400">{rubrik}</span>
+                            </span>
+                        </li>
+                    ))}
+                </ol>
+            </div>
+        </section>
+
+        <section class="px-6 sm:px-10 py-20 bg-white dark:bg-slate-900 rounded-b-[48px] md:rounded-b-[64px] transition-colors duration-500">
+            <div class="max-w-5xl mx-auto grid md:grid-cols-2 gap-10 items-center">
+                <div class="bg-rose-500 text-white rounded-3xl p-8">
+                    <i class="fa-solid fa-puzzle-piece text-3xl mb-5" aria-hidden="true"></i>
+                    <h2 class="text-2xl md:text-3xl font-display font-black mb-3">Rätseln und gewinnen</h2>
+                    <p class="leading-relaxed">Das Rätsel steht auf Seite 10. Schick das Lösungswort bis 31. Dezember 2026 an <a href="mailto:office@diebruecke.cc?subject=R%C3%A4tsel%20Zeitung" class="underline font-bold">office@diebruecke.cc</a>, Betreff „Rätsel Zeitung“. Unter allen richtigen Einsendungen verlosen wir 2 Karten für eine Veranstaltung nach Wahl. Deine Daten verwenden wir nur für das Gewinnspiel.</p>
+                </div>
+                <div class="flex gap-6 items-center">
+                    <a href={pdfEinfach} target="_blank" rel="noopener" class="shrink-0">
+                        <img src="/zeitung/titel-einfach.webp" width="900" height="1273" alt="Titelseite der Zeitung in einfacher Sprache" loading="lazy" class="w-32 md:w-40 rounded-lg shadow-lg" />
+                    </a>
+                    <div>
+                        <h2 class="text-2xl font-display font-black text-slate-900 dark:text-white mb-2">Auch in einfacher Sprache</h2>
+                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed">Kurze Sätze, große Schrift: Die Zeitung gibt es auch in einfacher Sprache zum Lesen und Ausdrucken.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</MainLayout>

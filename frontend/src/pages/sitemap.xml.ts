@@ -25,6 +25,7 @@ export async function GET() {
         { path: '/projects', priority: 0.7 },
         { path: '/join', priority: 0.6 },
         { path: '/shop', priority: 0.7 },
+        { path: '/zeitung', priority: 0.6 },
         { path: '/impressum', priority: 0.1 },
         { path: '/datenschutz', priority: 0.1 },
     ];
