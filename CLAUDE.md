@@ -28,3 +28,10 @@ Monorepo: `frontend/` (Astro 5, SSR via `@astrojs/node` standalone, Tailwind) un
 
 - Seite `/zeitung` (`frontend/src/pages/zeitung.astro`), PDFs und Titelbilder in `frontend/public/zeitung/`. Neue Ausgabe: Dateien tauschen, Werte oben in der Seite anpassen. Verlinkt in Footer, Command Palette und `/about`.
 - Directus-Flow „Auto Generate Slug“ hängt beim Anlegen das aktuelle Jahr an den Slug (z. B. Archiv `jahresbericht-2025-2026`, angelegt 04.11.2026). Bei Archiv-Einträgen mit Jahr im Titel unschön, aber funktional.
+
+## Einfache Sprache
+
+- Umschalter im Header (`#btnLeicht`) und in der Command Palette; Logik in `layout.astro` (`window.toggleLeicht`, localStorage `leicht-lesen`, Attribut `data-ll` am `<html>`).
+- Inhalte: `<Einfach title="…">…</Einfach>` (`components/Einfach.astro`, nur bei aktivem Schalter sichtbar), normaler Inhalt in `<div class="hide-on-ll">`. Seite mit `<MainLayout leicht>` markieren, sonst zeigt das Layout den Hinweis „noch nicht in einfacher Sprache“.
+- Vorhanden: Startseite, Über uns, Kontakt, Zeitung (Texte nach der Zeitung in einfacher Sprache; Prüfung durch Klient:innen offen).
+- Später: Felder `*_leicht` in Directus für CMS-Texte (wie kuin-at `ProseSwap`).

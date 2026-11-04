@@ -17,7 +17,8 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 const { 
   title, 
   description = "Die Brücke Graz – Inklusion, Kultur und Begegnung. Wir schaffen Raum für ein Miteinander ohne Barrieren.",
-  image // Image Prop kann jetzt leer sein, Fallback wird unten behandelt
+  image, // Image Prop kann jetzt leer sein, Fallback wird unten behandelt
+  leicht = false // true = Seite hat Inhalte in einfacher Sprache (.show-on-ll / .hide-on-ll)
 } = Astro.props;
 
 // Marke nur anhängen, wenn die Seite sie nicht schon im Titel hat
@@ -104,6 +105,21 @@ const socialImage = image
       };
       applyA11y();
       document.addEventListener('astro:after-swap', applyA11y);
+      // Einfache Sprache: Attribut data-ll am <html>, Umschalter im Header
+      const llKey = 'leicht-lesen';
+      const applyLeicht = () => {
+        let on = false; try { on = localStorage.getItem(llKey) === 'true'; } catch {}
+        document.documentElement.toggleAttribute('data-ll', on);
+        window.dispatchEvent(new Event('leicht-change'));
+      };
+      applyLeicht();
+      document.addEventListener('astro:after-swap', applyLeicht);
+      window.toggleLeicht = () => {
+        const on = !document.documentElement.hasAttribute('data-ll');
+        try { on ? localStorage.setItem(llKey, 'true') : localStorage.removeItem(llKey); } catch {}
+        applyLeicht();
+        return on;
+      };
     </script>
     
     <style is:global>
@@ -184,6 +200,12 @@ const socialImage = image
 
       {/* WICHTIG: id="main-content" und tabindex="-1" für Fokus-Management */}
       <main id="main-content" tabindex="-1" class="outline-none flex-grow dark:text-slate-200">
+        {!leicht && (
+          <div class="show-on-ll mx-4 md:mx-8 mt-4 rounded-2xl bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-700 p-5 text-slate-900 dark:text-amber-50" role="note">
+            <p class="font-bold">Diese Seite gibt es noch nicht in einfacher Sprache.</p>
+            <p>In einfacher Sprache gibt es schon: <a href="/" class="underline font-bold">die Start-Seite</a>, <a href="/about" class="underline font-bold">Über uns</a>, <a href="/contact" class="underline font-bold">Kontakt</a> und <a href="/zeitung" class="underline font-bold">die Zeitung</a>.</p>
+          </div>
+        )}
         <slot />
       </main>
 

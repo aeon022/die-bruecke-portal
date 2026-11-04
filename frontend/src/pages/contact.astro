@@ -1,5 +1,6 @@
 ---
 import MainLayout from '../layouts/layout.astro';
+import Einfach from '../components/Einfach.astro';
 import NewsletterForm from '../components/NewsletterForm.astro';
 import LocationCard from '../components/LocationCard.astro';
 import { directus } from '../lib/directus';
@@ -137,7 +138,23 @@ const schemaData = {
     title={seoTitle}
     description={seoDescription}
     image={seoImage}
+    leicht
 >
+<Einfach title="Kontakt">
+    <h2>Adresse</h2>
+    <p>Die Brücke<br/>Grabenstraße 39a<br/>8010 Graz</p>
+    <h2>Telefon</h2>
+    <p><a href="tel:+43316672248">0316 67 22 48</a></p>
+    <h2>E-Mail</h2>
+    <p><a href="mailto:office@diebruecke.cc">office@diebruecke.cc</a></p>
+    <h2>Offenes Haus</h2>
+    <p>Jeden Donnerstag von 17 bis 20 Uhr.<br/>Du musst dich nicht anmelden.</p>
+    <h2>Barrierefrei</h2>
+    <p>Du kommst ohne Stufen ins Haus. Es gibt eine Rampe.<br/>Es gibt ein WC für Menschen mit Behinderung.<br/>Du brauchst dafür den Euro-Key.<br/>Im Hof gibt es einen Parkplatz für Menschen mit Behinderung.</p>
+    <h2>Jeden Sonntag eine E-Mail</h2>
+    <p>Du willst wissen, was in der Brücke los ist?<br/>Dann melde dich für unsere E-Mail an.<br/><a href="/newsletter">Hier anmelden</a></p>
+</Einfach>
+<div class="hide-on-ll">
     {/* JSON-Data-Islands für das Live-Script */}
     <script id="opening-hours-data" type="application/json" set:html={JSON.stringify(openingHours)}></script>
     <script id="events-data" type="application/json" set:html={JSON.stringify(upcomingEvents)}></script>
@@ -371,6 +388,7 @@ const schemaData = {
     </section>
 
     </div>
+</div>
 </MainLayout>
 
 {/* --- SEO: SCHEMA.ORG (JSON-LD) GEFIXTER AUFRUF --- */}

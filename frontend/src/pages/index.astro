@@ -13,6 +13,8 @@ import Projects from '../components/home/Projects.astro';
 import Partners from '../components/home/Partners.astro';
 import Pionier from '../components/home/Pionier.astro';
 import CTA from '../components/home/CTA.astro';
+import ZeitungTeaser from '../components/home/ZeitungTeaser.astro';
+import Einfach from '../components/Einfach.astro';
 import Safelist from '../components/Safelist.astro';
 
 const ASSET_URL = 'https://api.diebruecke.social/assets'; 
@@ -115,7 +117,7 @@ const optimizedPartners = dbPartners.map(p => ({
 const seoDescription = heroSubline.replace(/<[^>]*>/g, '');
 ---
 
-<MainLayout title="Die Brücke – soziokulturelles Zentrum Graz" description={seoDescription} image={heroImg}>
+<MainLayout title="Die Brücke – soziokulturelles Zentrum Graz" description={seoDescription} image={heroImg} leicht>
     <style is:inline>
         .home-content { visibility: hidden; }
         html.home-ready .home-content { visibility: visible; }
@@ -131,6 +133,29 @@ const seoDescription = heroSubline.replace(/<[^>]*>/g, '');
 
     <article class="home-content w-full">
         {/* Hier werden die neuen Props übergeben */}
+        <Einfach title="Hallo! Das ist die Brücke.">
+            <p>Die Brücke ist ein Haus in Graz.<br/>Die Brücke gibt es seit 1983.</p>
+            <p>In der Brücke treffen sich viele Menschen.<br/>Junge und alte Menschen.<br/>Menschen mit Behinderung und Menschen ohne Behinderung.<br/>Alle gehören dazu.</p>
+            <h2>Was gibt es in der Brücke?</h2>
+            <ul>
+                <li>Konzerte, Kabarett und Theater</li>
+                <li>Urlaub mit einer Gruppe. Das heißt: Camp.</li>
+                <li>Gemeinsam etwas in der Freizeit machen. Das heißt: Freizeit-Assistenz.</li>
+                <li>Das Offene Haus: jeden Donnerstag von 17 bis 20 Uhr.<br/>Du musst dich nicht anmelden.</li>
+            </ul>
+            <h2>So kommst du zu uns</h2>
+            <p>Die Brücke<br/>Grabenstraße 39a<br/>8010 Graz</p>
+            <p>Die Brücke ist barrierefrei.<br/>Es gibt eine Rampe.<br/>Und es gibt ein WC für Menschen mit Behinderung.</p>
+            <h2>Hier geht es weiter</h2>
+            <ul>
+                <li><a href="/events">Alle Termine</a></li>
+                <li><a href="/about">Über uns</a></li>
+                <li><a href="/zeitung">Unsere Zeitung</a>. Es gibt sie auch in einfacher Sprache.</li>
+                <li><a href="/contact">Kontakt</a>. Du kannst uns anrufen: <a href="tel:+43316672248">0316 67 22 48</a></li>
+            </ul>
+        </Einfach>
+
+        <div class="hide-on-ll">
         <Hero 
             headlineRow1={heroRow1} 
             headlineRow2={heroRow2}
@@ -138,8 +163,10 @@ const seoDescription = heroSubline.replace(/<[^>]*>/g, '');
             subline={heroSubline} 
             image={heroImg} 
         />
+        </div>
         
         <Events highlightEvent={highlightEvent} upcomingEvents={upcomingEvents} />
+        <ZeitungTeaser />
         <Services services={dbServices} />
         <Foundation />
         <Projects />

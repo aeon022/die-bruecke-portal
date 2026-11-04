@@ -57,7 +57,7 @@ const menuItems = [
   <header id="main-header" class="relative z-[91] flex items-center justify-between px-4 sm:px-6 pt-6 pb-4 md:px-10 md:pt-8 md:pb-6 transition-[padding,background-color,box-shadow,border-radius,border] duration-300 ease-in-out bg-transparent">
     
     <a href="/" class="flex items-center gap-3 group" aria-label="Zur Startseite">
-      <div id="logo-container" class={`rounded-xl bg-transparent flex items-center justify-center transition-all duration-300 overflow-hidden text-slate-900 dark:text-white ${logoUrl ? 'w-auto h-14 md:h-16 px-2 md:px-5' : 'w-12 h-12'}`}>
+      <div id="logo-container" class={`shrink-0 rounded-xl bg-transparent flex items-center justify-center transition-all duration-300 overflow-hidden text-slate-900 dark:text-white ${logoUrl ? 'w-auto h-11 sm:h-14 md:h-16 px-1 sm:px-2 md:px-5' : 'w-12 h-12'}`}>
         {logoUrl ? (
              <img src={logoUrl} alt="" width="160" height="60" class="h-full w-auto object-contain p-1 logo-img" />
         ) : (
@@ -72,7 +72,15 @@ const menuItems = [
       {logoUrl && <span class="sr-only">{projectName}</span>}
     </a>
 
-    <div class="flex items-center gap-2 sm:gap-3">
+    <div class="flex items-center gap-1.5 sm:gap-3">
+      <button id="btnLeicht" type="button" aria-pressed="false" title="Einfache Sprache ein- oder ausschalten" class="h-10 md:h-12 pl-2 pr-2 sm:pr-4 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/5 flex items-center gap-2 text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-700 transition cursor-pointer shadow-sm focus:outline-none focus:ring-2 focus:ring-rose-500">
+        <span class="ll-track relative inline-flex h-6 w-11 shrink-0 items-center rounded-full bg-slate-300 dark:bg-slate-600 transition-colors" aria-hidden="true">
+          <span class="ll-thumb inline-block h-5 w-5 translate-x-0.5 rounded-full bg-white shadow transition-transform"></span>
+        </span>
+        <span class="hidden sm:inline text-xs font-bold">Einfache Sprache</span>
+        <span class="sm:hidden sr-only">Einfache Sprache</span>
+      </button>
+
       <button id="btnAccessibility" class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/5 flex items-center justify-center text-rose-600 dark:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/30 transition cursor-pointer shadow-sm focus:outline-none focus:ring-2 focus:ring-rose-500" type="button" aria-label="Barrierefreiheit">
          <i class="fa-solid fa-wheelchair text-base md:text-lg" aria-hidden="true"></i>
       </button>
@@ -89,7 +97,7 @@ const menuItems = [
         </span>
       </button>
 
-      <button id="btnOpenNav" class="h-10 md:h-12 pl-3 pr-4 md:pr-5 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/5 flex items-center justify-center gap-2 text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-700 transition cursor-pointer shadow-sm relative focus:outline-none group z-[92]" aria-label="Menü öffnen" aria-expanded="false" aria-controls="navOverlay">
+      <button id="btnOpenNav" class="h-10 md:h-12 w-10 sm:w-auto sm:pl-3 sm:pr-4 md:pr-5 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/5 flex items-center justify-center gap-2 text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-700 transition cursor-pointer shadow-sm relative focus:outline-none group z-[92]" aria-label="Menü öffnen" aria-expanded="false" aria-controls="navOverlay">
         <div class="relative w-6 h-6 flex items-center justify-center">
             <span class="icon-bars pointer-events-none transition-opacity duration-300 absolute inset-0 flex items-center justify-center">
               <i class="fa-solid fa-bars text-lg md:text-xl group-hover:scale-110 transition-transform" aria-hidden="true"></i>
@@ -98,7 +106,7 @@ const menuItems = [
               <i class="fa-solid fa-xmark text-lg md:text-xl text-rose-600"></i>
             </span>
         </div>
-        <span class="font-bold text-xs md:text-sm tracking-wide">Menü</span>
+        <span class="hidden sm:inline font-bold text-xs md:text-sm tracking-wide">Menü</span>
       </button>
     </div>
   </header>
@@ -348,6 +356,25 @@ const menuItems = [
 </style>
 
 <script>
+  // Einfache Sprache: Logik in layout.astro (window.toggleLeicht), hier nur Button-Zustand
+  const renderLeicht = () => {
+    const btn = document.getElementById('btnLeicht');
+    if (!btn) return;
+    const on = document.documentElement.hasAttribute('data-ll');
+    btn.setAttribute('aria-pressed', String(on));
+    btn.querySelector('.ll-track')?.classList.toggle('!bg-rose-500', on);
+    btn.querySelector('.ll-thumb')?.classList.toggle('translate-x-[22px]', on);
+    btn.querySelector('.ll-thumb')?.classList.toggle('translate-x-0.5', !on);
+  };
+  const initLeicht = () => {
+    const btn = document.getElementById('btnLeicht');
+    if (btn && !btn.dataset.bound) { btn.dataset.bound = '1'; btn.addEventListener('click', () => (window as any).toggleLeicht?.()); }
+    renderLeicht();
+  };
+  window.addEventListener('leicht-change', renderLeicht);
+  initLeicht();
+  document.addEventListener('astro:after-swap', initLeicht);
+
   // Theme-Logik steckt in layout.astro (window.cycleTheme); hier nur Button + Beschriftung
   const THEME_LABEL = { light: 'Hell', dark: 'Dunkel', system: 'System' };
   function labelThemeToggle() {

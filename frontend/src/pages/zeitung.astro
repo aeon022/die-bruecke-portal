@@ -1,5 +1,6 @@
 ---
 import MainLayout from '../layouts/layout.astro';
+import Einfach from '../components/Einfach.astro';
 
 // Neue Ausgabe = PDFs + Titelbilder in public/zeitung/ tauschen und diese Werte anpassen.
 const ausgabe = 'Ausgabe 1 · Winter 2026/27';
@@ -25,8 +26,16 @@ const inhalt = [
 ];
 ---
 
-<MainLayout title="Brücke-Zeitung" description={`Die Brücke-Zeitung, ${ausgabe}: 16 Seiten über ein Jahr Brücke zum Lesen und Herunterladen, auch in einfacher Sprache.`}>
-    <div class="px-4 md:px-6 pb-16 md:pb-24">
+<MainLayout title="Brücke-Zeitung" image="/zeitung/og.jpg" leicht description={`Die Brücke-Zeitung, ${ausgabe}: 16 Seiten über ein Jahr Brücke zum Lesen und Herunterladen, auch in einfacher Sprache.`}>
+    <Einfach title="Unsere Zeitung">
+        <p>Die Brücke hat eine Zeitung gemacht.<br/>In der Zeitung steht, was in der Brücke passiert ist.<br/>In den Jahren 2025 und 2026.<br/>Und was 2027 kommt.</p>
+        <p>Es gibt die Zeitung auch in einfacher Sprache.</p>
+        <p><a href={pdfEinfach} target="_blank" rel="noopener">Zeitung in einfacher Sprache lesen</a></p>
+        <h2>Mitmachen beim Rätsel</h2>
+        <p>In der Zeitung gibt es ein Rätsel.<br/>Schick uns das Lösungs-Wort bis 31. Dezember 2026.<br/>An: <a href="mailto:office@diebruecke.cc?subject=R%C3%A4tsel%20Zeitung">office@diebruecke.cc</a><br/>Du kannst 2 Karten für eine Veranstaltung gewinnen.</p>
+        <p>Die Zeitung gibt es auch auf Papier.<br/>Sie liegt in der Brücke.<br/>Du kannst sie mitnehmen.</p>
+    </Einfach>
+    <div class="hide-on-ll px-4 md:px-6 pb-16 md:pb-24">
 
         <section class="relative z-10 px-6 sm:px-10 pt-20 pb-24 bg-white dark:bg-slate-900 rounded-t-[48px] md:rounded-t-[64px] overflow-hidden transition-colors duration-500">
             <div class="max-w-5xl mx-auto relative z-10 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">

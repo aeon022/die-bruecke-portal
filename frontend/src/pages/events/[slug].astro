@@ -164,7 +164,26 @@ const gCalUrl =
   encodeURIComponent(event.location || 'Die Brücke, Grabenstraße 39a, Graz') +
   '&sf=true&output=xml';
 
-const currentUrl = 'https://diebruecke.cc/events/' + slug;
+// .ics für Apple-Kalender und Outlook (gleiche Zeiten wie der Google-Link, also auch für Serientermine richtig)
+// shortcut: als data-URL statt eigener Route; reicht für einen Termin, eigene /events/[slug].ics erst bei Abo-Kalender
+const icsEscape = (t: string) => String(t || '').replace(/[\\;,]/g, (m) => '\\' + m).replace(/\r?\n/g, '\\n');
+const icsText = [
+  'BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Die Bruecke Graz//Events//DE', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH',
+  'BEGIN:VEVENT',
+  `UID:${slug}-${formatGCalDate(displayDate)}@diebruecke.social`,
+  `DTSTAMP:${formatGCalDate(new Date())}`,
+  `DTSTART:${formatGCalDate(displayDate)}`,
+  `DTEND:${formatGCalDate(displayEndDate)}`,
+  `SUMMARY:${icsEscape(event.title)}`,
+  `LOCATION:${icsEscape(/grabenstra/i.test(event.location || '') ? event.location : [event.location || 'Die Brücke', 'Grabenstraße 39a, 8010 Graz'].join(', '))}`,
+  `URL:https://diebruecke.social/events/${slug}`,
+  `DESCRIPTION:${icsEscape('Infos und Tickets: https://diebruecke.social/events/' + slug)}`,
+  'END:VEVENT', 'END:VCALENDAR',
+].join('\r\n');
+const icsUrl = 'data:text/calendar;charset=utf-8,' + encodeURIComponent(icsText);
+const icsName = `${slug}.ics`;
+
+const currentUrl = 'https://diebruecke.social/events/' + slug;
 const shareText = encodeURIComponent('Event-Tipp: ' + event.title);
 
 const shareWhatsApp = 'https://wa.me/?text=' + shareText + '%20' + encodeURIComponent(currentUrl);
@@ -381,7 +400,14 @@ const shareLinkedIn = 'https://www.linkedin.com/sharing/share-offsite/?url=' + e
                 rel="noopener noreferrer"
                 class="block w-full text-center bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold py-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors text-sm flex items-center justify-center gap-2"
               >
-                <i class="fa-regular fa-calendar-plus"></i> Termin im Kalender
+                <i class="fa-brands fa-google"></i> Google Kalender
+              </a>
+              <a
+                href={icsUrl}
+                download={icsName}
+                class="mt-2 block w-full text-center bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold py-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors text-sm flex items-center justify-center gap-2"
+              >
+                <i class="fa-regular fa-calendar-plus"></i> Apple- oder Outlook-Kalender
               </a>
             </div>
 

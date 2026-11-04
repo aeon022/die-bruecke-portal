@@ -89,3 +89,7 @@ body {
     font-display: swap; /* WICHTIG */
   }
 }
+/* Einfache Sprache (Umschalter im Header, Attribut data-ll am <html>) */
+html:not([data-ll]) .show-on-ll { display: none !important; }
+html[data-ll] .hide-on-ll { display: none !important; }
+html[data-ll] body { font-size: 1.125rem; line-height: 1.75; letter-spacing: 0.01em; word-spacing: 0.05em; }

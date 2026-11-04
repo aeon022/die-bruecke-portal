@@ -2,6 +2,7 @@
 export const prerender = false;
 
 import MainLayout from '../layouts/layout.astro';
+import Einfach from '../components/Einfach.astro';
 import { directus } from '../lib/directus';
 import { readItems } from '@directus/sdk';
 
@@ -39,7 +40,24 @@ const seoImage = "/images/stock/unsplash-1529156069898.jpg";
     title={seoTitle}
     description={seoDescription}
     image={seoImage}
+    leicht
 >
+<Einfach title="Über uns">
+    <p>Die Brücke ist ein Verein in Graz.<br/>Den Verein gibt es seit 1983.</p>
+    <h2>Wie hat alles angefangen?</h2>
+    <p>Früher war Graz nicht barrierefrei.<br/>Mit dem Rollstuhl kam man fast nirgends hinein.<br/>Eine kleine Gruppe wollte das ändern.<br/>So ist die Brücke entstanden.<br/>Sie war das erste barrierefreie Haus in Graz.</p>
+    <h2>Was ist uns wichtig?</h2>
+    <p>Alle Menschen gehören dazu.<br/>Mit Behinderung und ohne Behinderung.<br/>In der Brücke musst du nichts kaufen.<br/>Du kannst einfach kommen.</p>
+    <h2>Wer macht mit?</h2>
+    <p>Ein kleines Team arbeitet in der Brücke.<br/>Und viele Menschen helfen mit.<br/>Ohne Bezahlung.<br/>Zum Beispiel an der Bar oder beim Eingang.</p>
+    <h2>Du willst mitmachen?</h2>
+    <ul>
+        <li>Du kannst manchmal helfen. Zum Beispiel bei einem Konzert.</li>
+        <li>Du kannst Mitglied werden. Mitglieder zahlen weniger Eintritt. <a href="/join">Hier wirst du Mitglied</a>.</li>
+    </ul>
+    <p>Mehr über die Brücke steht in unserer <a href="/zeitung">Zeitung in einfacher Sprache</a>.</p>
+</Einfach>
+<div class="hide-on-ll">
     
     <div class="home-content">
         {/* --- HERO --- */}
@@ -545,6 +563,7 @@ const seoImage = "/images/stock/unsplash-1529156069898.jpg";
             </div>
         </section>
     </div>
+</div>
 </MainLayout>
 
 <style>

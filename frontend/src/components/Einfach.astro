@@ -1,0 +1,18 @@
+---
+/* Inhalt in einfacher Sprache: nur sichtbar, wenn der Umschalter „Einfache Sprache“ an ist.
+   Seite muss <MainLayout leicht> setzen, sonst erscheint der Hinweis „noch nicht in einfacher Sprache“. */
+const { title } = Astro.props;
+---
+<section class="show-on-ll px-6 sm:px-10 py-14 md:py-20">
+    <div class="max-w-3xl mx-auto einfach">
+        {title && <h1 class="text-4xl md:text-5xl font-display font-black text-slate-900 dark:text-white mb-8">{title}</h1>}
+        <slot />
+    </div>
+</section>
+
+<style>
+    .einfach :global(p) { margin-bottom: 1rem; font-size: 1.25rem; line-height: 1.8; }
+    .einfach :global(h2) { margin: 2.5rem 0 1rem; font-size: 1.75rem; font-weight: 800; }
+    .einfach :global(ul) { margin-bottom: 1rem; padding-left: 1.5rem; list-style: disc; font-size: 1.25rem; line-height: 1.8; }
+    .einfach :global(a) { color: rgb(225 29 72); font-weight: 700; text-decoration: underline; text-underline-offset: 4px; }
+</style>
