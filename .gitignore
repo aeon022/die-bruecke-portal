@@ -38,3 +38,6 @@ frontend/.astro/
 frontend/dist/
 # Wir behalten frontend/docker-compose.yml & Dockerfile für das Server-Deployment!
 **/*.zip
+
+# lokale Sicherungen (Datenbank, Directus-Flows)
+BACKUPS/
