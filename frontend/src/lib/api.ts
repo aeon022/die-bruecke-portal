@@ -140,7 +140,8 @@ export async function getArchiv() {
             fields: [
               'id', 'slug', 'title', 'teaser',
               'year', 'image', 'aspect', 
-              'category'
+              'category',
+              'pdf_file', 'gallery' // für die Filter „Jahresberichte“ und „Galerien“ auf /archiv
             ],
             filter: statusFilter,
             sort: ['-year'],
