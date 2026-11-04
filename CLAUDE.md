@@ -36,3 +36,9 @@ Monorepo: `frontend/` (Astro 5, SSR via `@astrojs/node` standalone, Tailwind) un
 - Vorhanden: Startseite, Über uns, Kontakt, Zeitung (Texte nach der Zeitung in einfacher Sprache; Prüfung durch Klient:innen offen).
 - Später: Felder `*_leicht` in Directus für CMS-Texte (wie kuin-at `ProseSwap`).
 - Barrierefreiheit (Stand 04.11.2026, Gerwin): ebenerdiger Zugang/Rampe, rollstuhlgerechtes WC (kein Euro-Key), Parkplatz am Areal, breite Türen. Eigene Seite „Barrierefrei zu uns“ später (Öffis, Begleitperson, Sitzplätze offen).
+
+## Mitgliedsformular → Mitglieder-App (04.11.2026, lokal)
+- `api/membership.ts` schickt jede Anmeldung zusätzlich an die Mitglieder-App (`MEMBERS_API_URL`, Standard internal.diebruecke.social; `MEMBERS_API_KEY` = `AGENT_API_KEY` der App, nur in `.env`/Server). Fehler dort blockieren die Anmeldung nicht.
+- Stripe-Weiterleitung nutzt den Link aus der App (mit `client_reference_id` = Lfd. Nr.) → Zahlung wird automatisch zugeordnet und aktiv geschaltet.
+- Formular bleibt nach erfolgreicher Überweisungs-Anmeldung gesperrt (früher Ursache der Mehrfach-Anfragen).
+- Directus `inbox_memberships` + Eingangsbestätigung laufen vorerst weiter; abschalten, sobald die App die Mails automatisch schickt.

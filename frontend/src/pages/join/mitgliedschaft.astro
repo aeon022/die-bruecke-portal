@@ -555,6 +555,8 @@ const teamEvents = [
                 phone,
                 message: messageParts.join('\n'),
                 membership_type: tier.membershipType,
+                tier_label: tier.label,
+                payment_method: paymentMethod,
                 website_check: raw.website_check,
             };
 
@@ -570,15 +572,15 @@ const teamEvents = [
                     if (paymentMethod === 'ueberweisung') {
                         msgBox.classList.add('hidden');
                         bankDetails.classList.remove('hidden');
-                        clickedBtn.innerHTML = originalBtnText;
-                        submitBtn.removeAttribute('disabled');
-                        bankBtn.removeAttribute('disabled');
+                        // Buttons bleiben gesperrt: ein zweiter Klick hat früher die Anmeldung erneut abgeschickt (Mehrfach-Anfragen)
+                        clickedBtn.innerHTML = '<i class="fa-solid fa-check"></i> Anmeldung gesendet';
                     } else {
                         msgBox.innerHTML = `<i class="fa-solid fa-check-circle"></i> Danke! Du wirst gleich zur sicheren Zahlung weitergeleitet …`;
                         msgBox.className = "p-4 rounded-xl text-sm font-bold mb-4 bg-emerald-100 text-emerald-800 border border-emerald-200 block";
 
-                        const stripeUrl = new URL(tier.url);
-                        if (raw.email) stripeUrl.searchParams.set('prefilled_email', raw.email);
+                        // Link aus der Mitglieder-App trägt die Lfd. Nr. (client_reference_id) → Zahlung wird automatisch zugeordnet
+                        const stripeUrl = new URL(result.stripe_url || tier.url);
+                        if (raw.email && !stripeUrl.searchParams.has('prefilled_email')) stripeUrl.searchParams.set('prefilled_email', raw.email);
                         setTimeout(() => { window.location.href = stripeUrl.toString(); }, 1500);
                     }
                 } else {
