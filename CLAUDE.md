@@ -27,3 +27,4 @@ Monorepo: `frontend/` (Astro 5, SSR via `@astrojs/node` standalone, Tailwind) un
 ## Zeitung
 
 - Seite `/zeitung` (`frontend/src/pages/zeitung.astro`), PDFs und Titelbilder in `frontend/public/zeitung/`. Neue Ausgabe: Dateien tauschen, Werte oben in der Seite anpassen. Verlinkt in Footer, Command Palette und `/about`.
+- Directus-Flow „Auto Generate Slug“ hängt beim Anlegen das aktuelle Jahr an den Slug (z. B. Archiv `jahresbericht-2025-2026`, angelegt 04.11.2026). Bei Archiv-Einträgen mit Jahr im Titel unschön, aber funktional.
