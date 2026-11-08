@@ -111,7 +111,7 @@ const hhmm = (min: number) => new Date(displayDate.getTime() - min * 60000).toLo
 const saalMin = 30; // immer 30 Min. (AGENTS.md, Korrektur 26.10.2026), auch Iris hört zu
 const einlassText = event.series?.slug === 'murwaerts-festival'
   ? 'Grillen & Chillen ab 19:00 · bei Schlechtwetter im Saal'
-  : `Bar & Buffet ab ${hhmm(Math.max(60, saalMin))} · Saal ab ${hhmm(saalMin)}`;
+  : `Einstimmen an Bar & Buffet ab ${hhmm(Math.max(60, saalMin))} · Saal ab ${hhmm(saalMin)}`;
 const weekday = displayDate.toLocaleDateString('de-DE', { weekday: 'long' });
 
 // Zuerst Termine derselben Serie, dann die nächsten anderen
