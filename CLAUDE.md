@@ -53,7 +53,7 @@ Monorepo: `frontend/` (Astro 5, SSR via `@astrojs/node` standalone, Tailwind) un
 - Bilder über 6000 px verkleinert Directus nicht (Transform-Fehler 400, Bild fehlt auf der Startseite) → vor dem Hochladen auf ca. 3000 px verkleinern. 08.11.2026: Crossing-Strings-Foto ersetzt (Original in `~/Sites/brücke-backups/directus-flows/`).
 - Event-Texte: `lib/cleanHtml.ts` entfernt Word-Reste beim Anzeigen; der Flow „Event-Prüfung“ bereinigt `description` schon beim Speichern (am 08.11.2026 alle 51 betroffenen Texte einmalig bereinigt, Sicherung in `~/Sites/brücke-backups/directus-flows/`).
 - Einfache Sprache je Event: Feld `events.description_leicht`; ist es befüllt, zeigt die Detailseite den Text bei eingeschalteter einfacher Sprache statt der Beschreibung.
-- Detailseite am Handy: feste Leiste mit Datum und Tickets; Ort mit Adresse und Route-Link. Zeiten: „Einstimmen an Bar & Buffet ab … · Saal ab …“ + „Freie Platzwahl“; pretix: Erinnerungsmail am Vortag 10:00 (automatische E-Mail, in vorlage-konzert und allen Events ab 08.11.2026) (Regel in Büro/AGENTS.md, 08.11.2026).
+- Detailseite am Handy: feste Leiste mit Datum und Tickets; Ort mit Adresse und Route-Link. Zeiten: „Einstimmen am Vereinsbuffet ab … · Saal ab …“ + „Freie Platzwahl“; pretix: Erinnerungsmail am Vortag 10:00 (automatische E-Mail, in vorlage-konzert und allen Events ab 08.11.2026) (Regel in Büro/AGENTS.md, 08.11.2026).
 - Dunkelmodus: `.series-surface` (Serienfarben gedämpft), `.event-thumb` (Bilder leicht abgedunkelt) in `styles/global.css`.
 - Zuordnungsregel: Vault `Serien 2027/01 Serienvorschläge 2027.md` (Ergänzung 08.11.2026).
 
