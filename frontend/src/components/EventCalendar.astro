@@ -20,15 +20,15 @@ let highlightCounter = 0;
 <nav aria-label="Veranstaltungsfilter" class="sticky top-28 z-30 transition-all pointer-events-none mb-12">
     <div class="pointer-events-auto w-full">
         <div id="filter-container" class="filter-bar-container bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-y sm:border border-slate-200/60 dark:border-white/5 py-3 px-4 sm:p-2 sm:rounded-2xl shadow-xl shadow-slate-200/10 dark:shadow-black/40 flex flex-col gap-2 transition-all duration-500">
-            <div class="flex flex-nowrap gap-3 overflow-x-auto hide-scrollbar snap-x snap-mandatory">
+            <div class="flex flex-nowrap gap-2 sm:gap-3 overflow-x-auto hide-scrollbar snap-x snap-mandatory p-1 scroll-fade">
             
-            <button class="filter-btn active cursor-pointer flex-shrink-0 snap-center px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-all duration-300 hover:scale-105 active:scale-95 shadow-md bg-slate-900 text-white dark:bg-white dark:text-slate-900 whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-rose-500" 
+            <button class="filter-btn active cursor-pointer flex-shrink-0 snap-center px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-all duration-300 hover:scale-105 active:scale-95 shadow-md bg-slate-900 text-white dark:bg-white dark:text-slate-900 whitespace-nowrap focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-500" 
                     data-category="all" aria-pressed="true">
                 Alle
             </button>
             
             {categoryNames.map((name: any) => (
-                 <button class="filter-btn cursor-pointer flex-shrink-0 snap-center px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-all duration-300 hover:scale-105 active:scale-95 bg-transparent text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-rose-500" 
+                 <button class="filter-btn cursor-pointer flex-shrink-0 snap-center px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-all duration-300 hover:scale-105 active:scale-95 bg-transparent text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white whitespace-nowrap focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-500" 
                         data-category={name} aria-pressed="false">
                     {name}
                 </button>
@@ -36,10 +36,10 @@ let highlightCounter = 0;
  
             </div>
             {seriesList.length > 0 && (
-            <div class="flex flex-nowrap gap-3 overflow-x-auto hide-scrollbar snap-x snap-mandatory border-t border-slate-200/60 dark:border-white/5 pt-2" role="group" aria-label="Serien">
+            <div class="flex flex-nowrap lg:flex-wrap gap-1 sm:gap-2 overflow-x-auto lg:overflow-visible hide-scrollbar snap-x snap-mandatory scroll-fade border-t border-slate-200/60 dark:border-white/5 p-1 pt-2" role="group" aria-label="Serien">
                 <span class="flex-shrink-0 self-center pl-2 pr-1 text-[10px] font-bold uppercase tracking-widest text-slate-400">Serien</span>
             {seriesList.map((s: any) => (
-                <button class="filter-btn cursor-pointer flex-shrink-0 snap-center px-5 py-2.5 rounded-xl text-xs font-bold tracking-wider transition-all duration-300 hover:scale-105 active:scale-95 bg-transparent text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-rose-500"
+                <button class="filter-btn cursor-pointer flex-shrink-0 snap-center px-3.5 py-2 rounded-xl text-xs font-bold tracking-wide transition-all duration-300 hover:scale-105 active:scale-95 bg-transparent text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white whitespace-nowrap focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-500"
                         data-series={s.slug} aria-pressed="false">
                     {s.name}
                 </button>
@@ -180,6 +180,10 @@ let highlightCounter = 0;
         color: #0f172a !important;
     }
     .hide-scrollbar::-webkit-scrollbar { display: none; }
+    /* Hinweis „hier geht's weiter“: rechter Rand blendet aus, solange gescrollt wird */
+    @media (max-width: 1023px) {
+        .scroll-fade { -webkit-mask-image: linear-gradient(to right, #000 85%, transparent); mask-image: linear-gradient(to right, #000 85%, transparent); }
+    }
     .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
     /* HARDWARE ACCELERATED ANIMATION CLASSES */
@@ -256,6 +260,8 @@ let highlightCounter = 0;
                 btn.setAttribute('aria-pressed', on ? 'true' : 'false');
             });
 
+            const row = button.parentElement;
+            if (row && row.scrollWidth > row.clientWidth) row.scrollLeft = button.offsetLeft - row.offsetLeft - (row.clientWidth - button.offsetWidth) / 2;
             isAnimating = true;
 
             const toHide = [];
