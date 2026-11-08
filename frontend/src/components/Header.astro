@@ -34,10 +34,10 @@ const activeSocials = rawSocials.map(s => {
 }).filter(Boolean);
 
 const menuItems = [
-  { number: '01', title: 'Kalender', href: '/events', desc: 'Termine & Kultur.' },
+  { number: '01', title: 'Kalender', href: '/events', desc: 'Termine & Kultur.', sub: { title: 'Unsere Serien', href: '/serien' } },
   { number: '02', title: 'Angebote', href: '/services', desc: 'Begleitung & Alltag.' },
   { number: '03', title: 'Urlaub', href: '/camps', desc: 'Cit-Trips & Sommercamps.' },
-  { number: '04', title: 'Projekte', href: '/projects', desc: 'Kunst & Inklusion.' },
+  { number: '04', title: 'Projekte', href: '/projects', desc: 'Kunst & Inklusion.', sub: { title: 'Serien 2027', href: '/serien' } },
   { number: '05', title: 'Info-Point', href: '/info', desc: 'Beratung & Service.' },
   { number: '06', title: 'Dein Raum', href: '/space', desc: 'Vermietung & Feiern.' },
   { number: '07', title: 'Über uns', href: '/about', desc: 'Team & Mission.' },
@@ -161,8 +161,7 @@ const menuItems = [
     <div class="max-w-7xl mx-auto w-full px-4 sm:px-10 md:py-6">
       <nav class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 w-full gap-2 md:gap-0">
         {menuItems.map((item) => (
-          <a 
-            href={item.disabled ? '#' : item.href} 
+          <div
             class={`
               group relative p-5 md:p-8 
               /* Mobile: Helle Karten */
@@ -199,18 +198,24 @@ const menuItems = [
                )}
             </div>
 
-            <span class="block text-xl md:text-3xl font-display font-extrabold tracking-tight text-slate-900 dark:text-white md:text-white group-hover:text-rose-600 md:group-hover:text-rose-400 transition-colors uppercase leading-none mb-1 md:mb-2">
+            <a href={item.disabled ? '#' : item.href} class="block text-xl md:text-3xl font-display font-extrabold tracking-tight text-slate-900 dark:text-white md:text-white group-hover:text-rose-600 md:group-hover:text-rose-400 transition-colors uppercase leading-none mb-1 md:mb-2 after:absolute after:inset-0 after:content-[''] focus:outline-none focus-visible:after:ring-2 focus-visible:after:ring-rose-500 focus-visible:after:rounded-2xl">
               {item.title}
-            </span>
+            </a>
             
             <span class="block text-slate-500 dark:text-slate-400 md:text-slate-300 text-xs md:text-sm md:group-hover:text-white transition-colors font-medium max-w-[90%] leading-snug">
               {item.desc}
             </span>
+
+            {item.sub && (
+              <a href={item.sub.href} class="relative z-10 mt-2 md:mt-3 inline-flex items-center gap-1.5 self-start text-[11px] md:text-xs font-bold uppercase tracking-widest text-rose-600 md:text-rose-300 hover:text-rose-700 md:hover:text-white transition-colors">
+                {item.sub.title} <i class="fa-solid fa-arrow-right text-[10px]" aria-hidden="true"></i>
+              </a>
+            )}
             
             {!item.disabled && (
                <i class="fa-solid fa-arrow-right absolute bottom-5 right-5 md:bottom-6 md:right-6 text-sm text-slate-300 md:text-white/10 group-hover:text-rose-500 md:group-hover:text-rose-400 group-hover:-rotate-45 transition-all duration-300" aria-hidden="true"></i>
             )}
-          </a>
+          </div>
         ))}
       </nav>
     </div>
