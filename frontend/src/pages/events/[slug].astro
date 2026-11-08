@@ -253,6 +253,11 @@ const shareLinkedIn = 'https://www.linkedin.com/sharing/share-offsite/?url=' + e
                 </div>
 
                 <div class="flex flex-wrap gap-3 mb-8 no-print">
+                  {event.series?.name && (
+                    <a href={`/events?serie=${event.series.slug}`} class="bg-slate-900 text-white dark:bg-white dark:text-slate-900 px-3 py-1 rounded-full text-xs font-bold tracking-wider hover:bg-rose-600 dark:hover:bg-rose-500 transition-colors" title="Alle Termine dieser Serie">
+                      {event.series.name}
+                    </a>
+                  )}
                   {eventCategories?.map((cat: any) => (
                     <span class="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
                       {getCatName(cat)}
@@ -260,7 +265,7 @@ const shareLinkedIn = 'https://www.linkedin.com/sharing/share-offsite/?url=' + e
                   ))}
                   {allDates.length > 1 && (
                     <span class="bg-rose-50 dark:bg-rose-900/20 text-rose-600 dark:text-rose-400 border border-rose-100 dark:border-rose-900/30 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
-                      <i class="fa-solid fa-repeat mr-1"></i> Serie
+                      <i class="fa-solid fa-repeat mr-1"></i> Mehrere Termine
                     </span>
                   )}
                 </div>

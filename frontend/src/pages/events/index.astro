@@ -73,6 +73,7 @@ let eventsWithCats = allEvents.map(event => {
     return {
         ...event,
         _catString: validNames.join(','),
+        _series: event.series?.slug || '',
         _displayDate: getNextEventDate(event), 
     };
 });

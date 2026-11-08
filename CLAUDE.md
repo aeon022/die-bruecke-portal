@@ -42,3 +42,8 @@ Monorepo: `frontend/` (Astro 5, SSR via `@astrojs/node` standalone, Tailwind) un
 - Stripe-Weiterleitung nutzt den Link aus der App (mit `client_reference_id` = Lfd. Nr.) → Zahlung wird automatisch zugeordnet und aktiv geschaltet.
 - Formular bleibt nach erfolgreicher Überweisungs-Anmeldung gesperrt (früher Ursache der Mehrfach-Anfragen).
 - Directus `inbox_memberships` + Eingangsbestätigung laufen vorerst weiter; abschalten, sobald die App die Mails automatisch schickt.
+
+## Serien (08.11.2026)
+- Directus-Sammlung `event_series` (name, slug, color, sort, description), Feld `events.series` (M2O). Öffentlich lesbar.
+- `/events`: zweite Filterzeile „Serien“ (nur Serien mit Terminen, Reihenfolge `sort`), kombinierbar mit Kategorie; `/events?serie=<slug>` wählt die Serie vor. Detailseite verlinkt das Serien-Etikett dorthin.
+- Zuordnungsregel: Vault `Serien 2027/01 Serienvorschläge 2027.md` (Ergänzung 08.11.2026).

@@ -30,6 +30,10 @@ export async function getEvents() {
             'event_categories.event_categories_id.id',
             'event_categories.event_categories_id.name',
             'event_categories.event_categories_id.color',
+            'series.name',
+            'series.slug',
+            'series.color',
+            'series.sort',
           ],
           filter: statusFilter,
           sort: ['start_date'],
@@ -84,6 +88,9 @@ export async function getEventBySlug(slug: string) {
           'event_categories.event_categories_id.id',
           'event_categories.event_categories_id.name',
           'event_categories.event_categories_id.color', // Color auch hier wichtig
+          'series.name',
+          'series.slug',
+          'series.color',
         ],
         limit: 1
       })

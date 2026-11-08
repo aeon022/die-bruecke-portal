@@ -8,6 +8,10 @@ const ASSET_URL = 'https://api.diebruecke.social/assets';
 // 1. Kategorien vorbereiten
 const categoryNames = categories ? [...new Set(categories.map((c: any) => c.name || c.title || c.label).filter(Boolean))].sort() : [];
 
+// Serien: nur die, die im Kalender auch vorkommen (Reihenfolge nach sort in Directus)
+const seriesList = [...new Map(events.filter((e: any) => e.series?.slug).map((e: any) => [e.series.slug, e.series])).values()]
+    .sort((a: any, b: any) => (a.sort ?? 99) - (b.sort ?? 99));
+
 // 2. Helper für ZigZag-Logik
 let highlightCounter = 0;
 ---
@@ -15,7 +19,8 @@ let highlightCounter = 0;
 {/* --- FILTER BAR --- */}
 <nav aria-label="Veranstaltungsfilter" class="sticky top-28 z-30 transition-all pointer-events-none mb-12">
     <div class="pointer-events-auto w-full">
-        <div id="filter-container" class="filter-bar-container bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-y sm:border border-slate-200/60 dark:border-white/5 py-3 px-4 sm:p-2 sm:rounded-2xl shadow-xl shadow-slate-200/10 dark:shadow-black/40 flex flex-nowrap gap-3 overflow-x-auto hide-scrollbar snap-x snap-mandatory transition-all duration-500">
+        <div id="filter-container" class="filter-bar-container bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-y sm:border border-slate-200/60 dark:border-white/5 py-3 px-4 sm:p-2 sm:rounded-2xl shadow-xl shadow-slate-200/10 dark:shadow-black/40 flex flex-col gap-2 transition-all duration-500">
+            <div class="flex flex-nowrap gap-3 overflow-x-auto hide-scrollbar snap-x snap-mandatory">
             
             <button class="filter-btn active cursor-pointer flex-shrink-0 snap-center px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-all duration-300 hover:scale-105 active:scale-95 shadow-md bg-slate-900 text-white dark:bg-white dark:text-slate-900 whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-rose-500" 
                     data-category="all" aria-pressed="true">
@@ -29,7 +34,18 @@ let highlightCounter = 0;
                 </button>
             ))}
  
-             <div class="w-2 sm:hidden flex-shrink-0"></div>
+            </div>
+            {seriesList.length > 0 && (
+            <div class="flex flex-nowrap gap-3 overflow-x-auto hide-scrollbar snap-x snap-mandatory border-t border-slate-200/60 dark:border-white/5 pt-2" role="group" aria-label="Serien">
+                <span class="flex-shrink-0 self-center pl-2 pr-1 text-[10px] font-bold uppercase tracking-widest text-slate-400">Serien</span>
+            {seriesList.map((s: any) => (
+                <button class="filter-btn cursor-pointer flex-shrink-0 snap-center px-5 py-2.5 rounded-xl text-xs font-bold tracking-wider transition-all duration-300 hover:scale-105 active:scale-95 bg-transparent text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-rose-500"
+                        data-series={s.slug} aria-pressed="false">
+                    {s.name}
+                </button>
+            ))}
+            </div>
+            )}
         </div>
     </div>
 </nav>
@@ -63,6 +79,7 @@ let highlightCounter = 0;
                         : 'col-span-1 bg-gradient-to-br from-white to-slate-50 dark:from-slate-900 dark:to-slate-950 border border-slate-100 dark:border-slate-800'
                     }`}
                     data-cats={event._catString}
+                    data-series={event._series}
                 >
                     {/* Image Link */}
                     <a href={`/events/${event.slug}`} 
@@ -100,6 +117,9 @@ let highlightCounter = 0;
                         <div>
                             {/* Categories */}
                             <div class="flex gap-2 mb-5 flex-wrap">
+                                {event.series?.name && (
+                                    <span class="text-[10px] font-bold tracking-widest px-2.5 py-1 rounded-lg bg-slate-900 text-white dark:bg-white dark:text-slate-900">{event.series.name}</span>
+                                )}
                                 {event._catString ? event._catString.split(',').map((catName: string) => (
                                     <span class={`text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-lg border
                                         ${isHighlight 
@@ -207,6 +227,8 @@ let highlightCounter = 0;
         }
 
         let isAnimating = false;
+        let activeCategory = 'all';
+        let activeSeries: string | null = null;
 
         filterContainer.addEventListener('click', async (event) => {
             const button = event.target instanceof Element ? event.target.closest('.filter-btn') : null;
@@ -214,21 +236,25 @@ let highlightCounter = 0;
 
             const buttons = Array.from(filterContainer.querySelectorAll('.filter-btn'));
             const cards = Array.from(grid.querySelectorAll('.event-card'));
-            const category = button.getAttribute('data-category');
-
-            if (!category) return;
+            const isSeries = button.hasAttribute('data-series');
+            if (isSeries) {
+                const slug = button.getAttribute('data-series');
+                activeSeries = activeSeries === slug ? null : slug; // nochmal klicken = Serie abwählen
+            } else {
+                activeCategory = button.getAttribute('data-category') || 'all';
+                if (activeCategory === 'all') activeSeries = null;
+            }
+            const category = activeCategory;
 
             buttons.forEach(btn => {
-                btn.classList.remove(...activeClasses);
-                btn.classList.add(...inactiveClasses);
-                btn.classList.remove('active');
-                btn.setAttribute('aria-pressed', 'false');
+                const on = btn.hasAttribute('data-series')
+                    ? btn.getAttribute('data-series') === activeSeries
+                    : btn.getAttribute('data-category') === activeCategory;
+                btn.classList.remove(...(on ? inactiveClasses : activeClasses));
+                btn.classList.add(...(on ? activeClasses : inactiveClasses));
+                btn.classList.toggle('active', on);
+                btn.setAttribute('aria-pressed', on ? 'true' : 'false');
             });
-
-            button.classList.remove(...inactiveClasses);
-            button.classList.add(...activeClasses);
-            button.classList.add('active');
-            button.setAttribute('aria-pressed', 'true');
 
             isAnimating = true;
 
@@ -240,7 +266,8 @@ let highlightCounter = 0;
                     .split(',')
                     .map(cat => cat.trim())
                     .filter(Boolean);
-                const isMatch = category === 'all' || cardCats.includes(category);
+                const isMatch = (category === 'all' || cardCats.includes(category))
+                    && (!activeSeries || card.getAttribute('data-series') === activeSeries);
 
                 if (isMatch) {
                     toShow.push(card);
@@ -281,6 +308,10 @@ let highlightCounter = 0;
                 isAnimating = false;
             }, toShow.length * 40 + 300);
         });
+
+        const fromUrl = new URLSearchParams(location.search).get('serie');
+        const preset = fromUrl && filterContainer.querySelector(`[data-series="${CSS.escape(fromUrl)}"]`);
+        if (preset instanceof HTMLElement) preset.click();
     }
 
     document.addEventListener('astro:page-load', initEventCalendar);
