@@ -105,6 +105,11 @@ const dateString = displayDate.toLocaleDateString('de-DE', {
   year: 'numeric',
 });
 const timeString = displayDate.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+// Einlass laut Büro/AGENTS.md: 30 Min. vorher; Iris hört zu 60 Min.; Open Air (Murwärts) Grillen & Chillen ab 19:00
+const einlassMin = event.series?.slug === 'iris-hoert-zu' ? 60 : 30;
+const einlassText = event.series?.slug === 'murwaerts-festival'
+  ? 'Grillen & Chillen ab 19:00 · bei Schlechtwetter im Saal'
+  : `Einlass ab ${new Date(displayDate.getTime() - einlassMin * 60000).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })} Uhr`;
 const weekday = displayDate.toLocaleDateString('de-DE', { weekday: 'long' });
 
 // Zuerst Termine derselben Serie, dann die nächsten anderen
@@ -166,6 +171,7 @@ const shareWhatsApp = 'https://wa.me/?text=' + shareText + '%20' + encodeURIComp
 const shareFacebook = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(currentUrl);
 const shareX = 'https://twitter.com/intent/tweet?text=' + shareText + '&url=' + encodeURIComponent(currentUrl);
 const shareLinkedIn = 'https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(currentUrl);
+const shareMail = 'mailto:?subject=' + encodeURIComponent(event.title + ' – Die Brücke') + '&body=' + encodeURIComponent(`${event.title}\n${weekday}, ${dateString}, ${timeString} Uhr\n${currentUrl}`);
 ---
 
 <MainLayout title={seoTitle} description={seoDescription} image={seoImage} leicht={Boolean(leichtText)}>
@@ -313,7 +319,7 @@ const shareLinkedIn = 'https://www.linkedin.com/sharing/share-offsite/?url=' + e
                   <span class="block font-bold text-slate-900 dark:text-white text-lg">{weekday}</span>
                   <span class="block text-slate-500 dark:text-slate-400">{dateString}</span>
                   {displayDate.getTime() !== dbStartDate.getTime() && (
-                    <span class="text-xs text-rose-500 font-bold uppercase tracking-wide mt-1 block">Termin der Serie</span>
+                    <span class="text-xs text-rose-500 font-bold uppercase tracking-wide mt-1 block">Wiederkehrender Termin</span>
                   )}
                 </div>
               </div>
@@ -324,7 +330,7 @@ const shareLinkedIn = 'https://www.linkedin.com/sharing/share-offsite/?url=' + e
                 </div>
                 <div>
                   <span class="block font-bold text-slate-900 dark:text-white text-lg">{timeString} Uhr</span>
-                  <span class="block text-slate-500 dark:text-slate-400">Einlass ab 30 Min. vorher</span>
+                  <span class="block text-slate-500 dark:text-slate-400">{einlassText}</span>
                 </div>
               </div>
 
@@ -447,13 +453,21 @@ const shareLinkedIn = 'https://www.linkedin.com/sharing/share-offsite/?url=' + e
 
             <div class="mt-10 pt-8 border-t border-slate-200 dark:border-slate-700">
               <p class="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-4 text-center">Freunde einladen</p>
+              {/* Am Handy: eingebautes Teilen (WhatsApp, Signal, Instagram-Story …); per JS eingeblendet, wenn verfügbar */}
+              <button id="share-native" type="button" class="hidden w-full mb-3 py-3 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-sm flex items-center justify-center gap-2 hover:bg-rose-600 dark:hover:bg-rose-400 transition-colors">
+                <i class="fa-solid fa-share-nodes" aria-hidden="true"></i> Teilen …
+              </button>
               <div class="grid grid-cols-5 gap-2">
-                <a href={shareWhatsApp} target="_blank" rel="noopener noreferrer" class="h-10 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500 hover:text-white transition-all flex items-center justify-center" title="WhatsApp"><i class="fa-brands fa-whatsapp text-lg"></i></a>
-                <a href={shareFacebook} target="_blank" rel="noopener noreferrer" class="h-10 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-600 hover:text-white transition-all flex items-center justify-center" title="Facebook"><i class="fa-brands fa-facebook-f text-lg"></i></a>
-                <a href={shareX} target="_blank" rel="noopener noreferrer" class="h-10 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white hover:bg-black hover:text-white transition-all flex items-center justify-center" title="X (Twitter)"><i class="fa-brands fa-x-twitter text-lg"></i></a>
-                <a href={shareLinkedIn} target="_blank" rel="noopener noreferrer" class="h-10 rounded-lg bg-sky-50 dark:bg-sky-900/30 text-sky-700 dark:text-sky-400 hover:bg-sky-700 hover:text-white transition-all flex items-center justify-center" title="LinkedIn"><i class="fa-brands fa-linkedin-in text-lg"></i></a>
-                <button id="share-insta" class="h-10 rounded-lg bg-fuchsia-50 dark:bg-fuchsia-900/30 text-fuchsia-600 dark:text-fuchsia-400 hover:bg-gradient-to-tr hover:from-yellow-400 hover:via-red-500 hover:to-purple-500 hover:text-white transition-all flex items-center justify-center" title="Link kopieren"><i class="fa-brands fa-instagram text-lg"></i></button>
+                <a href={shareWhatsApp} target="_blank" rel="noopener noreferrer" class="h-10 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500 hover:text-white transition-all flex items-center justify-center" title="Per WhatsApp teilen" aria-label="Per WhatsApp teilen"><i class="fa-brands fa-whatsapp text-lg"></i></a>
+                <a href={shareFacebook} target="_blank" rel="noopener noreferrer" class="h-10 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-600 hover:text-white transition-all flex items-center justify-center" title="Auf Facebook teilen" aria-label="Auf Facebook teilen"><i class="fa-brands fa-facebook-f text-lg"></i></a>
+                <a href={shareMail} class="h-10 rounded-lg bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 hover:bg-amber-500 hover:text-white transition-all flex items-center justify-center" title="Per E-Mail teilen" aria-label="Per E-Mail teilen"><i class="fa-regular fa-envelope text-lg"></i></a>
+                <a href={shareX} target="_blank" rel="noopener noreferrer" class="h-10 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white hover:bg-black hover:text-white transition-all flex items-center justify-center" title="Auf X teilen" aria-label="Auf X teilen"><i class="fa-brands fa-x-twitter text-lg"></i></a>
+                <a href={shareLinkedIn} target="_blank" rel="noopener noreferrer" class="h-10 rounded-lg bg-sky-50 dark:bg-sky-900/30 text-sky-700 dark:text-sky-400 hover:bg-sky-700 hover:text-white transition-all flex items-center justify-center" title="Auf LinkedIn teilen" aria-label="Auf LinkedIn teilen"><i class="fa-brands fa-linkedin-in text-lg"></i></a>
               </div>
+              <button id="share-copy" type="button" class="mt-3 w-full py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-sm flex items-center justify-center gap-2 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                <i class="fa-regular fa-copy" aria-hidden="true"></i><span>Link kopieren (z. B. für Instagram)</span>
+              </button>
+              <p id="share-status" class="sr-only" aria-live="polite"></p>
             </div>
           </aside>
         </div>
@@ -515,19 +529,26 @@ const shareLinkedIn = 'https://www.linkedin.com/sharing/share-offsite/?url=' + e
 })} />
 
 <script>
-  const btnInsta = document.getElementById('share-insta');
-  const sidebar = document.getElementById('event-sidebar');
-  const sentinel = document.getElementById('sidebar-sentinel');
-
-  // Instagram Link Copy
-  if (btnInsta) {
-    btnInsta.addEventListener('click', () => {
-        navigator.clipboard.writeText(window.location.href);
-        const originalHTML = btnInsta.innerHTML;
-        btnInsta.innerHTML = '<i class="fa-solid fa-check"></i>';
-        setTimeout(() => btnInsta.innerHTML = originalHTML, 2000);
+  // Teilen: am Handy das eingebaute Menü, überall „Link kopieren“ mit sichtbarer Bestätigung
+  const btnNative = document.getElementById('share-native');
+  const btnCopy = document.getElementById('share-copy');
+  const status = document.getElementById('share-status');
+  if (btnNative && navigator.share) {
+    btnNative.classList.remove('hidden');
+    btnNative.addEventListener('click', () => navigator.share({ title: document.title, url: location.href }).catch(() => {}));
+  }
+  if (btnCopy) {
+    const label = btnCopy.querySelector('span');
+    btnCopy.addEventListener('click', async () => {
+      try { await navigator.clipboard.writeText(location.href); } catch { prompt('Link kopieren:', location.href); return; }
+      const before = label.textContent;
+      label.textContent = 'Link kopiert ✓';
+      if (status) status.textContent = 'Link in die Zwischenablage kopiert';
+      setTimeout(() => (label.textContent = before), 2500);
     });
   }
+  const sidebar = document.getElementById('event-sidebar');
+  const sentinel = document.getElementById('sidebar-sentinel');
 
   // Sticky Sidebar Logic
   if (sidebar && sentinel) {

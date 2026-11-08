@@ -23,6 +23,10 @@ export async function GET() {
         { path: '/services', priority: 0.9 },
         { path: '/events', priority: 0.9 },
         { path: '/serien', priority: 0.8 },
+        { path: '/blog', priority: 0.6 },
+        { path: '/camps', priority: 0.6 },
+        { path: '/city-trips', priority: 0.6 },
+        { path: '/archiv', priority: 0.5 },
         { path: '/projects', priority: 0.7 },
         { path: '/join', priority: 0.6 },
         { path: '/shop', priority: 0.7 },
@@ -41,30 +45,18 @@ export async function GET() {
 
     // B. Dynamische Inhalte aus Directus laden (Parallel für Performance)
     try {
-        const [events, services, projects, posts, series] = await Promise.all([
-            // Events
-            directus.request(readItems('events', { 
-                fields: ['slug', 'date_updated'],
-                filter: { status: { _eq: 'published' } }
-            })),
-            // Services (Soziales)
-            directus.request(readItems('services', { 
-                fields: ['slug', 'date_updated'],
-                filter: { status: { _eq: 'published' } }
-            })),
-            // Projekte
-            directus.request(readItems('projects', { 
-                fields: ['slug', 'date_updated'],
-                filter: { status: { _eq: 'published' } }
-            })),
-            // Blog Posts (falls vorhanden)
-            directus.request(readItems('posts', { 
-                fields: ['slug', 'date_updated'],
-                filter: { status: { _eq: 'published' } }
-            })).catch(() => []), // Fallback, falls Collection noch leer
-            directus.request(readItems('event_series', { fields: ['slug'] })).catch(() => []),
+        // Nur Felder abfragen, die es gibt (date_updated fehlt in Directus → früher fiel der ganze dynamische Teil weg)
+        const list = (collection: string, filter: any = { status: { _eq: 'published' } }) =>
+            directus.request(readItems(collection, { fields: ['slug'], filter, limit: -1 })).catch((e) => {
+                console.error(`Sitemap: ${collection} nicht lesbar`, e?.errors?.[0]?.message || e);
+                return [];
+            });
+        const [events, services, projects, posts, series, camps, cityTrips] = await Promise.all([
+            list('events'), list('services'), list('projects'), list('blog'), list('event_series', {}), list('camps'), list('city_trips'),
         ]);
 
+        camps?.forEach((item: any) => { xmlString += createUrlEntry(`/camps/${item.slug}`, undefined, 0.6); });
+        cityTrips?.forEach((item: any) => { xmlString += createUrlEntry(`/city-trips/${item.slug}`, undefined, 0.6); });
         series?.forEach((item: any) => {
             xmlString += createUrlEntry(`/serien/${item.slug}`, undefined, 0.7);
         });
