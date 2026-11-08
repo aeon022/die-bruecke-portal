@@ -70,7 +70,7 @@ let highlightCounter = 0;
             const dateToShow = event._displayDate;
             // Hinweis bei wenigen Karten (tickets_left kommt aus dem pretix-Abgleich)
             const left = typeof event.tickets_left === 'number' ? event.tickets_left : null;
-            const ticketHint = left === null || left > 20 ? null : left > 0 ? `Nur noch ${left} Karten` : 'Ausverkauft';
+            const ticketHint = left === null || left > 30 ? null : left > 0 ? `Nur noch ${left} Karten` : 'Ausverkauft';
 
             return (
                 <article 

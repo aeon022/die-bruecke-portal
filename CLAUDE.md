@@ -53,7 +53,7 @@ Monorepo: `frontend/` (Astro 5, SSR via `@astrojs/node` standalone, Tailwind) un
 
 ## Directus-Flow „Event-Prüfung“ (08.11.2026)
 - Blockierend vor dem Speichern von `events`: Veröffentlichen ohne Bild oder Beginn wird abgelehnt (Fehlermeldung im Editor); leere Serie wird nach Titel vorgeschlagen (Mord vor Ort, Stammtisch, Iris hört zu, Murwärts, Kabarett Cuvée, Seriennamen). Code: `backend/flows/event-check.js` (bei Änderungen in Directus und hier gleich halten).
-- Flow „pretix → Restkarten“ (Zeitplan alle 15 Min.) ruft je kommendem veröffentlichtem Event mit `pretix_slug` den Flow „pretix → Restkarten (pro Event)“ auf: pretix-Kontingent (`with_availability`) → `events.tickets_left` (ohne Events auszulösen). Website: Karten-Etikett „Nur noch X Karten“ ab 20, Detailseite „Noch X Tickets verfügbar“.
+- Flow „pretix → Restkarten“ (Zeitplan alle 15 Min.) ruft je kommendem veröffentlichtem Event mit `pretix_slug` den Flow „pretix → Restkarten (pro Event)“ auf: pretix-Kontingent (`with_availability`) → `events.tickets_left` (ohne Events auszulösen). Website: Karten-Etikett „Nur noch X Karten“ und Detailseite „Noch X Tickets verfügbar“ erst ab 30 Restkarten.
 - 08.11.2026 gelöscht: alter Flow „Pretix Sync v2“ (Sicherung in `~/Sites/brücke-backups/directus-flows/`, enthält Token – nicht weitergeben) und eine verwaiste Marketplace-Erweiterung ohne Dateien (nirgends verwendet).
 - Achtung: Die pretix-Flows haben den API-Token im Klartext in den Request-Headern → Token erneuern und über `{{ $env.… }}` (FLOWS_ENV_ALLOW_LIST) einbinden.
 
