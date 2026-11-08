@@ -105,11 +105,13 @@ const dateString = displayDate.toLocaleDateString('de-DE', {
   year: 'numeric',
 });
 const timeString = displayDate.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
-// Einlass laut Büro/AGENTS.md: 30 Min. vorher; Iris hört zu 60 Min.; Open Air (Murwärts) Grillen & Chillen ab 19:00
-const einlassMin = event.series?.slug === 'iris-hoert-zu' ? 60 : 30;
+// Zeiten laut Büro/AGENTS.md (08.11.2026): Bar & Buffet 60 Min. vor Beginn, Saal 30 Min.;
+// Open Air (Murwärts): Grillen & Chillen ab 19:00. Ziel: Leute früher ins Haus holen.
+const hhmm = (min: number) => new Date(displayDate.getTime() - min * 60000).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+const saalMin = 30; // immer 30 Min. (AGENTS.md, Korrektur 26.10.2026), auch Iris hört zu
 const einlassText = event.series?.slug === 'murwaerts-festival'
   ? 'Grillen & Chillen ab 19:00 · bei Schlechtwetter im Saal'
-  : `Einlass ab ${new Date(displayDate.getTime() - einlassMin * 60000).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })} Uhr`;
+  : `Bar & Buffet ab ${hhmm(Math.max(60, saalMin))} · Saal ab ${hhmm(saalMin)}`;
 const weekday = displayDate.toLocaleDateString('de-DE', { weekday: 'long' });
 
 // Zuerst Termine derselben Serie, dann die nächsten anderen
@@ -331,6 +333,7 @@ const shareMail = 'mailto:?subject=' + encodeURIComponent(event.title + ' – Di
                 <div>
                   <span class="block font-bold text-slate-900 dark:text-white text-lg">{timeString} Uhr</span>
                   <span class="block text-slate-500 dark:text-slate-400">{einlassText}</span>
+                  <span class="block text-xs font-bold text-rose-600 dark:text-rose-400 mt-1">Freie Platzwahl – wer früher kommt, sitzt vorne.</span>
                 </div>
               </div>
 
