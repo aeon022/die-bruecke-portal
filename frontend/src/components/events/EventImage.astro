@@ -8,7 +8,7 @@ const ASSET_URL = 'https://api.diebruecke.social/assets';
 {event.image ? (
   <Image src={`${ASSET_URL}/${event.image}`} alt={event.title} width={width} height={height} class={cls} />
 ) : event.series?.name ? (
-  <div class="w-full h-full flex flex-col items-center justify-center gap-2 p-6 text-center" style={seriesStyle(event.series)}>
+  <div class="series-surface w-full h-full flex flex-col items-center justify-center gap-2 p-6 text-center" style={seriesStyle(event.series)}>
     <span class="font-display font-black text-3xl md:text-4xl tracking-tight leading-none">{event.series.name}</span>
     <span class="text-[10px] font-bold uppercase tracking-widest opacity-80">Die Brücke</span>
   </div>

@@ -1,10 +1,27 @@
 // Directus-Flow „Event-Prüfung“ (blockierend, vor dem Speichern). Gibt immer das Payload zurück.
+// Gleich wie frontend/src/lib/cleanHtml.ts (Word-Reste entfernen)
+function cleanHtml(html) {
+  if (!html) return '';
+  var s = String(html)
+    .replace(/<!--[\s\S]*?-->/g, '')
+    .replace(/<(style|script|xml|meta|link)\b[\s\S]*?(<\/\1>|\/?>)/gi, '')
+    .replace(/<\/?o:p[^>]*>/gi, '')
+    .replace(/<\/?(font|span)\b[^>]*>/gi, '') // nur Hüllen für Formatierung
+    .replace(/\s(style|class|lang|face|size|color|align|dir|id)\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, '');
+  // zerstückelte Formatierung zusammenführen: </strong><strong> → nichts
+  s = s.replace(/<\/(strong|b|em|i)>(\s*)<\1>/gi, '$2');
+  // leere Absätze aus Word (&nbsp;) entfernen
+  s = s.replace(/<p>(\s|&nbsp;| |<br\s*\/?>)*<\/p>/gi, '');
+  return s.trim();
+}
+
 module.exports = function (data) {
   var t = data.$trigger || {};
   var p = Object.assign({}, t.payload || {});
   var item = data.read_item;
   if (Array.isArray(item)) item = item[0];
   if (!item || typeof item !== 'object' || item.errors) item = {};
+  if (typeof p.description === 'string') p.description = cleanHtml(p.description);
   var m = Object.assign({}, item, p); // Stand nach dem Speichern
 
   // 1) Serie vorschlagen, wenn leer (nur Titel-Regeln, die eindeutig sind)

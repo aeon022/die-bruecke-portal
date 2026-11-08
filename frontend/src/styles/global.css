@@ -93,3 +93,15 @@ body {
 html:not([data-ll]) .show-on-ll { display: none !important; }
 html[data-ll] .hide-on-ll { display: none !important; }
 html[data-ll] body { font-size: 1.125rem; line-height: 1.75; letter-spacing: 0.01em; word-spacing: 0.05em; }
+
+/* --- Dunkelmodus-Feinschliff (08.11.2026) --- */
+/* Serienfarben auf Dunkel etwas dämpfen (v. a. Gelb/Lime blenden sonst) */
+html.dark .series-surface { filter: brightness(0.82) saturate(0.9); }
+/* Helle Plakate/Fotos in dunklen Karten leicht abdunkeln, beim Zeigen wieder voll */
+html.dark .event-thumb img { filter: brightness(0.85); transition: filter .4s ease; }
+html.dark .group:hover .event-thumb img, html.dark .event-thumb:focus-within img { filter: none; }
+@media (prefers-reduced-motion: reduce) {
+  .timeline-item { opacity: 1 !important; transform: none !important; }
+}
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }

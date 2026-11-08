@@ -23,7 +23,7 @@ const description = series.description || `Die Serie ${series.name} in der Brüc
 ---
 <MainLayout title={`${series.name} – Serie | Die Brücke Graz`} description={`${series.name}: ${description}`}>
   <section class="px-4 sm:px-6 pt-6 pb-12">
-    <div class="relative rounded-[48px] overflow-hidden min-h-[40vh] flex items-end px-6 md:px-16 py-16 md:py-20 shadow-2xl" style={seriesStyle(series)}>
+    <div class="series-surface relative rounded-[48px] overflow-hidden min-h-[40vh] flex items-end px-6 md:px-16 py-16 md:py-20 shadow-2xl" style={seriesStyle(series)}>
       <div class="max-w-7xl mx-auto w-full relative z-10">
         <a href="/serien" class="inline-flex items-center text-xs font-bold uppercase tracking-widest opacity-80 hover:opacity-100 transition-opacity group mb-8">
           <i class="fa-solid fa-arrow-left mr-2 group-hover:-translate-x-1 transition-transform"></i> Alle Serien
@@ -65,7 +65,7 @@ const description = series.description || `Die Serie ${series.name} in der Brüc
           {past.slice(0, 30).map((e: any) => (
             <li>
               <a href={`/events/${e.slug}`} class="flex items-baseline gap-6 py-3 hover:text-rose-600 transition-colors">
-                <span class="w-28 shrink-0 text-sm font-bold text-slate-400 tabular-nums">{e._date.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' })}</span>
+                <span class="w-28 shrink-0 text-sm font-bold text-slate-500 dark:text-slate-400 tabular-nums">{e._date.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' })}</span>
                 <span class="font-medium text-slate-700 dark:text-slate-200">{e.title}</span>
               </a>
             </li>

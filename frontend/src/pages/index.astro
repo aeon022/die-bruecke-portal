@@ -8,6 +8,7 @@ import { readItems } from '@directus/sdk';
 // COMPONENTS
 import Hero from '../components/home/Hero.astro';
 import Events from '../components/home/Events.astro';
+import WeekStrip from '../components/home/WeekStrip.astro';
 import Services from '../components/home/Services.astro';
 import Foundation from '../components/home/Foundation.astro';
 import Projects from '../components/home/Projects.astro';
@@ -63,6 +64,12 @@ const upcomingEvents = eventsWithDisplayDate
   .filter(e => e._displayDate >= today)
   .sort((a, b) => a._displayDate.getTime() - b._displayDate.getTime())
   .slice(0, 3);
+
+// Streifen „Diese Woche“: heute bis 6 Tage voraus
+const weekEnd = new Date(today); weekEnd.setDate(today.getDate() + 7);
+const weekEvents = eventsWithDisplayDate
+  .filter(e => e._displayDate >= today && e._displayDate < weekEnd)
+  .sort((a, b) => a._displayDate.getTime() - b._displayDate.getTime());
 
 // 3. Daten für Hero vorbereiten (UPDATED)
 // Mapping auf die neuen Directus Keys
@@ -130,6 +137,7 @@ const seoDescription = heroSubline.replace(/<[^>]*>/g, '');
         />
         </div>
         
+        <WeekStrip events={weekEvents} />
         <Events highlightEvent={highlightEvent} upcomingEvents={upcomingEvents} />
         <ZeitungTeaser />
         <Services services={dbServices} />

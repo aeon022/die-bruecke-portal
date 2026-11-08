@@ -9,6 +9,21 @@ function getSafeLabel(obj: any) {
   return obj.name || obj.title || obj.label || obj.bezeichnung || obj.titel || 'Kategorie';
 }
 
+// Kurzer Zwischenspeicher (60 s) für Directus-Abfragen: Seiten laden schneller, Änderungen sind nach spätestens 1 Min. sichtbar.
+// Leere Ergebnisse (z. B. nach Netzwerkfehler) werden nicht gespeichert. Im Dev-Modus aus.
+const CACHE_MS = import.meta.env.PROD ? 60_000 : 0;
+const cache = new Map<string, { t: number; p: Promise<any> }>();
+function cached<T>(key: string, fn: () => Promise<T>): Promise<T> {
+  const hit = cache.get(key);
+  if (hit && Date.now() - hit.t < CACHE_MS) return hit.p;
+  const p = fn().then((v) => {
+    if (v == null || (Array.isArray(v) && v.length === 0)) cache.delete(key);
+    return v;
+  }, (e) => { cache.delete(key); throw e; });
+  cache.set(key, { t: Date.now(), p });
+  return p;
+}
+
 const statusFilter = import.meta.env.PROD
   ? { status: { _eq: 'published' } }
   : {};
@@ -23,7 +38,7 @@ function upcomingFilter() {
   return { _or: [{ start_date: { _gte: today } }, { recurrence_end: { _gte: today } }] };
 }
 
-export async function getEvents({ includePast = false } = {}) {
+async function loadEvents({ includePast = false } = {}) {
   let attempts = 0;
   // RETRY-LOGIK: 3 Versuche, falls das Netzwerk hängt
   while (attempts < 3) {
@@ -70,7 +85,7 @@ export async function getEvents({ includePast = false } = {}) {
 
 // --- SERIEN ---
 
-export async function getSeries() {
+async function loadSeries() {
   try {
     return (await directus.request(readItems('event_series', { sort: ['sort'], limit: -1 }))) ?? [];
   } catch (error) {
@@ -80,7 +95,7 @@ export async function getSeries() {
 }
 
 /** Serie mit allen veröffentlichten Events (auch vergangene, für den Rückblick). */
-export async function getSeriesBySlug(slug: string) {
+async function loadSeriesBySlug(slug: string) {
   try {
     const [series] = await directus.request(readItems('event_series', { filter: { slug: { _eq: slug } }, limit: 1 }));
     if (!series) return null;
@@ -97,7 +112,7 @@ export async function getSeriesBySlug(slug: string) {
   }
 }
 
-export async function getEventCategories() {
+async function loadEventCategories() {
   try {
     const cats = await directus.request(readItems('event_categories', { limit: -1 }));
     return (cats ?? []).map((c: any) => ({
@@ -109,7 +124,7 @@ export async function getEventCategories() {
   }
 }
 
-export async function getEventBySlug(slug: string) {
+async function loadEventBySlug(slug: string) {
   try {
     const events = await directus.request(
       readItems('events', {
@@ -158,7 +173,7 @@ export async function getProducts() {
   }
 }
 
-export async function getGlobalSettings() {
+async function loadGlobalSettings() {
   try {
     return await directus.request(readSingleton('global_settings'));
   } catch (error) {
@@ -340,3 +355,11 @@ export async function getSidebarService(type: string) {
     return null;
   }
 }
+
+// --- Öffentliche Funktionen (mit Zwischenspeicher) ---
+export const getEvents = ({ includePast = false } = {}) => cached(`events:${includePast}`, () => loadEvents({ includePast }));
+export const getEventCategories = () => cached('categories', loadEventCategories);
+export const getSeries = () => cached('series', loadSeries);
+export const getSeriesBySlug = (slug: string) => cached(`series:${slug}`, () => loadSeriesBySlug(slug));
+export const getEventBySlug = (slug: string) => cached(`event:${slug}`, () => loadEventBySlug(slug));
+export const getGlobalSettings = () => cached('settings', loadGlobalSettings);

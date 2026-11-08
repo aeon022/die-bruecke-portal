@@ -14,6 +14,16 @@ const seriesList = [...new Map(events.filter((e: any) => e.series?.slug).map((e:
 
 // 2. Helper für ZigZag-Logik
 let highlightCounter = 0;
+
+// 3. Nach Monaten gruppieren (Events kommen nach Datum sortiert)
+const localDay = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+const groups: { key: string; label: string; events: any[] }[] = [];
+for (const e of events) {
+    const key = localDay(e._displayDate).slice(0, 7);
+    let g = groups[groups.length - 1];
+    if (!g || g.key !== key) groups.push(g = { key, label: e._displayDate.toLocaleDateString('de-DE', { month: 'long', year: 'numeric' }), events: [] });
+    g.events.push(e);
+}
 ---
 
 {/* --- FILTER BAR --- */}
@@ -26,6 +36,17 @@ let highlightCounter = 0;
                     data-category="all" aria-pressed="true">
                 Alle
             </button>
+
+            {/* Schnellfilter, rot hervorgehoben */}
+            <button class="filter-btn when-btn cursor-pointer flex-shrink-0 snap-center px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-all duration-300 hover:scale-105 active:scale-95 bg-rose-50 text-rose-700 ring-1 ring-rose-200 dark:bg-rose-900/30 dark:text-rose-300 dark:ring-rose-800 whitespace-nowrap focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-500"
+                    data-when="heute" aria-pressed="false">
+                <i class="fa-solid fa-bolt mr-1" aria-hidden="true"></i>Heute
+            </button>
+            <button class="filter-btn when-btn cursor-pointer flex-shrink-0 snap-center px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-all duration-300 hover:scale-105 active:scale-95 bg-rose-50 text-rose-700 ring-1 ring-rose-200 dark:bg-rose-900/30 dark:text-rose-300 dark:ring-rose-800 whitespace-nowrap focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-500"
+                    data-when="woche" aria-pressed="false">
+                Diese Woche
+            </button>
+            <span class="flex-shrink-0 self-center w-px h-6 bg-slate-200 dark:bg-slate-700" aria-hidden="true"></span>
             
             {categoryNames.map((name: any) => (
                  <button class="filter-btn cursor-pointer flex-shrink-0 snap-center px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-all duration-300 hover:scale-105 active:scale-95 bg-transparent text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white whitespace-nowrap focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-500" 
@@ -37,7 +58,7 @@ let highlightCounter = 0;
             </div>
             {seriesList.length > 0 && (
             <div class="flex flex-nowrap lg:flex-wrap gap-1 sm:gap-2 overflow-x-auto lg:overflow-visible hide-scrollbar snap-x snap-mandatory scroll-fade border-t border-slate-200/60 dark:border-white/5 p-1 pt-2" role="group" aria-label="Serien">
-                <a href="/serien" class="flex-shrink-0 self-center pl-2 pr-1 text-[10px] font-bold uppercase tracking-widest text-slate-400 hover:text-rose-600" title="Alle Serien im Überblick">Serien</a>
+                <a href="/serien" class="flex-shrink-0 self-center pl-2 pr-1 text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 hover:text-rose-600" title="Alle Serien im Überblick">Serien</a>
             {seriesList.map((s: any) => (
                 <button class="filter-btn cursor-pointer flex-shrink-0 snap-center px-3.5 py-2 rounded-xl text-xs font-bold tracking-wide transition-all duration-300 hover:scale-105 active:scale-95 bg-transparent text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white whitespace-nowrap focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-500"
                         data-series={s.slug} aria-pressed="false">
@@ -51,16 +72,20 @@ let highlightCounter = 0;
 </nav>
 
 {/* --- GRID SECTION --- */}
-<section aria-label="Veranstaltungsliste" class="min-h-[50vh]">
-    <div id="events-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 grid-flow-row-dense auto-rows-[minmax(380px,auto)]">
-        
+<section id="events-grid" aria-label="Veranstaltungsliste" class="min-h-[50vh]">
         {events.length === 0 && (
             <div class="col-span-full text-center py-20 bg-slate-50 dark:bg-slate-900 rounded-[32px] border border-dashed border-slate-200 dark:border-slate-800">
-                <p class="text-slate-400 font-bold uppercase tracking-widest">Aktuell keine Termine veröffentlicht</p>
+                <p class="text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest">Aktuell keine Termine veröffentlicht</p>
             </div>
         )}
 
-        {events.map((event: any) => {
+        {groups.map((g) => (
+        <div class="month-group mb-16" data-month={g.key}>
+        <h2 class="flex items-center gap-4 mb-6 font-display font-bold text-2xl md:text-3xl text-slate-900 dark:text-white">
+            <span>{g.label}</span><span class="flex-1 h-px bg-slate-200 dark:bg-slate-800" aria-hidden="true"></span>
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 grid-flow-row-dense auto-rows-[minmax(380px,auto)]">
+        {g.events.map((event: any) => {
             const isHighlight = event.is_highlight === true;
             let isEvenHighlight = false;
             if (isHighlight) {
@@ -83,10 +108,11 @@ let highlightCounter = 0;
                     }`}
                     data-cats={event._catString}
                     data-series={event._series}
+                    data-date={localDay(dateToShow)}
                 >
                     {/* Image Link */}
                     <a href={`/events/${event.slug}`} 
-                    class={`block relative overflow-hidden shrink-0 z-10 focus:outline-none focus:ring-4 focus:ring-rose-500/50 rounded-t-[40px] md:rounded-none
+                    class={`event-thumb block relative overflow-hidden shrink-0 z-10 focus:outline-none focus:ring-4 focus:ring-rose-500/50 rounded-t-[40px] md:rounded-none
                     ${isHighlight ? 'w-full md:w-2/5 h-64 md:h-auto md:rounded-l-[40px]' : 'w-full aspect-[4/3] rounded-t-[40px]'}`}
                     aria-label={`Details zu ${event.title}`}>
                     
@@ -117,20 +143,20 @@ let highlightCounter = 0;
                                     <span class={`text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-lg border
                                         ${isHighlight 
                                             ? 'bg-white/60 border-rose-200/50 text-rose-700 dark:bg-rose-900/20 dark:border-rose-700/30 dark:text-rose-300' 
-                                            : 'bg-white border-slate-200 text-slate-400 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-400'}`}>
+                                            : 'bg-white border-slate-200 text-slate-500 dark:text-slate-400 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-400'}`}>
                                         {catName}
                                     </span>
                                 )) : null}
                             </div>
 
                             {/* Semantic: Headline */}
-                            <h2 class={`font-display font-bold group-hover:text-rose-600 transition-colors leading-[1.1] tracking-tight mb-4
+                            <h3 class={`font-display font-bold group-hover:text-rose-600 transition-colors leading-[1.1] tracking-tight mb-4
                                 ${isHighlight ? 'text-3xl md:text-4xl' : 'text-2xl'}
                                 text-slate-900 dark:text-white`}>
                                 <a href={`/events/${event.slug}`} class="focus:outline-none focus:underline decoration-rose-500 decoration-2 underline-offset-4">
                                     {event.title}
                                 </a>
-                            </h2>
+                            </h3>
 
                             {isHighlight && event.description && (
                                 <p class="text-slate-600 dark:text-slate-300 text-lg leading-relaxed mb-8 line-clamp-2 md:line-clamp-3 hidden md:block">
@@ -140,7 +166,7 @@ let highlightCounter = 0;
                         </div>
 
                         <div class="flex items-center justify-between pt-6 mt-4 border-t border-slate-200/50 dark:border-white/5">
-                            <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest group-hover:text-rose-500 transition-colors">Details</span>
+                            <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest group-hover:text-rose-500 transition-colors">Details</span>
                             <a href={`/events/${event.slug}`} class={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 transform group-hover:translate-x-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500
                                 ${isHighlight 
                                     ? 'bg-rose-500 text-white shadow-lg shadow-rose-500/20' 
@@ -153,7 +179,10 @@ let highlightCounter = 0;
                 </article>
             );
         })}
-    </div>
+        </div>
+        </div>
+        ))}
+        <p id="events-empty" class="hidden text-center py-20 rounded-[32px] border border-dashed border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest">Keine Termine für diese Auswahl</p>
 </section>
 
 {/* Scripts & Styles */}
@@ -168,7 +197,7 @@ let highlightCounter = 0;
         background-color: rgba(15, 23, 42, 0.95) !important;
         border-color: rgba(51, 65, 85, 0.8) !important;
     }
-    html.dark .filter-btn.active {
+    html.dark .filter-btn.active:not(.when-btn) {
         background-color: #ffffff !important;
         color: #0f172a !important;
     }
@@ -199,6 +228,17 @@ let highlightCounter = 0;
 <script>
     const activeClasses = ['bg-slate-900', 'text-white', 'shadow-md', 'dark:bg-white', 'dark:text-slate-900'];
     const inactiveClasses = ['bg-transparent', 'text-slate-500', 'hover:bg-slate-100', 'hover:text-slate-900', 'dark:text-slate-400', 'dark:hover:bg-slate-800', 'dark:hover:text-white'];
+    const whenActive = ['bg-rose-600', 'text-white', 'shadow-md'];
+    const whenInactive = ['bg-rose-50', 'text-rose-700', 'ring-1', 'ring-rose-200', 'dark:bg-rose-900/30', 'dark:text-rose-300', 'dark:ring-rose-800'];
+    const day = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    // Zeitraum für Schnellfilter: heute bzw. die nächsten 7 Tage (wie „Diese Woche“ auf der Startseite)
+    function whenRange(when: string | null) {
+        if (!when) return null;
+        const now = new Date();
+        const end = new Date(now);
+        if (when === 'woche') end.setDate(now.getDate() + 6);
+        return [day(now), day(end)];
+    }
 
     function initEventCalendar() {
         const filterContainer = document.getElementById('filter-container');
@@ -226,6 +266,7 @@ let highlightCounter = 0;
         let isAnimating = false;
         let activeCategory = 'all';
         let activeSeries: string | null = null;
+        let activeWhen: string | null = null;
 
         filterContainer.addEventListener('click', async (event) => {
             const button = event.target instanceof Element ? event.target.closest('.filter-btn') : null;
@@ -234,20 +275,33 @@ let highlightCounter = 0;
             const buttons = Array.from(filterContainer.querySelectorAll('.filter-btn'));
             const cards = Array.from(grid.querySelectorAll('.event-card'));
             const isSeries = button.hasAttribute('data-series');
-            if (isSeries) {
+            if (button.hasAttribute('data-when')) {
+                const w = button.getAttribute('data-when');
+                activeWhen = activeWhen === w ? null : w;
+            } else if (isSeries) {
                 const slug = button.getAttribute('data-series');
                 activeSeries = activeSeries === slug ? null : slug; // nochmal klicken = Serie abwählen
             } else {
                 activeCategory = button.getAttribute('data-category') || 'all';
-                if (activeCategory === 'all') activeSeries = null;
+                if (activeCategory === 'all') { activeSeries = null; activeWhen = null; }
             }
             const category = activeCategory;
             const url = new URL(location.href);
             activeCategory === 'all' ? url.searchParams.delete('kategorie') : url.searchParams.set('kategorie', activeCategory);
             activeSeries ? url.searchParams.set('serie', activeSeries) : url.searchParams.delete('serie');
+            activeWhen ? url.searchParams.set('zeit', activeWhen) : url.searchParams.delete('zeit');
+            const range = whenRange(activeWhen);
             history.replaceState(null, '', url);
 
             buttons.forEach(btn => {
+                if (btn.hasAttribute('data-when')) {
+                    const on = btn.getAttribute('data-when') === activeWhen;
+                    btn.classList.remove(...(on ? whenInactive : whenActive));
+                    btn.classList.add(...(on ? whenActive : whenInactive));
+                    btn.classList.toggle('active', on);
+                    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+                    return;
+                }
                 const on = btn.hasAttribute('data-series')
                     ? btn.getAttribute('data-series') === activeSeries
                     : btn.getAttribute('data-category') === activeCategory;
@@ -270,7 +324,8 @@ let highlightCounter = 0;
                     .map(cat => cat.trim())
                     .filter(Boolean);
                 const isMatch = (category === 'all' || cardCats.includes(category))
-                    && (!activeSeries || card.getAttribute('data-series') === activeSeries);
+                    && (!activeSeries || card.getAttribute('data-series') === activeSeries)
+                    && (!range || ((card.getAttribute('data-date') || '') >= range[0] && (card.getAttribute('data-date') || '') <= range[1]));
 
                 if (isMatch) {
                     toShow.push(card);
@@ -295,6 +350,9 @@ let highlightCounter = 0;
                 el.classList.remove('card-hidden');
                 el.classList.add('card-out');
             });
+            // Monate ohne sichtbare Termine ausblenden; Hinweis, wenn gar nichts passt
+            grid.querySelectorAll('.month-group').forEach(g => g.classList.toggle('hidden', !g.querySelector('.event-card:not(.card-hidden)')));
+            document.getElementById('events-empty')?.classList.toggle('hidden', toShow.length > 0 || cards.length === 0);
 
             void filterContainer.offsetHeight;
 
@@ -316,6 +374,7 @@ let highlightCounter = 0;
         const presets = [
             params.get('kategorie') && filterContainer.querySelector(`[data-category="${CSS.escape(params.get('kategorie') || '')}"]`),
             params.get('serie') && filterContainer.querySelector(`[data-series="${CSS.escape(params.get('serie') || '')}"]`),
+            params.get('zeit') && filterContainer.querySelector(`[data-when="${CSS.escape(params.get('zeit') || '')}"]`),
         ];
         // nacheinander, weil ein Klick während der Animation ignoriert wird
         (async () => {
