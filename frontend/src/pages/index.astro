@@ -8,7 +8,6 @@ import { readItems } from '@directus/sdk';
 // COMPONENTS
 import Hero from '../components/home/Hero.astro';
 import Events from '../components/home/Events.astro';
-import WeekStrip from '../components/home/WeekStrip.astro';
 import Services from '../components/home/Services.astro';
 import Foundation from '../components/home/Foundation.astro';
 import Projects from '../components/home/Projects.astro';
@@ -137,8 +136,7 @@ const seoDescription = heroSubline.replace(/<[^>]*>/g, '');
         />
         </div>
         
-        <WeekStrip events={weekEvents} />
-        <Events highlightEvent={highlightEvent} upcomingEvents={upcomingEvents} />
+        <Events highlightEvent={highlightEvent} upcomingEvents={upcomingEvents} weekEvents={weekEvents} />
         <ZeitungTeaser />
         <Services services={dbServices} />
         <Foundation />

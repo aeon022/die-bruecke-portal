@@ -6,8 +6,8 @@ const fmt = (d: Date) => d.toLocaleDateString('de-DE', { weekday: 'short', day: 
 const time = (d: Date) => d.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
 ---
 {events.length > 0 && (
-  <section class="px-4 sm:px-6 md:px-10 py-6" aria-label="Diese Woche in der Brücke">
-    <div class="max-w-7xl mx-auto rounded-3xl border border-slate-100 dark:border-slate-800 bg-white/70 dark:bg-slate-900/60 backdrop-blur p-4 md:p-5 flex flex-col md:flex-row md:items-center gap-3 md:gap-6">
+  <section class="h-full" aria-label="Diese Woche in der Brücke">
+    <div class="h-full rounded-[32px] border border-slate-100 dark:border-slate-800 bg-white/70 dark:bg-slate-900/60 backdrop-blur p-4 md:p-5 flex flex-col md:flex-row md:items-center gap-3 md:gap-6">
       <a href="/events?zeit=woche" class="shrink-0 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-rose-600 dark:text-rose-400 hover:underline underline-offset-4">
         <i class="fa-solid fa-bolt" aria-hidden="true"></i> Diese Woche
       </a>

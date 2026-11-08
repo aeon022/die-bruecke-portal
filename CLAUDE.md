@@ -49,7 +49,8 @@ Monorepo: `frontend/` (Astro 5, SSR via `@astrojs/node` standalone, Tailwind) un
 - `/serien` (Übersicht) und `/serien/<slug>` (Beschreibung, nächste Termine, Rückblick). Abo-Kalender: `/serien/<slug>.ics`, ganzes Programm `/events.ics` (`lib/ics.ts`).
 - Etikett/Ersatzbild in Serienfarbe: `components/events/` (SeriesBadge, EventImage, EventMiniCard), Farben `lib/series.ts`. Wiederholungen zentral in `lib/recurrence.ts`.
 - `getEvents()` lädt nur kommende bzw. laufende Events (`includePast: true` für alle). Directus-Abfragen in `lib/api.ts` haben 60 s Zwischenspeicher (nur PROD).
-- Kalender: Monatsüberschriften, Schnellfilter „Heute“/„Diese Woche“ (nächste 7 Tage, `?zeit=heute|woche`). Startseite: Streifen „Diese Woche“ (`components/home/WeekStrip.astro`).
+- Kalender: Monatsüberschriften, Schnellfilter „Heute“/„Diese Woche“ (nächste 7 Tage, `?zeit=heute|woche`). Startseite: Streifen „Diese Woche“ (`components/home/WeekStrip.astro`) unter dem Event-Raster neben „Alle Veranstaltungen“.
+- Bilder über 6000 px verkleinert Directus nicht (Transform-Fehler 400, Bild fehlt auf der Startseite) → vor dem Hochladen auf ca. 3000 px verkleinern. 08.11.2026: Crossing-Strings-Foto ersetzt (Original in `~/Sites/brücke-backups/directus-flows/`).
 - Event-Texte: `lib/cleanHtml.ts` entfernt Word-Reste beim Anzeigen; der Flow „Event-Prüfung“ bereinigt `description` schon beim Speichern (am 08.11.2026 alle 51 betroffenen Texte einmalig bereinigt, Sicherung in `~/Sites/brücke-backups/directus-flows/`).
 - Einfache Sprache je Event: Feld `events.description_leicht`; ist es befüllt, zeigt die Detailseite den Text bei eingeschalteter einfacher Sprache statt der Beschreibung.
 - Detailseite am Handy: feste Leiste mit Datum und Tickets; Ort mit Adresse und Route-Link.
