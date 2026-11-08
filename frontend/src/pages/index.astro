@@ -1,6 +1,7 @@
 ---
 import MainLayout from '../layouts/layout.astro';
 import { getEvents, getGlobalSettings } from '../lib/api';
+import { nextEventDate } from '../lib/recurrence';
 import { directus } from '../lib/directus';
 import { readItems } from '@directus/sdk';
 
@@ -46,46 +47,10 @@ const [settings, allEvents, dbServices, dbPartners] = await Promise.all([
 const today = new Date();
 today.setHours(0,0,0,0);
 
-// HELPER: Nächstes Datum berechnen (inkl. Wochentags-Logik für wiederkehrende Events)
-// Gleiche Logik wie in src/pages/events/index.astro, damit wiederkehrende Events
-// überall den nächsten (nicht den ursprünglichen) Termin anzeigen.
-const getNextEventDate = (event) => {
-    const now = new Date();
-    now.setHours(0, 0, 0, 0);
-
-    let eventDate = new Date(event.date_start || event.start_date || event.date);
-    if (eventDate >= now) return eventDate;
-
-    if (event.recurrence === 'monthly' || event.rrule?.includes('FREQ=MONTHLY')) {
-        const targetDay = eventDate.getDay();
-        const weekIndex = Math.floor((eventDate.getDate() - 1) / 7);
-
-        while (eventDate < now) {
-            eventDate.setMonth(eventDate.getMonth() + 1);
-            eventDate.setDate(1);
-
-            while (eventDate.getDay() !== targetDay) {
-                eventDate.setDate(eventDate.getDate() + 1);
-            }
-
-            eventDate.setDate(eventDate.getDate() + (weekIndex * 7));
-        }
-        return eventDate;
-    }
-
-    if (event.recurrence === 'weekly' || event.recurrence === 'biweekly') {
-        const step = event.recurrence === 'biweekly' ? 14 : 7;
-        while (eventDate < now) {
-            eventDate.setDate(eventDate.getDate() + step);
-        }
-        return eventDate;
-    }
-    return eventDate;
-};
 
 const eventsWithDisplayDate = allEvents.map(e => ({
     ...e,
-    _displayDate: getNextEventDate(e),
+    _displayDate: nextEventDate(e),
 }));
 
 const highlightCandidates = eventsWithDisplayDate.filter(e => {

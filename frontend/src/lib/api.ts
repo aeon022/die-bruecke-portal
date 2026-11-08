@@ -15,7 +15,15 @@ const statusFilter = import.meta.env.PROD
 
 // --- EVENTS ---
 
-export async function getEvents() {
+const SERIES_FIELDS = ['series.id', 'series.name', 'series.slug', 'series.color', 'series.sort', 'series.description'];
+
+// Nur Termine ab heute bzw. Serien, die noch laufen (vergangene Events nicht laden)
+function upcomingFilter() {
+  const today = new Date().toISOString().slice(0, 10);
+  return { _or: [{ start_date: { _gte: today } }, { recurrence_end: { _gte: today } }] };
+}
+
+export async function getEvents({ includePast = false } = {}) {
   let attempts = 0;
   // RETRY-LOGIK: 3 Versuche, falls das Netzwerk hängt
   while (attempts < 3) {
@@ -30,12 +38,9 @@ export async function getEvents() {
             'event_categories.event_categories_id.id',
             'event_categories.event_categories_id.name',
             'event_categories.event_categories_id.color',
-            'series.name',
-            'series.slug',
-            'series.color',
-            'series.sort',
+            ...SERIES_FIELDS,
           ],
-          filter: statusFilter,
+          filter: includePast ? statusFilter : { _and: [statusFilter, upcomingFilter()] },
           sort: ['start_date'],
           limit: -1,
         })
@@ -63,6 +68,35 @@ export async function getEvents() {
   return [];
 }
 
+// --- SERIEN ---
+
+export async function getSeries() {
+  try {
+    return (await directus.request(readItems('event_series', { sort: ['sort'], limit: -1 }))) ?? [];
+  } catch (error) {
+    console.error('API Error (getSeries):', error);
+    return [];
+  }
+}
+
+/** Serie mit allen veröffentlichten Events (auch vergangene, für den Rückblick). */
+export async function getSeriesBySlug(slug: string) {
+  try {
+    const [series] = await directus.request(readItems('event_series', { filter: { slug: { _eq: slug } }, limit: 1 }));
+    if (!series) return null;
+    const events = await directus.request(readItems('events', {
+      fields: ['id', 'title', 'slug', 'start_date', 'end_date', 'image', 'recurrence', 'recurrence_end', 'monthly_type', 'tickets_left', ...SERIES_FIELDS],
+      filter: { _and: [statusFilter, { series: { slug: { _eq: slug } } }] },
+      sort: ['start_date'],
+      limit: -1,
+    }));
+    return { ...series, events: events ?? [] };
+  } catch (error) {
+    console.error('API Error (getSeriesBySlug):', error);
+    return null;
+  }
+}
+
 export async function getEventCategories() {
   try {
     const cats = await directus.request(readItems('event_categories', { limit: -1 }));
@@ -88,9 +122,7 @@ export async function getEventBySlug(slug: string) {
           'event_categories.event_categories_id.id',
           'event_categories.event_categories_id.name',
           'event_categories.event_categories_id.color', // Color auch hier wichtig
-          'series.name',
-          'series.slug',
-          'series.color',
+          ...SERIES_FIELDS,
         ],
         limit: 1
       })

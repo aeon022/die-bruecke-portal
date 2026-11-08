@@ -1,9 +1,9 @@
 ---
-import { Image } from 'astro:assets'; // WICHTIG: Performance Import
+import EventImage from './events/EventImage.astro';
+import SeriesBadge from './events/SeriesBadge.astro';
 import { cleanText, formatEventDate } from '../lib/utils';
 
 const { events, categories } = Astro.props;
-const ASSET_URL = 'https://api.diebruecke.social/assets';
 
 // 1. Kategorien vorbereiten
 const categoryNames = categories ? [...new Set(categories.map((c: any) => c.name || c.title || c.label).filter(Boolean))].sort() : [];
@@ -37,11 +37,11 @@ let highlightCounter = 0;
             </div>
             {seriesList.length > 0 && (
             <div class="flex flex-nowrap lg:flex-wrap gap-1 sm:gap-2 overflow-x-auto lg:overflow-visible hide-scrollbar snap-x snap-mandatory scroll-fade border-t border-slate-200/60 dark:border-white/5 p-1 pt-2" role="group" aria-label="Serien">
-                <span class="flex-shrink-0 self-center pl-2 pr-1 text-[10px] font-bold uppercase tracking-widest text-slate-400">Serien</span>
+                <a href="/serien" class="flex-shrink-0 self-center pl-2 pr-1 text-[10px] font-bold uppercase tracking-widest text-slate-400 hover:text-rose-600" title="Alle Serien im Überblick">Serien</a>
             {seriesList.map((s: any) => (
                 <button class="filter-btn cursor-pointer flex-shrink-0 snap-center px-3.5 py-2 rounded-xl text-xs font-bold tracking-wide transition-all duration-300 hover:scale-105 active:scale-95 bg-transparent text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white whitespace-nowrap focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-500"
                         data-series={s.slug} aria-pressed="false">
-                    {s.name}
+                    <span class="inline-block w-2 h-2 rounded-full mr-1.5 align-middle ring-1 ring-black/10" style={`background-color:${s.color || '#0f172a'}`} aria-hidden="true"></span>{s.name}
                 </button>
             ))}
             </div>
@@ -68,6 +68,9 @@ let highlightCounter = 0;
                 isEvenHighlight = highlightCounter % 2 === 0;
             }
             const dateToShow = event._displayDate;
+            // Hinweis bei wenigen Karten (tickets_left kommt aus dem pretix-Abgleich)
+            const left = typeof event.tickets_left === 'number' ? event.tickets_left : null;
+            const ticketHint = left === null || left > 20 ? null : left > 0 ? `Nur noch ${left} Karten` : 'Ausverkauft';
 
             return (
                 <article 
@@ -87,24 +90,16 @@ let highlightCounter = 0;
                     ${isHighlight ? 'w-full md:w-2/5 h-64 md:h-auto md:rounded-l-[40px]' : 'w-full aspect-[4/3] rounded-t-[40px]'}`}
                     aria-label={`Details zu ${event.title}`}>
                     
-                        {event.image ? (
-                            /* PERFORMANCE FIX: Astro Image statt img */
-                            <Image 
-                                src={`${ASSET_URL}/${event.image}`}
-                                alt={event.title}
-                                width={800}
-                                height={600}
-                                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                            />
-                        ) : (
-                            <div class="w-full h-full flex items-center justify-center bg-slate-200 dark:bg-slate-800 text-slate-400 italic font-display uppercase tracking-widest text-[10px]">Kein Bild</div>
-                        )}
+                        <EventImage event={event} class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                         
                         {/* Badge */}
                         <div class="absolute top-6 left-6 flex gap-2 items-start">
                             <time datetime={dateToShow.toISOString()} class="px-3 py-1 rounded-full bg-slate-900/80 backdrop-blur-md text-white text-[10px] font-bold uppercase shadow-lg tracking-widest border border-white/10">
                                 {formatEventDate(dateToShow, event.time_start)}
                             </time>
+                            {ticketHint && (
+                                <span class="px-3 py-1 rounded-full bg-rose-600 text-white text-[10px] font-bold uppercase shadow-lg tracking-widest">{ticketHint}</span>
+                            )}
                             {isHighlight && (
                                 <span class="px-3 py-1 rounded-full bg-amber-400 text-slate-900 text-[10px] font-bold uppercase shadow-lg tracking-widest flex items-center gap-1.5 animate-pulse-slow">
                                     <i class="fa-solid fa-star text-[10px]"></i> Tipp
@@ -117,9 +112,7 @@ let highlightCounter = 0;
                         <div>
                             {/* Categories */}
                             <div class="flex gap-2 mb-5 flex-wrap">
-                                {event.series?.name && (
-                                    <span class="text-[10px] font-bold tracking-widest px-2.5 py-1 rounded-lg bg-slate-900 text-white dark:bg-white dark:text-slate-900">{event.series.name}</span>
-                                )}
+                                <SeriesBadge series={event.series} />
                                 {event._catString ? event._catString.split(',').map((catName: string) => (
                                     <span class={`text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-lg border
                                         ${isHighlight 
@@ -249,6 +242,10 @@ let highlightCounter = 0;
                 if (activeCategory === 'all') activeSeries = null;
             }
             const category = activeCategory;
+            const url = new URL(location.href);
+            activeCategory === 'all' ? url.searchParams.delete('kategorie') : url.searchParams.set('kategorie', activeCategory);
+            activeSeries ? url.searchParams.set('serie', activeSeries) : url.searchParams.delete('serie');
+            history.replaceState(null, '', url);
 
             buttons.forEach(btn => {
                 const on = btn.hasAttribute('data-series')
@@ -315,9 +312,19 @@ let highlightCounter = 0;
             }, toShow.length * 40 + 300);
         });
 
-        const fromUrl = new URLSearchParams(location.search).get('serie');
-        const preset = fromUrl && filterContainer.querySelector(`[data-series="${CSS.escape(fromUrl)}"]`);
-        if (preset instanceof HTMLElement) preset.click();
+        const params = new URLSearchParams(location.search);
+        const presets = [
+            params.get('kategorie') && filterContainer.querySelector(`[data-category="${CSS.escape(params.get('kategorie') || '')}"]`),
+            params.get('serie') && filterContainer.querySelector(`[data-series="${CSS.escape(params.get('serie') || '')}"]`),
+        ];
+        // nacheinander, weil ein Klick während der Animation ignoriert wird
+        (async () => {
+            for (const el of presets) {
+                if (!(el instanceof HTMLElement)) continue;
+                while (isAnimating) await new Promise(r => setTimeout(r, 50));
+                el.click();
+            }
+        })();
     }
 
     document.addEventListener('astro:page-load', initEventCalendar);

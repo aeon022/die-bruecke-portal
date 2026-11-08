@@ -1,0 +1,12 @@
+---
+// Serien-Etikett in Serienfarbe; mit `link` führt es zur Serienseite.
+import { seriesStyle } from '../../lib/series';
+const { series, link = false, size = 'sm' } = Astro.props;
+const cls = size === 'md'
+  ? 'px-3 py-1 rounded-full text-xs font-bold tracking-wider'
+  : 'text-[10px] font-bold tracking-widest px-2.5 py-1 rounded-lg';
+---
+{series?.name && (link
+  ? <a href={`/serien/${series.slug}`} class={`${cls} hover:opacity-85 transition-opacity`} style={seriesStyle(series)} title={`Mehr zur Serie ${series.name}`}>{series.name}</a>
+  : <span class={cls} style={seriesStyle(series)}>{series.name}</span>
+)}

@@ -19,6 +19,7 @@ export async function GET() {
         }
     };
 
+    const series = await directus.request(readItems('event_series', { fields: ['name', 'slug', 'description'] })).catch(() => []);
     const [events, projects, services, blog, camps, cityTrips, archiv] = await Promise.all([
       fetchCollection('events', ['title', 'slug', 'description', 'start_date']),
       fetchCollection('projects', ['title', 'slug', 'description']),
@@ -53,6 +54,8 @@ export async function GET() {
 
     const searchIndex = [
       ...staticPages,
+      { title: 'Serien', url: '/serien', type: 'Seite', desc: 'Alle Veranstaltungsserien im Überblick' },
+      ...series.map((s: any) => ({ title: s.name, url: `/serien/${s.slug}`, type: 'Serie', desc: s.description })),
       ...sortEvents(events).map((e: any) => ({
         title: e.start_date ? `${e.title} · ${new Date(e.start_date).toLocaleDateString('de-AT', { day: '2-digit', month: '2-digit', year: 'numeric' })}` : e.title,
         url: `/events/${e.slug}`,

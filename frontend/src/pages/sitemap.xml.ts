@@ -22,6 +22,7 @@ export async function GET() {
         { path: '/info', priority: 0.9 },
         { path: '/services', priority: 0.9 },
         { path: '/events', priority: 0.9 },
+        { path: '/serien', priority: 0.8 },
         { path: '/projects', priority: 0.7 },
         { path: '/join', priority: 0.6 },
         { path: '/shop', priority: 0.7 },
@@ -40,7 +41,7 @@ export async function GET() {
 
     // B. Dynamische Inhalte aus Directus laden (Parallel für Performance)
     try {
-        const [events, services, projects, posts] = await Promise.all([
+        const [events, services, projects, posts, series] = await Promise.all([
             // Events
             directus.request(readItems('events', { 
                 fields: ['slug', 'date_updated'],
@@ -60,8 +61,13 @@ export async function GET() {
             directus.request(readItems('posts', { 
                 fields: ['slug', 'date_updated'],
                 filter: { status: { _eq: 'published' } }
-            })).catch(() => []) // Fallback, falls Collection noch leer
+            })).catch(() => []), // Fallback, falls Collection noch leer
+            directus.request(readItems('event_series', { fields: ['slug'] })).catch(() => []),
         ]);
+
+        series?.forEach((item: any) => {
+            xmlString += createUrlEntry(`/serien/${item.slug}`, undefined, 0.7);
+        });
 
         // C. Dynamische URLs generieren
         events?.forEach((item: any) => {

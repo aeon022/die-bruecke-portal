@@ -14,6 +14,8 @@ services:
       - DIRECTUS_URL=https://api.diebruecke.social
       - PUBLIC_DIRECTUS_URL=https://api.diebruecke.social 
       - HOST=0.0.0.0
+      # Directus liefert Zeiten ohne Zeitzone (Wiener Ortszeit); ohne TZ rechnet Node in UTC → Kalender-Links 1 h daneben
+      - TZ=Europe/Vienna
       - PORT=4321
       - DIRECTUS_FORM_TOKEN=${DIRECTUS_FORM_TOKEN:-}
       - BREVO_API_KEY=${BREVO_API_KEY}

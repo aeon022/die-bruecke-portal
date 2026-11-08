@@ -1,0 +1,22 @@
+---
+// Kleine Eventkarte (Detailseite „Das könnte dich auch interessieren“, Serienseiten).
+import EventImage from './EventImage.astro';
+import SeriesBadge from './SeriesBadge.astro';
+import { nextEventDate } from '../../lib/recurrence';
+const { event, showSeries = true } = Astro.props;
+const date = event._displayDate || nextEventDate(event);
+---
+<a href={'/events/' + event.slug}
+  class="group block bg-slate-50 dark:bg-slate-900 rounded-[32px] p-4 hover:bg-white dark:hover:bg-slate-800 border border-transparent hover:border-slate-100 dark:hover:border-slate-700 hover:shadow-xl transition-all duration-300">
+  <div class="aspect-[16/10] rounded-2xl overflow-hidden mb-6 relative">
+    <EventImage event={event} width={600} height={400} class="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
+    <div class="absolute top-3 left-3 bg-white/90 dark:bg-slate-900/90 backdrop-blur px-2 py-1 rounded-md text-[10px] font-bold text-rose-600 dark:text-rose-400 uppercase tracking-widest shadow-sm">
+      {date.toLocaleDateString('de-DE', { day: '2-digit', month: 'short', year: date.getFullYear() !== new Date().getFullYear() ? 'numeric' : undefined })}
+    </div>
+  </div>
+  <div class="px-2 pb-2">
+    {showSeries && event.series?.name && <div class="mb-3"><SeriesBadge series={event.series} /></div>}
+    <h3 class="text-xl font-display font-bold text-slate-900 dark:text-white mb-2 group-hover:text-rose-600 transition-colors line-clamp-2">{event.title}</h3>
+    <p class="text-slate-500 dark:text-slate-400 text-sm">Mehr erfahren <span class="group-hover:translate-x-1 inline-block transition-transform">→</span></p>
+  </div>
+</a>

@@ -1,0 +1,22 @@
+# Automatisch ausrollen bei Push auf main.
+# Aus, bis eingerichtet: GitHub → Settings → Variables: DEPLOY_ENABLED=true;
+# Secrets: DEPLOY_HOST (37.252.190.170), DEPLOY_USER (sysuser_1), DEPLOY_KEY (privater SSH-Schlüssel nur für diesen Zweck).
+name: Deploy
+on:
+  push:
+    branches: [main]
+    paths: ['frontend/**', 'scripts/deploy.sh']
+  workflow_dispatch:
+concurrency: deploy
+jobs:
+  deploy:
+    if: vars.DEPLOY_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_KEY }}
+          script: ~/portal/scripts/deploy.sh

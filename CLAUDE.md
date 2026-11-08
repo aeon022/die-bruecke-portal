@@ -27,7 +27,7 @@ Monorepo: `frontend/` (Astro 5, SSR via `@astrojs/node` standalone, Tailwind) un
 ## Zeitung
 
 - Seite `/zeitung` (`frontend/src/pages/zeitung.astro`), PDFs und Titelbilder in `frontend/public/zeitung/`. Neue Ausgabe: Dateien tauschen, Werte oben in der Seite anpassen. Verlinkt in Footer, Command Palette und `/about`.
-- Directus-Flow „Auto Generate Slug“ hängt beim Anlegen das aktuelle Jahr an den Slug (z. B. Archiv `jahresbericht-2025-2026`, angelegt 04.11.2026). Bei Archiv-Einträgen mit Jahr im Titel unschön, aber funktional.
+- Directus-Flow „Auto Generate Slug“ hängt das Jahr aus dem Eintrag an (Events: `start_date`), sonst das aktuelle Jahr. Vorhandene Slugs werden nie überschrieben (verschickte Links) – daher heißt z. B. Rock the Dog 06.02.2027 weiter `rock-the-dog-2026`.
 
 ## Einfache Sprache
 
@@ -45,5 +45,17 @@ Monorepo: `frontend/` (Astro 5, SSR via `@astrojs/node` standalone, Tailwind) un
 
 ## Serien (08.11.2026)
 - Directus-Sammlung `event_series` (name, slug, color, sort, description), Feld `events.series` (M2O). Öffentlich lesbar.
-- `/events`: zweite Filterzeile „Serien“ (nur Serien mit Terminen, Reihenfolge `sort`), kombinierbar mit Kategorie; `/events?serie=<slug>` wählt die Serie vor. Detailseite verlinkt das Serien-Etikett dorthin.
+- `/events`: zweite Filterzeile „Serien“ (nur Serien mit Terminen, Reihenfolge `sort`, Farbpunkt), kombinierbar mit Kategorie; Filter steht in der Adresse (`?kategorie=…&serie=…`).
+- `/serien` (Übersicht) und `/serien/<slug>` (Beschreibung, nächste Termine, Rückblick). Abo-Kalender: `/serien/<slug>.ics`, ganzes Programm `/events.ics` (`lib/ics.ts`).
+- Etikett/Ersatzbild in Serienfarbe: `components/events/` (SeriesBadge, EventImage, EventMiniCard), Farben `lib/series.ts`. Wiederholungen zentral in `lib/recurrence.ts`.
+- `getEvents()` lädt nur kommende bzw. laufende Events (`includePast: true` für alle).
 - Zuordnungsregel: Vault `Serien 2027/01 Serienvorschläge 2027.md` (Ergänzung 08.11.2026).
+
+## Directus-Flow „Event-Prüfung“ (08.11.2026)
+- Blockierend vor dem Speichern von `events`: Veröffentlichen ohne Bild oder Beginn wird abgelehnt (Fehlermeldung im Editor); leere Serie wird nach Titel vorgeschlagen (Mord vor Ort, Stammtisch, Iris hört zu, Murwärts, Kabarett Cuvée, Seriennamen). Code: `backend/flows/event-check.js` (bei Änderungen in Directus und hier gleich halten).
+- Achtung: Die pretix-Flows haben den API-Token im Klartext in den Request-Headern → Token erneuern und über `{{ $env.… }}` (FLOWS_ENV_ALLOW_LIST) einbinden.
+
+## Deploy
+- Kein Auto-Deploy aktiv. Am Server (m11, Benutzer `sysuser_1`, Repo `~/portal`): `~/portal/scripts/deploy.sh` (pull + `docker compose up -d --build` + Prüfung).
+- Vorbereitet: `.github/workflows/deploy.yml`, läuft erst mit Repo-Variable `DEPLOY_ENABLED=true` und Secrets `DEPLOY_HOST`, `DEPLOY_USER`, `DEPLOY_KEY`.
+- Container läuft mit `TZ=Europe/Vienna` (Directus-Zeiten sind Wiener Ortszeit ohne Zone; ohne TZ waren Kalender-Links 1 h daneben).

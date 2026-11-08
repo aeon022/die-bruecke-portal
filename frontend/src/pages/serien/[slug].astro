@@ -1,0 +1,88 @@
+---
+// Serienseite: Beschreibung, kommende Termine, Rückblick, Kalender-Abo
+import MainLayout from '../../layouts/layout.astro';
+import EventMiniCard from '../../components/events/EventMiniCard.astro';
+import { getSeriesBySlug } from '../../lib/api';
+import { nextEventDate, eventDates } from '../../lib/recurrence';
+import { seriesStyle } from '../../lib/series';
+
+const series = await getSeriesBySlug(Astro.params.slug as string);
+if (!series) return Astro.redirect('/404');
+
+const today = new Date(); today.setHours(0, 0, 0, 0);
+const withDate = series.events.map((e: any) => ({ ...e, _displayDate: nextEventDate(e) }));
+const upcoming = withDate.filter((e: any) => e._displayDate >= today).sort((a: any, b: any) => a._displayDate - b._displayDate);
+// Rückblick: jeder vergangene Termin einzeln (auch bei wiederkehrenden Events), neueste zuerst
+const past = series.events
+  .flatMap((e: any) => eventDates(e).filter((d) => d < today).map((d) => ({ ...e, _date: d })))
+  .sort((a: any, b: any) => b._date - a._date);
+
+const icsPath = `/serien/${series.slug}.ics`;
+const webcal = `webcal://diebruecke.social${icsPath}`;
+const description = series.description || `Die Serie ${series.name} in der Brücke Graz.`;
+---
+<MainLayout title={`${series.name} – Serie | Die Brücke Graz`} description={`${series.name}: ${description}`}>
+  <section class="px-4 sm:px-6 pt-6 pb-12">
+    <div class="relative rounded-[48px] overflow-hidden min-h-[40vh] flex items-end px-6 md:px-16 py-16 md:py-20 shadow-2xl" style={seriesStyle(series)}>
+      <div class="max-w-7xl mx-auto w-full relative z-10">
+        <a href="/serien" class="inline-flex items-center text-xs font-bold uppercase tracking-widest opacity-80 hover:opacity-100 transition-opacity group mb-8">
+          <i class="fa-solid fa-arrow-left mr-2 group-hover:-translate-x-1 transition-transform"></i> Alle Serien
+        </a>
+        <p class="text-xs font-bold uppercase tracking-widest opacity-80 mb-3">Serie in der Brücke</p>
+        <h1 class="text-[clamp(1.9rem,8.5vw,6rem)] font-display font-black tracking-tight leading-[0.9] mb-6">{series.name}</h1>
+        <p class="text-xl md:text-2xl font-medium max-w-2xl leading-relaxed opacity-95">{description}</p>
+        <div class="mt-10 flex flex-wrap gap-3">
+          <a href={webcal} class="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white text-slate-900 text-sm font-bold uppercase tracking-widest hover:bg-slate-100 transition-colors">
+            <i class="fa-regular fa-calendar-plus"></i> Serie abonnieren
+          </a>
+          <a href={`/events?serie=${series.slug}`} class="inline-flex items-center gap-2 px-5 py-3 rounded-xl border border-current text-sm font-bold uppercase tracking-widest opacity-90 hover:opacity-100 transition-opacity">
+            Im Kalender ansehen
+          </a>
+        </div>
+        <p class="mt-4 text-xs opacity-75">Abo funktioniert mit Apple, Outlook und Google Kalender (dort „Per URL hinzufügen“: <span class="select-all break-all">https://diebruecke.social{icsPath}</span>).</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="px-4 sm:px-6 pb-16">
+    <div class="max-w-7xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-display font-bold text-slate-900 dark:text-white mb-8">Nächste Termine</h2>
+      {upcoming.length > 0 ? (
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {upcoming.map((e: any) => <EventMiniCard event={e} showSeries={false} />)}
+        </div>
+      ) : (
+        <p class="text-slate-500 dark:text-slate-400 text-lg">Die nächsten Termine sind in Planung. Abonnier die Serie, dann erscheinen sie automatisch in deinem Kalender.</p>
+      )}
+    </div>
+  </section>
+
+  {past.length > 0 && (
+    <section class="px-4 sm:px-6 pb-24">
+      <div class="max-w-7xl mx-auto">
+        <h2 class="text-2xl font-display font-bold text-slate-900 dark:text-white mb-6">Rückblick</h2>
+        <ul class="divide-y divide-slate-100 dark:divide-slate-800 border-y border-slate-100 dark:border-slate-800">
+          {past.slice(0, 30).map((e: any) => (
+            <li>
+              <a href={`/events/${e.slug}`} class="flex items-baseline gap-6 py-3 hover:text-rose-600 transition-colors">
+                <span class="w-28 shrink-0 text-sm font-bold text-slate-400 tabular-nums">{e._date.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' })}</span>
+                <span class="font-medium text-slate-700 dark:text-slate-200">{e.title}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+</MainLayout>
+
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "EventSeries",
+  "name": series.name,
+  "description": description,
+  "url": `https://diebruecke.social/serien/${series.slug}`,
+  "location": { "@type": "Place", "name": "Die Brücke Graz", "address": { "@type": "PostalAddress", "streetAddress": "Grabenstraße 39a", "addressLocality": "Graz", "postalCode": "8010", "addressCountry": "AT" } },
+  "organizer": { "@type": "Organization", "name": "Die Brücke - soziokulturelles Zentrum", "url": "https://diebruecke.social" },
+  "subEvent": upcoming.slice(0, 10).map((e: any) => ({ "@type": "Event", "name": e.title, "startDate": e._displayDate.toISOString(), "url": `https://diebruecke.social/events/${e.slug}` }))
+})} />
