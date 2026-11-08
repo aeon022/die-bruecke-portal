@@ -8,7 +8,7 @@ cd frontend
 docker compose up -d --build
 # Kurz warten und prüfen, ob die Seite antwortet (sonst Fehler = Action wird rot)
 for i in $(seq 1 30); do
-  curl -fsS -o /dev/null http://127.0.0.1:4321/ && { echo "OK: bruecke_beta läuft"; exit 0; }
+  curl -fs -o /dev/null http://127.0.0.1:4321/ && { echo "OK: bruecke_beta läuft"; exit 0; }
   sleep 2
 done
 echo "FEHLER: bruecke_beta antwortet nicht" >&2
