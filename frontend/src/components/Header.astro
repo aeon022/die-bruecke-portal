@@ -44,7 +44,7 @@ const menuItems = [
   { number: '08', title: 'Mitmachen', href: '/join', desc: 'Jobs & Ehrenamt.' },
   { number: '09', title: 'Journal', href: '/blog', desc: 'Blog & Neuigkeiten.', highlight: true },
   { number: '10', title: 'Archiv', href: '/archiv', desc: '40 Jahre Zeitreise.' },
-  { number: '11', title: 'Shop', href: '/shop', desc: 'Gutscheine, bald Merch.', badge: 'Neu', disabled: false },
+  { number: '11', title: 'Shop', href: '/shop', desc: 'Gutscheine – einen Abend verschenken.', badge: 'Gutscheine', feature: true, sub: { title: 'Gutschein drucken', href: '/gutschein-drucken' } },
   { number: '12', title: 'Kontakt', href: '/contact', desc: 'Anfahrt & Hallo.' },
 ];
 ---
@@ -185,35 +185,40 @@ const menuItems = [
               lg:[&:nth-child(n+9)]:border-b-0
               
               ${item.disabled ? 'opacity-50 cursor-not-allowed hover:bg-transparent' : ''}
+              ${item.feature ? '!bg-rose-50 dark:!bg-rose-500/10 !border-rose-200 dark:!border-rose-500/20 md:!bg-rose-500/[0.07] md:hover:!bg-rose-500/[0.12] overflow-hidden' : ''}
             `}
           >
             <div class="flex justify-between items-start mb-1 md:mb-2">
-               <span class={`font-bold text-[10px] md:text-xs tracking-widest uppercase ${item.highlight ? 'text-rose-500 md:text-rose-400' : 'text-slate-400 md:text-slate-500 group-hover:text-rose-500 md:group-hover:text-rose-400 transition-colors'}`}>
+               <span class={`font-bold text-[10px] md:text-xs tracking-widest uppercase ${item.feature ? 'text-rose-500 md:text-rose-400' : item.highlight ? 'text-rose-500 md:text-rose-400' : 'text-slate-400 md:text-slate-500 group-hover:text-rose-500 md:group-hover:text-rose-400 transition-colors'}`}>
                  {item.number}
                </span>
                {item.badge && (
-                 <span class="bg-rose-500/10 text-rose-600 dark:text-rose-400 md:bg-rose-500/20 md:text-rose-300 text-[9px] font-bold px-2 py-0.5 rounded-full border border-rose-500/10 md:border-rose-500/20 uppercase tracking-wider">
-                   {item.badge}
+                 <span class={item.feature
+                   ? 'inline-flex items-center gap-1.5 bg-rose-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider'
+                   : 'bg-rose-500/10 text-rose-600 dark:text-rose-400 md:bg-rose-500/20 md:text-rose-300 text-[9px] font-bold px-2 py-0.5 rounded-full border border-rose-500/10 md:border-rose-500/20 uppercase tracking-wider'}>
+                   {item.feature && <i class="fa-solid fa-gift" aria-hidden="true"></i>}{item.badge}
                  </span>
                )}
             </div>
 
-            <a href={item.disabled ? '#' : item.href} class="block text-xl md:text-3xl font-display font-extrabold tracking-tight text-slate-900 dark:text-white md:text-white group-hover:text-rose-600 md:group-hover:text-rose-400 transition-colors uppercase leading-none mb-1 md:mb-2 after:absolute after:inset-0 after:content-[''] focus:outline-none focus-visible:after:ring-2 focus-visible:after:ring-rose-500 focus-visible:after:rounded-2xl">
+            <a href={item.disabled ? '#' : item.href} class:list={['block text-xl md:text-3xl font-display font-extrabold tracking-tight transition-colors uppercase leading-none mb-1 md:mb-2 after:absolute after:inset-0 after:content-[\'\'] focus:outline-none focus-visible:after:ring-2 focus-visible:after:ring-rose-500 focus-visible:after:rounded-2xl', 'text-slate-900 dark:text-white md:text-white group-hover:text-rose-600 md:group-hover:text-rose-400']}>
               {item.title}
             </a>
             
-            <span class="block text-slate-500 dark:text-slate-400 md:text-slate-300 text-xs md:text-sm md:group-hover:text-white transition-colors font-medium max-w-[90%] leading-snug">
+            <span class:list={['block text-xs md:text-sm transition-colors font-medium max-w-[90%] leading-snug', 'text-slate-500 dark:text-slate-400 md:text-slate-300 md:group-hover:text-white']}>
               {item.desc}
             </span>
 
             {item.sub && (
-              <a href={item.sub.href} class="relative z-10 mt-2 md:mt-3 inline-flex items-center gap-1.5 self-start text-[11px] md:text-xs font-bold uppercase tracking-widest text-rose-600 md:text-rose-300 hover:text-rose-700 md:hover:text-white transition-colors">
+              <a href={item.sub.href} class:list={['relative z-10 mt-2 md:mt-3 inline-flex items-center gap-1.5 self-start text-[11px] md:text-xs font-bold uppercase tracking-widest transition-colors', 'text-rose-600 md:text-rose-300 hover:text-rose-700 md:hover:text-white']}>
                 {item.sub.title} <i class="fa-solid fa-arrow-right text-[10px]" aria-hidden="true"></i>
               </a>
             )}
             
             {!item.disabled && (
-               <i class="fa-solid fa-arrow-right absolute bottom-5 right-5 md:bottom-6 md:right-6 text-sm text-slate-300 md:text-white/10 group-hover:text-rose-500 md:group-hover:text-rose-400 group-hover:-rotate-45 transition-all duration-300" aria-hidden="true"></i>
+               item.feature
+                 ? <i class="fa-solid fa-gift absolute bottom-5 right-5 md:bottom-6 md:right-6 text-base text-rose-400 md:text-rose-400/70 group-hover:text-rose-500 md:group-hover:text-rose-300 group-hover:-rotate-12 transition-all duration-300" aria-hidden="true"></i>
+                 : <i class="fa-solid fa-arrow-right absolute bottom-5 right-5 md:bottom-6 md:right-6 text-sm text-slate-300 md:text-white/10 group-hover:text-rose-500 md:group-hover:text-rose-400 group-hover:-rotate-45 transition-all duration-300" aria-hidden="true"></i>
             )}
           </div>
         ))}
