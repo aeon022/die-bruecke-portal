@@ -14,6 +14,7 @@ import EventMiniCard from '../../components/events/EventMiniCard.astro';
 
 // Video Player Import
 import VideoPlayer from '../../components/common/VideoPlayer.astro';
+import GutscheinHinweis from '../../components/common/GutscheinHinweis.astro';
 
 const { slug } = Astro.params;
 
@@ -383,6 +384,8 @@ const shareMail = 'mailto:?subject=' + encodeURIComponent(event.title + ' – Di
                   </span>
                 </div>
               )}
+
+              {pretixLink && !isSoldOut && <GutscheinHinweis />}
 
               {/* --- NEU: ERMÄßIGUNGEN (GLOBAL SETTINGS) --- */}
               {/* Zeigt die Ermäßigungen nur an, wenn in global_settings 'event_discounts_info' gefüllt ist */}

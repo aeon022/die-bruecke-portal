@@ -1,0 +1,98 @@
+---
+import MainLayout from '../layouts/layout.astro';
+import Einfach from '../components/Einfach.astro';
+import AnfahrtPlan from '../components/AnfahrtPlan.astro';
+import { WEGE } from '../lib/anfahrtWege';
+
+// Wege und Meter kommen aus scripts/anfahrtsplan/build.py (OpenStreetMap, stufenlos berechnet).
+const ZIEL = '47.0836296,15.4369864';
+const HALT = { A: '47.0823634,15.4331671', B: '47.0816102,15.4382927', C: '47.0791999,15.4395165' };
+const osmWeg = (k: string) => `https://www.openstreetmap.org/directions?engine=fossgis_osrm_foot&route=${encodeURIComponent(HALT[k] + ';' + ZIEL)}`;
+const beschreibung: Record<string, string> = {
+    A: 'Bim 3 oder 5 Richtung Andritz. Vom Hasnerplatz geht es auf Asphalt nach Osten, weiter über den Cäcilia-Kappel-Weg (Rad- und Fußweg) bis zur Einfahrt Grabenstraße 39a.',
+    B: 'Auf dem Gehsteig der Grabenstraße Richtung Norden bis zur Hausnummer 39a, dort links in die Einfahrt.',
+    C: 'Auf dem Gehsteig der Grabenstraße Richtung Norden, vorbei an der Grabenkirche, bis zur Hausnummer 39a, dort links in die Einfahrt.',
+};
+const farbe: Record<string, string> = { A: 'bg-rose-700', B: 'bg-blue-700', C: 'bg-yellow-700' };
+const linie: Record<string, string> = { A: 'durchgezogene Linie', B: 'gestrichelte Linie', C: 'gepunktete Linie' };
+---
+
+<MainLayout title="Barrierefrei zu uns" leicht description="Anfahrt zur Brücke, Grabenstraße 39a, Graz: stufenlose Wege von Bim und Bus, Plan, Parken und Barrierefreiheit im Haus.">
+    <Einfach title="So kommst du zu uns">
+        <p>Die Brücke ist in der Grabenstraße 39a in Graz.</p>
+        <p>Du kannst mit der Straßenbahn kommen.<br/>Die Straßenbahn heißt in Graz Bim.<br/>Fahr mit der Bim 3 oder mit der Bim 5.<br/>Steig aus bei: Hasnerplatz.<br/>Dann gehst du ungefähr 6 Minuten.</p>
+        <p>Du kannst auch mit dem Bus kommen.<br/>Fahr mit dem Bus 41.<br/>Steig aus bei: Grabenkirche.<br/>Dann gehst du ungefähr 5 Minuten.</p>
+        <p>Der Weg hat keine Stufen.<br/>Du kannst ihn auch mit dem Rollstuhl fahren.</p>
+        <p>Bei uns im Haus gibt es keine Stufen.<br/>Es gibt ein WC für Menschen im Rollstuhl.</p>
+        <p>Hast du Fragen? Ruf uns an: <a href="tel:+43316672248">0316 67 22 48</a></p>
+    </Einfach>
+
+    <div class="hide-on-ll px-4 md:px-6 pb-16 md:pb-24">
+        <section class="px-6 sm:px-10 pt-20 pb-16 bg-white dark:bg-slate-900 rounded-t-[48px] md:rounded-t-[64px] transition-colors duration-500">
+            <div class="max-w-5xl mx-auto">
+                <p class="text-xs font-black uppercase tracking-widest text-rose-600 dark:text-rose-400 mb-3">Anfahrt</p>
+                <h1 class="text-4xl md:text-6xl font-display font-black text-slate-900 dark:text-white mb-6">Barrierefrei zu uns</h1>
+                <p class="text-lg text-slate-600 dark:text-slate-300 max-w-2xl leading-relaxed">Die Brücke, Grabenstraße 39a, 8010 Graz. Von allen drei Haltestellen kommst du ohne Stufen zu uns, die Wege sind durchgehend asphaltiert.</p>
+
+                <figure class="mt-12">
+                    <div class="rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800">
+                        <AnfahrtPlan />
+                    </div>
+                    <figcaption class="mt-3 text-sm text-slate-500 dark:text-slate-400">Stern: Die Brücke. A, B, C: Haltestellen mit stufenlosem Fußweg. Die Wege sind zusätzlich zur Farbe unterschiedlich gezeichnet (durchgezogen, gestrichelt, gepunktet). Kartendaten © <a class="underline" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap-Mitwirkende</a>.</figcaption>
+                </figure>
+            </div>
+        </section>
+
+        <section class="px-6 sm:px-10 py-16 bg-slate-50 dark:bg-slate-950 transition-colors duration-500">
+            <div class="max-w-5xl mx-auto">
+                <h2 class="text-3xl md:text-4xl font-display font-black text-slate-900 dark:text-white mb-8">Mit Bim und Bus</h2>
+                <ol class="grid md:grid-cols-3 gap-4">
+                    {WEGE.map((w) => (
+                        <li class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800">
+                            <div class="flex items-center gap-3 mb-4">
+                                <span class={`w-9 h-9 rounded-full text-white font-black flex items-center justify-center ${farbe[w.k]}`} aria-hidden="true">{w.k}</span>
+                                <span class="font-display font-black text-slate-900 dark:text-white leading-tight">{w.lines}</span>
+                            </div>
+                            <p class="text-sm text-slate-500 dark:text-slate-400 mb-1">Haltestelle <span class="sr-only">{w.k}, im Plan als {linie[w.k]}:</span></p>
+                            <p class="font-bold text-slate-900 dark:text-white mb-3">{w.name}</p>
+                            <p class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed mb-4">{beschreibung[w.k]}</p>
+                            <p class="text-sm font-bold text-slate-900 dark:text-white">ca. {w.meter} m · {w.min} Min. zu Fuß · stufenlos</p>
+                            <a href={osmWeg(w.k)} target="_blank" rel="noopener" class="inline-flex items-center gap-2 mt-4 text-sm font-bold text-rose-600 dark:text-rose-400 hover:underline">Fußweg in OpenStreetMap <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i><span class="sr-only">(öffnet in neuem Fenster)</span></a>
+                        </li>
+                    ))}
+                </ol>
+                <p class="mt-6 text-sm text-slate-500 dark:text-slate-400">Die Haltestelle Hasnerplatz hat ein Leitsystem für blinde Menschen, Wartehäuschen und Sitzbank. Baustellen und Umleitungen findest du bei der <a class="underline" href="https://www.holding-graz.at/de/mobilitaet/" target="_blank" rel="noopener">Holding Graz</a>.</p>
+            </div>
+        </section>
+
+        <section class="px-6 sm:px-10 py-16 bg-white dark:bg-slate-900 transition-colors duration-500">
+            <div class="max-w-5xl mx-auto grid md:grid-cols-2 gap-10">
+                <div>
+                    <h2 class="text-2xl md:text-3xl font-display font-black text-slate-900 dark:text-white mb-4">Im Haus</h2>
+                    <ul class="space-y-3 text-slate-600 dark:text-slate-300">
+                        <li class="flex gap-3"><i class="fa-solid fa-wheelchair text-rose-600 mt-1" aria-hidden="true"></i>Ebenerdiger Zugang mit Rampe</li>
+                        <li class="flex gap-3"><i class="fa-solid fa-door-open text-rose-600 mt-1" aria-hidden="true"></i>Breite Türen im Veranstaltungsbereich</li>
+                        <li class="flex gap-3"><i class="fa-solid fa-restroom text-rose-600 mt-1" aria-hidden="true"></i>Rollstuhlgerechtes WC, ohne Euro-Schlüssel</li>
+                        <li class="flex gap-3"><i class="fa-solid fa-dog text-rose-600 mt-1" aria-hidden="true"></i>Assistenzhunde sind willkommen</li>
+                    </ul>
+                </div>
+                <div>
+                    <h2 class="text-2xl md:text-3xl font-display font-black text-slate-900 dark:text-white mb-4">Mit dem Auto</h2>
+                    <p class="text-slate-600 dark:text-slate-300 leading-relaxed">Zufahrt über die Einfahrt Grabenstraße 39a. Parkplätze gibt es direkt am Areal.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="px-6 sm:px-10 py-16 bg-slate-50 dark:bg-slate-950 rounded-b-[48px] md:rounded-b-[64px] transition-colors duration-500">
+            <div class="max-w-5xl mx-auto">
+                <h2 class="text-2xl md:text-3xl font-display font-black text-slate-900 dark:text-white mb-4">Route planen</h2>
+                <ul class="grid sm:grid-cols-3 gap-4">
+                    <li><a href="https://verkehrsauskunft.verbundlinie.at/" target="_blank" rel="noopener" class="block h-full bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 hover:border-rose-500"><span class="font-bold text-slate-900 dark:text-white">BusBahnBim</span><span class="block text-sm text-slate-500 dark:text-slate-400 mt-1">Fahrplanauskunft des Verkehrsverbunds Steiermark. Ziel: Hasnerplatz/Päd. Hochschule</span></a></li>
+                    <li><a href="https://www.holding-graz.at/de/unternehmen/unsere-app-angebote/" target="_blank" rel="noopener" class="block h-full bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 hover:border-rose-500"><span class="font-bold text-slate-900 dark:text-white">Graz Mobil App</span><span class="block text-sm text-slate-500 dark:text-slate-400 mt-1">Echtzeit-Abfahrten und Störungen der Holding Graz</span></a></li>
+                    <li><a href="https://www.google.com/maps/dir/?api=1&destination=Die%20Br%C3%BCcke%20Graz%20Grabenstra%C3%9Fe%2039a&travelmode=transit" target="_blank" rel="noopener" class="block h-full bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 hover:border-rose-500"><span class="font-bold text-slate-900 dark:text-white">Google Maps</span><span class="block text-sm text-slate-500 dark:text-slate-400 mt-1">Öffi-Route; unter „Optionen“ kannst du „Rollstuhlgerecht“ wählen</span></a></li>
+                </ul>
+                <p class="mt-8 text-slate-600 dark:text-slate-300">Fragen zur Anreise? Ruf uns an: <a class="font-bold underline" href="tel:+43316672248">+43 316 67 22 48</a> oder schreib an <a class="font-bold underline" href="mailto:office@diebruecke.cc">office@diebruecke.cc</a>.</p>
+            </div>
+        </section>
+    </div>
+</MainLayout>

@@ -19,6 +19,8 @@ export async function GET() {
         { path: '/', priority: 1.0 },
         { path: '/about', priority: 0.8 },
         { path: '/contact', priority: 0.8 },
+        { path: '/anfahrt', priority: 0.6 },
+  { path: '/gutschein-drucken', priority: 0.4 },
         { path: '/info', priority: 0.9 },
         { path: '/services', priority: 0.9 },
         { path: '/events', priority: 0.9 },

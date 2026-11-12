@@ -15,6 +15,7 @@ import Partners from '../components/home/Partners.astro';
 import Pionier from '../components/home/Pionier.astro';
 import CTA from '../components/home/CTA.astro';
 import ZeitungTeaser from '../components/home/ZeitungTeaser.astro';
+import GutscheinHinweis from '../components/common/GutscheinHinweis.astro';
 import Einfach from '../components/Einfach.astro';
 import Safelist from '../components/Safelist.astro';
 
@@ -138,6 +139,7 @@ const seoDescription = heroSubline.replace(/<[^>]*>/g, '');
         
         <Events highlightEvent={highlightEvent} upcomingEvents={upcomingEvents} weekEvents={weekEvents} />
         <ZeitungTeaser />
+        <GutscheinHinweis variant="band" />
         <Services services={dbServices} />
         <Foundation />
         <Projects />

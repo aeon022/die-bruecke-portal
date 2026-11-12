@@ -1,17 +1,169 @@
 ---
 import MainLayout from '../layouts/layout.astro';
+import EventMiniCard from '../components/events/EventMiniCard.astro';
+import { getEvents } from '../lib/api';
+import { nextEventDate } from '../lib/recurrence';
 
 // Metadaten für SEO
-const title = "Shop | Coming Soon";
-const description = "Bald verfügbar: Der Shop der Brücke. Handwerk, Merch und Gutes tun.";
+const title = "Shop | Gutscheine";
+const description = "Brücke-Gutscheine über 25, 50 oder 100 € – einlösbar für alle Veranstaltungen, ohne Ablaufdatum. Merch und Handwerk folgen bald.";
+const GUTSCHEIN_SHOP = 'https://pretix.eu/diebruecke/gutschein/';
+// Produkt-IDs aus pretix (Event „gutschein“)
+const GUTSCHEINE = [
+  { betrag: 25, id: 1211419, text: 'Ein Konzertabend', sub: 'Ein Ticket für einen Abend nach Wahl', icon: 'fa-guitar', rahmen: 'from-rose-400 to-rose-700', flaeche: 'bg-gradient-to-br from-rose-500 to-rose-700 text-white' },
+  { betrag: 50, id: 1211420, text: 'Ein Abend zu zweit', sub: 'Zwei Tickets – oder zwei Abende allein', icon: 'fa-champagne-glasses', rahmen: 'from-orange-300 to-rose-600', flaeche: 'bg-gradient-to-br from-orange-500 via-rose-500 to-rose-600 text-white' },
+  { betrag: 100, id: 1211421, text: 'Mehrere Abende', sub: 'Für alle, die gern öfter kommen', icon: 'fa-star', rahmen: 'from-amber-300 to-slate-700', flaeche: 'bg-gradient-to-br from-slate-800 to-slate-950 text-white' },
+];
+
+// Kommende Abende mit Ticketshop, je Titel nur einmal (z. B. nicht viermal Mord vor Ort)
+const today = new Date(); today.setHours(0, 0, 0, 0);
+const seen = new Set();
+const erlebnisse = (await getEvents())
+  .map((e) => ({ ...e, _displayDate: nextEventDate(e) }))
+  .filter((e) => e.pretix_link && !e.is_free_entry && e._displayDate >= today)
+  .sort((a, b) => a._displayDate.getTime() - b._displayDate.getTime())
+  .filter((e) => !seen.has(e.title) && seen.add(e.title))
+  .slice(0, 4);
+
+// Weihnachtshinweis von 1. bis 24. Dezember (Wiener Zeit)
+const [, monat, tag] = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Vienna' }).format(new Date()).split('-').map(Number);
+const advent = monat === 12 && tag <= 24;
+const tageBisWeihnachten = advent ? 24 - tag : 0;
+
+const FRAGEN = [
+  { f: 'Läuft der Gutschein ab?', a: 'Nein. Der Brücke-Gutschein hat kein Ablaufdatum.' },
+  { f: 'Wofür kann ich ihn einlösen?', a: 'Für Tickets aller Veranstaltungen der Brücke – online im Ticketshop oder an der Abendkasse. Konzerte, Kabarett, Mord vor Ort und mehr.' },
+  { f: 'Wie löse ich ihn ein?', a: 'Online: Tickets in den Warenkorb legen, beim Bezahlen die Zahlungsart „Gutschein“ wählen und den Code eingeben. An der Abendkasse: einfach den Gutschein oder den Code herzeigen.' },
+  { f: 'Kann ich ihn auch an der Abendkasse einlösen?', a: 'Ja. Zeig den ausgedruckten Gutschein oder den Code am Handy – wir ziehen den Betrag vom Guthaben ab.' },
+  { f: 'Was passiert mit dem Restbetrag?', a: 'Er bleibt auf dem Gutschein und kann beim nächsten Mal verwendet werden.' },
+  { f: 'Und wenn die Tickets mehr kosten als der Gutschein?', a: 'Den Rest zahlst du einfach mit einer anderen Zahlungsart dazu.' },
+  { f: 'Kann ich mehrere Tickets mit einem Gutschein bezahlen?', a: 'Ja, solange das Guthaben reicht – zum Beispiel zwei Tickets mit dem 50-€-Gutschein.' },
+  { f: 'Bekomme ich etwas zum Verschenken in die Hand?', a: 'Ja: Mit unserer Druckvorlage machst du aus dem Code einen schönen Gutschein zum Ausdrucken – mit Namen und persönlicher Nachricht.' },
+];
 ---
 
-<MainLayout title={title}>
+<MainLayout title={title} description={description}>
+  <section class="relative px-6 pt-32 md:pt-44 pb-20 overflow-hidden">
+    <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-[900px] h-[600px] bg-gradient-to-br from-rose-500/20 via-orange-400/10 to-transparent rounded-full blur-[120px] pointer-events-none" aria-hidden="true"></div>
+    <div class="relative max-w-6xl mx-auto text-center">
+      {advent && (
+        <p class="max-w-xl mx-auto mb-8 px-5 py-3 rounded-2xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-sm font-bold">
+          <i class="fa-solid fa-tree text-emerald-400 dark:text-emerald-600 mr-2" aria-hidden="true"></i>
+          {tageBisWeihnachten === 0 ? 'Heute ist Heiliger Abend' : `Noch ${tageBisWeihnachten} ${tageBisWeihnachten === 1 ? 'Tag' : 'Tage'} bis Weihnachten`} – Last-Minute-Geschenk: in zwei Minuten gekauft und ausgedruckt.
+        </p>
+      )}
+      <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 text-[10px] font-black uppercase tracking-[0.2em] mb-8">
+        <i class="fa-solid fa-gift" aria-hidden="true"></i> Brücke-Gutschein
+      </span>
+      <h1 class="text-5xl md:text-7xl lg:text-8xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tighter leading-[0.9] mb-8">
+        Verschenk<br/><span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-orange-500">einen Abend.</span>
+      </h1>
+      <p class="text-lg md:text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">Konzert, Kabarett oder Krimi zum Mitraten – die Beschenkten suchen sich selbst aus, wohin es geht.</p>
+
+      <ul class="grid md:grid-cols-3 gap-6 md:gap-8 mt-16 text-left">
+        {GUTSCHEINE.map((g, i) => (
+          <li class="gift-card" style={`--tilt:${[-2, 0, 2][i]}deg`}>
+            <a href={`${GUTSCHEIN_SHOP}?item=${g.id}`} target="_blank" rel="noopener" class={`group relative block h-full rounded-[28px] p-[2px] bg-gradient-to-br ${g.rahmen} shadow-xl shadow-rose-500/10 focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-4 focus-visible:outline-rose-500`}>
+              <div class={`relative h-full rounded-[26px] overflow-hidden p-7 md:p-8 flex flex-col ${g.flaeche}`}>
+                <div class="absolute -right-10 -top-10 w-40 h-40 rounded-full bg-white/15 blur-2xl transition-transform duration-700 group-hover:scale-150" aria-hidden="true"></div>
+                <div class="shine absolute inset-0 pointer-events-none" aria-hidden="true"></div>
+                <div class="relative flex items-start justify-between">
+                  <span class="text-[10px] font-black uppercase tracking-[0.25em] opacity-80">Die Brücke · Graz</span>
+                  <i class={`fa-solid ${g.icon} text-2xl opacity-90`} aria-hidden="true"></i>
+                </div>
+                <div class="relative mt-10">
+                  <span class="block text-7xl md:text-8xl font-display font-black tracking-tighter leading-none">{g.betrag}<span class="text-4xl align-top ml-1">€</span></span>
+                  <span class="block mt-3 text-lg font-bold">{g.text}</span>
+                  <span class="block mt-1 text-sm opacity-80">{g.sub}</span>
+                </div>
+                <div class="relative mt-8 pt-5 border-t-2 border-dashed border-current/30 flex items-center justify-between gap-3" style="border-color:color-mix(in srgb,currentColor 30%,transparent)">
+                  <span class="text-xs font-black uppercase tracking-widest">Gutschein kaufen</span>
+                  <span class="w-10 h-10 rounded-full bg-white text-slate-900 flex items-center justify-center transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true"><i class="fa-solid fa-arrow-right"></i></span>
+                  <span class="sr-only">(öffnet den Ticketshop in neuem Fenster)</span>
+                </div>
+              </div>
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <a href="/join/mitgliedschaft" class="group mt-8 flex flex-col md:flex-row items-start md:items-center gap-6 text-left rounded-[28px] p-7 md:p-8 bg-white dark:bg-slate-900 border-2 border-dashed border-rose-300 dark:border-rose-800 hover:border-rose-500 transition-colors">
+        <span class="w-16 h-16 shrink-0 rounded-2xl bg-rose-600 text-white flex items-center justify-center text-2xl" aria-hidden="true"><i class="fa-solid fa-bridge"></i></span>
+        <span class="flex-1">
+          <span class="block text-xs font-black uppercase tracking-widest text-rose-600 dark:text-rose-400">Für Stammgäste</span>
+          <span class="block text-2xl md:text-3xl font-display font-black text-slate-900 dark:text-white mt-1">Ein Jahr Brückenpfeiler verschenken – ab 39 €</span>
+          <span class="block text-slate-600 dark:text-slate-300 mt-2">Mit einer Mitgliedschaft kostet jedes Ticket nur 15 € statt 25 €. Ab dem vierten Abend im Jahr hat sie sich gerechnet.</span>
+        </span>
+        <span class="inline-flex items-center gap-2 font-bold text-rose-600 dark:text-rose-400 shrink-0">Mitgliedschaft ansehen <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform" aria-hidden="true"></i></span>
+      </a>
+
+      <ol class="grid sm:grid-cols-3 gap-4 mt-16 text-left max-w-5xl mx-auto">
+        <li class="flex gap-4 items-start bg-white/70 dark:bg-slate-900/70 backdrop-blur rounded-2xl p-5 border border-slate-200 dark:border-slate-800">
+          <span class="w-9 h-9 shrink-0 rounded-full bg-rose-600 text-white font-black flex items-center justify-center" aria-hidden="true">1</span>
+          <p class="text-sm text-slate-600 dark:text-slate-300"><strong class="block text-slate-900 dark:text-white">Online kaufen</strong>Betrag wählen und im Ticketshop bezahlen.</p>
+        </li>
+        <li class="flex gap-4 items-start bg-white/70 dark:bg-slate-900/70 backdrop-blur rounded-2xl p-5 border border-slate-200 dark:border-slate-800">
+          <span class="w-9 h-9 shrink-0 rounded-full bg-rose-600 text-white font-black flex items-center justify-center" aria-hidden="true">2</span>
+          <p class="text-sm text-slate-600 dark:text-slate-300"><strong class="block text-slate-900 dark:text-white">Code verschenken</strong>Der Gutscheincode kommt per E-Mail und steht auf deiner Bestellseite.</p>
+        </li>
+        <li class="flex gap-4 items-start bg-white/70 dark:bg-slate-900/70 backdrop-blur rounded-2xl p-5 border border-slate-200 dark:border-slate-800">
+          <span class="w-9 h-9 shrink-0 rounded-full bg-rose-600 text-white font-black flex items-center justify-center" aria-hidden="true">3</span>
+          <p class="text-sm text-slate-600 dark:text-slate-300"><strong class="block text-slate-900 dark:text-white">Abend aussuchen</strong>Beim Ticketkauf „Gutschein“ als Zahlungsart wählen. Restbetrag bleibt erhalten.</p>
+        </li>
+      </ol>
+      <p class="mt-8 text-sm font-bold text-slate-500 dark:text-slate-400"><i class="fa-solid fa-infinity text-rose-500 mr-2" aria-hidden="true"></i>Gilt für alle Veranstaltungen der Brücke · ohne Ablaufdatum</p>
+      <a href="/gutschein-drucken" class="inline-flex items-center gap-3 mt-6 px-6 py-3 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold hover:bg-rose-600 dark:hover:bg-rose-500 dark:hover:text-white transition-colors"><i class="fa-solid fa-print" aria-hidden="true"></i>Schon gekauft? Gutschein zum Ausdrucken gestalten</a>
+      <p class="mt-10 max-w-2xl mx-auto text-lg text-slate-700 dark:text-slate-200 font-display font-bold">Jeder Gutschein kommt direkt unseren Projekten zugute – sozial wie kulturell.</p>
+    </div>
+  </section>
+
+  {erlebnisse.length > 0 && (
+    <section class="px-6 py-16 bg-slate-50 dark:bg-slate-950 transition-colors duration-500">
+      <div class="max-w-6xl mx-auto">
+        <p class="text-xs font-black uppercase tracking-widest text-rose-600 dark:text-rose-400 mb-3">Was man damit erleben kann</p>
+        <h2 class="text-3xl md:text-5xl font-display font-black text-slate-900 dark:text-white mb-10">Demnächst in der Brücke</h2>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {erlebnisse.map((e) => <EventMiniCard event={e} />)}
+        </div>
+        <a href="/events" class="inline-flex items-center gap-2 mt-8 font-bold text-rose-600 dark:text-rose-400 hover:underline">Alle Veranstaltungen <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+      </div>
+    </section>
+  )}
+
+  <section class="px-6 py-16">
+    <div class="max-w-3xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-display font-black text-slate-900 dark:text-white mb-8">Häufige Fragen</h2>
+      <div class="divide-y divide-slate-200 dark:divide-slate-800 border-y border-slate-200 dark:border-slate-800">
+        {FRAGEN.map((q) => (
+          <details class="group py-5">
+            <summary class="flex items-center justify-between gap-4 cursor-pointer list-none font-bold text-lg text-slate-900 dark:text-white">
+              {q.f}
+              <i class="fa-solid fa-plus text-rose-500 transition-transform group-open:rotate-45" aria-hidden="true"></i>
+            </summary>
+            <p class="mt-3 text-slate-600 dark:text-slate-300 leading-relaxed">{q.a}</p>
+          </details>
+        ))}
+      </div>
+      <p class="mt-6 text-sm text-slate-500 dark:text-slate-400">Noch eine Frage? Schreib an <a class="underline font-bold" href="mailto:office@diebruecke.cc">office@diebruecke.cc</a> oder ruf an: <a class="underline font-bold" href="tel:+43316672248">+43 316 67 22 48</a>.</p>
+    </div>
+  </section>
+
+  <style>
+    .gift-card { transform: rotate(var(--tilt)); transition: transform .5s cubic-bezier(.2,.8,.2,1); }
+    .gift-card:hover, .gift-card:focus-within { transform: rotate(0deg) translateY(-8px) scale(1.02); }
+    .shine { background: linear-gradient(115deg, transparent 35%, rgba(255,255,255,.35) 50%, transparent 65%); transform: translateX(-120%); transition: transform .9s ease; }
+    .gift-card:hover .shine { transform: translateX(120%); }
+    @media (prefers-reduced-motion: reduce) {
+      .gift-card, .gift-card:hover, .gift-card:focus-within { transform: none; }
+      .shine { display: none; }
+    }
+  </style>
+
   {/* ÄNDERUNGEN: 
       - pb-64 (Mobil) = Viel Abstand
       - md:pb-96 (Desktop) = Extrem viel Abstand (ca. 400px) zum Footer
   */}
-  <div class="relative min-h-[90vh] flex flex-col items-center justify-center overflow-hidden px-6 pt-32 pb-64 md:pt-48 md:pb-96">
+  <div class="relative flex flex-col items-center justify-center overflow-hidden px-6 pt-16 pb-64 md:pt-24 md:pb-96">
     
     {/* Hintergrund-Effekte */}
     <div class="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-rose-500/10 rounded-full blur-[120px] pointer-events-none animate-pulse"></div>
@@ -26,10 +178,10 @@ const description = "Bald verfügbar: Der Shop der Brücke. Handwerk, Merch und 
       </div>
 
       {/* Headline */}
-      <h1 class="text-5xl md:text-7xl lg:text-8xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tighter leading-[0.9] mb-8">
+      <h2 class="text-4xl md:text-6xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tighter leading-[0.9] mb-8">
         Gutes Zeug.<br/>
         <span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-orange-500">Bald Online.</span>
-      </h1>
+      </h2>
 
       <p class="text-lg md:text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed mb-12">
         Wir bauen gerade an unserem Online-Shop. Bald findest du hier <span class="text-slate-900 dark:text-white font-bold">handgefertigte Unikate</span> aus unseren Werkstätten und exklusiven <span class="text-slate-900 dark:text-white font-bold">Brücke-Merch</span>.

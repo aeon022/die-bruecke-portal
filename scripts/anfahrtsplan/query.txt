@@ -1,0 +1,1 @@
+[out:json][timeout:60];(way(around:650,47.083593,15.4369552)[highway];way(around:650,47.083593,15.4369552)[leisure=park];way(around:650,47.083593,15.4369552)[landuse=grass];way(93689251);way(around:650,47.083593,15.4369552)[railway=tram];node(around:650,47.083593,15.4369552)[public_transport=platform];node(around:120,47.083593,15.4369552)[entrance];);out geom;
