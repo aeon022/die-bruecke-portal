@@ -40,5 +40,8 @@
     "micromorph": "^0.4.5",
     "react": "^19.2.3",
     "react-dom": "^19.2.3"
+  },
+  "overrides": {
+    "postcss-selector-parser": "^6.1.5"
   }
 }
